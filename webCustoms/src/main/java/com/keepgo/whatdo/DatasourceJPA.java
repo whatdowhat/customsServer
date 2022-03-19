@@ -80,6 +80,7 @@ public class DatasourceJPA {
 		
 		props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		
+		
 //		dev
 		props.setProperty("hibernate.SQL", "info");
 		props.setProperty("hibernate.show_sql", "true");

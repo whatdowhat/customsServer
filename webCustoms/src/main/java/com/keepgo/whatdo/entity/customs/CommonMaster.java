@@ -6,18 +6,16 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +34,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class CommonMaster {
 
 	@Id
@@ -64,6 +63,7 @@ public class CommonMaster {
 //	@OneToMany(fetch = FetchType.EAGER)
 	@OneToMany
 	@JoinColumn(name = "commonMasterId")
+	@JsonManagedReference  // 추가
 	private List<Common> commons = new ArrayList<>();
 
 	//검색 컬럼
@@ -72,6 +72,8 @@ public class CommonMaster {
 	//검색 컬럼
 	@Transient
 	private String endDate;
+	
+	
 
 	
 }

@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.keepgo.whatdo.util.ExcelColumn;
 
@@ -43,13 +44,17 @@ public class Common {
 	@JoinColumn(name = "commonMasterId")
 	@ExcelColumn(headerName="commonMasterId",order = 2)
 	@ManyToOne(fetch = FetchType.LAZY)
-//	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
 	private CommonMaster commonMaster;
 	
 	
 	@ExcelColumn(headerName="코드이름",order = 3)
 	@Column(name = "nm",nullable = false)
 	private String nm;
+	
+	@ExcelColumn(headerName="코드값",order = 3)
+	@Column(name = "value",nullable = false)
+	private String value;
 	
 	@ExcelColumn(headerName="사용여부",order = 4)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")

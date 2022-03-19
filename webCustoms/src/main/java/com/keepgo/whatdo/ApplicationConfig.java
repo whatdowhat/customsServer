@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import lombok.Data;
 
@@ -16,6 +17,7 @@ import lombok.Data;
 @Component
 @ConfigurationProperties(prefix = "app")
 @PropertySource(encoding = "UTF-8", value = { "classpath:application.properties" })
+@EnableTransactionManagement
 public class ApplicationConfig {
 	
 	private String userData01;

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keepgo.whatdo.mapper.MemberMapper">
+
+    <!--
+        it_mb_address_book table
+     -->
+
+    <select id="selectAlreadyMember"  resultType="com.keepgo.whatdo.entity.Member">
+        SELECT *
+        FROM member_web
+        WHERE 1=1
+        AND memberPh = #{phone}
+        AND memberNm = #{name}
+    </select>
+    
+    <select id="selectAllMember"  resultType="com.keepgo.whatdo.entity.Member">
+		<!--         SELECT * FROM member_web -->
+        
+		select 
+		CASE
+			WHEN t1.memberAuth = 'GOV'
+			THEN (select max(memberProject) from base_info_web  where 1=1 and govPersonNm = t1.memberNm)
+			ELSE (select max(memberProject) from base_info_web  where 1=1 and memberNm = t1.memberNm)
+		END
+		as memberProject,
+		CASE
+			WHEN t1.memberAuth = 'GOV'
+			THEN (select max(memberTeam) from base_info_web  where 1=1 and govPersonNm = t1.memberNm)
+			ELSE (select max(memberTeam) from base_info_web  where 1=1 and memberNm = t1.memberNm)
+		END
+		as memberTeam,
+		t1.* from member_web t1
+       
+    </select>
+    
+    <select id="selectBySeq"   resultType="com.keepgo.whatdo.entity.Member">
+        SELECT * FROM member_web
+        WHERE 1=1
+        and seq = #{seq}
+       
+    </select>
+    
+    <select id="selectPage"  parameterType="com.keepgo.whatdo.entity.PageVO"  resultType="com.keepgo.whatdo.entity.Member">
+     		SELECT * FROM member_web
+			
+			LIMIT ${startIndex} , ${endIndex}
+       
+    </select>
+    <select id="selectPageCount" resultType="Integer">
+     		SELECT count(*) FROM member_web
+    </select>
+
+    <select id="selectPageSearch"  parameterType="com.keepgo.whatdo.entity.PageVO"  resultType="com.keepgo.whatdo.entity.Member">
+     		SELECT * FROM member_web
+			where 1=1
+			<if test="member.memberNm != '' ">
+				and memberNm = #{member.memberNm}
+			</if>
+			
+			LIMIT ${currentPage} , ${pageBy}
+       
+    </select>
+    <select id="selectPageSearchCount"  parameterType="com.keepgo.whatdo.entity.PageVO" resultType="Integer">
+     		SELECT count(*) FROM member_web
+     		where 1=1
+			<if test="member.memberNm != '' ">
+				and memberNm = #{member.memberNm}
+			</if>
+			
+    </select>
+
+
+</mapper>

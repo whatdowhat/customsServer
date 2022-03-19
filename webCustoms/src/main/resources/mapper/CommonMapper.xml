@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keepgo.whatdo.mapper.CommonMapper">
+
+	<!-- it_mb_address_book table -->
+
+	<select id="selectAll"  resultType="com.keepgo.whatdo.viewEntity.CommonViewResponse">
+        SELECT * FROM web_common
+        ORDER BY id DESC
+    </select>
+    
+    <select id="selectBySeq" parameterType="Long" resultType="com.keepgo.whatdo.entity.customs.Common">
+        SELECT * FROM web_common
+        WHERE 1=1
+        and id=#{id}
+    </select>
+     <select id="selectByNm" parameterType="String" resultType="com.keepgo.whatdo.entity.customs.Common">
+        SELECT * FROM web_common 
+        WHERE 1=1 
+        and nm = #{nm}
+    </select>
+    
+    
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keepgo.whatdo.mapper.OrderMapper">
+
+	<!-- it_mb_address_book table -->
+
+	<select id="selectAll"
+		resultType="com.keepgo.whatdo.viewEntity.OrderViewResponse">
+
+
+		SELECT a.id id, a.no orderNo, b.item_count count, item_price price FROM web_order a JOIN
+
+		(
+		SELECT MAX(d.orderId) orderId, count(d.orderId) item_count, SUM(price *
+		d.count) item_price FROM web_orderItem d
+		WHERE 1=1
+		GROUP BY d.orderId
+		) b
+
+		ON a.id = b.orderId
+
+
+	</select>
+
+</mapper>

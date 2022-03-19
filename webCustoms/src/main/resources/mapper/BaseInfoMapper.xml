@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keepgo.whatdo.mapper.BaseInfoMapper">
+
+    <!--
+        it_mb_address_book table
+     -->
+
+    <select id="selectAll"  resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+    </select>
+
+    <delete id="deleteBeforeInsert" parameterType="java.util.List" >
+		DELETE FROM base_info_web
+		WHERE 1=1
+        AND yyyyMMdd in  
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        	#{item}
+  		</foreach> 
+    </delete>
+
+    <delete id="deleteBeforeInsertNew" >
+		DELETE FROM base_info_web
+		WHERE 1=1
+		<![CDATA[
+	     	and yyyyMMdd >= #{first}
+	     	and yyyyMMdd <= #{end}
+     	 ]]>
+        
+    </delete>
+        
+    
+    
+    <select id="selectAllProjectAndTeam"  resultType="com.keepgo.whatdo.entity.BaseInfo">
+	    SELECT memberProject,memberTeam
+		FROM base_info_web
+		GROUP BY memberProject,memberTeam
+		ORDER BY memberProject,memberTeam
+    </select>
+    
+    <select id="selectAllProjectAndTeamFinal"  resultType="com.keepgo.whatdo.entity.BaseInfo">
+	    SELECT memberProject,memberTeam
+		FROM base_info_web
+		WHERE 1=1
+		AND confirmFinal = TRUE 
+		GROUP BY memberProject,memberTeam
+		ORDER BY memberProject,memberTeam
+    </select>
+    
+     <select id="selectTREE" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+        WHERE 1=1
+     	and memberProject = #{memberProject}
+     	and memberTeam = #{memberTeam}
+     	
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+     	
+     	order by  yyyyMMdd  asc, startHhmm  asc
+    </select>
+     <select id="selectTREEFinal" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+        WHERE 1=1
+        AND confirmFinal = TRUE 
+     	and memberProject = #{memberProject}
+     	and memberTeam = #{memberTeam}
+     	
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+     	
+     	order by  yyyyMMdd  asc, startHhmm  asc
+    </select>
+    
+     <select id="selectProjectTREE" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+        WHERE 1=1
+     	and memberProject = #{memberProject}
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+
+     	order by  yyyyMMdd  asc, startHhmm  asc
+     	
+    </select>
+    
+     <select id="selectProjectTREEFinal" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+        WHERE 1=1
+        AND confirmFinal = TRUE 
+     	and memberProject = #{memberProject}
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+
+     	order by  yyyyMMdd  asc, startHhmm  asc
+     	
+    </select>
+    
+     <select id="selectNldProjectAndTeam" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+	    SELECT memberProject,memberTeam
+		FROM base_info_web
+		WHERE 1=1
+		and memberPh = #{memberPh}
+		GROUP BY memberProject,memberTeam
+		ORDER BY memberProject,memberTeam
+    </select>
+    
+    <select id="selectNldTREE" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+        WHERE 1=1
+     	and memberProject = #{memberProject}
+     	and memberTeam = #{memberTeam}
+     	and memberPh = #{memberPh}
+		AND now() <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(yyyyMMdd,  '%Y-%m-%d'), INTERVAL 30 DAY)
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+		
+        order by yyyyMMdd, startDt , startHhmm
+    </select>
+    
+    <select id="selectLdProjectAndTeam" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+	    
+		 SELECT memberProject,memberTeam
+		FROM base_info_web
+		WHERE 1=1
+		and memberPh = #{memberPh}
+		GROUP BY memberProject,memberTeam
+		ORDER BY memberProject,memberTeam
+		
+    </select>
+    
+    <select id="selectLdTREE" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+		WHERE 1=1
+		AND (memberProject,memberTeam) in (
+  		 SELECT memberProject,memberTeam from base_info_web
+   		where 1=1
+
+   		and memberPh = #{memberPh}
+   		and memberLeaderYn = '리더'
+   		and memberProject = #{memberProject}
+     	and memberTeam = #{memberTeam}
+		)
+
+		union 
+		
+		SELECT * from base_info_web
+		where 1=1
+		and memberPh = #{memberPh}
+		and memberProject = #{memberProject}
+     	and memberTeam = #{memberTeam}
+    </select>
+    
+    
+    <select id="selectLdTREEAfterEndDt" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        
+        select * from ( 
+        
+        	SELECT * FROM base_info_web
+			WHERE 1=1
+			AND (memberProject,memberTeam) in (
+	  		 SELECT memberProject,memberTeam from base_info_web
+	   		where 1=1
+	
+	   		and memberPh = #{memberPh}
+	   		and memberLeaderYn = '리더'
+	   		and memberProject = #{memberProject}
+	     	and memberTeam = #{memberTeam}
+			)
+	
+			union 
+			
+			SELECT * from base_info_web
+			where 1=1
+			and memberPh = #{memberPh}
+			and memberProject = #{memberProject}
+	     	and memberTeam = #{memberTeam}
+	     	
+	        ) a
+        where 1=1
+        AND now() <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(yyyyMMdd,  '%Y-%m-%d'), INTERVAL 30 DAY)
+        
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+        
+        order by startDt , startHhmm
+    </select>
+    
+    
+    <select id="selectGovProjectAndTeam" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+	    
+		 
+		
+		SELECT * from base_info_web
+		where 1=1
+		and govPersonPh = #{govPersonPh}
+		
+		GROUP BY memberProject,memberTeam
+		ORDER BY memberProject,memberTeam
+		
+    </select>
+    
+    <select id="selectGovTREE" parameterType="com.keepgo.whatdo.entity.BaseInfo" resultType="com.keepgo.whatdo.entity.BaseInfo">
+        SELECT * FROM base_info_web
+        WHERE 1=1
+     	and memberProject = #{memberProject}
+     	and memberTeam = #{memberTeam}
+     	
+        AND now() <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(yyyyMMdd,  '%Y-%m-%d'), INTERVAL 30 DAY)
+        
+     	<if test='searchStEdYn=="Y"'>
+	     	<![CDATA[
+		     	and yyyyMMdd >= #{searchSt}
+		     	and yyyyMMdd <= #{searchEd}
+	     	 ]]>
+     	</if>
+        order by startDt , startHhmm
+        
+    </select>
+    
+    <select id="selectSendEmailTarget" resultType="com.keepgo.whatdo.entity.BaseInfo">
+		SELECT * FROM base_info_web 
+		where 1=1
+		 
+		and (confirm is null || confirm =FALSE)
+		and yyyyMMdd = DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d'), INTERVAL 1 DAY) 
+    </select>
+    
+
+    
+
+
+</mapper>

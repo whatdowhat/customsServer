@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.entity.customs.request;
+package com.keepgo.whatdo.entity.customs.response;
 
 import java.util.ArrayList;
 import java.util.Date;

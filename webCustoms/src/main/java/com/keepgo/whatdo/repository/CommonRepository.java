@@ -21,4 +21,5 @@ public interface CommonRepository extends JpaRepository<Common, Long>{
 	
 	@Query("select m from Common m ")
 	List<Common> findAll();
+	List<Common> findByCommonMaster(CommonMaster commonMaster);
 }

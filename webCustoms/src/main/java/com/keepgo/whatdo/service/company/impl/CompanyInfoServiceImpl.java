@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.service.impl;
+package com.keepgo.whatdo.service.company.impl;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,12 +16,12 @@ import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
-import com.keepgo.whatdo.entity.customs.request.CompanyInfoRes;
-import com.keepgo.whatdo.entity.customs.response.CompanyInfoReq;
+import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
+import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
-import com.keepgo.whatdo.service.CompanyInfoService;
+import com.keepgo.whatdo.service.company.CompanyInfoService;
 
 @Service
 public class CompanyInfoServiceImpl implements CompanyInfoService {

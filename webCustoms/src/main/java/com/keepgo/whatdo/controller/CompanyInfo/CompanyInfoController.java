@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.controller.CompanyInfoController;
+package com.keepgo.whatdo.controller.CompanyInfo;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,14 +23,14 @@ import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
-import com.keepgo.whatdo.entity.customs.request.CompanyInfoRes;
-import com.keepgo.whatdo.entity.customs.response.CompanyInfoReq;
+import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
+import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
 import com.keepgo.whatdo.mapper.UserMapper;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.UserRepository;
-import com.keepgo.whatdo.service.CompanyInfoService;
+import com.keepgo.whatdo.service.company.CompanyInfoService;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true" ) // 컨트롤러에서 설정

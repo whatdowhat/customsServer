@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.service;
+package com.keepgo.whatdo.service.company;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.keepgo.whatdo.entity.customs.response.CompanyInfoReq;
+import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 
 @Service
 public interface CompanyInfoService {

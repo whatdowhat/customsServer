@@ -54,7 +54,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 					
 					.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
 					.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt())
-					.manages(item.getManages().stream().map(sub_item->{
+					.managers(item.getManages().stream().map(sub_item->{
 						Map<String,Object> f = new HashMap<>();
 						f.put("comNm", sub_item.getCommon().getNm());
 						f.put("comValue", sub_item.getCommon().getValue());

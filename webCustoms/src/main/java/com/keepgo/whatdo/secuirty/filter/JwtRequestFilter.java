@@ -77,12 +77,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }else {
+        //운영 버전
 //            System.out.println("403_ID_EMPTY");
 //            request.setAttribute("exception", "403_ID_EMPTY");
         }
+        //운영 버전
 //        request.setAttribute("exception", "403_EXPIREDJWT");
 //        throw new Exception();
 //        throw new ExpiredJwtException(null, null, null);
+        //검증버전
         chain.doFilter(request, response);
     }
 }

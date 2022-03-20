@@ -68,7 +68,7 @@ public class CompanyInfoController {
 				.coNum(item.getCoNum())
 				.coInvoice(item.getCoInvoice())
 				.updateDt(item.getUpdateDt())
-				.manages(item.getManages().stream().map(sub_item->{
+				.managers(item.getManages().stream().map(sub_item->{
 					Map<String,Object> f = new HashMap<>();
 					f.put("comNm", sub_item.getCommon().getNm());
 					f.put("comValue", sub_item.getCommon().getValue());
@@ -100,6 +100,12 @@ public class CompanyInfoController {
 	@RequestMapping(value = "/company/companyInfo", method = {RequestMethod.POST })
 	public List<?> getCompanyInfo(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
 		
+//		try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return  _companyInfoService.getAll(companyInfoReq);
 		
 	}

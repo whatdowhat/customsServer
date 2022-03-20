@@ -36,8 +36,11 @@ public class CompanyInfoRes {
 	private String coNum;
 	private String coNm;
 	private String coAddress;
-	private Map<Long,String> exports = new HashMap<>();
-	private Map<Long,String> manages = new HashMap<>();
+//	private Map<Long,String> exports = new HashMap<>();
+//	private Map<Long,String> manages = new HashMap<>();
+//	private Map<String,String> exports = new HashMap<>();
+	private List<Map<String,Object>> exports = new ArrayList();
+	private List<Map<String,Object>> manages = new ArrayList();
 //	private Map<Long,String[]> exports = new HashMap<>();
 //	private Map<Long,String[]> manages = new HashMap<>();
 //	private List<CompanyInfoManage> manages = new ArrayList<>();

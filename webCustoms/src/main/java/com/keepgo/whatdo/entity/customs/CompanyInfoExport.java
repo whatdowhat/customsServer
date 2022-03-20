@@ -47,4 +47,7 @@ public class CompanyInfoExport {
 	@JoinColumn(name = "commonId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Common common;
+	
+	@Column(name = "preperOrder")
+	private int preperOrder;
 }

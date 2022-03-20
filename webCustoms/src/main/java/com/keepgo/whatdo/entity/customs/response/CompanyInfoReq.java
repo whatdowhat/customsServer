@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.User;
 
 import lombok.AllArgsConstructor;
@@ -38,6 +37,8 @@ public class CompanyInfoReq {
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date updateDt;
 	private User user;
+	
+	private List<Long> ids = new ArrayList<>();
 	
 //	private List<Long> manages;
 //	private List<Long> manages;

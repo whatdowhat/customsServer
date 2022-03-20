@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,9 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.keepgo.whatdo.util.ExcelColumn;
 
 import lombok.AllArgsConstructor;
@@ -58,13 +57,15 @@ public class CompanyInfo {
 	@Column(name = "coAddress")
 	private String coAddress;
 	
-	@OneToMany
+	@OneToMany( cascade = {CascadeType.REMOVE})
+//	@OneToMany(orphanRemoval = true)
 	@JoinColumn(name = "companInfoyId")
 	@ExcelColumn(headerName="수출자(쉬퍼)",order = 4)
 	@JsonManagedReference  // 추가
 	private List<CompanyInfoExport> exports = new ArrayList<>();
 	
-	@OneToMany
+//	@OneToMany
+	@OneToMany( cascade = {CascadeType.REMOVE})
 	@JoinColumn(name = "companInfoyId")
 	@ExcelColumn(headerName="담당자",order = 4)
 	@JsonManagedReference  // 추가

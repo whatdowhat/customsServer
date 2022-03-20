@@ -45,4 +45,7 @@ public class CompanyInfoManage {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Common common;
 	
+	@Column(name = "preperOrder")
+	private int preperOrder;
+	
 }

@@ -1,8 +1,9 @@
 package com.keepgo.whatdo.controller.CompanyInfoController;
 
-import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +30,7 @@ import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.UserRepository;
+import com.keepgo.whatdo.service.CompanyInfoService;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true" ) // 컨트롤러에서 설정
@@ -52,47 +53,41 @@ public class CompanyInfoController {
 	@Autowired
 	UserRepository _userRepository;
 
+	@Autowired
+	CompanyInfoService _companyInfoService;
+	
 	@RequestMapping(value = "/test/companyInfo", method = {RequestMethod.POST })
 	public List<?> companyInfo(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
 
-//		List<CompanyInfoRes> list = _companyInfoRepository.findAll()
-//				.stream().map(item->
-//				CompanyInfoRes.builder()
-//				.id(item.getId())
-//				.coAddress(item.getCoAddress())
-//				.coNm(item.getCoNm())
-//				.coNum(item.getCoNum())
-//				.coInvoice(item.getCoInvoice())
-//				.updateDt(item.getUpdateDt())
-//				
-//				.manages(item.getManages())
-//				.exports(item.getExports())
-//				.build()).collect(Collectors.toList());
 		List<?> list = _companyInfoRepository.findAll().stream().map(item-> {
 			
 			CompanyInfoRes dto = CompanyInfoRes.builder()
-//				.id(item.getId())
 				.id(item.getId())
 				.coAddress(item.getCoAddress())
 				.coNm(item.getCoNm())
 				.coNum(item.getCoNum())
 				.coInvoice(item.getCoInvoice())
 				.updateDt(item.getUpdateDt())
-				.manages(item.getManages().stream().map(subitem->subitem.getCommon()).collect(Collectors.toMap(Common::getId, t->t.getValue())))
-				.exports(item.getExports().stream().map(subitem->subitem.getCommon()).collect(Collectors.toMap(Common::getId, t->t.getValue())))
+				.manages(item.getManages().stream().map(sub_item->{
+					Map<String,Object> f = new HashMap<>();
+					f.put("comNm", sub_item.getCommon().getNm());
+					f.put("comValue", sub_item.getCommon().getValue());
+					f.put("preperOrder", sub_item.getPreperOrder());
+					f.put("id", sub_item.getId());
+					
+					return f;
+				}).collect(Collectors.toList()) )
+				.exports(item.getExports().stream().map(sub_item->{
+					Map<String,Object> f = new HashMap<>();
+					f.put("comNm", sub_item.getCommon().getNm());
+					f.put("comValue", sub_item.getCommon().getValue());
+					f.put("preperOrder", sub_item.getPreperOrder());
+					f.put("id", sub_item.getId());
+					
+					return f;
+				}).collect(Collectors.toList()) )		
 				.build();
 				
-			
-			
-//			List<CompanyInfoManage> manages =  item.getManages();
-//			manages.get(0).getCommon().getValue();
-			
-//			Map<Long,String> a = item.getManages().stream().map(subtem -> {
-//				
-//			return subtem.getCommon();
-//			}).collect(Collectors.toMap(Common::getId,t->t.getValue()));
-//			
-//			dto.setManages(a);
 			
 				return dto;
 		}).collect(Collectors.toList());
@@ -102,10 +97,27 @@ public class CompanyInfoController {
 //				return null;
 		return  list;
 	}
-
+	@RequestMapping(value = "/company/companyInfo", method = {RequestMethod.POST })
+	public List<?> getCompanyInfo(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+		return  _companyInfoService.getAll(companyInfoReq);
+		
+	}
+	@RequestMapping(value = "/company/companyInfoDelete", method = {RequestMethod.POST })
+	public boolean companyInfoDelete(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+		return  _companyInfoService.removeCompanyInfo(companyInfoReq);
+		
+	}
+	@RequestMapping(value = "/company/companyInfoCreate", method = {RequestMethod.POST })
+	public boolean companyInfoCreate(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+		return  _companyInfoService.createCompanyInfo(companyInfoReq);
+		
+	}
 	@RequestMapping(value = "/test/companyInfoCreate", method = {RequestMethod.POST })
 	@Transactional
-	public CompanyInfoRes companyInfoCreate(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq req) {
+	public CompanyInfoRes companyInfoCreatet(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq req) {
 
 		
 		CompanyInfo target = CompanyInfo.builder()
@@ -143,13 +155,13 @@ public class CompanyInfoController {
 					.updateDt(item.getUpdateDt())
 					.build();
 //			if(true) {
-			if(Optional.ofNullable(item.getManages()).isPresent()) {
-				dto.setManages(item.getManages().stream().filter(t->Optional.of(t.getCommon()).isPresent()).map(subitem->subitem.getCommon()).collect(Collectors.toMap(Common::getId, t->t.getValue())));
-			}
-			if(Optional.ofNullable(item.getExports()).isPresent()) {
-				dto.setExports(item.getExports().stream().filter(t->Optional.of(t.getCommon()).isPresent()).map(subitem->subitem.getCommon()).collect(Collectors.toMap(Common::getId, t->t.getValue())));
-			}
-			
+//			if(Optional.ofNullable(item.getManages()).isPresent()) {
+//				dto.setManages(item.getManages().stream().filter(t->Optional.of(t.getCommon()).isPresent()).map(subitem->subitem.getCommon()).collect(Collectors.toMap(Common::getId, t->t.getValue())));
+//			}
+//			if(Optional.ofNullable(item.getExports()).isPresent()) {
+//				dto.setExports(item.getExports().stream().filter(t->Optional.of(t.getCommon()).isPresent()).map(subitem->subitem.getCommon()).collect(Collectors.toMap(Common::getId, t->t.getValue())));
+//			}
+//			
 				return dto;
 		}).findAny().orElse(null);
 //		CompanyInfo f = null;
@@ -167,7 +179,7 @@ public class CompanyInfoController {
 		return list;
 	}
 	@RequestMapping(value = "/test/companyInfoDelete", method = { RequestMethod.POST})
-	public List<CompanyInfo> companyInfoDelete(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
+	public List<CompanyInfo> companyInfoDeletet(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
 
 		List<CompanyInfo> list = _companyInfoRepository.findAll();
 

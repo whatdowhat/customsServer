@@ -4,21 +4,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.keepgo.whatdo.controller.CompanySpecification;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
@@ -107,6 +109,7 @@ public class CompanyInfoController {
 //			e.printStackTrace();
 //		}
 		return  _companyInfoService.getAll(companyInfoReq);
+//		return  null;
 		
 	}
 	@RequestMapping(value = "/company/companyInfoDelete", method = {RequestMethod.POST })
@@ -192,5 +195,48 @@ public class CompanyInfoController {
 		return list;
 	}
 	
+//	@RequestMapping(value = "/test/companyInfo1", method = {RequestMethod.POST })
+//	public List<?> companyInfotest(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
+//		List <?> list = _companyInfoRepository.findAll().stream().map(x->
+//		CompanyInfoRes.builder()
+//		.id(x.getId())
+//		.coNm(x.getCoNm())
+//		.exports(x.getExports().stream().map(sub->
+//		
+//		{Map<String, Object> f = new HashMap<>();
+//		f.put("preperOrder",sub.getPreperOrder());
+//		f.put("id", sub.getId());
+//		
+//		return f;
+//		
+//		
+//			
+//		}).collect(Collectors.))
+//		
+//		
+//		
+//		.build()
+//				)
+//		.collect(Collectors.toList());
+//		
+//		return list;
+//	}
+//	
+//	
+	@GetMapping("/test/companyInfo/stream")
+    public List<CompanyInfoRes> companyInfostream(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfo) throws Exception {
+    	Map<String,String> condition = BeanUtils.describe(companyInfo);
+    	List<CompanyInfoRes> list = _companyInfoRepository.findAll(CompanySpecification.withCondition(condition)).stream().map(x->
+    	
+    	
+    	CompanyInfoRes.builder()
+    	.id(x.getId())
+    	
+    	
+    	.build()
+    	).collect(Collectors.toList());
+    	
+    	return list;
+    }
 	
 }

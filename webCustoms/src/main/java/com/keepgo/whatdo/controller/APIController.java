@@ -40,6 +40,7 @@ import com.keepgo.whatdo.entity.Notice;
 import com.keepgo.whatdo.entity.ReactVO;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
+import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.mapper.NodeMapper;
 import com.keepgo.whatdo.repository.BasicInfoRepository;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
@@ -482,19 +483,19 @@ public class APIController {
 
 
 	
-//	@GetMapping("/test/common/stream")
-//    public List<ViewCommon> commonpagestream(HttpServletRequest httpServletRequest,@RequestBody Common common) throws Exception {
-//    	Map<String,String> condition = BeanUtils.describe(common);
-////    	List<Common> result = _commonRepository.findAll(CommonSpecification.withCondition(condition));
-//    	List<ViewCommon> result = _commonRepository.findAll(CommonSpecification.withCondition(condition)).stream().map(x->
-//    	ViewCommon.builder()
-//    	.id(x.getId())
-//    	.code(x.getCode())
-//    	.codeNm(x.getCodeNm())
-//    	.nodeMember(x.getNodeMember())
-//    	.build()
-//    	).collect(Collectors.toList());
-//    	
-//    	return result;
-//    }
+	@GetMapping("/test/common/stream")
+    public List<CommonRes> commonpagestream(HttpServletRequest httpServletRequest,@RequestBody Common common) throws Exception {
+    	Map<String,String> condition = BeanUtils.describe(common);
+//    	List<Common> result = _commonRepository.findAll(CommonSpecification.withCondition(condition));
+    	
+    	List<CommonRes> result = _commonRepository.findAll(CommonSpecification.withCondition(condition)).stream().map(x->
+    	CommonRes.builder()
+    	.id(x.getId())
+    	.commonMasterId(x.getCommonMaster().getId())
+    	
+    	.build()
+    	).collect(Collectors.toList());
+    	
+    	return result;
+    }
 }

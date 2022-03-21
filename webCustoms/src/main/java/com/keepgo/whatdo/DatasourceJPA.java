@@ -44,11 +44,14 @@ public class DatasourceJPA {
 //		  hikariConfig .setJdbcUrl("jdbc:mysql://peacherp.cafe24.com/peacherp?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"); 
 //		  hikariConfig.setUsername("peacherp");
 //		  hikariConfig.setPassword("vlcldldkfvl!");
-		  
 		hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
-		  hikariConfig.setJdbcUrl("jdbc:mysql://keepgo.cafe24app.com:3306/keepgoing01?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul");
-		  hikariConfig.setUsername("keepgoing01");
-		  hikariConfig.setPassword("alsrh132@");
+		  hikariConfig.setJdbcUrl("jdbc:mysql://kmjtlogis.cafe24.com/kmjtlogis?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul");
+		  hikariConfig.setUsername("kmjtlogis");
+		  hikariConfig.setPassword("kmj1636~!@");
+//		hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
+//		  hikariConfig.setJdbcUrl("jdbc:mysql://keepgo.cafe24app.com:3306/keepgoing01?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul");
+//		  hikariConfig.setUsername("keepgoing01");
+//		  hikariConfig.setPassword("alsrh132@");
 		  
 //		hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
 //		  hikariConfig .setJdbcUrl("jdbc:mysql://localhost/adminweb?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"); 

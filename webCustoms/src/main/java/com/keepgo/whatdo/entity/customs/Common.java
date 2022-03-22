@@ -52,11 +52,15 @@ public class Common {
 	@Column(name = "nm",nullable = false)
 	private String nm;
 	
-	@ExcelColumn(headerName="코드값",order = 3)
+	@ExcelColumn(headerName="코드값",order = 4)
 	@Column(name = "value",nullable = false)
 	private String value;
 	
-	@ExcelColumn(headerName="사용여부",order = 4)
+	
+	@Column(name = "value2")
+	private String value2;
+	
+	@ExcelColumn(headerName="사용여부",order = 5)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")
 	private Boolean isUsing;
 	
@@ -68,7 +72,7 @@ public class Common {
 	@Column(name = "updateDt")
 	private Date updateDt;
 	
-	@ExcelColumn(headerName="사용자",order = 5)
+	@ExcelColumn(headerName="사용자",order = 6)
 	@Column(name = "user")
 	private Long user;
 	

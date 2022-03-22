@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -41,7 +42,9 @@ import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.User;
+import com.keepgo.whatdo.entity.mes.Item;
 import com.keepgo.whatdo.entity.mes.Order;
+import com.keepgo.whatdo.entity.mes.OrderItem;
 import com.keepgo.whatdo.mapper.CommonMapper;
 import com.keepgo.whatdo.mapper.InboundMapper;
 import com.keepgo.whatdo.mapper.OrderMapper;
@@ -92,6 +95,28 @@ public class MESController {
 	@Autowired
 	CommonMapper _commonMapper;
 
+	
+	@GetMapping("/test/order/insert")
+	@Transactional
+	public boolean orderinsert(HttpServletRequest httpServletRequest, @RequestBody OrderViewRequest orderViewRequest) {
+
+		Order order = Order.builder().memo("비고").no("엔오").build();
+//		_orderRepository.save(order);
+		Item item =Item.builder().itemNm("아이템이름").itemStandard("규격").build();
+		OrderItem orderItem = OrderItem.builder().price(100).order(_orderRepository.save(order))
+//				.item(item)
+				.build();
+		String s  = null;
+		s.equals("");
+		_orderItemRepository.save(orderItem);
+		
+		
+		
+		
+		return true;
+	}
+	
+	
 	@GetMapping("/test/order")
 	public List<?> order(HttpServletRequest httpServletRequest, @RequestBody OrderViewRequest orderViewRequest)
 			throws Exception {

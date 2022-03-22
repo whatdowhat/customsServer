@@ -52,19 +52,25 @@ public class CompanyInfo {
 	@ExcelColumn(headerName="업체이름",order = 2)
 	@Column(name = "coNm")
 	private String coNm;
+
+	@ExcelColumn(headerName="업체이름영문",order = 2)
+	@Column(name = "coNmEn")
+	private String coNmEn;
+	
+	@ExcelColumn(headerName="컨사이니코드",order = 2)
+	@Column(name = "consignee")
+	private String consignee;
 	
 	@ExcelColumn(headerName="사업자주소지",order = 3)
 	@Column(name = "coAddress")
 	private String coAddress;
 	
 	@OneToMany( cascade = {CascadeType.REMOVE})
-//	@OneToMany(orphanRemoval = true)
 	@JoinColumn(name = "companInfoyId")
 	@ExcelColumn(headerName="수출자(쉬퍼)",order = 4)
 	@JsonManagedReference  // 추가
 	private List<CompanyInfoExport> exports = new ArrayList<>();
 	
-//	@OneToMany
 	@OneToMany( cascade = {CascadeType.REMOVE})
 	@JoinColumn(name = "companInfoyId")
 	@ExcelColumn(headerName="담당자",order = 4)

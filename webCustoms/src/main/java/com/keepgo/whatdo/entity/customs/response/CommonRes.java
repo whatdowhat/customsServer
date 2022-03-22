@@ -26,6 +26,7 @@ public class CommonRes {
 	private String name;
 	private Boolean isUsing;
 	private String value;
+	private String value2;
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date createDt;
 	@JsonFormat(pattern="yyyy-MM-dd")

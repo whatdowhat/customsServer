@@ -23,7 +23,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CommonReq {
+public class CommonReqForExcelDownload {
 	@ExcelColumn(headerName="CommonId",order = 1)
 	private Long id;
 	
@@ -36,8 +36,7 @@ public class CommonReq {
 	@ExcelColumn(headerName="코드값",order = 3)
 	private String value;
 	
-	@ExcelColumn(headerName="코드값2",order = 4)
-	private String value2;
+	
 	
 	
 	private Boolean isUsing;
@@ -46,7 +45,7 @@ public class CommonReq {
 	private Long user;
 	
 	List<Common> commonData;
-	List<CommonReq> commonReqData;
+	List<CommonReqForExcelDownload> commonReqData;
 	
 	
 	

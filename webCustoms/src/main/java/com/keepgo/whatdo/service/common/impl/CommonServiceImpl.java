@@ -17,7 +17,7 @@ import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 
 @Service
-public class CommonfoServiceImpl implements CommonService {
+public class CommonServiceImpl implements CommonService {
 
 	@Autowired
 	CommonRepository _commonRepository;
@@ -67,6 +67,7 @@ public class CommonfoServiceImpl implements CommonService {
 				.map(item->CommonRes.builder()
 						.id(item.getId())
 						.value(item.getValue())
+						.value2(item.getValue2())
 						.commonMasterId(item.getCommonMaster().getId())
 						.isUsing(item.getIsUsing())
 						.createDt(item.getCreateDt())

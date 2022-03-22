@@ -36,6 +36,8 @@ public class CommonReqForExcelDownload {
 	@ExcelColumn(headerName="코드값",order = 3)
 	private String value;
 	
+	@ExcelColumn(headerName="직위",order = 4)
+	private String value2;
 	
 	
 	

@@ -12,6 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +28,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
@@ -125,29 +133,141 @@ public class CommonController {
 	public View excelDownload(@RequestBody CommonReq commonReq, ModelAndView modelAndView, HttpServletRequest req,
 			HttpServletResponse res, HttpSession session, Model model)
 			throws ParseException, UnsupportedEncodingException {
-
-		
 		
 		List<CommonReq> list = commonReq.getCommonReqData();
 		if(list.get(0).getCommonMasterId()==2) {
 			List<CommonReq> result = commonReq.getCommonReqData();
+			String filename = "exceldownload_test";
+			model.addAttribute("targetList", result);
+			model.addAttribute("sheetName", "first");
+			model.addAttribute("workBookName", filename);
+			return new CustomExcel();
 		}else {
 			List<CommonReqForExcelDownload> result = new ArrayList<>();
 			for (int i=0; i<list.size(); i++) {
-				
+				CommonReqForExcelDownload data = new CommonReqForExcelDownload();
+				data.setId(list.get(i).getId());
+				data.setName(list.get(i).getName());
+				data.setValue(list.get(i).getValue());
+				data.setValue2(list.get(i).getValue2());
+				result.add(data);
+			}
+			log.error("<<ExcelDownloadController");
+			log.error("{0}", list);
+			log.error("<<ExcelDownloadController");
+			String filename = "exceldownload_test";
+			model.addAttribute("targetList", result);
+			model.addAttribute("sheetName", "first");
+			model.addAttribute("workBookName", filename);
+			return new CustomExcel();
+		}
+	
+	}
+	
+	@RequestMapping(value = "/common/excelUpload", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<?> excelUpload(MultipartFile file, String test, HttpServletRequest req)
+			throws Exception, NumberFormatException {
+		System.out.println("here!");
+		System.out.println(file);
+		System.out.println(test);
+		
+
+		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+		if (!extension.equals("xlsx") && !extension.equals("xls")) {
+			throw new IOException("엑셀파일만 업로드 해주세요.");
+		}
+
+		Workbook workbook = null;
+
+		if (extension.equals("xlsx")) {
+			workbook = new XSSFWorkbook(file.getInputStream());
+		} else if (extension.equals("xls")) {
+			workbook = new HSSFWorkbook(file.getInputStream());
+		}
+		Sheet worksheet = workbook.getSheetAt(0);
+		System.out.println("worksheet.getPhysicalNumberOfRows() :: " + worksheet.getPhysicalNumberOfRows());
+		for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+			Row row = worksheet.getRow(i);
+
+			Common data = getCommon(row);
+			if (data == null) {
+
+			} else {
+				addOrUpdateCommon(data);
 			}
 		}
 
-		
+	
 
-		log.error("<<ExcelDownloadController");
-		log.error("{0}", list);
-		log.error("<<ExcelDownloadController");
-		String filename = "exceldownload_test";
-		model.addAttribute("targetList", list);
-		model.addAttribute("sheetName", "first");
-		model.addAttribute("workBookName", filename);
-		return new CustomExcel();
+		CommonReq result = new CommonReq();
+		 List<?> allList = _commonService.getCommonAll(result);
+		 
+
+		return allList;
+	}
+
+	
+	public Common getCommon(Row row) {
+
+		boolean validationId = true;
+		boolean validationEtC = true;
+
+		Common common = new Common();
+		Long id = new Long(0);
+
+		try {
+			id = new Double(row.getCell(0).getNumericCellValue()).longValue();
+			common.setId(id);
+		} catch (Exception e) {
+			validationId = false;
+		}
+
+		try {
+			common.setNm(row.getCell(1).getStringCellValue());
+		} catch (Exception e) {
+			validationEtC = false;
+		}
+		try {
+			common.setValue(row.getCell(2).getStringCellValue());
+		} catch (Exception e) {
+			validationEtC = false;
+		}
+		try {
+			common.setValue2(row.getCell(3).getStringCellValue());
+		} catch (Exception e) {
+			validationEtC = false;
+		}
+
+		if ((validationId == false) && (validationEtC == true)) {
+			// 생성 후보
+			CommonMaster u = _commonMasterRepository.findByNm(common.getNm());
+			if (u == null) {
+				
+				return null;
+			} else {
+				common.setCreateDt(new Date());
+				return common;
+			}
+		} else {
+			if (validationEtC == false) {
+				// 아무것도 안함.
+				return null;
+			} else {
+
+				common.setUpdateDt(new Date());
+				return common;
+			}
+		}
+
+
+	}
+
+	public boolean addOrUpdateCommon(Common common) {
+
+		return _commonRepository.save(common) != null ? true : false;
 	}
 	
 }

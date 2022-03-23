@@ -43,8 +43,8 @@ public class CommonMaster {
 	private Long id;
 
 	
-	@Column(name = "Nm",nullable = false)
-	private String Nm;
+	@Column(name = "name",nullable = false)
+	private String name;
 	
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")
 	private Boolean isUsing;

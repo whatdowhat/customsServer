@@ -17,7 +17,7 @@ public interface CommonMasterRepository extends JpaRepository<CommonMaster, Long
 
 	Page<CommonMaster> findAll(Specification<CommonMaster> condition,Pageable pageable);
 	List<CommonMaster> findAll(Specification<CommonMaster> condition);
-	public CommonMaster findByNm(String nm);
+	CommonMaster findByName(String nm);
 	
 	@Query("select m from CommonMaster m ")
 	List<CommonMaster> findAll2();

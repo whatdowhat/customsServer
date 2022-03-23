@@ -1,9 +1,16 @@
 package com.keepgo.whatdo.controller.Common;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,14 +20,21 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.expression.ParseException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
@@ -38,10 +52,12 @@ import com.keepgo.whatdo.entity.BaseInfo;
 import com.keepgo.whatdo.entity.PageVO;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
+import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CommonMasterReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReqForExcelDownload;
+import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.service.common.CommonService;
@@ -84,48 +100,30 @@ public class CommonController {
 	
 	@RequestMapping(value = "/common/addData", method = {RequestMethod.POST })
 
-	public  List<?> addData(@RequestBody CommonReq commonReq) throws IOException, InterruptedException {
+	public  CommonRes addData(@RequestBody CommonReq commonReq) throws IOException, InterruptedException {
 
 	
-		Common common = new Common();
-		CommonMaster master = _commonMasterRepository.findById(commonReq.getCommonMasterId())
-				.orElse(CommonMaster.builder().build());
-		
-		common.setCommonMaster(master);
-		common.setValue(commonReq.getValue());
-		common.setValue2(commonReq.getValue2());
-		common.setCreateDt(new Date());
-		common.setNm(commonReq.getName());
-		common.setIsUsing(true);
-		
-		 _commonRepository.save(common);
-		
-		 CommonReq result = new CommonReq();
-		 List<?> list = _commonService.getCommonAll(result);
-		 
+		CommonRes result = _commonService.addCommonData(commonReq);
+		return result;
 
-		return list;
+	}
+	
+	@RequestMapping(value = "/common/updateData", method = {RequestMethod.POST })
+
+	public  CommonRes updateData(@RequestBody CommonReq commonReq) throws IOException, InterruptedException {
+
+	
+		CommonRes result = _commonService.updateCommonData(commonReq);
+		return result;
 
 	}
 	
 	@RequestMapping(value = "/common/deleteData", method = {RequestMethod.POST })
 
-	public  List<?> deleteCommonData(@RequestBody CommonReq commonReq) throws IOException, InterruptedException {
-
-		List<CommonReq> list = commonReq.getCommonReqData();
-
-		for (int i = 0; i < list.size(); i++) {
-
-			Common common = _commonRepository.findById(list.get(i).getId()).orElse(Common.builder().build());
-
-			_commonRepository.delete(common);
-		}
-
-		CommonReq result = new CommonReq();
-		 List<?> allList = _commonService.getCommonAll(result);
-		 
-
-		return allList;
+	public  CommonRes deleteCommonData(@RequestBody CommonReq commonReq) throws IOException, InterruptedException {
+		
+		CommonRes result = _commonService.deleteCommonData(commonReq);
+		return result;
 
 	}
 	
@@ -135,6 +133,7 @@ public class CommonController {
 			throws ParseException, UnsupportedEncodingException {
 		
 		List<CommonReq> list = commonReq.getCommonReqData();
+		//쉬퍼 엑셀다운로드
 		if(list.get(0).getCommonMasterId()==2) {
 			List<CommonReq> result = commonReq.getCommonReqData();
 			String filename = "exceldownload_test";
@@ -142,6 +141,7 @@ public class CommonController {
 			model.addAttribute("sheetName", "first");
 			model.addAttribute("workBookName", filename);
 			return new CustomExcel();
+		//담당자 엑셀다운로드
 		}else {
 			List<CommonReqForExcelDownload> result = new ArrayList<>();
 			for (int i=0; i<list.size(); i++) {
@@ -166,7 +166,7 @@ public class CommonController {
 	
 	@RequestMapping(value = "/common/excelUpload", method = { RequestMethod.POST })
 	@ResponseBody
-	public List<?> excelUpload(MultipartFile file, String test, HttpServletRequest req)
+	public CommonRes excelUpload(MultipartFile file, String test, HttpServletRequest req)
 			throws Exception, NumberFormatException {
 		System.out.println("here!");
 		System.out.println(file);
@@ -179,95 +179,13 @@ public class CommonController {
 			throw new IOException("엑셀파일만 업로드 해주세요.");
 		}
 
-		Workbook workbook = null;
 
-		if (extension.equals("xlsx")) {
-			workbook = new XSSFWorkbook(file.getInputStream());
-		} else if (extension.equals("xls")) {
-			workbook = new HSSFWorkbook(file.getInputStream());
-		}
-		Sheet worksheet = workbook.getSheetAt(0);
-		System.out.println("worksheet.getPhysicalNumberOfRows() :: " + worksheet.getPhysicalNumberOfRows());
-		for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+		 List <Common> list = (List<Common>) _commonService.excelUpload(file, null);
 
-			Row row = worksheet.getRow(i);
-
-			Common data = getCommon(row);
-			if (data == null) {
-
-			} else {
-				addOrUpdateCommon(data);
-			}
-		}
-
-	
-
-		CommonReq result = new CommonReq();
-		 List<?> allList = _commonService.getCommonAll(result);
-		 
-
-		return allList;
+		 //엑셀업로드 시 코드이름(CommonMasterName 섞여있을 때 가장 첫번째 데이터 기준으로 화면 새로고침)
+		return CommonRes.builder().commonMasterId(list.get(0).getCommonMaster().getId()).build();
 	}
 
 	
-	public Common getCommon(Row row) {
-
-		boolean validationId = true;
-		boolean validationEtC = true;
-
-		Common common = new Common();
-		Long id = new Long(0);
-
-		try {
-			id = new Double(row.getCell(0).getNumericCellValue()).longValue();
-			common.setId(id);
-		} catch (Exception e) {
-			validationId = false;
-		}
-
-		try {
-			common.setNm(row.getCell(1).getStringCellValue());
-		} catch (Exception e) {
-			validationEtC = false;
-		}
-		try {
-			common.setValue(row.getCell(2).getStringCellValue());
-		} catch (Exception e) {
-			validationEtC = false;
-		}
-		try {
-			common.setValue2(row.getCell(3).getStringCellValue());
-		} catch (Exception e) {
-			validationEtC = false;
-		}
-
-		if ((validationId == false) && (validationEtC == true)) {
-			// 생성 후보
-			CommonMaster u = _commonMasterRepository.findByNm(common.getNm());
-			if (u == null) {
-				
-				return null;
-			} else {
-				common.setCreateDt(new Date());
-				return common;
-			}
-		} else {
-			if (validationEtC == false) {
-				// 아무것도 안함.
-				return null;
-			} else {
-
-				common.setUpdateDt(new Date());
-				return common;
-			}
-		}
-
-
-	}
-
-	public boolean addOrUpdateCommon(Common common) {
-
-		return _commonRepository.save(common) != null ? true : false;
-	}
 	
 }

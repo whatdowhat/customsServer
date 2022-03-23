@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -81,6 +82,15 @@ public class CompanyInfo {
 	@Column(name = "coInvoice")
 	private String coInvoice;
 
+	@Transient
+	private String manager;
+	@Transient
+	private String managerLevel;
+	@Transient
+	private String shopper;
+	@Transient
+	private String shopperAdress;
+	
 	//공통 컬럼.
 	@ExcelColumn(headerName="사용여부",order = 4)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")

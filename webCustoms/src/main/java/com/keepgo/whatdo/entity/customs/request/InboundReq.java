@@ -1,41 +1,36 @@
-package com.keepgo.whatdo.entity.customs;
+package com.keepgo.whatdo.entity.customs.request;
 
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.keepgo.whatdo.util.ExcelColumn;
+import com.keepgo.whatdo.entity.customs.Common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString;
 
-@Entity
-@Table(name = "web_inbound")
 @Data
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@ToString
-public class Inbound {
+@ToString
+public class InboundReq {
 
 	@Id
 	@Column(name = "id")
@@ -49,13 +44,6 @@ public class Inbound {
 	@Column(name = "workDate")
 	private Date workDate;
 
-	
-	@JoinColumn(name = "inboundMasterId")
-	@ExcelColumn(headerName="inboundMasterId",order = 2)
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonBackReference
-	private CommonMaster inboundMaster;
-	
 	
 	//발송업체 회사
 	@JoinColumn(name = "companyInfoId")
@@ -183,15 +171,15 @@ public class Inbound {
 	@Builder.Default
 	private int workDateSpan = 1;
 
-	@Override
-	public String toString() {
-//		return "workData " + getWorkDate() +" : " + getWorkDateSpan();
-		return "order : "+orderNo+ "- workDate :" + workDate +" - " + workDateSpan
-				+ "- companyNm :" + companyNm +" - " + companyNmSpan
-				+ "- exportNm :" + (exportNm != null ? exportNm.substring(0, 5):exportNm) +" - " + exportNmSpan
-				+ "- blNo :" + blNo +" - " + blNoSpan
-				+ "- memo1 :" + memo1 +" - " + memo1Span;
-	}
+//	@Override
+//	public String toString() {
+////		return "workData " + getWorkDate() +" : " + getWorkDateSpan();
+//		return "order : "+orderNo+ "- workDate :" + workDate +" - " + workDateSpan
+//				+ "- companyNm :" + companyNm +" - " + companyNmSpan
+//				+ "- exportNm :" + (exportNm != null ? exportNm.substring(0, 5):exportNm) +" - " + exportNmSpan
+//				+ "- blNo :" + blNo +" - " + blNoSpan
+//				+ "- memo1 :" + memo1 +" - " + memo1Span;
+//	}
 	
 	
 	

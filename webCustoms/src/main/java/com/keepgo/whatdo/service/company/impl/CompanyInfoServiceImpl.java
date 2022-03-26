@@ -78,6 +78,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 						Map<String,Object> f = new HashMap<>();
 						f.put("comNm", sub_item.getCommon().getNm());
 						f.put("comValue", sub_item.getCommon().getValue());
+						f.put("comValue2", sub_item.getCommon().getValue2());
 						f.put("preperOrder", sub_item.getPreperOrder());
 						f.put("id", sub_item.getId());
 						
@@ -87,6 +88,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 						Map<String,Object> f = new HashMap<>();
 						f.put("comNm", sub_item.getCommon().getNm());
 						f.put("comValue", sub_item.getCommon().getValue());
+						f.put("comValue2", sub_item.getCommon().getValue2());
 						f.put("preperOrder", sub_item.getPreperOrder());
 						f.put("id", sub_item.getId());
 						

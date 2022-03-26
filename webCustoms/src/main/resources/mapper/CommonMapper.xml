@@ -29,7 +29,7 @@
 		0 as `commonMasterId` , 1 as `isUsing` , 1 `user`, now() `createDt`,
 		now() `updateDt`
 		from (
-		select a.id as id ,a.value ,a.value2,a.nm, b.id as companyInfoExportId,
+		select a.id as id ,a.value ,a.value2,a.nm as name, b.id as companyInfoExportId,
 		b.companInfoyId , b.preperOrder
 		,CASE WHEN b.companInfoyId IS NULL THEN false
 		ELSE true end as isChecked from (
@@ -53,7 +53,7 @@
 		0 as `commonMasterId` , 1 as `isUsing` , 1 `user`, now() `createDt`,
 		now() `updateDt`
 		from (
-		select a.id as id ,a.value ,a.value2,a.nm, b.id as companyInfoExportId,
+		select a.id as id ,a.value ,a.value2,a.nm as name, b.id as companyInfoExportId,
 		b.companInfoyId , b.preperOrder
 		,CASE WHEN b.companInfoyId IS NULL THEN false
 		ELSE true end as isChecked from (

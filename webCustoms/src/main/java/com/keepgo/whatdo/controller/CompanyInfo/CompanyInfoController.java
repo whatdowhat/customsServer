@@ -1,5 +1,8 @@
 package com.keepgo.whatdo.controller.CompanyInfo;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,24 +11,36 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ParseException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import com.keepgo.whatdo.controller.CompanySpecification;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
+import com.keepgo.whatdo.entity.customs.request.CommonReq;
+import com.keepgo.whatdo.entity.customs.request.CommonReqForExcelDownload;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
+import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
 import com.keepgo.whatdo.mapper.UserMapper;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
@@ -33,6 +48,7 @@ import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
+import com.keepgo.whatdo.util.CustomExcel;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true" ) // 컨트롤러에서 설정
@@ -57,6 +73,8 @@ public class CompanyInfoController {
 
 	@Autowired
 	CompanyInfoService _companyInfoService;
+	
+	
 	
 	@RequestMapping(value = "/test/companyInfo", method = {RequestMethod.POST })
 	public List<?> companyInfo(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
@@ -102,14 +120,9 @@ public class CompanyInfoController {
 	@RequestMapping(value = "/company/companyInfo", method = {RequestMethod.POST })
 	public List<?> getCompanyInfo(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
 		
-//		try {
-//			Thread.sleep(3000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 		return  _companyInfoService.getAll(companyInfoReq);
-//		return  null;
+
 		
 	}
 	@RequestMapping(value = "/company/companyInfoDelete", method = {RequestMethod.POST })
@@ -195,34 +208,7 @@ public class CompanyInfoController {
 		return list;
 	}
 	
-//	@RequestMapping(value = "/test/companyInfo1", method = {RequestMethod.POST })
-//	public List<?> companyInfotest(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
-//		List <?> list = _companyInfoRepository.findAll().stream().map(x->
-//		CompanyInfoRes.builder()
-//		.id(x.getId())
-//		.coNm(x.getCoNm())
-//		.exports(x.getExports().stream().map(sub->
-//		
-//		{Map<String, Object> f = new HashMap<>();
-//		f.put("preperOrder",sub.getPreperOrder());
-//		f.put("id", sub.getId());
-//		
-//		return f;
-//		
-//		
-//			
-//		}).collect(Collectors.))
-//		
-//		
-//		
-//		.build()
-//				)
-//		.collect(Collectors.toList());
-//		
-//		return list;
-//	}
-//	
-//	
+	
 	@GetMapping("/test/companyInfo/stream")
     public List<CompanyInfoRes> companyInfostream(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfo) throws Exception {
     	Map<String,String> condition = BeanUtils.describe(companyInfo);
@@ -238,5 +224,95 @@ public class CompanyInfoController {
     	
     	return list;
     }
+	
+	@RequestMapping(value = "/company/deleteData", method = {RequestMethod.POST })
+
+	public  CompanyInfoRes deleteData(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
+		
+		CompanyInfoRes result = _companyInfoService.deleteCompanyInfo(companyInfoReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/company/addData", method = {RequestMethod.POST })
+
+	public  CompanyInfoRes addData(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
+
+	
+		CompanyInfoRes result = _companyInfoService.addCompanyInfo(companyInfoReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/company/updateData", method = {RequestMethod.POST })
+
+	public  CompanyInfoRes updateData(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
+
+	
+		CompanyInfoRes result = _companyInfoService.updateCompanyInfo(companyInfoReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/company/addExport", method = {RequestMethod.POST })
+
+	public  CompanyInfoRes addExport(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
+
+	
+		CompanyInfoRes result = _companyInfoService.addCompanyInfoExports(companyInfoReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/company/addManage", method = {RequestMethod.POST })
+
+	public  CompanyInfoRes addManage(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
+
+	
+		CompanyInfoRes result = _companyInfoService.addCompanyInfoManages(companyInfoReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/company/excelDownload", method = { RequestMethod.POST, RequestMethod.GET })
+	public View excelDownload(@RequestBody CompanyInfoReq companyInfoReq, ModelAndView modelAndView, HttpServletRequest req,
+			HttpServletResponse res, HttpSession session, Model model)
+			throws ParseException, UnsupportedEncodingException {
+		
+		
+		
+		
+			List<CompanyInfoReq> result = companyInfoReq.getCompanyInfoReqData();
+			String filename = "exceldownload_test";
+			model.addAttribute("targetList", result);
+			model.addAttribute("sheetName", "first");
+			model.addAttribute("workBookName", filename);
+			return new CustomExcel();
+	
+	}
+	
+	@RequestMapping(value = "/company/excelUpload", method = { RequestMethod.POST })
+	@ResponseBody
+	public CompanyInfoRes excelUpload(MultipartFile file, String test, HttpServletRequest req)
+			throws Exception, NumberFormatException {
+		System.out.println("here!");
+		System.out.println(file);
+		System.out.println(test);
+		
+
+		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+		if (!extension.equals("xlsx") && !extension.equals("xls")) {
+			throw new IOException("엑셀파일만 업로드 해주세요.");
+		}
+
+
+		 List <CompanyInfo> list = (List<CompanyInfo>) _companyInfoService.excelUpload(file, null);
+
+		 CompanyInfoRes companyInfoRes = new CompanyInfoRes();
+		return companyInfoRes;
+	}
+	
+
 	
 }

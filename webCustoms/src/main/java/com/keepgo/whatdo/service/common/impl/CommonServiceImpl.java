@@ -30,6 +30,8 @@ import com.keepgo.whatdo.entity.customs.request.CommonMasterReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.response.CommonMasterRes;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
+import com.keepgo.whatdo.entity.customs.response.CommonbyCompanyRes;
+import com.keepgo.whatdo.mapper.CommonMapper;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.UserRepository;
@@ -45,6 +47,9 @@ public class CommonServiceImpl implements CommonService {
 	
 	@Autowired
 	UserRepository _userRepository;
+	
+	@Autowired
+	CommonMapper _commonMapper;
 
 	@Override
 	public List<?> getMasterAll(CommonMasterReq commonMasterReq) {
@@ -101,6 +106,26 @@ public class CommonServiceImpl implements CommonService {
 		.collect(Collectors.toList());
 		return result;
 	}
+	
+	@Override
+	public List<?> getCommonByCompanyInfoExport(CommonReq commonReq) {
+		
+			
+		List<?> result = _commonMapper.checkedCompanyinfoExport(commonReq.getCompanInfoyId());
+		return result;
+	}
+	
+	@Override
+	public List<?> getCommonByCompanyInfoManage(CommonReq commonReq) {
+		
+		
+		
+		List<?> result = _commonMapper.checkedCompanyinfoManage(commonReq.getCompanInfoyId());
+
+		return result;
+	}
+	
+	
 	@Override
 	public CommonRes deleteCommonData(CommonReq commonReq) {
 		List<CommonReq> list = commonReq.getCommonReqData();

@@ -46,6 +46,8 @@ public class CompanyInfoRes {
 //	private List<CompanyInfoManage> manages = new ArrayList<>();
 	private String coInvoice;
 	private Boolean isUsing;
+	private String consignee;
+	private String coNmEn;
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date createDt;
 	@JsonFormat(pattern="yyyy-MM-dd")

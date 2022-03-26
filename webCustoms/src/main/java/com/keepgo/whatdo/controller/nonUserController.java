@@ -67,9 +67,9 @@ import com.keepgo.whatdo.viewEntity.ResultResponse;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true" ) // 컨트롤러에서 설정
-public class UserController {
+public class nonUserController {
 
-	static final Logger log = LoggerFactory.getLogger(UserController.class);
+	static final Logger log = LoggerFactory.getLogger(nonUserController.class);
 
 	@Autowired
 	InboundRepository _inboundRepository;

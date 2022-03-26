@@ -5,7 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.keepgo.whatdo.entity.customs.Common;
+import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.User;
+import com.keepgo.whatdo.util.ExcelColumn;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,14 +26,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class CompanyInfoReq {
-
+	@ExcelColumn(headerName="CompanyInfoId",order = 1)
 	private Long id;
-	private String coNum;
+	@ExcelColumn(headerName="coInvoice",order = 2)
+	private String coInvoice;
+	@ExcelColumn(headerName="사업자이름",order = 3)
 	private String coNm;
+	@ExcelColumn(headerName="사업자영문명",order = 4)
+	private String coNmEn;
+	@ExcelColumn(headerName="사업자번호",order = 5)
+	private String coNum;
+	@ExcelColumn(headerName="사업자주소",order = 6)
 	private String coAddress;
+	@ExcelColumn(headerName="consignee",order = 7)
+	private String consignee;
 	private List<Long> exports = new ArrayList<>();
 	private List<Long> manages = new ArrayList<>();
-	private String coInvoice;
+	
 	private Boolean isUsing;
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date createDt;
@@ -38,11 +50,14 @@ public class CompanyInfoReq {
 	private Date updateDt;
 	private User user;
 	
+	
+	
+
 	private List<Long> ids = new ArrayList<>();
 	
-//	private List<Long> manages;
-//	private List<Long> manages;
 	
-	//공통 컬럼.
+	List<CompanyInfoReq> companyInfoReqData;
+	List<Common> companyExportData;
+	List<Common> companyManageData;
 	
 }

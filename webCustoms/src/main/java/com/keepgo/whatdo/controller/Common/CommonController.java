@@ -98,6 +98,20 @@ public class CommonController {
 		return  list;
 	}
 	
+	@RequestMapping(value = "/common/commonByCompanyInfoExport", method = {RequestMethod.POST })
+	public List<?> commonByCompanyInfoExport(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
+
+		List<?> list = _commonService.getCommonByCompanyInfoExport(commonReq);
+		return  list;
+	}
+	
+	@RequestMapping(value = "/common/commonByCompanyInfoManage", method = {RequestMethod.POST })
+	public List<?> commonByCompanyInfoManage(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
+
+		List<?> list = _commonService.getCommonByCompanyInfoManage(commonReq);
+		return  list;
+	}
+	
 	@RequestMapping(value = "/common/addData", method = {RequestMethod.POST })
 
 	public  CommonRes addData(@RequestBody CommonReq commonReq) throws IOException, InterruptedException {

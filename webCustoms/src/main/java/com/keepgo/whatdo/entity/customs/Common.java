@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -76,4 +77,15 @@ public class Common {
 	@Column(name = "user")
 	private Long user;
 	
+	@Transient
+	private Long companInfoyId;
+	
+	@Transient
+	private Long companyInfoExportId;
+	
+	@Transient
+	private int preperOrder;
+	
+	@Transient
+	private Boolean isChecked;
 }

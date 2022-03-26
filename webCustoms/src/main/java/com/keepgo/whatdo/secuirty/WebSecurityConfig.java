@@ -97,6 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/migration/**").permitAll()
 				.antMatchers("/company/**").permitAll()
 				.antMatchers("/common/**").permitAll()
+				.antMatchers("/user/**").permitAll()
 				.antMatchers("/authenticate").permitAll()
 				.antMatchers("/otherEroor").permitAll().antMatchers("/error").permitAll().antMatchers("/index.html")
 				.permitAll()

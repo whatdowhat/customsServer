@@ -4,22 +4,73 @@
 
 	<!-- it_mb_address_book table -->
 
-	<select id="selectAll"  resultType="com.keepgo.whatdo.viewEntity.CommonViewResponse">
-        SELECT * FROM web_common
-        ORDER BY id DESC
-    </select>
-    
-    <select id="selectBySeq" parameterType="Long" resultType="com.keepgo.whatdo.entity.customs.Common">
-        SELECT * FROM web_common
-        WHERE 1=1
-        and id=#{id}
-    </select>
-     <select id="selectByNm" parameterType="String" resultType="com.keepgo.whatdo.entity.customs.Common">
-        SELECT * FROM web_common 
-        WHERE 1=1 
-        and nm = #{nm}
-    </select>
-    
-    
+	<select id="selectAll"
+		resultType="com.keepgo.whatdo.viewEntity.CommonViewResponse">
+		SELECT * FROM web_common
+		ORDER BY id DESC
+	</select>
+
+	<select id="selectBySeq" parameterType="Long"
+		resultType="com.keepgo.whatdo.entity.customs.Common">
+		SELECT * FROM web_common
+		WHERE 1=1
+		and id=#{id}
+	</select>
+	<select id="selectByNm" parameterType="String"
+		resultType="com.keepgo.whatdo.entity.customs.Common">
+		SELECT * FROM web_common
+		WHERE 1=1
+		and nm = #{nm}
+	</select>
+
+	<select id="checkedCompanyinfoManage" parameterType="Long"
+		resultType="com.keepgo.whatdo.entity.customs.response.CommonbyCompanyRes">
+		select * ,
+		0 as `commonMasterId` , 1 as `isUsing` , 1 `user`, now() `createDt`,
+		now() `updateDt`
+		from (
+		select a.id as id ,a.value ,a.value2,a.nm, b.id as companyInfoExportId,
+		b.companInfoyId , b.preperOrder
+		,CASE WHEN b.companInfoyId IS NULL THEN false
+		ELSE true end as isChecked from (
+		select * from web_common
+		where 1=1
+		and commonMasterId = 1
+		) as a left join
+		(
+		select * from web_companyInfoManage
+		where 1=1
+		and companInfoyId = #{companInfoyId}
+		) as b
+		on a.id = b.commonId
+		) as cc
+		order by isChecked desc , preperOrder
+	</select>
+
+	<select id="checkedCompanyinfoExport" parameterType="Long"
+		resultType="com.keepgo.whatdo.entity.customs.response.CommonbyCompanyRes">
+		select * ,
+		0 as `commonMasterId` , 1 as `isUsing` , 1 `user`, now() `createDt`,
+		now() `updateDt`
+		from (
+		select a.id as id ,a.value ,a.value2,a.nm, b.id as companyInfoExportId,
+		b.companInfoyId , b.preperOrder
+		,CASE WHEN b.companInfoyId IS NULL THEN false
+		ELSE true end as isChecked from (
+		select * from web_common
+		where 1=1
+		and commonMasterId = 2
+		) as a left join
+		(
+		select * from web_companyInfoExport
+		where 1=1
+		and companInfoyId = #{companInfoyId}
+		) as b
+		on a.id = b.commonId
+		) as cc
+		order by isChecked desc , preperOrder
+	</select>
+
+
 
 </mapper>

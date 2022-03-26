@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 
 @Repository
@@ -16,4 +19,8 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	//public List<CompanyInfo> findByCoNm(String coNm);
 	
 	CompanyInfo findByCoNum(String coNum);
+	
+	
+	
+	
 }

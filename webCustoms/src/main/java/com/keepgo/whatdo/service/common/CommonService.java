@@ -25,6 +25,12 @@ public interface CommonService {
 	List<?> getCommonByMaster(CommonReq commonReq); 
 	
 	@Transactional
+	List<?> getCommonByCompanyInfoExport(CommonReq commonReq);
+	
+	@Transactional
+	List<?> getCommonByCompanyInfoManage(CommonReq commonReq);
+	
+	@Transactional
 	CommonRes deleteCommonData(CommonReq commonReq);
 	
 	@Transactional

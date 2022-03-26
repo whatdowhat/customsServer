@@ -30,6 +30,8 @@ public class CommonReq {
 	
 	private Long commonMasterId;
 	
+	private Long companInfoyId;
+	
 	@ExcelColumn(headerName="코드이름",order = 2)
 	private String name;
 	
@@ -48,6 +50,7 @@ public class CommonReq {
 	List<Common> commonData;
 	List<CommonReq> commonReqData;
 	
+	private boolean isChecked;
 	
 	
 	

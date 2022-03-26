@@ -1,15 +1,13 @@
-package com.keepgo.whatdo.entity.customs;
+package com.keepgo.whatdo.entity.customs.request;
 
+import java.util.ArrayList;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.keepgo.whatdo.entity.customs.Common;
+import com.keepgo.whatdo.entity.customs.CompanyInfo;
+import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.util.ExcelColumn;
 
 import lombok.AllArgsConstructor;
@@ -20,8 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
-@Table(name = "web_user")
 @Data
 @Builder
 @Getter
@@ -29,41 +25,29 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class User {
-
-	@Id
-	@Column(name = "id")
+public class UserReq {
 	@ExcelColumn(headerName="id",order = 1)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	@ExcelColumn(headerName="이름",order = 2)
-	@Column(name = "name")
 	private String name;
-	
 	@ExcelColumn(headerName="전화번호",order = 3)
-	@Column(name = "phoneNo")
 	private String phoneNo;
-	
 	@ExcelColumn(headerName="비밀번호",order = 4)
-	@Column(name = "password")
 	private String password;
-	
+	@ExcelColumn(headerName="로그인아이디",order = 5)
+	private String loginId;
 	@JsonFormat(pattern="yyyy-MM-dd")
-	@Column(name = "regDt")
+	private Date updateDt;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date regDt;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
-	@Column(name = "updateDt")
-	private Date updateDt;
-	
-	@Column(name = "updateId")
 	private String updateId;
 	
-	@ExcelColumn(headerName="로그인아이디",order = 5)
-	@Column(name = "loginId")
-	private String loginId;
 
+	private List<Long> ids = new ArrayList<>();
+	
+	
+	List<UserReq> userReqData;
 	
 	
 }

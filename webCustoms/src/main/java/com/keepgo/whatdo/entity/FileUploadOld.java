@@ -16,12 +16,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "fileupload")
+@Table(name = "fileupload_old")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileUpload {
+public class FileUploadOld {
 
 	@Id
 	@Column(name = "Seq")

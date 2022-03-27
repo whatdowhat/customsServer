@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.keepgo.whatdo.ApplicationConfig;
-import com.keepgo.whatdo.entity.FileUpload;
+import com.keepgo.whatdo.entity.FileUploadOld;
 import com.keepgo.whatdo.repository.FileUploadRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -42,14 +42,14 @@ public class FileUploadController {
 	
     @PostMapping("/uploadFile/image/temps")
     @ResponseBody
-    public List<FileUpload> uploadImageToTemps(@RequestParam("uploadFile") List<MultipartFile> uploadfiles)
+    public List<FileUploadOld> uploadImageToTemps(@RequestParam("uploadFile") List<MultipartFile> uploadfiles)
     {
-        List<FileUpload> result = new ArrayList<>();
+        List<FileUploadOld> result = new ArrayList<>();
 		String fileName = null;
-		FileUpload fileUpload = null;
+		FileUploadOld fileUpload = null;
         
 		 if (uploadfiles == null ) {
-				fileUpload = FileUpload.builder()
+				fileUpload = FileUploadOld.builder()
 				.fileSaveName(null)
 		    	.uploadYn(false)
 		    	.uploadUser(null)
@@ -88,7 +88,7 @@ public class FileUploadController {
 	     		boolean yn =  f.createNewFile();
 	     		uploadfile.transferTo(f);
 	     		
-	 			fileUpload = FileUpload.builder().fileSaveName(uniq+"."+splits[1])
+	 			fileUpload = FileUploadOld.builder().fileSaveName(uniq+"."+splits[1])
 	 			.fileData(blob)
 	 	    	.uploadYn(yn)
 	 	    	.uploadUser(null)
@@ -100,7 +100,7 @@ public class FileUploadController {
             	
 	 			_fileUploadRepo.save(fileUpload);
 	 			
-	 			List<FileUpload> l = _fileUploadRepo.findAll();
+	 			List<FileUploadOld> l = _fileUploadRepo.findAll();
 	 			
 	 			return l;
             	
@@ -142,7 +142,7 @@ public class FileUploadController {
 
         }catch (Exception e) {
         	e.printStackTrace();
-			fileUpload = FileUpload.builder().fileSaveName(null)
+			fileUpload = FileUploadOld.builder().fileSaveName(null)
         	    	.uploadYn(false)
         	    	.uploadUser(null)
         	    	.fileOriginalName(fileName)

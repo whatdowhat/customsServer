@@ -47,8 +47,65 @@ public class InboundMaster {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "blNo")
-	private String blNo;
+	@Column(name = "masterBlNo")
+	private String masterBlNo;
+	
+	@JsonFormat(pattern="yyyy-MM-dd")
+	@Column(name = "incomDt")
+	private Date incomDt;
+
+	//창구
+	@Column(name = "cargo")
+	private String cargo;
+
+	//도착항구
+	@Column(name = "toHarbor")
+	private String toHarbor;
+	
+	//출발항구
+	@Column(name = "fromHarbor")
+	private String fromHarbor;
+
+	
+	//컨테이너번호
+	@Column(name = "containerNo")
+	private String containerNo;
+	
+	//실번호
+	@Column(name = "realNo")
+	private String realNo;
+
+	//항명
+	@Column(name = "hangmyung")
+	private String hangmyung;
+
+	//항차
+	@Column(name = "hangcha")
+	private String hangcha;
+	
+	//작업형태
+	@JoinColumn(name = "workTypeId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Common workType;
+	
+	//중국상검
+	@Column(name = "chinaSanggumYn")
+	private boolean chinaSanggumYn;
+	//출항지연
+	@Column(name = "departureDelayYn")
+	private boolean departureDelayYn;
+	//관리대상지정
+	@Column(name = "watchTargetYn")
+	private boolean watchTargetYn;
+	
+
+	//작업형태 비고 //코로드인경우 입력값을 받음.
+	@JoinColumn(name = "commonId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
+	private Common workTypeMemo;
+	
+	
 	
 	@Column(name = "orderNo")
 	private int orderNo;
@@ -57,11 +114,6 @@ public class InboundMaster {
 	@Column(name = "workDate")
 	private Date workDate;
 
-	
-	//발송업체 회사
-	@JoinColumn(name = "companyInfoId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common companyInfo;
 	
 	@OneToMany
 	@JoinColumn(name = "inboundMasterId")

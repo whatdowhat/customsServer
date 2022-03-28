@@ -220,6 +220,9 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		
 		
 		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId()).orElse(CompanyInfo.builder().build());
+		
+		_companyInfoExportRepository.deleteCompanyinfoExport(companyInfo.getId());
+		
 		List<Common> list = companyInfoReq.getCompanyExportData();
 		
 		for (int i = 0; i < list.size(); i++) {

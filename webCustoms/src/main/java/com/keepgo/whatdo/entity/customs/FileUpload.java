@@ -61,12 +61,21 @@ public class FileUpload {
 	@Column(name = "fileSize")
 	private int fileSize;
 	
+	@Column(name = "root")
+	private String root;
 	
-	@JoinColumn(name = "inboundId")
-	@ExcelColumn(headerName="inboundId",order = 2)
+	@Column(name = "uploadType")
+	private String uploadType;
+	
+	@Column(name = "uploadTypeNm")
+	private String uploadTypeNm;
+	
+	
+	@JoinColumn(name = "inboundMasterId")
+	@ExcelColumn(headerName="inboundMasterId",order = 2)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
-	private Inbound inbound;
+	private InboundMaster inboundMaster;
 	
 	@JoinColumn(name = "fileuploadTypeId")
 	@ManyToOne(fetch = FetchType.LAZY)

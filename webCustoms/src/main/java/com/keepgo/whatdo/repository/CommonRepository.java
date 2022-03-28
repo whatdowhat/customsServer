@@ -20,6 +20,7 @@ public interface CommonRepository extends JpaRepository<Common, Long>{
 	Page<Common> findAll(Specification<Common> condition,Pageable pageable);
 	List<Common> findAll(Specification<Common> condition);
 	public Common findByNm(String nm);
+	public Common findByValue(String value);
 	
 	@Query("select m from Common m ")
 	List<Common> findAll();

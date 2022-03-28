@@ -64,7 +64,7 @@ public class Inbound {
 	//발송업체 회사
 	@JoinColumn(name = "companyInfoId")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Common companyInfo;
+	private CompanyInfo companyInfo;
 	
 	
 	@Column(name = "companyNm")

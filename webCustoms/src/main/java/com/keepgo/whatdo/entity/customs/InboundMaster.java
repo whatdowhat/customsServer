@@ -105,7 +105,10 @@ public class InboundMaster {
 	@JsonBackReference
 	private Common workTypeMemo;
 	
-	
+	@JoinColumn(name = "companyInfoId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
+	private CompanyInfo CompanyInfo;
 	
 	@Column(name = "orderNo")
 	private int orderNo;

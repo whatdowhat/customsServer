@@ -230,7 +230,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 			CompanyInfoExport companyInfoExport=new CompanyInfoExport();
 			Common common = _commonRepository.findById(list.get(i).getId()).orElse(Common.builder().build());
 			
-			companyInfoExport.setPreperOrder(0);
+			companyInfoExport.setPreperOrder(list.get(i).getPreperOrder());
 			companyInfoExport.setCommon(common);
 			companyInfoExport.setCompanInfoy(companyInfo);
 

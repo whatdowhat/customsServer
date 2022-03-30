@@ -142,6 +142,15 @@ public class InboundController {
 
 	}
 	
+	@RequestMapping(value = "/test/deleteInbound", method = {RequestMethod.POST })
+
+	public  InboundRes deleteInbound(@RequestBody InboundReq inboundReq) throws IOException, InterruptedException {
+		
+		InboundRes result = _InboundService.deleteInbound(inboundReq);
+		return result;
+
+	}
+	
 	
 	@RequestMapping(value = "/test/inboundExcelRead", method = { RequestMethod.POST })
 	@ResponseBody

@@ -173,7 +173,7 @@ public class InboundServiceImpl implements InboundService {
 						.memo1(item.getMemo1())
 						.itemNo(item.getItemNo())
 						.hsCode(item.getHsCode())
-						.coCode(item.getCoCode())
+						.coCode(item.getCo().getValue())
 						.memo2(item.getMemo2())
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
@@ -228,6 +228,14 @@ public class InboundServiceImpl implements InboundService {
 		return InboundRes.builder().inboundMasterId(inboundReq.getInboundMasterId()).build();
 	}
 	
+	@Override
+	public InboundRes deleteInbound(InboundReq inboundReq) {
+		List<InboundReq> inboundList = inboundReq.getInboundReqData();
+		for(int i = 0; i < inboundList.size(); i++) {
+			_inboundRepository.delete(_inboundRepository.findById(inboundList.get(i).getId()).orElse(Inbound.builder().build()));
+		}
+		return InboundRes.builder().inboundMasterId(inboundReq.getInboundMasterId()).build();
+	}
 	
 	@Override
 	public List<?> excelRead(MultipartFile file,InboundReq Req) throws IOException {

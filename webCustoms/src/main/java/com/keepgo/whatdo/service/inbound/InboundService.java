@@ -40,4 +40,7 @@ public interface InboundService {
 	
 	@Transactional
 	List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq);
+	
+	@Transactional
+	InboundRes deleteInbound(InboundReq inboundReq);
 }

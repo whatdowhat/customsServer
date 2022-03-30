@@ -31,17 +31,13 @@ import lombok.ToString;
 @ToString
 public class InboundRes {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private Long id;
 	private Long inboundMasterId;
 	
-	@Column(name = "orderNo")
 	private int orderNo;
 	
 	@JsonFormat(pattern="yyyy-MM-dd")
-	@Column(name = "workDate")
 	private Date workDate;
 
 	
@@ -50,90 +46,59 @@ public class InboundRes {
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	private Common companyInfo;
 //	
-	
-	@Column(name = "companyNm")
+	//발송업체 //0번
 	private String companyNm;
 	
 	
-	
-	@Column(name = "marking")
+	//마킹
 	private String marking;
 	
-	
-	
-	@Column(name = "korNm")
 	private String korNm;
-	
-	@Column(name = "itemCount")
+
+	//수량
 	private Double itemCount;
-	
-	@Column(name = "boxCount")
+	//박스수
 	private Double boxCount;
-	
-	@Column(name = "weight")
+	//무게
 	private Double weight;
 	
-	@Column(name = "cbm")
 	private Double cbm;
-	
-	@Column(name = "reportPrice")
+	//신고단가
 	private Double reportPrice;
-	
-	@Column(name = "memo1")
+	//비고1
 	private String memo1;
 	
 	
-	@Column(name = "memo2")
 	private String memo2;
 	
-	@Column(name = "memo3")
 	private String memo3;
-	
-	@Column(name = "itemNo")
+	//품번
 	private String itemNo;
 	
 	//세번
-	@Column(name = "hsCode")
 	private String hsCode;
 	
 //	@JoinColumn(name = "coId")
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	private Common co;
 	
-	@Transient
-//	@Column(name = "coYn")
 	private boolean coYn;
-	@Transient
-//	@Column(name = "coCode")
 	private String coCode;
-	@Transient
-//	@Column(name = "coCode")
 	private String coNm;
 	
-	@Column(name = "totalPrice")
 	private Double totalPrice;
 	
-	@Column(name = "engNm")
 	private String engNm;
 	
 	//shipper
-	@Transient
 	private String exportNm;
 
 	
 	
 	//shipper address
-	@Transient
 	private String exportAddress;
-	
-//	@JoinColumn(name = "exportId")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	private Common exportId;
-	
-	@Column(name = "businessman")
 	private String businessman;
 	
-	@Column(name = "blNo")
 	private String blNo;
 
 //	
@@ -143,34 +108,51 @@ public class InboundRes {
 //	private Common manage;
 	
 	//manage 이름
-	@Transient
 	private String manageName;
 
 	//manage 직급
-	@Transient
 	private String manageLevel;
 	
+
 	
-	@Transient
+	//발송업체
+	@Builder.Default
+	private int companyNmSpan =1;
+	@Builder.Default
+	private int markingSpan = 1;
+	@Builder.Default
+	private int korNmSpan = 1;
+	@Builder.Default
+	private int itemCountSpan = 1;	
+	@Builder.Default
+	private int boxCountSpan = 1;
+	@Builder.Default
+	private int weightSpan = 1;
+	@Builder.Default
+	private int cbmSpan = 1;
+	@Builder.Default
+	private int reportPriceSpan = 1;
 	@Builder.Default
 	private int memo1Span = 1;
 	@Builder.Default
-	@Transient
-	private int companyNmSpan =1;
-	@Transient
+	private int memo2Span = 1;
 	@Builder.Default
-	private int blNoSpan= 1;
-	@Transient
+	private int memo3Span = 1;
 	@Builder.Default
-	private int exportNmSpan= 1;
-	@Transient
+	private int itemNoSpan = 1;
 	@Builder.Default
-	private int markingSpan = 1;
-	
-	@Transient
+	private int hsCodeSpan = 1;
 	@Builder.Default
 	private int workDateSpan = 1;
+	
+	private int blNoSpan= 1;
+	@Builder.Default
+	private int exportNmSpan= 1;
+	
 
+	@Builder.Default
+	private int coCodeSpan = 1;
+	
 //	@Override
 //	public String toString() {
 ////		return "workData " + getWorkDate() +" : " + getWorkDateSpan();

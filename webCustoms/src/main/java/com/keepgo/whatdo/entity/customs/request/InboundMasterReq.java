@@ -1,11 +1,10 @@
-package com.keepgo.whatdo.entity.customs;
+package com.keepgo.whatdo.entity.customs.request;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,25 +13,26 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.keepgo.whatdo.entity.customs.Common;
+import com.keepgo.whatdo.entity.customs.CompanyInfo;
+import com.keepgo.whatdo.entity.customs.Inbound;
+import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.util.ExcelColumn;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString;
 
-@Entity
-@Table(name = "web_inboundMaster")
 @Data
 @Builder
 @Getter
@@ -40,11 +40,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InboundMaster {
+public class InboundMasterReq {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private Long id;
 	
 	@Column(name = "masterBlNo")
@@ -84,16 +82,17 @@ public class InboundMaster {
 	private String hangcha;
 	
 	//작업형태
-	@JoinColumn(name = "workTypeId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common workType;
 	
+	private String workTypeId;
+	
+	//통관사업자
+	private String companyNm;
+	//수출자
+	private String export;
 	//중국상검
 	@Column(name = "chinaSanggumYn")
 	private boolean chinaSanggumYn;
-	
 	//출항지연
-	
 	@Column(name = "departureDelayYn")
 	private boolean departureDelayYn;
 	//관리대상지정
@@ -102,15 +101,11 @@ public class InboundMaster {
 	
 
 	//작업형태 비고 //코로드인경우 입력값을 받음.
-	@JoinColumn(name = "commonId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonBackReference
-	private Common workTypeMemo;
 	
-	@JoinColumn(name = "companyInfoId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonBackReference
-	private CompanyInfo CompanyInfo;
+	private Long commonId;
+	
+	
+	private Long companyInfoId;
 	
 	@Column(name = "orderNo")
 	private int orderNo;
@@ -120,20 +115,10 @@ public class InboundMaster {
 	private Date workDate;
 
 	
-	@OneToMany
-	@JoinColumn(name = "inboundId")
-	@JsonManagedReference  // 추가
-	private List<Inbound> inbounds = new ArrayList<>();
 	
-	//통관사업자
-	@Column(name = "companyNm")
-	private String companyNm;
-	//수출자
-	@Column(name = "export")
-	private String export;
-	//공통 컬럼.
-	@ExcelColumn(headerName="사용여부",order = 4)
-	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")
+	private List<InboundReq> Inbounds = new ArrayList<>();
+	
+	
 	private Boolean isUsing;
 	
 	@JsonFormat(pattern="yyyy-MM-dd")
@@ -144,17 +129,9 @@ public class InboundMaster {
 	@Column(name = "updateDt")
 	private Date updateDt;
 	
-	@ExcelColumn(headerName="사용자",order = 5)
-	@OneToOne
-	@JoinColumn(name = "id")
-	private User user;
-
+	
+	private Long userId;
 	
 	
-	//	//공통 컬럼.
-
-//	@JoinColumn(name = "id")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	private User user;
 	
 }

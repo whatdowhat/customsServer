@@ -4,38 +4,41 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.keepgo.whatdo.ApplicationConfig;
 import com.keepgo.whatdo.entity.customs.Common;
-import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.FileUpload;
-import com.keepgo.whatdo.entity.customs.Inbound;
-import com.keepgo.whatdo.entity.customs.request.CommonReq;
+import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.request.FileUploadReq;
 import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
-import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
+import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.util.UtilService;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 public class FileUploadServiceImpl implements FileUploadService {
@@ -43,6 +46,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 	
 	@Autowired
 	InboundRepository _inboundRepository;
+	
+	@Autowired
+	InboundMasterRepository _inboundMasterRepository;
 	
 	@Autowired
 	FileUploadRepository _fileUploadRepository;
@@ -70,7 +76,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
 					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
 					.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
-//					.inboundId(item.getInbound().getId()).coNum(item.getInbound().getCompanyInfo().getCoNum())
+					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
 											
 					.build();
 					
@@ -84,13 +90,15 @@ public class FileUploadServiceImpl implements FileUploadService {
 	public FileUploadRes uploadFile(MultipartFile file,FileUploadReq fileUploadReq) throws IOException {
 		
 		
-		
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(Long.valueOf(fileUploadReq.getPath1()))
+				.orElse(InboundMaster.builder().build());
+		Common common = _commonRepository.findByValue(fileUploadReq.getPath2());
 		BufferedReader  bufferedReader  = new BufferedReader(new InputStreamReader(file.getInputStream()));
 		String root = uploadRoot;
 		
 		
 		StringBuilder strPath = new StringBuilder(uploadRoot);
-		strPath.append(File.separatorChar+fileUploadReq.getPath1());
+		strPath.append(File.separatorChar+inboundMaster.getCompanyInfo().getCoNum());
 		strPath.append(File.separatorChar+fileUploadReq.getPath2());
 		
 		//stringBuilder.append(File.separatorChar+fileUploadReq.getPath3());
@@ -125,14 +133,19 @@ public class FileUploadServiceImpl implements FileUploadService {
 		FileUpload fileupload = new FileUpload();
 		
 		
-		
+		fileupload.setInboundMaster(inboundMaster);
+		fileupload.setFileName1(fileName);
+		fileupload.setFileuploadType(common);
 		fileupload.setRoot(uploadRoot);
 		fileupload.setCreateDt(new Date());
 		fileupload.setUpdateDt(new Date());
 		fileupload.setFileSize(filesize);
-		fileupload.setPath1(fileUploadReq.getPath1());
+		fileupload.setPath1(inboundMaster.getCompanyInfo().getCoNum());
 		fileupload.setPath2(fileUploadReq.getPath2());
 		fileupload.setPath3(fileName);
+		fileupload.setUploadType(fileUploadReq.getPath2());
+		fileupload.setUploadTypeNm(common.getValue2());
+		fileupload.setRoot(strPath.toString());
 		
 		fileupload.setIsUsing(true);
 		_fileUploadRepository.save(fileupload);
@@ -142,42 +155,77 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 	}
 	
-//	@Override
-//	public FileUploadRes uploadFile(MultipartFile file, FileUploadReq fileUploadReq) throws IOException {
-//		
-//		
-//		BufferedReader  bufferedReader  = new BufferedReader(new InputStreamReader(file.getInputStream()));
-//		String root = "c:/Customs/";
-//		String fileName= file.getName();
-//		int filesize=(int)file.getSize();
-//		File saveFile = new File(root, file.getOriginalFilename());
-//		file.transferTo(saveFile);
-//		Inbound inbound = _inboundRepository.findById(fileUploadReq.getInboundId())
-//				.orElse(Inbound.builder().build());
-//		Common common = _commonRepository.findByValue(fileUploadReq.getUploadType());
-//		
-//		
-//		FileUpload fileupload = new FileUpload();
-//		
-//		
-//		fileupload.setInbound(inbound);
-//		fileupload.setPath1(inbound.getCompanyInfo().getCoNum());
-//		fileupload.setPath2(fileUploadReq.getUploadTypeNm());
-//		fileupload.setUploadType(fileUploadReq.getUploadType());
-//		fileupload.setUploadTypeNm(common.getValue2());
-//		fileupload.setRoot(root);
-//		fileupload.setCreateDt(new Date());
-//		fileupload.setUpdateDt(new Date());
-//		fileupload.setFileSize(filesize);
-//		fileupload.setPath3(fileName);
-//		fileupload.setFileuploadType(common);
-//		fileupload.setIsUsing(true);
-//		_fileUploadRepository.save(fileupload);
-//		
-//		FileUploadRes fileUploadRes = new FileUploadRes();
-//		return fileUploadRes;
-//		
-//	}
+	@Override
+	public FileUploadRes deleteFile(FileUploadReq fileUploadReq) {
+		
+		StringBuilder strPath = new StringBuilder(uploadRoot);
+		strPath.append(File.separatorChar+fileUploadReq.getPath1());
+		strPath.append(File.separatorChar+fileUploadReq.getPath2());
+		File FileList = new File(strPath.toString());
+
+		//해당 폴더의 전체 파일리스트 조회
+		String fileList[] = FileList.list();
+
+		//전체파일
+		for(int i=0; i<fileList.length; i++){
+		  //파일명 조회
+		  String FileName = fileList[i];
+
+		 
+		  if(FileName.equals(fileUploadReq.getFileName1())){
+		    //존재하면 파일삭제
+		    File deleteFile = new File(strPath.toString()+File.separatorChar+FileName);
+		    deleteFile.delete();
+		  }
+		}
+		
+		
+		
+		FileUpload fileupload =  _fileUploadRepository.findById(fileUploadReq.getId())
+				.orElse(FileUpload.builder().build());
+				
+		_fileUploadRepository.delete(fileupload);
+		
+		
+		
+			FileUploadRes fileUploadRes = new FileUploadRes();
+			return fileUploadRes;
+	}
+
+	@Override
+	public ResponseEntity<Object> downloadFile(FileUploadReq fileUploadReq, HttpServletResponse response,
+			HttpServletRequest request,String agent) throws Exception {
+		 String dFile = fileUploadReq.getFileName1(); //이름 받아오면 됨.
+		  StringBuilder strPath = new StringBuilder(uploadRoot);
+			strPath.append(File.separatorChar+fileUploadReq.getPath1());
+			strPath.append(File.separatorChar+fileUploadReq.getPath2()); //고정 경로인경우 직접 입력, 아닐경우 DB에서 경로 받아오기
+		  String path = strPath.toString()+File.separator+dFile;
+		  
+		  try {
+				Path filePath = Paths.get(path);
+				Resource resource = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
+				
+				File file = new File(path);
+				
+				String fileNm = file.getName();
+
+	            HttpHeaders header = new HttpHeaders();
+	            
+	            //한글 인코딩 -> 클라이언트에서 디코딩으로 가져와서써야함
+	            fileNm = URLEncoder.encode(fileNm, java.nio.charset.StandardCharsets.UTF_8.toString()).replace("+", "%20")
+	            		.replace("*", "%2A")
+	            		.replace("%7e","~");
+	            header.add("custom-header",fileNm); //client에서 file이름을 받기위해서 custom-header로 넣어줘야함.		
+		        response.setContentType("application/download;charset=utf-8");
+	        
+				
+				return new ResponseEntity<Object>(resource, header, HttpStatus.OK);
+			} catch(Exception e) {
+				return new ResponseEntity<Object>(null, HttpStatus.CONFLICT);
+			}
+		
+	}
+
 
 	
 }

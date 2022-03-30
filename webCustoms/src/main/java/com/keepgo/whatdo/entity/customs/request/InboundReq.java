@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.entity.customs.request;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -32,9 +33,9 @@ import lombok.ToString;
 @ToString
 public class InboundReq {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Id
+//	@Column(name = "id")
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name = "orderNo")
@@ -46,9 +47,7 @@ public class InboundReq {
 
 	
 	//발송업체 회사
-	@JoinColumn(name = "companyInfoId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common companyInfo;
+//	private Common companyInfo;
 	
 	
 	@Column(name = "companyNm")
@@ -96,9 +95,7 @@ public class InboundReq {
 	@Column(name = "hsCode")
 	private String hsCode;
 	
-	@JoinColumn(name = "coId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common co;
+//	private Common co;
 	
 	@Transient
 //	@Column(name = "coYn")
@@ -117,30 +114,29 @@ public class InboundReq {
 	private String engNm;
 	
 	//shipper
-	@Transient
 	private String exportNm;
 
 	
 	
 	//shipper address
-	@Transient
 	private String exportAddress;
 	
-	@JoinColumn(name = "exportId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common exportId;
+//	private Common exportId;
 	
 	@Column(name = "businessman")
 	private String businessman;
 	
 	@Column(name = "blNo")
 	private String blNo;
-
+	
+	List<InboundReq> inboundReqData;
+	
+	private Long inboundMasterId;
 	
 	//담당자
-	@JoinColumn(name = "manageId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common manage;
+//	@JoinColumn(name = "manageId")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	private Common manage;
 	
 	//manage 이름
 	@Transient

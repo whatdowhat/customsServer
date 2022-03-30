@@ -20,6 +20,8 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	
 	CompanyInfo findByCoNum(String coNum);
 	
+	CompanyInfo findByCoNm(String coNm);
+	
 	
 	
 	

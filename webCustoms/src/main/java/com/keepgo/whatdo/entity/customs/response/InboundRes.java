@@ -35,6 +35,7 @@ public class InboundRes {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private Long inboundMasterId;
 	
 	@Column(name = "orderNo")
 	private int orderNo;
@@ -44,11 +45,11 @@ public class InboundRes {
 	private Date workDate;
 
 	
-	//발송업체 회사
-	@JoinColumn(name = "companyInfoId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common companyInfo;
-	
+//	//발송업체 회사
+//	@JoinColumn(name = "companyInfoId")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	private Common companyInfo;
+//	
 	
 	@Column(name = "companyNm")
 	private String companyNm;
@@ -95,9 +96,9 @@ public class InboundRes {
 	@Column(name = "hsCode")
 	private String hsCode;
 	
-	@JoinColumn(name = "coId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common co;
+//	@JoinColumn(name = "coId")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	private Common co;
 	
 	@Transient
 //	@Column(name = "coYn")
@@ -125,9 +126,9 @@ public class InboundRes {
 	@Transient
 	private String exportAddress;
 	
-	@JoinColumn(name = "exportId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common exportId;
+//	@JoinColumn(name = "exportId")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	private Common exportId;
 	
 	@Column(name = "businessman")
 	private String businessman;
@@ -135,11 +136,11 @@ public class InboundRes {
 	@Column(name = "blNo")
 	private String blNo;
 
-	
-	//담당자
-	@JoinColumn(name = "manageId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common manage;
+//	
+//	//담당자
+//	@JoinColumn(name = "manageId")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	private Common manage;
 	
 	//manage 이름
 	@Transient

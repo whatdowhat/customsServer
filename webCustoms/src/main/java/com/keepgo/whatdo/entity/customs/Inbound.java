@@ -58,7 +58,7 @@ public class Inbound {
 	@ExcelColumn(headerName="inboundMasterId",order = 2)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
-	private CommonMaster inboundMaster;
+	private InboundMaster inboundMaster;
 	
 	
 	//발송업체 회사

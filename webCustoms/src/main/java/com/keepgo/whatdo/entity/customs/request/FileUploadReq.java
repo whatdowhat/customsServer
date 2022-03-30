@@ -36,7 +36,7 @@ public class FileUploadReq {
 	private String root;
 	private String uploadType;
 	private String uploadTypeNm;
-	private Long inboundId;
+	private Long inboundMasterId;
 	private String coNum;
 	
 	

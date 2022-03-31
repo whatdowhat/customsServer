@@ -173,7 +173,10 @@ public class InboundServiceImpl implements InboundService {
 						.memo1(item.getMemo1())
 						.itemNo(item.getItemNo())
 						.hsCode(item.getHsCode())
-						.coCode(item.getCo().getValue())
+//						.coCode(item.getCoCode())
+//						.coCode(item.getCo().getValue())
+//						.coId( item.getCo().getId() )
+						.coId( (item.getCo() != null) ? item.getCo().getId() : new Long(0) )
 						.memo2(item.getMemo2())
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
@@ -197,9 +200,22 @@ public class InboundServiceImpl implements InboundService {
 		}
 		
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundReq.getInboundMasterId())
-				.orElse(InboundMaster.builder().build());	
+				.orElse(InboundMaster.builder().build());
+//		Common common = _commonRepository.findById(inboundReq.getCoId()).orElse(Common.builder().build());
+//		Common common = _commonRepository.findById(
+//				
+//				(inboundReq.getCoId() !=null ) ? inboundReq.getCoId() : new Long(0) 
+//				
+//				).orElse(null);
+
+		
 		List<InboundReq> list = inboundReq.getInboundReqData();
 		for (int i = 0; i < list.size(); i++) {
+			
+			
+			Common common = _commonRepository.findByValue(
+					
+					(list.get(i).getCoCode() !=null ) ? list.get(i).getCoCode() : "" );
 			
 			Inbound inbound = new Inbound();
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
@@ -214,6 +230,8 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
+//			if(com)
+			inbound.setCo(common);
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
 			inbound.setTotalPrice(list.get(i).getTotalPrice());

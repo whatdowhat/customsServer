@@ -34,7 +34,7 @@ public class InboundRes {
 	
 	private Long id;
 	private Long inboundMasterId;
-	
+	private Long coId;
 	private int orderNo;
 	
 	@JsonFormat(pattern="yyyy-MM-dd")

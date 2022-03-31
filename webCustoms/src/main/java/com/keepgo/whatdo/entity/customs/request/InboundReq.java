@@ -38,6 +38,8 @@ public class InboundReq {
 //	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	private Long coId;
+	
 	@Column(name = "orderNo")
 	private int orderNo;
 	

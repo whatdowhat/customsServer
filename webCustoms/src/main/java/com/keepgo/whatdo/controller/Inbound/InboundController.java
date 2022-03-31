@@ -35,6 +35,7 @@ import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
+import com.keepgo.whatdo.service.util.UtilService;
 
 @RestController
 public class InboundController {
@@ -47,6 +48,9 @@ public class InboundController {
 	
 	@Autowired
 	FileUploadService _fileUploadService;
+	
+	@Autowired
+	UtilService _utilService;
 
 	@RequestMapping(value = "/test/inbound", method = { RequestMethod.POST })
 	public List<InboundRes> shopper(HttpServletRequest httpServletRequest,InboundReq inboundReq){
@@ -130,14 +134,18 @@ public class InboundController {
 	public List<InboundRes> inboundByInboundMasterId(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception {
 
 		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(inboundReq);
-		return  list;
+		//출력모드
+		List<InboundRes> result = _utilService.changeExcelFormatNew(list);
+		return  result;
 	}
 	
 	@RequestMapping(value = "/test/inboundExcelCommit", method = {RequestMethod.POST })
 
 	public  InboundRes inboundExcelCommit(@RequestBody InboundReq inboundReq) throws IOException, InterruptedException {
 		
+		
 		InboundRes result = _InboundService.excelCommitInboundData(inboundReq);
+		
 		return result;
 
 	}
@@ -170,8 +178,9 @@ public class InboundController {
 
 		 List <InboundRes> list = (List<InboundRes>) _InboundService.excelRead(file, null);
 
-		 //엑셀업로드 시 코드이름(CommonMasterName 섞여있을 때 가장 첫번째 데이터 기준으로 화면 새로고침)
-		return list;
+		//출력모드
+			List<InboundRes> result = _utilService.changeExcelFormatNew(list);
+		return result;
 	}
 	
 	

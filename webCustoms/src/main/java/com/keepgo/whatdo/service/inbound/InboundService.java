@@ -37,6 +37,8 @@ public interface InboundService {
 	
 	@Transactional
 	InboundRes excelCommitInboundData(InboundReq inboundReq);
+	@Transactional
+	InboundRes inboundCommit(InboundReq inboundReq);
 	
 	@Transactional
 	List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq);

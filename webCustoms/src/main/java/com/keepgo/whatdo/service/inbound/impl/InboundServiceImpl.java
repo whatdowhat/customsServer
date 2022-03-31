@@ -88,28 +88,32 @@ public class InboundServiceImpl implements InboundService {
 	public List<?> getInboundMaster(){
 
 
-		List<?> list = _inboundMasterRepository.findAll().stream()
-				.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
-				.map(item -> {
-
-					InboundMasterRes dto = InboundMasterRes.builder()
-
-					
-					.id(item.getId()).masterBlNo(item.getMasterBlNo())
-					.export(item.getExport()).companyNm(item.getCompanyNm())	
-					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
-//					.cargo(item.getCargo()).toHarbor(item.getToHarbor())
-//					.fromHarbor(item.getFromHarbor()).containerNo(item.getContainerNo())
-//					.realNo(item.getRealNo()).hangmyung(item.getHangmyung()).hangcha(item.getHangcha())
-//					.workTypeId(item.getWorkType().getNm()).chinaSanggumYn(item.isChinaSanggumYn())
+//		List<?> list = _inboundMasterRepository.findAll().stream()
+////				.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
+//				.map(item -> {
+//
+//					InboundMasterRes dto = InboundMasterRes.builder()
+//
 //					
-//					.userId(item.getUser().getId())					
-					.build();
-					
-			return dto;
-		}).collect(Collectors.toList());
+//					.id(item.getId())
+////					.masterBlNo(item.getMasterBlNo())
+////					.export(item.getExport()).companyNm(item.getCompanyNm())	
+////					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
+////					.cargo(item.getCargo()).toHarbor(item.getToHarbor())
+////					.fromHarbor(item.getFromHarbor()).containerNo(item.getContainerNo())
+////					.realNo(item.getRealNo()).hangmyung(item.getHangmyung()).hangcha(item.getHangcha())
+////					.workTypeId(item.getWorkType().getNm()).chinaSanggumYn(item.isChinaSanggumYn())
+////					
+////					.userId(item.getUser().getId())					
+//					.build();
+//					
+//			return dto;
+//		}).collect(Collectors.toList());
+		
+		List<InboundMasterRes> tem = new ArrayList<InboundMasterRes>();
+		tem.add(InboundMasterRes.builder().id(new Long(1)).build() );
 
-		return list;
+		return tem;
 	}
 	
 	@Override
@@ -176,7 +180,7 @@ public class InboundServiceImpl implements InboundService {
 //						.coCode(item.getCoCode())
 //						.coCode(item.getCo().getValue())
 //						.coId( item.getCo().getId() )
-						.coId( (item.getCo() != null) ? item.getCo().getId() : new Long(0) )
+						.coId( (item.getCo() != null) ? item.getCo().getId() : null )
 						.memo2(item.getMemo2())
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
@@ -231,6 +235,59 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
 //			if(com)
+			inbound.setCo(common);
+			inbound.setMemo2(list.get(i).getMemo2());
+			inbound.setMemo3(list.get(i).getMemo3());
+			inbound.setTotalPrice(list.get(i).getTotalPrice());
+			inbound.setEngNm(list.get(i).getEngNm());
+			inbound.setOrderNo(orderNo);
+			inbound.setInboundMaster(inboundMaster);
+			_inboundRepository.save(inbound);
+			orderNo=orderNo+1;
+		}
+		
+		
+		return InboundRes.builder().inboundMasterId(inboundReq.getInboundMasterId()).build();
+	}
+	@Override
+	public InboundRes inboundCommit(InboundReq inboundReq) {
+		int orderNo = 1;
+		List<Inbound> inboundList = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId());
+		for(int i = 0; i < inboundList.size(); i++) {
+			_inboundRepository.delete(inboundList.get(i));
+		}
+		
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundReq.getInboundMasterId())
+				.orElse(InboundMaster.builder().build());
+//		Common common = _commonRepository.findById(inboundReq.getCoId()).orElse(Common.builder().build());
+//		Common common = _commonRepository.findById(
+//				
+//				(inboundReq.getCoId() !=null ) ? inboundReq.getCoId() : new Long(0) 
+//				
+//				).orElse(null);
+
+		
+		List<InboundReq> list = inboundReq.getInboundReqData();
+		for (int i = 0; i < list.size(); i++) {
+			
+			
+			Common common = _commonRepository.findById(
+					
+					(list.get(i).getCoId()!=null ) ? list.get(i).getCoId(): new Long(0) ).orElse(null);
+			
+			Inbound inbound = new Inbound();
+			inbound.setCompanyNm(list.get(i).getCompanyNm());
+			inbound.setMarking(list.get(i).getMarking());
+			inbound.setKorNm(list.get(i).getKorNm());
+			inbound.setItemCount(list.get(i).getItemCount());
+			inbound.setBoxCount(list.get(i).getBoxCount());
+			inbound.setWeight(list.get(i).getWeight());
+			inbound.setCbm(list.get(i).getCbm());
+			inbound.setReportPrice(list.get(i).getReportPrice());
+			inbound.setMemo1(list.get(i).getMemo1());
+			inbound.setItemNo(list.get(i).getItemNo());
+			inbound.setHsCode(list.get(i).getHsCode());
+			inbound.setCoCode(list.get(i).getCoCode());
 			inbound.setCo(common);
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());

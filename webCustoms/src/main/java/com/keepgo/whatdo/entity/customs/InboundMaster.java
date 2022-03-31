@@ -90,15 +90,15 @@ public class InboundMaster {
 	
 	//중국상검
 	@Column(name = "chinaSanggumYn")
-	private boolean chinaSanggumYn;
+	private Boolean chinaSanggumYn;
 	
 	//출항지연
 	
 	@Column(name = "departureDelayYn")
-	private boolean departureDelayYn;
+	private Boolean departureDelayYn;
 	//관리대상지정
 	@Column(name = "watchTargetYn")
-	private boolean watchTargetYn;
+	private Boolean watchTargetYn;
 	
 
 	//작업형태 비고 //코로드인경우 입력값을 받음.
@@ -113,7 +113,7 @@ public class InboundMaster {
 	private CompanyInfo CompanyInfo;
 	
 	@Column(name = "orderNo")
-	private int orderNo;
+	private Integer orderNo;
 	
 	@JsonFormat(pattern="yyyy-MM-dd")
 	@Column(name = "workDate")

@@ -149,6 +149,15 @@ public class InboundController {
 		return result;
 
 	}
+	@RequestMapping(value = "/test/inboundCommit", method = {RequestMethod.POST })
+	public  InboundRes inboundCommit(@RequestBody InboundReq inboundReq) throws IOException, InterruptedException {
+		
+		
+		InboundRes result = _InboundService.inboundCommit(inboundReq);
+		
+		return result;
+
+	}
 	
 	@RequestMapping(value = "/test/deleteInbound", method = {RequestMethod.POST })
 

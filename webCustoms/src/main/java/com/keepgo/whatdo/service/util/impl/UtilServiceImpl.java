@@ -189,6 +189,17 @@ public class UtilServiceImpl implements UtilService {
 				spanAttr[1][10] = 1;
 				item.setCoCodeSpan(spanAttr[1][10]);
 			}	
+			if (predict01(item.getCoId()) && lastIndex != i) {
+				spanAttr[1][11] = spanAttr[1][11] + 1;
+			} else {
+				if ((i - spanAttr[1][11]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][11]).setCoIdSpan(spanAttr[1][11]);
+				}
+				spanAttr[1][11] = 1;
+				item.setCoIdSpan(spanAttr[1][11]);
+			}	
 
 		}
 
@@ -220,6 +231,13 @@ public class UtilServiceImpl implements UtilService {
 		return false;
 	}
 
+	public boolean predict01(Long value) {
+		if (value == null) {
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean predict01(Date value) {
 		if (value == null) {
 			return true;

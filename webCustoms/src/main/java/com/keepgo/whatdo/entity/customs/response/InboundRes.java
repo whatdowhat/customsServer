@@ -149,9 +149,11 @@ public class InboundRes {
 	@Builder.Default
 	private int exportNmSpan= 1;
 	
-
 	@Builder.Default
 	private int coCodeSpan = 1;
+	@Builder.Default
+	private int coIdSpan = 1;
+	
 	
 //	@Override
 //	public String toString() {

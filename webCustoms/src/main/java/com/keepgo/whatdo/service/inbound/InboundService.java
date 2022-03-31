@@ -30,6 +30,12 @@ public interface InboundService {
 	InboundMasterRes addInboundMaster(InboundMasterReq inboundMasterReq);
 	
 	@Transactional
+	InboundMasterRes addInboundMasterCompany(InboundMasterReq inboundMasterReq);
+	
+	@Transactional
+	InboundMasterRes addInboundMasterExport(InboundMasterReq inboundMasterReq);
+	
+	@Transactional
 	InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq);
 	
 	@Transactional

@@ -107,6 +107,10 @@ public class InboundMasterReq {
 	
 	private Long companyInfoId;
 	
+	private Long inboundId;
+	
+	private Long companyInfoExportId;
+	
 	@Column(name = "orderNo")
 	private int orderNo;
 	
@@ -116,7 +120,7 @@ public class InboundMasterReq {
 
 	
 	
-	private List<InboundReq> Inbounds = new ArrayList<>();
+	
 	
 	
 	private Boolean isUsing;

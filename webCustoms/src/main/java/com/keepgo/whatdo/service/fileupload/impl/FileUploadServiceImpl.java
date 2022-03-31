@@ -63,7 +63,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 	String uploadRoot;
 	
 	@Override
-	public List<?> getFileList() {
+	public List<?> getFileList(FileUploadReq fileUploadReq) {
 
 
 		List<?> list = _fileUploadRepository.findAll().stream()

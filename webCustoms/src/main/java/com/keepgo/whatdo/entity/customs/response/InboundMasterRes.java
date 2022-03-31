@@ -99,6 +99,8 @@ private Long commonId;
 
 private Long companyInfoId;
 
+private Long companyInfoExportId;
+
 @Column(name = "orderNo")
 private int orderNo;
 
@@ -108,7 +110,7 @@ private Date workDate;
 
 
 
-private List<Inbound> Inbounds = new ArrayList<>();
+private Long inboundId;
 
 
 private Boolean isUsing;

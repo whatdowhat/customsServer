@@ -22,7 +22,7 @@ public interface FileUploadService {
 	
 	
 	@Transactional
-	List<?> getFileList();
+	List<?> getFileList(FileUploadReq fileUploadReq);
 	
 	@Transactional
 	FileUploadRes deleteFile(FileUploadReq fileUploadReq);

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
+import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
@@ -30,6 +31,7 @@ import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.repository.CommonRepository;
+import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
@@ -58,6 +60,8 @@ public class InboundServiceImpl implements InboundService {
 	
 	@Autowired
 	CompanyInfoRepository _companyInfoRepository;
+	@Autowired
+	CompanyInfoExportRepository _companyInfoExportRepository;
 	
 	@Override
 	public List<InboundRes> getList(InboundReq inboundReq) {
@@ -88,32 +92,28 @@ public class InboundServiceImpl implements InboundService {
 	public List<?> getInboundMaster(){
 
 
-//		List<?> list = _inboundMasterRepository.findAll().stream()
-////				.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
-//				.map(item -> {
-//
-//					InboundMasterRes dto = InboundMasterRes.builder()
-//
-//					
-//					.id(item.getId())
-////					.masterBlNo(item.getMasterBlNo())
-////					.export(item.getExport()).companyNm(item.getCompanyNm())	
-////					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
-////					.cargo(item.getCargo()).toHarbor(item.getToHarbor())
-////					.fromHarbor(item.getFromHarbor()).containerNo(item.getContainerNo())
-////					.realNo(item.getRealNo()).hangmyung(item.getHangmyung()).hangcha(item.getHangcha())
-////					.workTypeId(item.getWorkType().getNm()).chinaSanggumYn(item.isChinaSanggumYn())
-////					
-////					.userId(item.getUser().getId())					
-//					.build();
-//					
-//			return dto;
-//		}).collect(Collectors.toList());
-		
-		List<InboundMasterRes> tem = new ArrayList<InboundMasterRes>();
-		tem.add(InboundMasterRes.builder().id(new Long(1)).build() );
+		List<?> list = _inboundMasterRepository.findAll().stream()
+				.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
+				.map(item -> {
 
-		return tem;
+					InboundMasterRes dto = InboundMasterRes.builder()
+
+					
+					.id(item.getId()).masterBlNo(item.getMasterBlNo())
+					.export(item.getExport()).companyNm(item.getCompanyNm())	
+					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
+//					.cargo(item.getCargo()).toHarbor(item.getToHarbor())
+//					.fromHarbor(item.getFromHarbor()).containerNo(item.getContainerNo())
+//					.realNo(item.getRealNo()).hangmyung(item.getHangmyung()).hangcha(item.getHangcha())
+//					.workTypeId(item.getWorkType().getNm()).chinaSanggumYn(item.isChinaSanggumYn())
+//					
+//					.userId(item.getUser().getId())					
+					.build();
+					
+			return dto;
+		}).collect(Collectors.toList());
+
+		return list;
 	}
 	
 	@Override
@@ -135,7 +135,43 @@ public class InboundServiceImpl implements InboundService {
 		InboundMasterRes inboundMasterRes = new InboundMasterRes();
 		 return inboundMasterRes;
 	}
+	@Override
+	public InboundMasterRes addInboundMasterCompany(InboundMasterReq inboundMasterReq) {
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())
+				.orElse(InboundMaster.builder().build());
+		CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
+				.orElse(CompanyInfo.builder().build());
+		
+		
+		inboundMaster.setCompanyInfo(companyInfo);
+		inboundMaster.setCompanyNm(companyInfo.getCoNm());
+		
+		
+		_inboundMasterRepository.save(inboundMaster);
+		
+		InboundMasterRes inboundMasterRes = new InboundMasterRes();
+		 return inboundMasterRes;
+	}
 	
+	@Override
+	public InboundMasterRes addInboundMasterExport(InboundMasterReq inboundMasterReq) {
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())
+				.orElse(InboundMaster.builder().build());
+		
+		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getCompanyInfoExportId())
+				.orElse(CompanyInfoExport.builder().build());
+		
+		Common common = companyInfoExport.getCommon();
+		
+		inboundMaster.setWorkTypeMemo(common);		
+		inboundMaster.setWorkType(common);
+		inboundMaster.setExport(common.getValue());
+		
+		_inboundMasterRepository.save(inboundMaster);
+		
+		InboundMasterRes inboundMasterRes = new InboundMasterRes();
+		 return inboundMasterRes;
+	}
 	@Override
 	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) {
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())

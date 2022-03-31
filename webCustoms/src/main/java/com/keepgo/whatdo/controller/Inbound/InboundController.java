@@ -69,10 +69,10 @@ public class InboundController {
 	
 	
 	@RequestMapping(value = "/test/getFile", method = {RequestMethod.POST })
-	public List<?> getuser(HttpServletRequest httpServletRequest ){
+	public List<?> getuser(HttpServletRequest httpServletRequest, @RequestBody FileUploadReq fileUploadReq ){
 		
 
-		return  _fileUploadService.getFileList();
+		return  _fileUploadService.getFileList(fileUploadReq);
 	}
 	
 	@RequestMapping(value = "/test/uploadFile", method = { RequestMethod.POST })
@@ -119,6 +119,28 @@ public class InboundController {
 		return result;
 
 	}
+	
+	@RequestMapping(value = "/test/addInboundMasterCompany", method = {RequestMethod.POST })
+
+	public  InboundMasterRes addInboundMasterCompany(@RequestBody InboundMasterReq inboundMasterReq) throws IOException, InterruptedException {
+
+	
+		InboundMasterRes result = _InboundService.addInboundMasterCompany(inboundMasterReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/test/addInboundMasterExport", method = {RequestMethod.POST })
+
+	public  InboundMasterRes addInboundMasterExport(@RequestBody InboundMasterReq inboundMasterReq) throws IOException, InterruptedException {
+
+	
+		InboundMasterRes result = _InboundService.addInboundMasterCompany(inboundMasterReq);
+		return result;
+
+	}
+	
+	
 	
 	@RequestMapping(value = "/test/updateInboundMaster", method = {RequestMethod.POST })
 

@@ -121,7 +121,7 @@ public class InboundMaster {
 
 	
 	@OneToMany
-	@JoinColumn(name = "inboundId")
+	@JoinColumn(name = "inboundMasterId")
 	@JsonManagedReference  // 추가
 	private List<Inbound> inbounds = new ArrayList<>();
 	

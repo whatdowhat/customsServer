@@ -94,6 +94,9 @@ public class InboundServiceImpl implements InboundService {
 	public List<?> getInboundMaster(){
 
 
+//		FileUpload t;
+//		t.getInboundMaster().getId()
+//		
 		List<?> list = _inboundMasterRepository.findAll().stream()
 				
 
@@ -103,18 +106,44 @@ public class InboundServiceImpl implements InboundService {
 				.map(item -> {
 					
 
-
-					
-					InboundMasterRes dto = InboundMasterRes.builder()
+					List<CommonRes> ll= item.getFileUploads().stream()
+					.filter(t-> t.getInboundMaster().getId() == item.getId())
+					.map(t->t.getFileuploadType())
+					.map(t->CommonRes.builder()
+							.id(t.getId())
+							.value(t.getValue())
+							.value2(t.getValue2())
+							.build()).collect(Collectors.toList());
 							
+//					CommonRes res;
+//					
+//					ll.stream().filter(t->t.getId() == new Long(296)).count();
+//					List<InboundRes> li = ;
+					
+					
+					Double ff = item.getInbounds().stream().mapToDouble(t->t.getBoxCount()).sum();
+					InboundMasterRes dto = InboundMasterRes.builder()
+					
 					
 					.id(item.getId()).masterBlNo(item.getMasterBlNo())
-					.aTypeCount(new Long(1)).bTypeCount(new Long(2)).cTypeCount(new Long(3))
-					.dTypeCount(new Long(4)).eTypeCount(new Long(5))
-					.aTypeNm("A").bTypeNm("B").cTypeNm("C").dTypeNm("D")
-					.eTypeNm("E").totalItemCount(new Double(10.0)).totalBoxCount(new Double(11.0))
-					.totalWeight(new Double(12.0)).totalCbm(new Double(13.0))
-					.finalTotalPrice(new Double(14.0))
+					.aTypeCount(ll.stream().filter(t->t.getId().equals(new Long(296))).count())
+					.bTypeCount(ll.stream().filter(t->t.getId().equals(new Long(297))).count())
+					.cTypeCount(ll.stream().filter(t->t.getId().equals(new Long(298))).count())
+					.dTypeCount(ll.stream().filter(t->t.getId().equals(new Long(299))).count())
+					.eTypeCount(ll.stream().filter(t->t.getId().equals(new Long(300))).count())
+					.aTypeNm(_commonRepository.findById(new Long(296)).get().getValue())
+					.bTypeNm(_commonRepository.findById(new Long(297)).get().getValue())
+					.cTypeNm(_commonRepository.findById(new Long(298)).get().getValue())
+					.dTypeNm(_commonRepository.findById(new Long(299)).get().getValue())
+					.eTypeNm(_commonRepository.findById(new Long(300)).get().getValue())
+					
+					
+					
+					.totalItemCount(item.getInbounds().stream().mapToDouble(t-> (t.getItemCount() == null) ? 0 : t.getItemCount()).sum())
+					.totalBoxCount(item.getInbounds().stream().mapToDouble(t-> (t.getBoxCount() == null) ? 0 : t.getBoxCount()).sum())
+					.totalWeight(item.getInbounds().stream().mapToDouble(t-> (t.getWeight() == null) ? 0 : t.getWeight()).sum())
+					.totalCbm(item.getInbounds().stream().mapToDouble(t-> (t.getCbm() == null) ? 0 : t.getCbm()).sum())
+					.finalTotalPrice(item.getInbounds().stream().mapToDouble(t->(t.getTotalPrice() == null) ? 0 : t.getTotalPrice()).sum())
 					.export(item.getExport()).companyNm(item.getCompanyNm())	
 					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
 					.companyInfoId(item.getCompanyInfo().getId()).commonId(item.getWorkType().getId())

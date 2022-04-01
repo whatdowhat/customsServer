@@ -149,7 +149,11 @@ public class InboundMaster {
 	@JoinColumn(name = "id")
 	private User user;
 
-	
+//	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany
+	@JoinColumn(name = "inboundMasterId")
+	@JsonManagedReference  // 추가
+	private List<FileUpload> fileUploads = new ArrayList<>();
 	
 	//	//공통 컬럼.
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
@@ -19,6 +20,7 @@ import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
+import com.keepgo.whatdo.entity.customs.FileUpload;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
@@ -93,15 +95,29 @@ public class InboundServiceImpl implements InboundService {
 
 
 		List<?> list = _inboundMasterRepository.findAll().stream()
-				.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
-				.map(item -> {
+				
 
-					InboundMasterRes dto = InboundMasterRes.builder()
+				
+				.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
+				
+				.map(item -> {
+					
+
 
 					
+					InboundMasterRes dto = InboundMasterRes.builder()
+							
+					
 					.id(item.getId()).masterBlNo(item.getMasterBlNo())
+					.aTypeCount(new Long(1)).bTypeCount(new Long(2)).cTypeCount(new Long(3))
+					.dTypeCount(new Long(4)).eTypeCount(new Long(5))
+					.aTypeNm("A").bTypeNm("B").cTypeNm("C").dTypeNm("D")
+					.eTypeNm("E").totalItemCount(new Double(10.0)).totalBoxCount(new Double(11.0))
+					.totalWeight(new Double(12.0)).totalCbm(new Double(13.0))
+					.finalTotalPrice(new Double(14.0))
 					.export(item.getExport()).companyNm(item.getCompanyNm())	
 					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
+					.companyInfoId(item.getCompanyInfo().getId()).commonId(item.getWorkType().getId())
 //					.cargo(item.getCargo()).toHarbor(item.getToHarbor())
 //					.fromHarbor(item.getFromHarbor()).containerNo(item.getContainerNo())
 //					.realNo(item.getRealNo()).hangmyung(item.getHangmyung()).hangcha(item.getHangcha())
@@ -114,20 +130,68 @@ public class InboundServiceImpl implements InboundService {
 		}).collect(Collectors.toList());
 
 		return list;
+
+//// 보완 필요		
+		
+//		File f;
+//		f.getFileuploadType().getId().equals(new Long(296))).get
+		
+//		item.getFileUploads()
+//		.stream().filter(t->t.getUploadType().equals("A")).count();
+		
+		
+		
+//		int aTypeCount = _fileUploadRepository.findByInboundMasterAndUploadType(item, "A").size();
+//		int bTypeCount = _fileUploadRepository.findByInboundMasterAndUploadType(item, "B").size();
+//		int cTypeCount = _fileUploadRepository.findByInboundMasterAndUploadType(item, "C").size();
+//		int dTypeCount = _fileUploadRepository.findByInboundMasterAndUploadType(item, "D").size();
+//		int eTypeCount = _fileUploadRepository.findByInboundMasterAndUploadType(item, "E").size();
+					
+//					.aTypeCount(_fileUploadRepository.findByInboundMasterAndUploadType(item, "A").size())
+//					.bTypeCount(_fileUploadRepository.findByInboundMasterAndUploadType(item, item.getFileUploads(). ).size())
+//					.cTypeCount(_fileUploadRepository.findByInboundMasterAndUploadType(item, "C").size())
+//					.dTypeCount(_fileUploadRepository.findByInboundMasterAndUploadType(item, "D").size())
+//					.eTypeCount(_fileUploadRepository.findByInboundMasterAndUploadType(item, "E").size())
+					
+					
+//					
+					
+//					.files(m)
+//					.aTypeNm(item.getFileUploads().stream().filter(t->t.getFileuploadType().getId().equals(new Long(296)))
+//							.findFirst()
+//							.orElse(FileUpload.builder().fileNam2("").build()).getFileuploadType().getValue())
+//					.bTypeNm(item.getFileUploads().stream().filter(t->t.getFileuploadType().getId().equals(new Long(297))).findFirst().orElse(FileUpload.builder().fileNam2("").build().getFileNam2())
+//					.bTypeNm(item.getFileUploads().stream().filter(t->t.getFileuploadType().getId().equals(new Long(297))).findFirst().get().getFileuploadType().getValue())
+//					.cTypeNm(item.getFileUploads().stream().filter(t->t.getFileuploadType().getId().equals(new Long(298))).findFirst().get().getFileuploadType().getValue())
+//					.dTypeNm(item.getFileUploads().stream().filter(t->t.getFileuploadType().getId().equals(new Long(299))).findFirst().get().getFileuploadType().getValue())
+//					.eTypeNm(item.getFileUploads().stream().filter(t->t.getFileuploadType().getId().equals(new Long(300))).findFirst().get().getFileuploadType().getValue())
+					
+					
 	}
 	
 	@Override
 	public InboundMasterRes addInboundMaster(InboundMasterReq inboundMasterReq) {
 		InboundMaster inboundMaster = new InboundMaster();
-		CompanyInfo companyInfo = _companyInfoRepository.findByCoNm(inboundMasterReq.getCompanyNm());
+		CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
+				.orElse(CompanyInfo.builder().build());
+		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getCompanyInfoExportId())
+				.orElse(CompanyInfoExport.builder().build());
+		
+		Common common = companyInfoExport.getCommon();
+		
+		
 		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
 		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
-		inboundMaster.setCompanyNm(inboundMasterReq.getCompanyNm());
 		inboundMaster.setExport(inboundMasterReq.getExport());
 		inboundMaster.setCreateDt(new Date());
 		inboundMaster.setUpdateDt(new Date());
 		inboundMaster.setCompanyInfo(companyInfo);
 		inboundMaster.setIsUsing(true);
+		inboundMaster.setCompanyInfo(companyInfo);
+		inboundMaster.setCompanyNm(companyInfo.getCoNm());
+		inboundMaster.setWorkTypeMemo(common);		
+		inboundMaster.setWorkType(common);
+		inboundMaster.setExport(common.getValue());
 		
 		
 		_inboundMasterRepository.save(inboundMaster);
@@ -135,6 +199,37 @@ public class InboundServiceImpl implements InboundService {
 		InboundMasterRes inboundMasterRes = new InboundMasterRes();
 		 return inboundMasterRes;
 	}
+	
+	@Override
+	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) {
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())
+				.orElse(InboundMaster.builder().build());
+		CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
+				.orElse(CompanyInfo.builder().build());
+		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getCompanyInfoExportId())
+				.orElse(CompanyInfoExport.builder().build());
+		
+		Common common = companyInfoExport.getCommon();
+		inboundMaster.setId(inboundMasterReq.getId());
+		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
+		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
+		inboundMaster.setExport(inboundMasterReq.getExport());
+		inboundMaster.setCreateDt(new Date());
+		inboundMaster.setUpdateDt(new Date());
+		inboundMaster.setCompanyInfo(companyInfo);
+		inboundMaster.setIsUsing(true);
+		inboundMaster.setCompanyInfo(companyInfo);
+		inboundMaster.setCompanyNm(companyInfo.getCoNm());
+		inboundMaster.setWorkTypeMemo(common);		
+		inboundMaster.setWorkType(common);
+		inboundMaster.setExport(common.getValue());
+		
+		_inboundMasterRepository.save(inboundMaster);
+		
+		InboundMasterRes inboundMasterRes = new InboundMasterRes();
+		 return inboundMasterRes;
+	}
+	
 	@Override
 	public InboundMasterRes addInboundMasterCompany(InboundMasterReq inboundMasterReq) {
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())
@@ -172,26 +267,7 @@ public class InboundServiceImpl implements InboundService {
 		InboundMasterRes inboundMasterRes = new InboundMasterRes();
 		 return inboundMasterRes;
 	}
-	@Override
-	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) {
-		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())
-				.orElse(InboundMaster.builder().build());
-		CompanyInfo companyInfo = _companyInfoRepository.findByCoNm(inboundMasterReq.getCompanyNm());
-		inboundMaster.setId(inboundMasterReq.getId());
-		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
-		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
-		inboundMaster.setCompanyNm(inboundMasterReq.getCompanyNm());
-		inboundMaster.setExport(inboundMasterReq.getExport());
-		inboundMaster.setCreateDt(new Date());
-		inboundMaster.setUpdateDt(new Date());
-		inboundMaster.setCompanyInfo(companyInfo);
-		inboundMaster.setIsUsing(true);
-		
-		_inboundMasterRepository.save(inboundMaster);
-		
-		InboundMasterRes inboundMasterRes = new InboundMasterRes();
-		 return inboundMasterRes;
-	}
+	
 	
 	@Override
 	public List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq) {
@@ -213,6 +289,7 @@ public class InboundServiceImpl implements InboundService {
 						.memo1(item.getMemo1())
 						.itemNo(item.getItemNo())
 						.hsCode(item.getHsCode())
+						.orderNo(item.getOrderNo())
 //						.coCode(item.getCoCode())
 //						.coCode(item.getCo().getValue())
 //						.coId( item.getCo().getId() )

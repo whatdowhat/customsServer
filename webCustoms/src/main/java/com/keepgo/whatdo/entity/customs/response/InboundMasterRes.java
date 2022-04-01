@@ -3,6 +3,7 @@ package com.keepgo.whatdo.entity.customs.response;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -125,9 +126,29 @@ private Date updateDt;
 
 
 private Long userId;
-	
-	
-	
-	
+
+private Map<String,Object> files;
+
+private Long aTypeCount;
+private Long bTypeCount;
+private Long cTypeCount;
+private Long dTypeCount;
+private Long eTypeCount;
+
+private String aTypeNm;
+private String bTypeNm;
+private String cTypeNm;
+private String dTypeNm;
+private String eTypeNm;
+//총 수량	
+private Double totalItemCount;
+//총 박스수
+private Double totalBoxCount;
+//총 무게
+private Double totalWeight;
+//총 CBM
+private Double totalCbm;
+//최종 총액
+private Double finalTotalPrice;
 	
 }

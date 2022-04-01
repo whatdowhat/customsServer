@@ -38,6 +38,7 @@ public class FileUploadReq {
 	private String uploadTypeNm;
 	private Long inboundMasterId;
 	private String coNum;
+	private int fileCount;
 	
 	
 	

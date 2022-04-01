@@ -135,7 +135,7 @@ public class InboundController {
 	public  InboundMasterRes addInboundMasterExport(@RequestBody InboundMasterReq inboundMasterReq) throws IOException, InterruptedException {
 
 	
-		InboundMasterRes result = _InboundService.addInboundMasterCompany(inboundMasterReq);
+		InboundMasterRes result = _InboundService.addInboundMasterExport(inboundMasterReq);
 		return result;
 
 	}

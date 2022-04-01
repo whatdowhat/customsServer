@@ -33,6 +33,7 @@ import com.keepgo.whatdo.entity.customs.FileUpload;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.request.FileUploadReq;
 import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
+import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
@@ -64,24 +65,45 @@ public class FileUploadServiceImpl implements FileUploadService {
 	
 	@Override
 	public List<?> getFileList(FileUploadReq fileUploadReq) {
+			
+		int fileCount=_fileUploadRepository.findByInboundMasterAndUploadType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(), fileUploadReq.getUploadType()).size();
+		
 
+		List<?> list = _fileUploadRepository.findByInboundMasterAndUploadType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(), fileUploadReq.getUploadType())
+		 
+		 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+			.map(item -> {
 
-		List<?> list = _fileUploadRepository.findAll().stream()
-				.sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
-				.map(item -> {
+		FileUploadRes dto = FileUploadRes.builder()
 
-			FileUploadRes dto = FileUploadRes.builder()
-
-					
-					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
-					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
-					.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
-					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
-											
-					.build();
-					
-			return dto;
-		}).collect(Collectors.toList());
+				
+				.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+				.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+				.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
+				.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+				.fileCount(fileCount)
+										
+				.build();
+				
+		return dto;
+	}).collect(Collectors.toList());
+		 
+//		List<?> list = _fileUploadRepository.findAll().stream()
+//				.sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+//				.map(item -> {
+//
+//			FileUploadRes dto = FileUploadRes.builder()
+//
+//					
+//					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+//					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+//					.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
+//					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//											
+//					.build();
+//					
+//			return dto;
+//		}).collect(Collectors.toList());
 
 		return list;
 	}
@@ -150,9 +172,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 		fileupload.setIsUsing(true);
 		_fileUploadRepository.save(fileupload);
 		
-		FileUploadRes fileUploadRes = new FileUploadRes();
-		return fileUploadRes;
-		
+//		FileUploadRes fileUploadRes = new FileUploadRes();
+//		return fileUploadRes;
+		return FileUploadRes.builder().inboundMasterId(Long.valueOf(fileUploadReq.getPath1())).build();
 	}
 	
 	@Override
@@ -188,8 +210,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 		
 		
-			FileUploadRes fileUploadRes = new FileUploadRes();
-			return fileUploadRes;
+//			FileUploadRes fileUploadRes = new FileUploadRes();
+//			return fileUploadRes;
+		return FileUploadRes.builder().inboundMasterId(Long.valueOf(fileUploadReq.getPath1())).build();
 	}
 
 	@Override

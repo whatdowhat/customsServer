@@ -1,28 +1,10 @@
 package com.keepgo.whatdo.entity.customs.request;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.keepgo.whatdo.entity.customs.Common;
-import com.keepgo.whatdo.entity.customs.CompanyInfo;
-import com.keepgo.whatdo.entity.customs.Inbound;
-import com.keepgo.whatdo.entity.customs.User;
-import com.keepgo.whatdo.util.ExcelColumn;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +12,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.ToString;
 
 @Data
@@ -42,13 +23,13 @@ import lombok.ToString;
 @ToString
 public class InboundMasterReq {
 
+//	@Builder.Default
+	private Long id; 
 	
-	private Long id;
+	@Column(name = "blNo")
+	private String blNo;
 	
-	@Column(name = "masterBlNo")
-	private String masterBlNo;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "incomDt")
 	private Date incomDt;
 
@@ -102,34 +83,30 @@ public class InboundMasterReq {
 
 	//작업형태 비고 //코로드인경우 입력값을 받음.
 	
-	private Long commonId;
-	
-	
 	private Long companyInfoId;
-	
-	private Long inboundId;
-	
-	private Long companyInfoExportId;
+	private Long exportId;
 	
 	@Column(name = "orderNo")
 	private int orderNo;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
-	@Column(name = "workDate")
-	private Date workDate;
+//	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
+//	@Column(name = "workDate")
+//	private Date workDate;
 
 	
+	
+	private String workDate;
 	
 	
 	
 	
 	private Boolean isUsing;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "createDt")
 	private Date createDt;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "updateDt")
 	private Date updateDt;
 	

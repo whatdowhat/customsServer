@@ -22,6 +22,7 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	
 	CompanyInfo findByCoNm(String coNm);
 	
+//	CompanyInfo findByCompanyInfo(CompanyInfo companyInfo);
 	
 	
 	

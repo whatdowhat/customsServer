@@ -31,9 +31,9 @@ public class UserRes {
 	private String phoneNo;
 	private String password;
 	private String loginId;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date regDt;
 	
 	private String updateId;

@@ -28,9 +28,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.FileUpload;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
+import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.FileUploadReq;
 import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
@@ -66,10 +68,56 @@ public class FileUploadServiceImpl implements FileUploadService {
 	@Override
 	public List<?> getFileList(FileUploadReq fileUploadReq) {
 			
-		int fileCount=_fileUploadRepository.findByInboundMasterAndUploadType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(), fileUploadReq.getUploadType()).size();
+//		int fileCount=_fileUploadRepository.findByInboundMasterAndUploadType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(), fileUploadReq.getUploadType()).size();
+//		
+//
+//		List<?> list = _fileUploadRepository.findByInboundMasterAndUploadType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(), fileUploadReq.getUploadType())
+//		 
+//		 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+//			.map(item -> {
+//
+//		FileUploadRes dto = FileUploadRes.builder()
+//
+//				
+//				.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+//				.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+////				.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
+//				.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//				.fileCount(fileCount)
+//										
+//				.build();
+//				
+//		return dto;
+//	}).collect(Collectors.toList());
+//		 
+////		List<?> list = _fileUploadRepository.findAll().stream()
+////				.sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+////				.map(item -> {
+////
+////			FileUploadRes dto = FileUploadRes.builder()
+////
+////					
+////					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+////					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+////					.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
+////					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+////											
+////					.build();
+////					
+////			return dto;
+////		}).collect(Collectors.toList());
+//
+//		return list;
+		return null;
+	}
+	
+	//masterid,common type
+	@Override
+	public List<?> getFileList2(FileUploadReq fileUploadReq) {
 		
-
-		List<?> list = _fileUploadRepository.findByInboundMasterAndUploadType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(), fileUploadReq.getUploadType())
+		List<?> list = _fileUploadRepository
+				.findByInboundMasterAndFileType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(),
+						fileUploadReq.getFileType().intValue())
 		 
 		 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
 			.map(item -> {
@@ -79,34 +127,20 @@ public class FileUploadServiceImpl implements FileUploadService {
 				
 				.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
 				.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
-				.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
+				.root(item.getRoot())
+				.fileType(item.getFileType())
+				.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
 				.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
-				.fileCount(fileCount)
+//				.fileCount(fileCount)
 										
 				.build();
 				
 		return dto;
 	}).collect(Collectors.toList());
 		 
-//		List<?> list = _fileUploadRepository.findAll().stream()
-//				.sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
-//				.map(item -> {
-//
-//			FileUploadRes dto = FileUploadRes.builder()
-//
-//					
-//					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
-//					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
-//					.root(item.getRoot()).uploadType(item.getUploadType()).uploadTypeNm(item.getUploadTypeNm())
-//					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
-//											
-//					.build();
-//					
-//			return dto;
-//		}).collect(Collectors.toList());
-
 		return list;
 	}
+
 	
 	@Override
 	public FileUploadRes uploadFile(MultipartFile file,FileUploadReq fileUploadReq) throws IOException {
@@ -157,7 +191,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 		fileupload.setInboundMaster(inboundMaster);
 		fileupload.setFileName1(fileName);
-		fileupload.setFileuploadType(common);
+//		fileupload.setFileuploadType(common);
 		fileupload.setRoot(uploadRoot);
 		fileupload.setCreateDt(new Date());
 		fileupload.setUpdateDt(new Date());
@@ -165,8 +199,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		fileupload.setPath1(inboundMaster.getCompanyInfo().getCoNum());
 		fileupload.setPath2(fileUploadReq.getPath2());
 		fileupload.setPath3(fileName);
-		fileupload.setUploadType(fileUploadReq.getPath2());
-		fileupload.setUploadTypeNm(common.getValue2());
+		fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getId());
 		fileupload.setRoot(strPath.toString());
 		
 		fileupload.setIsUsing(true);
@@ -248,6 +281,88 @@ public class FileUploadServiceImpl implements FileUploadService {
 			}
 		
 	}
+
+	@Override
+	public FileUploadRes uploadFile2(MultipartFile file, FileUploadReq fileUploadReq) throws IOException {
+		
+		// path1=1, masterid 
+		//path2=298, filetypeid
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(Long.valueOf(fileUploadReq.getPath1()))
+				.orElse(InboundMaster.builder().build());
+		StringBuilder strPath = new StringBuilder(uploadRoot);
+		//파일생성 폴더 이름은 사업자번호
+		strPath.append(File.separatorChar+inboundMaster.getCompanyInfo().getCoNum());
+		//파일생성 폴더 이름은 value값으로 
+		strPath.append(File.separatorChar+fileUploadReq.getPath2());
+		//stringBuilder.append(File.separatorChar+fileUploadReq.getPath3());
+		//c:/Customs/212351251/A/filename.xml
+//		String path = root+"a"; //폴더 경로
+		File Folder = new File(strPath.toString());
+
+		// 해당 디렉토리가 없을경우 디렉토리를 생성
+		if (!Folder.exists()) {
+			try{
+			    Folder.mkdirs(); //폴더 생성
+//			    System.out.println("폴더가 생성되었습니다.");
+		        } 
+		        catch(Exception e){
+			    e.getStackTrace();
+			}        
+	         }else {
+//			System.out.println("이미 폴더가 생성되어 있습니다.");
+		}
+		
+		String fileName= file.getOriginalFilename();
+		int filesize=(int)file.getSize();
+		File saveFile = new File(strPath.toString(), file.getOriginalFilename());
+		file.transferTo(saveFile);
+		
+		
+
+		
+		FileUpload fileupload = new FileUpload();
+		fileupload.setInboundMaster(inboundMaster);
+		//todo 사용자 세션 아이디로 수정해야됨.
+		fileupload.setUser(User.builder().id(new Long(1)).build());
+		
+		fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == Integer.valueOf(fileUploadReq.getPath2())).findFirst().get().getId());
+		
+		fileupload.setFileName1(fileName);
+		fileupload.setRoot(uploadRoot);
+		fileupload.setCreateDt(new Date());
+		fileupload.setUpdateDt(new Date());
+		fileupload.setFileSize(filesize);
+		fileupload.setPath1(inboundMaster.getCompanyInfo().getCoNum());
+		fileupload.setPath2(fileUploadReq.getPath2());
+		fileupload.setPath3(fileName);
+//		fileupload.setUploadType(fileUploadReq.getPath2());
+//		fileupload.setUploadTypeNm(common.getValue2());
+		fileupload.setRoot(strPath.toString());
+		fileupload.setIsUsing(true);
+		
+		List<FileUpload> already = _fileUploadRepository.findByInboundMasterAndFileTypeAndPath3(inboundMaster, Integer.valueOf(fileUploadReq.getPath2()), fileName);
+		if(already.size()>0) {
+			//파일이름이 이미 있는경우는 db에 update 날짜만 수정한다.
+			already.get(0).setUpdateDt(new Date());
+			_fileUploadRepository.save(already.get(0));
+			
+
+		}else {
+			_fileUploadRepository.save(fileupload);
+		}
+		
+		
+		
+		
+		
+		
+//		FileUploadRes fileUploadRes = new FileUploadRes();
+//		return fileUploadRes;
+		return FileUploadRes.builder().inboundMasterId(Long.valueOf(fileUploadReq.getPath1())).build();
+	}
+
+
+
 
 
 	

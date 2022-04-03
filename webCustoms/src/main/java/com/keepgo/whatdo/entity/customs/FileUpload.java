@@ -64,12 +64,9 @@ public class FileUpload {
 	@Column(name = "root")
 	private String root;
 	
-	@Column(name = "uploadType")
-	private String uploadType;
-	
-	@Column(name = "uploadTypeNm")
-	private String uploadTypeNm;
-	
+	@Column(name = "fileType")
+	private int fileType;
+
 	
 	@JoinColumn(name = "inboundMasterId")
 	@ExcelColumn(headerName="inboundMasterId",order = 2)
@@ -77,20 +74,16 @@ public class FileUpload {
 	@JsonBackReference
 	private InboundMaster inboundMaster;
 	
-	@JoinColumn(name = "fileuploadTypeId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common fileuploadType;
-	
 	//공통 컬럼.
 	@ExcelColumn(headerName="사용여부",order = 4)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")
 	private Boolean isUsing;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "createDt")
 	private Date createDt;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "updateDt")
 	private Date updateDt;
 	

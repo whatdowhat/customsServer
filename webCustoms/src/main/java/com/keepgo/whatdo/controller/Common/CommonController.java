@@ -48,6 +48,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
+import com.keepgo.whatdo.define.CoType;
+import com.keepgo.whatdo.define.CoTypeRes;
+import com.keepgo.whatdo.define.FileType;
+import com.keepgo.whatdo.define.FileTypeRes;
 import com.keepgo.whatdo.entity.BaseInfo;
 import com.keepgo.whatdo.entity.PageVO;
 import com.keepgo.whatdo.entity.customs.Common;
@@ -201,5 +205,21 @@ public class CommonController {
 	}
 
 	
+	@RequestMapping(value = "/common/fileType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<FileTypeRes> fileType()
+			throws Exception, NumberFormatException {
+
+		return FileType.getList();
+	}
+	
+	@RequestMapping(value = "/common/coType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<CoTypeRes> coType(MultipartFile file, String test, HttpServletRequest req)
+			throws Exception, NumberFormatException {
+
+		return CoType.getList();
+	}
+
 	
 }

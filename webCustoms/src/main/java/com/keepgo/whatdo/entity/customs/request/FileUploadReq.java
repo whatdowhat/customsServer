@@ -39,13 +39,14 @@ public class FileUploadReq {
 	private Long inboundMasterId;
 	private String coNum;
 	private int fileCount;
+	private Long fileType;
 	
 	
 	
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date createDt;
 	
 	

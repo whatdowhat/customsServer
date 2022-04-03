@@ -43,7 +43,7 @@ public class InboundReq {
 	@Column(name = "orderNo")
 	private int orderNo;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "workDate")
 	private Date workDate;
 

@@ -49,7 +49,7 @@ public class Inbound {
 	@Column(name = "orderNo")
 	private int orderNo;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "workDate")
 	private Date workDate;
 
@@ -112,9 +112,8 @@ public class Inbound {
 	@Column(name = "hsCode")
 	private String hsCode;
 	
-	@JoinColumn(name = "coId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Common co;
+	@Column(name = "coId")
+	private Integer coId;
 	
 	@Transient
 //	@Column(name = "coYn")

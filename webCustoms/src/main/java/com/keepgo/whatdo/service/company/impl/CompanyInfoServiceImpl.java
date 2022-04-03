@@ -74,23 +74,24 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 					.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
 					.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
 					.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
-					.managers(item.getManages().stream().map(sub_item->{
-						Map<String,Object> f = new HashMap<>();
-						f.put("comNm", sub_item.getCommon().getNm());
-						f.put("comValue", sub_item.getCommon().getValue());
-						f.put("comValue2", sub_item.getCommon().getValue2());
-						f.put("preperOrder", sub_item.getPreperOrder());
-						f.put("id", sub_item.getId());
-						
-						return f;
-					}).collect(Collectors.toList()) )
+					.manager(item.getManager())
+//					.managers(item.getManages().stream().map(sub_item->{
+//						Map<String,Object> f = new HashMap<>();
+//						f.put("comNm", sub_item.getCommon().getNm());
+//						f.put("comValue", sub_item.getCommon().getValue());
+//						f.put("comValue2", sub_item.getCommon().getValue2());
+//						f.put("preperOrder", sub_item.getPreperOrder());
+//						f.put("id", sub_item.getId());
+//						
+//						return f;
+//					}).collect(Collectors.toList()) )
 					.exports(item.getExports().stream().map(sub_item->{
 						Map<String,Object> f = new HashMap<>();
 						f.put("comNm", sub_item.getCommon().getNm());
 						f.put("comValue", sub_item.getCommon().getValue());
 						f.put("comValue2", sub_item.getCommon().getValue2());
 						f.put("preperOrder", sub_item.getPreperOrder());
-						f.put("id", sub_item.getId());
+						f.put("id", sub_item.getCommon().getId());
 						
 						return f;
 					}).collect(Collectors.toList()) )							
@@ -124,6 +125,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 				.coInvoice(req.getCoInvoice())
 				.isUsing(true)
 //				.manages(Arrays.asList(null))
+				.manager(req.getManager())
 				.createDt(new Date())
 				.updateDt(new Date())
 				
@@ -132,11 +134,12 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		final Long companyId = target.getId();
 		AtomicInteger index_m = new AtomicInteger(1);
 		AtomicInteger index_e = new AtomicInteger(1);
-		req.getManages().stream().forEach(item->_companyInfoManageRepository.save(CompanyInfoManage.builder()
-				.preperOrder(index_m.getAndIncrement())
-				.common(Common.builder().id(item).build())
-				.companInfoy(CompanyInfo.builder().id(companyId).build())
-				.build()));
+		
+//		req.getManages().stream().forEach(item->_companyInfoManageRepository.save(CompanyInfoManage.builder()
+//				.preperOrder(index_m.getAndIncrement())
+//				.common(Common.builder().id(item).build())
+//				.companInfoy(CompanyInfo.builder().id(companyId).build())
+//				.build()));
 		req.getExports().stream().forEach(item->_companyInfoExportRepository.save(CompanyInfoExport.builder()
 				.preperOrder(index_e.getAndIncrement())
 				.common(Common.builder().id(item).build())
@@ -202,9 +205,9 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setCoNum(companyInfoReq.getCoNum());
 		companyInfo.setCreateDt(new Date());
 		companyInfo.setUpdateDt(new Date());
+		companyInfo.setManager(companyInfoReq.getManager());
 		companyInfo.setCoNmEn(companyInfoReq.getCoNmEn());
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
-		
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());
 		companyInfo.setIsUsing(isUsing);
 		

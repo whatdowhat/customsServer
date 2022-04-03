@@ -49,11 +49,11 @@ public class User {
 	@Column(name = "password")
 	private String password;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "regDt")
 	private Date regDt;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "updateDt")
 	private Date updateDt;
 	

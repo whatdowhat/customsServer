@@ -34,18 +34,17 @@ public class FileUploadRes {
 	private String fileName2;
 	private int fileSize;
 	private String root;
-	private String uploadType;
-	private String uploadTypeNm;
 	private Long inboundMasterId;
 	private String coNum;
 	private int fileCount;
+	private int fileType;
+	private String fileTypeNm;
 	
 	
 	
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date createDt;
 	
 	

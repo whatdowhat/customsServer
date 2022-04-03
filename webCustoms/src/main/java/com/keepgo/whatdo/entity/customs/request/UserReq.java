@@ -36,9 +36,9 @@ public class UserReq {
 	private String password;
 	@ExcelColumn(headerName="로그인아이디",order = 5)
 	private String loginId;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date regDt;
 	
 	private String updateId;

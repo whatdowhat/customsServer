@@ -72,17 +72,17 @@ public class CompanyInfo {
 	@JsonManagedReference  // 추가
 	private List<CompanyInfoExport> exports = new ArrayList<>();
 	
-	@OneToMany( cascade = {CascadeType.REMOVE})
-	@JoinColumn(name = "companInfoyId")
-	@ExcelColumn(headerName="담당자",order = 4)
-	@JsonManagedReference  // 추가
-	private List<CompanyInfoManage> manages = new ArrayList<>();
+//	@OneToMany( cascade = {CascadeType.REMOVE})
+//	@JoinColumn(name = "companInfoyId")
+//	@ExcelColumn(headerName="담당자",order = 4)
+//	@JsonManagedReference  // 추가
+//	private List<CompanyInfoManage> manages = new ArrayList<>();
 	
 	@ExcelColumn(headerName="인보이스",order = 5)
 	@Column(name = "coInvoice")
 	private String coInvoice;
 
-	@Transient
+	@Column(name = "manager")
 	private String manager;
 	@Transient
 	private String managerLevel;
@@ -96,11 +96,11 @@ public class CompanyInfo {
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")
 	private Boolean isUsing;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "createDt")
 	private Date createDt;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "updateDt")
 	private Date updateDt;
 	

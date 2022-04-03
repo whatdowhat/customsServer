@@ -41,12 +41,13 @@ public class CompanyInfoReq {
 	@ExcelColumn(headerName="consignee",order = 7)
 	private String consignee;
 	private List<Long> exports = new ArrayList<>();
-	private List<Long> manages = new ArrayList<>();
+//	private List<Long> manages = new ArrayList<>();
+	private String manager;
 	
 	private Boolean isUsing;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date createDt;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
 	private User user;
 	

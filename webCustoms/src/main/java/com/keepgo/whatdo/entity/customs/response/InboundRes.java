@@ -37,7 +37,7 @@ public class InboundRes {
 	private Long coId;
 	private int orderNo;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date workDate;
 
 	

@@ -45,12 +45,13 @@ public class CompanyInfoRes {
 //	private Map<Long,String[]> manages = new HashMap<>();
 //	private List<CompanyInfoManage> manages = new ArrayList<>();
 	private String coInvoice;
+	private String manager;
 	private Boolean isUsing;
 	private String consignee;
 	private String coNmEn;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date createDt;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
 	private User user;
 	//공통 컬럼.

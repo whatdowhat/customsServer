@@ -23,6 +23,10 @@ public interface FileUploadService {
 	
 	@Transactional
 	List<?> getFileList(FileUploadReq fileUploadReq);
+
+	@Transactional
+	//masterid,common type
+	List<?> getFileList2(FileUploadReq fileUploadReq);
 	
 	@Transactional
 	FileUploadRes deleteFile(FileUploadReq fileUploadReq);
@@ -30,8 +34,10 @@ public interface FileUploadService {
 	
 	@Transactional
 	FileUploadRes uploadFile(MultipartFile file,FileUploadReq fileUploadReq) throws IOException; 
-	
+	@Transactional
+	FileUploadRes uploadFile2(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;	
 	@Transactional
 //	void downloadFile(FileUploadReq fileUploadReq, HttpServletResponse response,HttpServletRequest request) throws Exception;
 	ResponseEntity<Object> downloadFile(FileUploadReq fileUploadReq, HttpServletResponse response,HttpServletRequest request,String agent) throws Exception;
+
 }

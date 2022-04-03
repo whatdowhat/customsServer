@@ -19,6 +19,7 @@ public interface CompanyInfoService {
 
 	@Transactional
 	List<?> getAll(CompanyInfoReq companyInfoReq); 
+	
 	@Transactional
 	boolean removeCompanyInfo(CompanyInfoReq companyInfoReq);
 	@Transactional

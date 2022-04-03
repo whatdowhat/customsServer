@@ -88,15 +88,8 @@ public class CompanyInfoController {
 				.coNum(item.getCoNum())
 				.coInvoice(item.getCoInvoice())
 				.updateDt(item.getUpdateDt())
-				.managers(item.getManages().stream().map(sub_item->{
-					Map<String,Object> f = new HashMap<>();
-					f.put("comNm", sub_item.getCommon().getNm());
-					f.put("comValue", sub_item.getCommon().getValue());
-					f.put("preperOrder", sub_item.getPreperOrder());
-					f.put("id", sub_item.getId());
-					
-					return f;
-				}).collect(Collectors.toList()) )
+				.manager(item.getManager())
+				
 				.exports(item.getExports().stream().map(sub_item->{
 					Map<String,Object> f = new HashMap<>();
 					f.put("comNm", sub_item.getCommon().getNm());
@@ -148,7 +141,7 @@ public class CompanyInfoController {
 				.coAddress(req.getCoAddress())
 				.coInvoice(req.getCoInvoice())
 				.isUsing(true)
-//				.manages(Arrays.asList(null))
+				.manager(req.getManager())
 				.createDt(new Date())
 				.updateDt(new Date())
 				
@@ -156,10 +149,6 @@ public class CompanyInfoController {
 		target = _companyInfoRepository.save(target);
 		final Long companyId = target.getId();
 		
-		req.getManages().stream().forEach(item->_companyInfoManageRepository.save(CompanyInfoManage.builder()
-				.common(Common.builder().id(item).build())
-				.companInfoy(CompanyInfo.builder().id(companyId).build())
-				.build()));
 		req.getExports().stream().forEach(item->_companyInfoExportRepository.save(CompanyInfoExport.builder()
 				.common(Common.builder().id(item).build())
 				.companInfoy(CompanyInfo.builder().id(companyId).build())

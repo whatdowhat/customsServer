@@ -39,10 +39,10 @@ public class InboundMasterRes {
 	
 private Long id;
 
-@Column(name = "masterBlNo")
-private String masterBlNo;
+@Column(name = "blNo")
+private String blNo;
 
-@JsonFormat(pattern="yyyy-MM-dd")
+@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 @Column(name = "incomDt")
 private Date incomDt;
 
@@ -80,8 +80,14 @@ private String hangcha;
 private String workTypeId;
 //통관사업자
 private String companyNm;
-//수출자
+
+//수출자 이름
 private String export;
+//수출자 이름
+private String exportName;
+//수출자 주소
+private String exportAddress;
+
 //중국상검
 @Column(name = "chinaSanggumYn")
 private boolean chinaSanggumYn;
@@ -100,12 +106,12 @@ private Long commonId;
 
 private Long companyInfoId;
 
-private Long companyInfoExportId;
+private Long exportId;
 
 @Column(name = "orderNo")
 private int orderNo;
 
-@JsonFormat(pattern="yyyy-MM-dd")
+@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 @Column(name = "workDate")
 private Date workDate;
 
@@ -113,14 +119,20 @@ private Date workDate;
 
 private Long inboundId;
 
+//companyinfo
+private String coNmEn;
+private String consignee;
+private String conInvoice;
+private String coNum;
+
 
 private Boolean isUsing;
 
-@JsonFormat(pattern="yyyy-MM-dd")
+@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 @Column(name = "createDt")
 private Date createDt;
 
-@JsonFormat(pattern="yyyy-MM-dd")
+@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 @Column(name = "updateDt")
 private Date updateDt;
 

@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.keepgo.whatdo.define.CoType;
+import com.keepgo.whatdo.define.FileType;
+import com.keepgo.whatdo.define.FileTypeRes;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -105,15 +108,16 @@ public class InboundServiceImpl implements InboundService {
 				
 				.map(item -> {
 					
-
-					List<CommonRes> ll= item.getFileUploads().stream()
+//					List<FileTypeRes> ll = FileType.getList();
+					List<FileTypeRes> ll= item.getFileUploads().stream()
 					.filter(t-> t.getInboundMaster().getId() == item.getId())
-					.map(t->t.getFileuploadType())
-					.map(t->CommonRes.builder()
-							.id(t.getId())
-							.value(t.getValue())
-							.value2(t.getValue2())
-							.build()).collect(Collectors.toList());
+					.map(t->{
+						
+						return FileTypeRes.builder()
+							 
+								.id(t.getFileType())
+								.build();
+					}).collect(Collectors.toList());
 							
 //					CommonRes res;
 //					
@@ -121,22 +125,23 @@ public class InboundServiceImpl implements InboundService {
 //					List<InboundRes> li = ;
 					
 					
+					
 					Double ff = item.getInbounds().stream().mapToDouble(t->t.getBoxCount()).sum();
 					InboundMasterRes dto = InboundMasterRes.builder()
 					
 					
-					.id(item.getId()).masterBlNo(item.getMasterBlNo())
-					.aTypeCount(ll.stream().filter(t->t.getId().equals(new Long(296))).count())
-					.bTypeCount(ll.stream().filter(t->t.getId().equals(new Long(297))).count())
-					.cTypeCount(ll.stream().filter(t->t.getId().equals(new Long(298))).count())
-					.dTypeCount(ll.stream().filter(t->t.getId().equals(new Long(299))).count())
-					.eTypeCount(ll.stream().filter(t->t.getId().equals(new Long(300))).count())
-					.aTypeNm(_commonRepository.findById(new Long(296)).get().getValue())
-					.bTypeNm(_commonRepository.findById(new Long(297)).get().getValue())
-					.cTypeNm(_commonRepository.findById(new Long(298)).get().getValue())
-					.dTypeNm(_commonRepository.findById(new Long(299)).get().getValue())
-					.eTypeNm(_commonRepository.findById(new Long(300)).get().getValue())
+//					.id(item.getId()).masterBlNo(item.getMasterBlNo())
+					.aTypeCount(ll.stream().filter(t->t.getId() == (new Integer(FileType.A.getId()).intValue())).count())
+					.bTypeCount(ll.stream().filter(t->t.getId() == (new Integer(FileType.B.getId()).intValue())).count())
+					.cTypeCount(ll.stream().filter(t->t.getId() == (new Integer(FileType.C.getId()).intValue())).count())
+					.dTypeCount(ll.stream().filter(t->t.getId() == (new Integer(FileType.D.getId()).intValue())).count())
+					.eTypeCount(ll.stream().filter(t->t.getId() == (new Integer(FileType.E.getId()).intValue())).count())
 					
+					.aTypeNm(FileType.A.getName())
+					.aTypeNm(FileType.B.getName())
+					.aTypeNm(FileType.C.getName())
+					.aTypeNm(FileType.D.getName())
+					.aTypeNm(FileType.E.getName())
 					
 					
 					.totalItemCount(item.getInbounds().stream().mapToDouble(t-> (t.getItemCount() == null) ? 0 : t.getItemCount()).sum())
@@ -144,9 +149,9 @@ public class InboundServiceImpl implements InboundService {
 					.totalWeight(item.getInbounds().stream().mapToDouble(t-> (t.getWeight() == null) ? 0 : t.getWeight()).sum())
 					.totalCbm(item.getInbounds().stream().mapToDouble(t-> (t.getCbm() == null) ? 0 : t.getCbm()).sum())
 					.finalTotalPrice(item.getInbounds().stream().mapToDouble(t->(t.getTotalPrice() == null) ? 0 : t.getTotalPrice()).sum())
-					.export(item.getExport()).companyNm(item.getCompanyNm())	
-					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
-					.companyInfoId(item.getCompanyInfo().getId()).commonId(item.getWorkType().getId())
+//					.export(item.getExport()).companyNm(item.getCompanyNm())	
+//					.incomDt(item.getIncomDt()).workDate(item.getWorkDate()).updateDt(item.getUpdateDt()).createDt(item.getCreateDt())
+//					.companyInfoId(item.getCompanyInfo().getId()).commonId(item.getWorkType().getId())
 //					.cargo(item.getCargo()).toHarbor(item.getToHarbor())
 //					.fromHarbor(item.getFromHarbor()).containerNo(item.getContainerNo())
 //					.realNo(item.getRealNo()).hangmyung(item.getHangmyung()).hangcha(item.getHangcha())
@@ -203,24 +208,24 @@ public class InboundServiceImpl implements InboundService {
 		InboundMaster inboundMaster = new InboundMaster();
 		CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
 				.orElse(CompanyInfo.builder().build());
-		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getCompanyInfoExportId())
+		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getExportId())
 				.orElse(CompanyInfoExport.builder().build());
 		
 		Common common = companyInfoExport.getCommon();
 		
 		
-		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
-		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
-		inboundMaster.setExport(inboundMasterReq.getExport());
-		inboundMaster.setCreateDt(new Date());
-		inboundMaster.setUpdateDt(new Date());
-		inboundMaster.setCompanyInfo(companyInfo);
-		inboundMaster.setIsUsing(true);
-		inboundMaster.setCompanyInfo(companyInfo);
-		inboundMaster.setCompanyNm(companyInfo.getCoNm());
-		inboundMaster.setWorkTypeMemo(common);		
-		inboundMaster.setWorkType(common);
-		inboundMaster.setExport(common.getValue());
+//		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
+//		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
+//		inboundMaster.setExport(inboundMasterReq.getExport());
+//		inboundMaster.setCreateDt(new Date());
+//		inboundMaster.setUpdateDt(new Date());
+//		inboundMaster.setCompanyInfo(companyInfo);
+//		inboundMaster.setIsUsing(true);
+//		inboundMaster.setCompanyInfo(companyInfo);
+//		inboundMaster.setCompanyNm(companyInfo.getCoNm());
+//		inboundMaster.setWorkTypeMemo(common);		
+//		inboundMaster.setWorkType(common);
+//		inboundMaster.setExport(common.getValue());
 		
 		
 		_inboundMasterRepository.save(inboundMaster);
@@ -235,23 +240,23 @@ public class InboundServiceImpl implements InboundService {
 				.orElse(InboundMaster.builder().build());
 		CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
 				.orElse(CompanyInfo.builder().build());
-		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getCompanyInfoExportId())
+		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getExportId())
 				.orElse(CompanyInfoExport.builder().build());
 		
 		Common common = companyInfoExport.getCommon();
 		inboundMaster.setId(inboundMasterReq.getId());
-		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
-		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
-		inboundMaster.setExport(inboundMasterReq.getExport());
-		inboundMaster.setCreateDt(new Date());
-		inboundMaster.setUpdateDt(new Date());
-		inboundMaster.setCompanyInfo(companyInfo);
-		inboundMaster.setIsUsing(true);
-		inboundMaster.setCompanyInfo(companyInfo);
-		inboundMaster.setCompanyNm(companyInfo.getCoNm());
-		inboundMaster.setWorkTypeMemo(common);		
-		inboundMaster.setWorkType(common);
-		inboundMaster.setExport(common.getValue());
+//		inboundMaster.setWorkDate(inboundMasterReq.getWorkDate());
+//		inboundMaster.setMasterBlNo(inboundMasterReq.getMasterBlNo());
+//		inboundMaster.setExport(inboundMasterReq.getExport());
+//		inboundMaster.setCreateDt(new Date());
+//		inboundMaster.setUpdateDt(new Date());
+//		inboundMaster.setCompanyInfo(companyInfo);
+//		inboundMaster.setIsUsing(true);
+//		inboundMaster.setCompanyInfo(companyInfo);
+//		inboundMaster.setCompanyNm(companyInfo.getCoNm());
+//		inboundMaster.setWorkTypeMemo(common);		
+//		inboundMaster.setWorkType(common);
+//		inboundMaster.setExport(common.getValue());
 		
 		_inboundMasterRepository.save(inboundMaster);
 		
@@ -268,7 +273,7 @@ public class InboundServiceImpl implements InboundService {
 		
 		
 		inboundMaster.setCompanyInfo(companyInfo);
-		inboundMaster.setCompanyNm(companyInfo.getCoNm());
+//		inboundMaster.setCompanyNm(companyInfo.getCoNm());
 		
 		
 		_inboundMasterRepository.save(inboundMaster);
@@ -282,14 +287,14 @@ public class InboundServiceImpl implements InboundService {
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterReq.getId())
 				.orElse(InboundMaster.builder().build());
 		
-		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getCompanyInfoExportId())
+		CompanyInfoExport companyInfoExport = _companyInfoExportRepository.findById(inboundMasterReq.getExportId())
 				.orElse(CompanyInfoExport.builder().build());
 		
 		Common common = companyInfoExport.getCommon();
 		
-		inboundMaster.setWorkTypeMemo(common);		
-		inboundMaster.setWorkType(common);
-		inboundMaster.setExport(common.getValue());
+//		inboundMaster.setWorkTypeMemo(common);		
+//		inboundMaster.setWorkType(common);
+//		inboundMaster.setExport(common.getValue());
 		
 		_inboundMasterRepository.save(inboundMaster);
 		
@@ -305,7 +310,12 @@ public class InboundServiceImpl implements InboundService {
 		
 		List<InboundRes> result = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId()).stream()
 				.sorted(Comparator.comparing(Inbound::getOrderNo))
-				.map(item->InboundRes.builder()
+				.map(item->{
+					
+					
+					
+					InboundRes rt = InboundRes.builder()
+				
 						.id(item.getId())
 						.companyNm(item.getCompanyNm())
 						.marking(item.getMarking())
@@ -319,10 +329,14 @@ public class InboundServiceImpl implements InboundService {
 						.itemNo(item.getItemNo())
 						.hsCode(item.getHsCode())
 						.orderNo(item.getOrderNo())
+//						.coId(new Long(   CoType.getList().stream().filter(co->co.getId() == item.getCoId().intValue() ).findFirst().get().getId()  )  )
 //						.coCode(item.getCoCode())
 //						.coCode(item.getCo().getValue())
 //						.coId( item.getCo().getId() )
-						.coId( (item.getCo() != null) ? item.getCo().getId() : null )
+//						.coId(Integer.valueOf(
+//								CoType.getList().stream().filter(t->t.getId() == item.getCoId().intValue() ))
+//						.coId( (item.getCo() != null) ? item.getCo().getId() : null )
+						
 						.memo2(item.getMemo2())
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
@@ -330,7 +344,18 @@ public class InboundServiceImpl implements InboundService {
 						.inboundMasterId(item.getInboundMaster().getId())
 						
 						
-						.build())
+						.build();
+						
+					
+					if(item.getCoId() != null) {
+						rt.setCoId(Long.valueOf(item.getCoId()));	
+					}
+
+					
+					
+					return rt;
+						
+				})
 		.collect(Collectors.toList());
 		return result;
 	}
@@ -359,9 +384,11 @@ public class InboundServiceImpl implements InboundService {
 		for (int i = 0; i < list.size(); i++) {
 			
 			
-			Common common = _commonRepository.findByValue(
-					
-					(list.get(i).getCoCode() !=null ) ? list.get(i).getCoCode() : "" );
+//			Common common = _commonRepository.findByValue(
+//					
+//					(list.get(i).getCoCode() !=null ) ? list.get(i).getCoCode() : "" );
+
+			int index = i;		
 			
 			Inbound inbound = new Inbound();
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
@@ -376,8 +403,15 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
-//			if(com)
-			inbound.setCo(common);
+			if(list.get(i).getCoCode()!=null) {
+				CoType.getList().stream().filter(co -> co.getName().equals(list.get(index).getCoCode())).findFirst().ifPresent(
+						coType ->
+						inbound.setCoId(coType.getId())
+						);
+				
+					
+			}
+			
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
 			inbound.setTotalPrice(list.get(i).getTotalPrice());
@@ -401,21 +435,9 @@ public class InboundServiceImpl implements InboundService {
 		
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundReq.getInboundMasterId())
 				.orElse(InboundMaster.builder().build());
-//		Common common = _commonRepository.findById(inboundReq.getCoId()).orElse(Common.builder().build());
-//		Common common = _commonRepository.findById(
-//				
-//				(inboundReq.getCoId() !=null ) ? inboundReq.getCoId() : new Long(0) 
-//				
-//				).orElse(null);
-
-		
 		List<InboundReq> list = inboundReq.getInboundReqData();
 		for (int i = 0; i < list.size(); i++) {
-			
-			
-			Common common = _commonRepository.findById(
-					
-					(list.get(i).getCoId()!=null ) ? list.get(i).getCoId(): new Long(0) ).orElse(null);
+
 			
 			Inbound inbound = new Inbound();
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
@@ -430,7 +452,9 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
-			inbound.setCo(common);
+			if(list.get(i).getCoId() != null) {
+				inbound.setCoId(list.get(i).getCoId().intValue());	
+			}
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
 			inbound.setTotalPrice(list.get(i).getTotalPrice());

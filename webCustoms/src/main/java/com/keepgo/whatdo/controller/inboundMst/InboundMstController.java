@@ -54,9 +54,9 @@ public class InboundMstController {
 	InboundMstService _inboundMstService;
 	
 	@RequestMapping(value = "/test/create/inboundMst", method = {RequestMethod.POST })
-	public boolean inboundMst(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){
-		_inboundMstService.addInboundMaster(inboundMasterReq);
-		return  true;
+	public InboundMasterRes inboundMst(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){
+		
+		return  _inboundMstService.addInboundMaster(inboundMasterReq);
 	}
 	@RequestMapping(value = "/test/update/inboundMst", method = {RequestMethod.POST })
 	public boolean updateInboundMaster(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){

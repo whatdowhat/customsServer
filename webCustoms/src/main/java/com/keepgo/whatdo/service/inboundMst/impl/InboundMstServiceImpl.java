@@ -285,9 +285,12 @@ public class InboundMstServiceImpl implements InboundMstService {
 			Common common = companyInfoExport.getCommon();
 		}
 
-		_inboundMasterRepository.save(inboundMaster);
+		InboundMaster r = _inboundMasterRepository.save(inboundMaster);
 
 		InboundMasterRes inboundMasterRes = new InboundMasterRes();
+		inboundMasterRes.setId(r.getId());
+		inboundMasterRes.setWorkDate(r.getWorkDate());
+		inboundMasterRes.setBlNo(r.getBlNo());
 		return inboundMasterRes;
 	}
 
@@ -313,9 +316,13 @@ public class InboundMstServiceImpl implements InboundMstService {
 
 		//todo 사용자 세션 아이디로 수정해야됨.
 		inboundMaster.setUser(User.builder().id(new Long(1)).build());
-
-		target.setCompanyInfo(_companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId()).get());
-		target.setComExport(_commonRepository.findById(inboundMasterReq.getExportId()).get());
+		if(inboundMasterReq.getCompanyInfoId() != null) {
+			target.setCompanyInfo(_companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId()).get());	
+		}
+		if(inboundMasterReq.getExportId() != null) {
+			target.setComExport(_commonRepository.findById(inboundMasterReq.getExportId()).get());	
+		}		
+		
 		
 		
 

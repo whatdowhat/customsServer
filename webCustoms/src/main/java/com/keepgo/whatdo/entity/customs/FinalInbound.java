@@ -91,7 +91,7 @@ public class FinalInbound {
 	private String weatherCondition;
 
 	@OneToMany(cascade = { CascadeType.REMOVE })
-	@JoinColumn(name = "inboundMasterId")
+	@JoinColumn(name = "finalInboundId")
 	@JsonManagedReference // 추가
 	private List<FinalInboundInboundMaster> inboundMasters = new ArrayList<>();
 

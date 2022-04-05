@@ -32,9 +32,11 @@ import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
+import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
@@ -70,49 +72,40 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	InboundMasterRepository _inboundMasterRepository;
 
 	@Override
-	public List<?> getAll(CompanyInfoReq req) {
+	public List<?> getAll(FinalInboundReq req) {
 
-		List<?> list = _companyInfoRepository.findAll().stream()
-				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
+		List<?> list = _finalInboundRepository.findAll().stream()
+				.sorted(Comparator.comparing(FinalInbound::getUpdateDt).reversed()).map(item -> {
 
-					CompanyInfoRes dto = CompanyInfoRes.builder()
-//						.id(item.getId())
-//					.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
-//					.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt())
-//					.manages(item.getManages().stream().map(subitem -> subitem.getCommon())
-//							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
-//					.exports(item.getExports().stream().map(subitem -> subitem.getCommon())
-////							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
-////							.collect(Collectors.toMap(Common::getId, t -> t.getValue() ,Common::getId, t -> t.getValue() )))
-//					.build();
+					FinalInboundRes dto = FinalInboundRes.builder()
 
-							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
-							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
-							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
-							.manager(item.getManager())
-//					.managers(item.getManages().stream().map(sub_item->{
-//						Map<String,Object> f = new HashMap<>();
-//						f.put("comNm", sub_item.getCommon().getNm());
-//						f.put("comValue", sub_item.getCommon().getValue());
-//						f.put("comValue2", sub_item.getCommon().getValue2());
-//						f.put("preperOrder", sub_item.getPreperOrder());
-//						f.put("id", sub_item.getId());
-//						
-//						return f;
-//					}).collect(Collectors.toList()) )
-							.exports(item.getExports().stream().map(sub_item -> {
+
+							.id(item.getId()).departDtStr(item.getDepartDtStr())
+							
+							
+							.finalMasterBl(item.getFinalMasterBl())
+							.containerNo(item.getContainerNo())
+							.containerPrice(item.getContainerPrice())
+							.deliveryNm(item.getDeliveryNm())
+							.hangName(item.getHangName())
+							.silNo(item.getSilNo())
+							.cargoName(item.getCargoName())
+							.departPort(item.getDepartPort())
+							.hangCha(item.getHangCha())
+							.containerSizeStr(item.getContainerSizeStr())
+							.weatherCondition(item.getWeatherCondition())
+
+							.inboundMasters(item.getInboundMasters().stream().map(sub_item -> {
 								Map<String, Object> f = new HashMap<>();
-								f.put("comNm", sub_item.getCommon().getNm());
-								f.put("comValue", sub_item.getCommon().getValue());
-								f.put("comValue2", sub_item.getCommon().getValue2());
-								f.put("preperOrder", sub_item.getPreperOrder());
-								f.put("id", sub_item.getCommon().getId());
+								f.put("workDate", sub_item.getInboundMaster().getWorkDate());
+								f.put("blNo", sub_item.getInboundMaster().getBlNo());
+								f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+								f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+								f.put("id", sub_item.getInboundMaster().getId());
 
 								return f;
 							}).collect(Collectors.toList()))
-//					.exports(item.getExports().stream().map(subitem -> subitem.getCommon())
-//							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
-//							.collect(Collectors.toMap(Common::getId, t -> t.getValue() ,Common::getId, t -> t.getValue() )))
+
 							.build();
 
 					return dto;
@@ -121,11 +114,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		return list;
 	}
 
-	@Override
-	public boolean removeCompanyInfo(CompanyInfoReq req) {
-		req.getIds().stream().forEach(item -> _companyInfoRepository.delete(CompanyInfo.builder().id(item).build()));
-		return true;
-	}
+	
 
 	@Override
 	public boolean createFinalInbound(FinalInboundReq req) {
@@ -198,14 +187,28 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	}
 	
 	@Override
+	public boolean deleteFinalInboundMasterItems(FinalInboundReq req) {
+		
+		
+		
+		
+		_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), req.getInboundMasterId());
+		
+		
+		
+		
+		return true;
+	 
+	}
+	@Override
 	public boolean addFinalInboundMasterItems(FinalInboundReq req) {
 		
 		int preperOrder = 1;
 		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId()).orElse(FinalInbound.builder().build());
 		
-		_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(finalInbound.getId());
+//		_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(finalInbound.getId());
 		
-		List<InboundMaster> list = req.getInboundMasterData();
+		List<InboundMasterReq> list = req.getInboundMasterData();
 		
 		for (int i = 0; i < list.size(); i++) {
 			
@@ -229,6 +232,47 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		
 		return true;
 	 
+	}
+
+	@Override
+	public FinalInboundRes getOne(Long id) {
+		
+		FinalInbound r = _finalInboundRepository.findById(id).get();
+		
+		FinalInboundRes dto = 
+				
+				FinalInboundRes.builder()
+
+
+				.id(r.getId()).departDtStr(r.getDepartDtStr())
+				
+				
+				.finalMasterBl(r.getFinalMasterBl())
+				.containerNo(r.getContainerNo())
+				.containerPrice(r.getContainerPrice())
+				.deliveryNm(r.getDeliveryNm())
+				.hangName(r.getHangName())
+				.silNo(r.getSilNo())
+				.cargoName(r.getCargoName())
+				.departPort(r.getDepartPort())
+				.hangCha(r.getHangCha())
+				.containerSizeStr(r.getContainerSizeStr())
+				.weatherCondition(r.getWeatherCondition())
+				
+				.inboundMasters(r.getInboundMasters().stream().map(sub_item -> {
+					Map<String, Object> f = new HashMap<>();
+					f.put("workDate", sub_item.getInboundMaster().getWorkDate());
+					f.put("blNo", sub_item.getInboundMaster().getBlNo());
+					f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+					f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+					f.put("id", sub_item.getInboundMaster().getId());
+
+					return f;
+				}).collect(Collectors.toList()))
+				
+				.build();
+
+		return dto;
 	}
 
 

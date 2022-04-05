@@ -49,8 +49,8 @@ public class FinalInboundRes {
 	
 	private List<Map<String,Object>> inboundMasters = new ArrayList();
 	
-	
-	
+	//조인컬럼 삭제용
+	private Long inboundMasterId;
 	
 	private Boolean isUsing;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

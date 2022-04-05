@@ -29,10 +29,10 @@ public interface FinalInboundInboundMasterRepository extends JpaRepository<Final
 			+"		DELETE FROM web_final_inbound_inboundmst "
 			+"		WHERE 1=1                       "
 			+"		AND finalInboundId = :finalInboundId          "
-			
+			+"		AND inboundMasterId = :inboundMasterId          "
 			,nativeQuery = true
 			)
-	int deleteFinalInboundInboundMaster(@Param("finalInboundId")Long finalInboundId);
+	int deleteFinalInboundInboundMaster(@Param("finalInboundId")Long finalInboundId,@Param("inboundMasterId")Long inboundMasterId);
 	
 	
 }

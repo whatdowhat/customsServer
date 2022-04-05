@@ -50,9 +50,10 @@ public class FinalInboundReq {
 	private List<Long> inboundMasters = new ArrayList<>();
 	
 	
-	List<InboundMaster> inboundMasterData;
+	List<InboundMasterReq> inboundMasterData;
 	
-	
+	//조인컬럼 삭제용
+	private Long inboundMasterId;
 	
 	private Boolean isUsing;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

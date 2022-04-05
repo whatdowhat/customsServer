@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.controller.FinalInbound;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.mapper.UserMapper;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
@@ -72,20 +75,38 @@ public class FinalInboundController {
 		return  _finalInboundService.updateFinalInbound(finalInboundReq);
 		
 	}
-//	@RequestMapping(value = "/test/update/inboundMst", method = {RequestMethod.POST })
-//	public boolean updateInboundMaster(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){
-//		_inboundMstService.updateInboundMaster(inboundMasterReq);
-//		return  true;
-//	}
-//	@RequestMapping(value = "/test/get/allInboundMaster", method = {RequestMethod.POST })
-//	public List<?> getInboundMaster(HttpServletRequest httpServletRequest){
-//		List<?> l = _inboundMstService.getInboundMaster();
-//		return  l;
-//	}
-//	@RequestMapping(value = "/test/get/inboundMaster", method = {RequestMethod.POST })
-//	public InboundMasterRes getInboundMaster(HttpServletRequest httpServletRequest,@RequestBody InboundMasterReq inboundMasterReq){
-//		 
-//		return  _inboundMstService.getInboundMaster(inboundMasterReq.getId());
-//	}
+	@RequestMapping(value = "/test/finalInbound", method = {RequestMethod.POST })
+	public FinalInboundRes finalInbound(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
+		
+		return  _finalInboundService.getOne(finalInboundReq.getId());
+		
+	}
+	
+	@RequestMapping(value = "/test/deleteFinalInboundMasterItems", method = {RequestMethod.POST })
+	public boolean deleteFinalInboundMasterItems(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
+		
+		return  _finalInboundService.deleteFinalInboundMasterItems(finalInboundReq);
+		
+	}
+	
+	@RequestMapping(value = "/test/addFinalInboundMasterItems", method = {RequestMethod.POST })
+
+	public  boolean addFinalInboundMasterItems(@RequestBody FinalInboundReq finalInboundReq) throws IOException, InterruptedException {
+
+	
+		
+		return _finalInboundService.addFinalInboundMasterItems(finalInboundReq);
+
+	}
+	
+	@RequestMapping(value = "/test/finalInboundAll", method = {RequestMethod.POST })
+	public List<?> finalInboundAll(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
+		
+
+		return  _finalInboundService.getAll(finalInboundReq);
+
+		
+	}
+
 	
 }

@@ -41,6 +41,7 @@ private Long id;
 
 @Column(name = "blNo")
 private String blNo;
+private String freight;
 
 @JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 @Column(name = "incomDt")

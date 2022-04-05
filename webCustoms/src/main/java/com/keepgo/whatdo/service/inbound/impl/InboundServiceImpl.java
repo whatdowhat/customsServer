@@ -307,7 +307,7 @@ public class InboundServiceImpl implements InboundService {
 	public List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq) {
 		
 		
-		
+		List<Integer> index = new ArrayList<Integer>();
 		List<InboundRes> result = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId()).stream()
 				.sorted(Comparator.comparing(Inbound::getOrderNo))
 				.map(item->{
@@ -316,6 +316,7 @@ public class InboundServiceImpl implements InboundService {
 					
 					InboundRes rt = InboundRes.builder()
 				
+						
 						.id(item.getId())
 						.companyNm(item.getCompanyNm())
 						.marking(item.getMarking())
@@ -329,27 +330,56 @@ public class InboundServiceImpl implements InboundService {
 						.itemNo(item.getItemNo())
 						.hsCode(item.getHsCode())
 						.orderNo(item.getOrderNo())
-//						.coId(new Long(   CoType.getList().stream().filter(co->co.getId() == item.getCoId().intValue() ).findFirst().get().getId()  )  )
-//						.coCode(item.getCoCode())
-//						.coCode(item.getCo().getValue())
-//						.coId( item.getCo().getId() )
-//						.coId(Integer.valueOf(
-//								CoType.getList().stream().filter(t->t.getId() == item.getCoId().intValue() ))
-//						.coId( (item.getCo() != null) ? item.getCo().getId() : null )
-						
 						.memo2(item.getMemo2())
 						.memo3(item.getMemo3())
-						.totalPrice(item.getTotalPrice())
+						.totalPrice(item.getReportPrice() * item.getItemCount())
 						.engNm(item.getEngNm())
+						.colorCode(item.getColorCode())
 						.inboundMasterId(item.getInboundMaster().getId())
-						
+//						.coId(Long.valueOf(item.getCoId()))
+//						.coCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName())
 						
 						.build();
 						
 					
 					if(item.getCoId() != null) {
-						rt.setCoId(Long.valueOf(item.getCoId()));	
+						rt.setCoId(Long.valueOf(item.getCoId()));
+						for(int i=0; i<CoType.getList().size();i++) {
+							if(CoType.getList().get(i).getId() ==item.getCoId() ) {
+								rt.setCoCode(CoType.getList().get(i).getName());							
+							}
+						}
+//						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
 					}
+					if(index.size() == 0) {
+						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
+						rt.setFreight(item.getInboundMaster().getFreight());
+						rt.setManagerNm("홍길동 과장");
+//						rt.setMasterCompanyNumber("sdfsadfSDF");)
+
+						if(item.getInboundMaster().getCompanyInfo()!=null) {
+							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+item.getInboundMaster().getCompanyInfo().getCoNum());
+							rt.setManagerNm(item.getCompanyInfo().getManager());
+							
+						}
+						rt.setMasterExport("EXLFLDKE FLAKD .D  VLA ");
+						rt.setMasterExportAddr("DKEIPQ FPA V Z Z EIWWJF ALDLK BV C ALSLD FKS DLF SLDKF ");
+						if(item.getInboundMaster().getComExport()!=null) {
+							rt.setMasterExport(item.getInboundMaster().getComExport().getValue()+"\n"+item.getInboundMaster().getComExport().getValue2());	
+						}
+						
+						rt.setWorkDate(item.getInboundMaster().getWorkDate());
+						rt.setBlNo(item.getInboundMaster().getBlNo());
+					}
+//					if(index.size() == 1) {
+//						if(item.getInboundMaster().getCompanyInfo()!=null) {
+//							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNum());	
+//						}
+//						if(item.getInboundMaster().getComExport()!=null) {
+//							rt.setMasterExport(item.getInboundMaster().getComExport().getValue2());	
+//						}
+//					}
+					index.add(1);
 
 					
 					
@@ -357,6 +387,16 @@ public class InboundServiceImpl implements InboundService {
 						
 				})
 		.collect(Collectors.toList());
+		if(result.size()>0) {
+			result.get(0).setMasterCompanyNumber("123512351");
+
+			result.get(0).setBoxCountSum(result.stream().filter(t->t.getBoxCount()!= null).mapToDouble(t->t.getBoxCount()).sum());
+			result.get(0).setItemCountSum(result.stream().filter(t->t.getItemCount()!= null).mapToDouble(t->t.getItemCount()).sum());
+			result.get(0).setWeightSum(result.stream().filter(t->t.getWeight()!= null).mapToDouble(t->t.getWeight()).sum());
+			result.get(0).setCbmSum(result.stream().filter(t->t.getCbm()!= null).mapToDouble(t->t.getCbm()).sum());
+			result.get(0).setTotalPriceSum(result.stream().filter(t->t.getTotalPrice()!= null).mapToDouble(t->t.getTotalPrice()).sum());
+		}
+		
 		return result;
 	}
 	
@@ -403,6 +443,8 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
+			inbound.setColorCode(list.get(i).getColorCode());
+			
 			if(list.get(i).getCoCode()!=null) {
 				CoType.getList().stream().filter(co -> co.getName().equals(list.get(index).getCoCode())).findFirst().ifPresent(
 						coType ->
@@ -461,6 +503,7 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setEngNm(list.get(i).getEngNm());
 			inbound.setOrderNo(orderNo);
 			inbound.setInboundMaster(inboundMaster);
+			inbound.setColorCode(list.get(i).getColorCode());
 			_inboundRepository.save(inbound);
 			orderNo=orderNo+1;
 		}

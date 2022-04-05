@@ -192,7 +192,8 @@ public class InboundMstServiceImpl implements InboundMstService {
 		dto.setId(item.getId());
 		dto.setBlNo(item.getBlNo());
 		dto.setWorkDate(item.getWorkDate());
-
+		dto.setFreight(item.getFreight());
+		
 		if (item.getCompanyInfo() != null) {
 			dto.setCompanyInfoId(item.getCompanyInfo().getId());
 			dto.setCompanyNm(item.getCompanyInfo().getCoNm());
@@ -200,6 +201,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 			dto.setConsignee(item.getCompanyInfo().getConsignee());
 			dto.setConInvoice(item.getCompanyInfo().getCoInvoice());
 			dto.setCoNum(item.getCompanyInfo().getCoNum());
+			
 		}
 		if (item.getComExport()!= null) {
 			dto.setExportName(item.getComExport().getValue());
@@ -270,7 +272,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 		inboundMaster.setCreateDt(new Date());
 		inboundMaster.setUpdateDt(new Date());
 		inboundMaster.setIsUsing(true);
-		
+		inboundMaster.setFreight(inboundMasterReq.getFreight());
 
 		if (inboundMasterReq.getCompanyInfoId() != null) {
 			CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
@@ -313,6 +315,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 		target.setUpdateDt(new Date());
 		target.setWorkDate(inboundMaster.getWorkDate());
 		target.setIsUsing(true);
+		target.setFreight(inboundMasterReq.getFreight());
 
 		//todo 사용자 세션 아이디로 수정해야됨.
 		inboundMaster.setUser(User.builder().id(new Long(1)).build());

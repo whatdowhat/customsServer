@@ -37,6 +37,11 @@ public class InboundRes {
 	private Long coId;
 	private int orderNo;
 	
+	private String masterCompany;
+	private String masterCompanyNumber;
+	private String masterExport;
+	private String masterExportAddr;
+	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date workDate;
 
@@ -47,12 +52,10 @@ public class InboundRes {
 //	private Common companyInfo;
 //	
 	//발송업체 //0번
+	private String managerNm;
 	private String companyNm;
-	
-	
-	//마킹
+	private String colorCode;
 	private String marking;
-	
 	private String korNm;
 
 	//수량
@@ -144,8 +147,12 @@ public class InboundRes {
 	private int hsCodeSpan = 1;
 	@Builder.Default
 	private int workDateSpan = 1;
-	
+	@Builder.Default
 	private int blNoSpan= 1;
+	@Builder.Default
+	private int masterCompanySpan = 1;
+	@Builder.Default
+	private int masterExportSpan =1;
 	@Builder.Default
 	private int exportNmSpan= 1;
 	
@@ -153,7 +160,19 @@ public class InboundRes {
 	private int coCodeSpan = 1;
 	@Builder.Default
 	private int coIdSpan = 1;
+	@Builder.Default
+	private int totalPriceSpan=1;
+	@Builder.Default
+	private int engNmSpan=1;
 	
+	
+	private Double itemCountSum;
+	private Double boxCountSum;
+	private Double weightSum;
+	private Double cbmSum;
+	private Double totalPriceSum;
+	
+	private String freight;
 	
 //	@Override
 //	public String toString() {

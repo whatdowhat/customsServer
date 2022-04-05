@@ -7,9 +7,10 @@ import java.util.stream.Collectors;
 
 public enum CoType {
 
+	BL(0,"병합",0),
 	A(1,"FTA",1),
 	B(2,"YATAI",2),
-	C(3,"기타",3);
+	C(3,"공백",3);
 	
 	Integer id;
 	String name;

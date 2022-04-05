@@ -26,7 +26,7 @@ public class UtilServiceImpl implements UtilService {
 		// [타켓 컬럼][병합 span갯수]
 
 		// 배열 init default 1
-		int spanAttr[][] = new int[2][14];
+		int spanAttr[][] = new int[2][20];
 		for (int i = 0; i < spanAttr.length; i++) {
 			for (int j = 0; j < spanAttr[i].length; j++) {
 				spanAttr[i][j] = 1;
@@ -67,30 +67,29 @@ public class UtilServiceImpl implements UtilService {
 				spanAttr[1][0] = 1;
 				item.setCompanyNmSpan(spanAttr[1][0]);
 			}
-////			korNmSpan
-//			if (predict01(item.getKorNm()) && lastIndex != i) {
-//				spanAttr[1][1] = spanAttr[1][1] + 1; // [0]:start , [0]:columindex , value :병합 카운터
-//			} else {
-//				if ((i - spanAttr[1][1]) < 0) {
-//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-//				} else {
-//					list.get(i - spanAttr[1][1]).setKorNmSpan(spanAttr[1][1]);
-//				}
-//				spanAttr[1][1] = 1;
-//				item.setKorNmSpan(spanAttr[1][1]);
-//			}
-////			ItemCount
-//			if (predict01(item.getItemCount()) && lastIndex != i) {
-//				spanAttr[1][2] = spanAttr[1][2] + 1; // [0]:start , [0]:columindex , value :병합 카운터
-//			} else {
-//				if ((i - spanAttr[1][2]) < 0) {
-//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-//				} else {
-//					list.get(i - spanAttr[1][2]).setItemCountSpan(spanAttr[1][2]);
-//				}
-//				spanAttr[1][2] = 1;
-//				item.setItemCountSpan(spanAttr[1][2]);
-//			}
+			
+			if (predict01(item.getWorkDate()) && lastIndex != i) {
+				spanAttr[1][1] = spanAttr[1][1] + 1; // [0]:start , [0]:columindex , value :병합 카운터
+			} else {
+				if ((i - spanAttr[1][1]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][1]).setWorkDateSpan(spanAttr[1][1]);
+				}
+				spanAttr[1][1] = 1;
+				item.setWorkDateSpan(spanAttr[1][1]);
+			}
+			if (predict01(item.getEngNm() ) && lastIndex != i) {
+				spanAttr[1][2] = spanAttr[1][2] + 1;
+			} else {
+				if ((i - spanAttr[1][2]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][2]).setEngNmSpan(spanAttr[1][2]);
+				}
+				spanAttr[1][2] = 1;
+				item.setEngNmSpan(spanAttr[1][2]);
+			}	
 //			BoxCount
 			if (predict01(item.getBoxCount()) && lastIndex != i) {
 				spanAttr[1][3] = spanAttr[1][3] + 1; // [0]:start , [0]:columindex , value :병합 카운터
@@ -178,28 +177,110 @@ public class UtilServiceImpl implements UtilService {
 				spanAttr[1][9] = 1;
 				item.setCbmSpan(spanAttr[1][9]);
 			}
-			if (predict01(item.getCoCode()) && lastIndex != i) {
+			if (predict01_for_co(item.getCoId()) && lastIndex != i) {
 				spanAttr[1][10] = spanAttr[1][10] + 1;
 			} else {
 				if ((i - spanAttr[1][10]) < 0) {
 					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
 				} else {
-					list.get(i - spanAttr[1][10]).setCoCodeSpan(spanAttr[1][10]);
+					list.get(i - spanAttr[1][10]).setCoIdSpan(spanAttr[1][10]);
 				}
 				spanAttr[1][10] = 1;
-				item.setCoCodeSpan(spanAttr[1][10]);
+				item.setCoIdSpan(spanAttr[1][10]);
 			}	
-//			if (predict01(item.getCoId()) && lastIndex != i) {
-//				spanAttr[1][11] = spanAttr[1][11] + 1;
+//			if (predict01(item.getCoCode()) && lastIndex != i) {
+//				spanAttr[1][10] = spanAttr[1][10] + 1;
 //			} else {
-//				if ((i - spanAttr[1][11]) < 0) {
+//				if ((i - spanAttr[1][10]) < 0) {
 //					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
 //				} else {
-//					list.get(i - spanAttr[1][11]).setCoIdSpan(spanAttr[1][11]);
+//					list.get(i - spanAttr[1][10]).setCoCodeSpan(spanAttr[1][10]);
 //				}
-//				spanAttr[1][11] = 1;
-//				item.setCoIdSpan(spanAttr[1][11]);
+//				spanAttr[1][10] = 1;
+//				item.setCoCodeSpan(spanAttr[1][10]);
 //			}	
+			
+
+			if (predict01(item.getBlNo() ) && lastIndex != i) {
+				spanAttr[1][11] = spanAttr[1][11] + 1;
+			} else {
+				if ((i - spanAttr[1][11]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][11]).setBlNoSpan(spanAttr[1][11]);
+				}
+				spanAttr[1][11] = 1;
+				item.setBlNoSpan(spanAttr[1][11]);
+			}	
+
+			if (predict01(item.getMasterCompany() ) && lastIndex != i) {
+				spanAttr[1][12] = spanAttr[1][12] + 1;
+			} else {
+				if ((i - spanAttr[1][12]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][12]).setMasterCompanySpan(spanAttr[1][12]);
+				}
+				spanAttr[1][12] = 1;
+				item.setMasterCompanySpan(spanAttr[1][12]);
+			}	
+			
+			if (predict01(item.getMasterExport() ) && lastIndex != i) {
+				spanAttr[1][13] = spanAttr[1][13] + 1;
+			} else {
+				if ((i - spanAttr[1][13]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][13]).setMasterExportSpan(spanAttr[1][13]);
+				}
+				spanAttr[1][13] = 1;
+				item.setMasterExportSpan(spanAttr[1][13]);
+			}	
+			if (predict01(item.getReportPrice() ) && lastIndex != i) {
+				spanAttr[1][14] = spanAttr[1][14] + 1;
+			} else {
+				if ((i - spanAttr[1][14]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][14]).setReportPriceSpan(spanAttr[1][14]);
+				}
+				spanAttr[1][14] = 1;
+				item.setReportPriceSpan(spanAttr[1][14]);
+			}	
+			if (predict01(item.getItemNo() ) && lastIndex != i) {
+				spanAttr[1][15] = spanAttr[1][15] + 1;
+			} else {
+				if ((i - spanAttr[1][15]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][15]).setItemNoSpan(spanAttr[1][15]);
+				}
+				spanAttr[1][15] = 1;
+				item.setItemNoSpan(spanAttr[1][15]);
+			}	
+			if (predict01(item.getHsCode() ) && lastIndex != i) {
+				spanAttr[1][16] = spanAttr[1][16] + 1;
+			} else {
+				if ((i - spanAttr[1][16]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][16]).setHsCodeSpan(spanAttr[1][16]);
+				}
+				spanAttr[1][16] = 1;
+				item.setHsCodeSpan(spanAttr[1][16]);
+			}	
+			if (predict01(item.getTotalPrice() ) && lastIndex != i) {
+				spanAttr[1][17] = spanAttr[1][17] + 1;
+			} else {
+				if ((i - spanAttr[1][17]) < 0) {
+					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+				} else {
+					list.get(i - spanAttr[1][17]).setTotalPriceSpan(spanAttr[1][17]);
+				}
+				spanAttr[1][17] = 1;
+				item.setTotalPriceSpan(spanAttr[1][17]);
+			}	
+
 
 		}
 
@@ -240,6 +321,14 @@ public class UtilServiceImpl implements UtilService {
 	
 	public boolean predict01(Date value) {
 		if (value == null) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public boolean predict01_for_co(Long value) {
+		if (value == null ||value == 0  ) {
 			return true;
 		}
 		return false;

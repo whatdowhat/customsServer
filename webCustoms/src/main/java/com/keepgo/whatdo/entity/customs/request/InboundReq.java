@@ -48,8 +48,7 @@ public class InboundReq {
 	private Date workDate;
 
 	
-	//발송업체 회사
-//	private Common companyInfo;
+	private String colorCode;
 	
 	
 	@Column(name = "companyNm")

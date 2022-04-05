@@ -51,6 +51,11 @@ public class InboundMaster {
 	private String blNo;
 	
 
+	@Column(name = "freight")
+	private String freight;
+	
+
+	
 	@JoinColumn(name = "companyInfoId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
@@ -75,6 +80,7 @@ public class InboundMaster {
 	@JoinColumn(name = "userId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
+	
 	
 	
 	

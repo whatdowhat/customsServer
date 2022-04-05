@@ -71,11 +71,11 @@ public class Inbound {
 	private String companyNm;
 	
 	
-	
 	@Column(name = "marking")
 	private String marking;
 	
-	
+	@Column(name = "ColorCode")
+	private String ColorCode;
 	
 	@Column(name = "korNm")
 	private String korNm;

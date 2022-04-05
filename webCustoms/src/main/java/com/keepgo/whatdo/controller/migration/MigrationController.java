@@ -187,18 +187,25 @@ public class MigrationController {
 	}
 	public Common getCommon (String value,String value2) {
 		
+		Common c = _commonRepository.findByValue(value);
 		
+		if(c == null ) {
+			new Exception("일치하지 않음.");
+		}else {
+			return c;	
+		}
 		
-		return 	Common.builder()
-				.user(new Long(1))
-				.createDt(new Date())
-				.updateDt(new Date())
-				.commonMaster(CommonMaster.builder().id(new Long(2)).build())
-				.nm("쉬퍼")
-				.isUsing(true)
-				.value(value)
-				.value2(value2)
-				.build();
+//		return 	Common.builder()
+//				.user(new Long(1))
+//				.createDt(new Date())
+//				.updateDt(new Date())
+//				.commonMaster(CommonMaster.builder().id(new Long(2)).build())
+//				.nm("쉬퍼")
+//				.isUsing(true)
+//				.value(value)
+//				.value2(value2)
+//				.build();
+		return c;
 	}
 	
 	
@@ -209,7 +216,7 @@ public class MigrationController {
 	public List<CompanyInfo> company(HttpServletRequest httpServletRequest, @RequestBody CommonReq commonReq,
 		HttpServletResponse response) throws Exception {
 
-		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어)-정리중.xlsx";
+		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어).xlsx";
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		
 		try {
@@ -221,8 +228,9 @@ public class MigrationController {
 
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			// 첫번째 시트
-			XSSFSheet sheet = workbook.getSheetAt(0);
-
+//			XSSFSheet sheet = workbook.getSheetAt(0);
+			// 세번째 시트
+			XSSFSheet sheet = workbook.getSheetAt(2);
 
 			int startRowNum = 0;
 			int rowIndex = 0;
@@ -250,7 +258,8 @@ public class MigrationController {
 		
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		
-		for (int i = 2; i < 38; i++) {
+//		for (int i = 2; i <= 2; i++) {
+		for (int i = 2; i < sheet.getLastRowNum()+1; i++) {
 //		for (int i = 0; i < sheet.getLastRowNum(); i++) {
 			XSSFRow row = sheet.getRow(i);
 
@@ -269,7 +278,7 @@ public class MigrationController {
 				switch (cell.getCellTypeEnum().name()) {
 				case "STRING":
 					String string1 = cell.getStringCellValue();
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
 
 					if(cell.getColumnIndex()==1) {
 						//상호(한글)
@@ -298,7 +307,7 @@ public class MigrationController {
 //					
 					break;
 				case "NUMERIC":
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
 					cell.setCellType( HSSFCell.CELL_TYPE_STRING );
 					String numberToString = cell.getStringCellValue();
 							
@@ -479,7 +488,8 @@ public class MigrationController {
 	public List<CompanyInfo> company_exports(HttpServletRequest httpServletRequest, @RequestBody CommonReq commonReq,
 			HttpServletResponse response) throws Exception {
 
-		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어)-정리중.xlsx";
+//		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어)-정리중.xlsx";
+		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어).xlsx";
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		Set<Common> sets = new HashSet<Common>();
 		try {
@@ -492,7 +502,8 @@ public class MigrationController {
 
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			// 첫번째 시트
-			XSSFSheet sheet = workbook.getSheetAt(1);
+//			XSSFSheet sheet = workbook.getSheetAt(1);
+			XSSFSheet sheet = workbook.getSheetAt(3);
 			list = getListCompanyFromShipper(sheet);
 			
 		} catch (
@@ -510,7 +521,7 @@ public class MigrationController {
 		
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		
-		for (int i = 2; i < 38; i++) {
+		for (int i = 2; i < sheet.getLastRowNum()+1; i++) {
 //		for (int i = 0; i < sheet.getLastRowNum(); i++) {
 			XSSFRow row = sheet.getRow(i);
 

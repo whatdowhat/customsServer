@@ -48,19 +48,17 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
 	@Autowired
 	CompanyInfoManageRepository _companyInfoManageRepository;
-	
+
 	@Autowired
 	CommonRepository _commonRepository;
 
 	@Override
 	public List<?> getAll(CompanyInfoReq req) {
 
-
 		List<?> list = _companyInfoRepository.findAll().stream()
-				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed())
-				.map(item -> {
+				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
 
-			CompanyInfoRes dto = CompanyInfoRes.builder()
+					CompanyInfoRes dto = CompanyInfoRes.builder()
 //						.id(item.getId())
 //					.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
 //					.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt())
@@ -70,11 +68,11 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 ////							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
 ////							.collect(Collectors.toMap(Common::getId, t -> t.getValue() ,Common::getId, t -> t.getValue() )))
 //					.build();
-					
-					.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
-					.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
-					.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
-					.manager(item.getManager())
+
+							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
+							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
+							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
+							.manager(item.getManager())
 //					.managers(item.getManages().stream().map(sub_item->{
 //						Map<String,Object> f = new HashMap<>();
 //						f.put("comNm", sub_item.getCommon().getNm());
@@ -85,93 +83,82 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 //						
 //						return f;
 //					}).collect(Collectors.toList()) )
-					.exports(item.getExports().stream().map(sub_item->{
-						Map<String,Object> f = new HashMap<>();
-						f.put("comNm", sub_item.getCommon().getNm());
-						f.put("comValue", sub_item.getCommon().getValue());
-						f.put("comValue2", sub_item.getCommon().getValue2());
-						f.put("preperOrder", sub_item.getPreperOrder());
-						f.put("id", sub_item.getCommon().getId());
-						
-						return f;
-					}).collect(Collectors.toList()) )							
+							.exports(item.getExports().stream().map(sub_item -> {
+								Map<String, Object> f = new HashMap<>();
+								f.put("comNm", sub_item.getCommon().getNm());
+								f.put("comValue", sub_item.getCommon().getValue());
+								f.put("comValue2", sub_item.getCommon().getValue2());
+								f.put("preperOrder", sub_item.getPreperOrder());
+								f.put("id", sub_item.getCommon().getId());
+
+								return f;
+							}).collect(Collectors.toList()))
 //					.exports(item.getExports().stream().map(subitem -> subitem.getCommon())
 //							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
 //							.collect(Collectors.toMap(Common::getId, t -> t.getValue() ,Common::getId, t -> t.getValue() )))
-					.build();
-					
-			return dto;
-		}).collect(Collectors.toList());
+							.build();
+
+					return dto;
+				}).collect(Collectors.toList());
 
 		return list;
 	}
 
-	
 	@Override
 	public boolean removeCompanyInfo(CompanyInfoReq req) {
-		req.getIds().stream().forEach(item->
-		_companyInfoRepository.delete(CompanyInfo.builder().id(item).build())
-		);
+		req.getIds().stream().forEach(item -> _companyInfoRepository.delete(CompanyInfo.builder().id(item).build()));
 		return true;
 	}
 
-
 	@Override
 	public boolean createCompanyInfo(CompanyInfoReq req) {
-		CompanyInfo target = CompanyInfo.builder()
-				.coNum(req.getCoNum())
-				.coNm(req.getCoNm())
-				.coAddress(req.getCoAddress())
-				.coInvoice(req.getCoInvoice())
-				.isUsing(true)
+		CompanyInfo target = CompanyInfo.builder().coNum(req.getCoNum()).coNm(req.getCoNm())
+				.coAddress(req.getCoAddress()).coInvoice(req.getCoInvoice()).isUsing(true)
 //				.manages(Arrays.asList(null))
-				.manager(req.getManager())
-				.createDt(new Date())
-				.updateDt(new Date())
-				
+				.manager(req.getManager()).createDt(new Date()).updateDt(new Date())
+
 				.build();
 		target = _companyInfoRepository.save(target);
 		final Long companyId = target.getId();
 		AtomicInteger index_m = new AtomicInteger(1);
 		AtomicInteger index_e = new AtomicInteger(1);
-		
+
 //		req.getManages().stream().forEach(item->_companyInfoManageRepository.save(CompanyInfoManage.builder()
 //				.preperOrder(index_m.getAndIncrement())
 //				.common(Common.builder().id(item).build())
 //				.companInfoy(CompanyInfo.builder().id(companyId).build())
 //				.build()));
-		req.getExports().stream().forEach(item->_companyInfoExportRepository.save(CompanyInfoExport.builder()
-				.preperOrder(index_e.getAndIncrement())
-				.common(Common.builder().id(item).build())
-				.companInfoy(CompanyInfo.builder().id(companyId).build())
-				.build()));
+		req.getExports().stream()
+				.forEach(item -> _companyInfoExportRepository.save(CompanyInfoExport.builder()
+						.preperOrder(index_e.getAndIncrement()).common(Common.builder().id(item).build())
+						.companInfoy(CompanyInfo.builder().id(companyId).build()).build()));
 
 		return true;
 	}
-	
+
 	@Override
 	public CompanyInfoRes deleteCompanyInfo(CompanyInfoReq companyInfoReq) {
 		List<Long> list = companyInfoReq.getIds();
 		for (int i = 0; i < list.size(); i++) {
 
-			CompanyInfo companyInfo = _companyInfoRepository.findById(list.get(i).longValue()).orElse(CompanyInfo.builder().build());
+			CompanyInfo companyInfo = _companyInfoRepository.findById(list.get(i).longValue())
+					.orElse(CompanyInfo.builder().build());
 
 			_companyInfoRepository.delete(companyInfo);
-			int deleteCompanyInfoExport=_companyInfoExportRepository.deleteCompanyinfoExport(companyInfo.getId());
+			int deleteCompanyInfoExport = _companyInfoExportRepository.deleteCompanyinfoExport(companyInfo.getId());
 //			_companyInfoExportRepository.deleteCompanyinfoExport(companyInfo.getId());
-			int deleteCompanyInfoManage=_companyInfoManageRepository.deleteCompanyinfoManage(companyInfo.getId());
+			int deleteCompanyInfoManage = _companyInfoManageRepository.deleteCompanyinfoManage(companyInfo.getId());
 //			_companyInfoManageRepository.deleteCompanyinfoManage(companyInfo.getId());
 		}
-		
+
 		CompanyInfoRes companyInfoRes = new CompanyInfoRes();
 		return companyInfoRes;
 	}
-	
+
 	@Override
 	public CompanyInfoRes addCompanyInfo(CompanyInfoReq companyInfoReq) {
 		CompanyInfo companyInfo = new CompanyInfo();
-		
-		
+
 		companyInfo.setCoAddress(companyInfoReq.getCoAddress());
 		companyInfo.setCoInvoice(companyInfoReq.getCoInvoice());
 		companyInfo.setCoNm(companyInfoReq.getCoNm());
@@ -181,23 +168,21 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setCoNmEn(companyInfoReq.getCoNmEn());
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
 //		companyInfo.setUser(User.builder().build());
-		
-		
+
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());
 		companyInfo.setIsUsing(isUsing);
-		
-		 _companyInfoRepository.save(companyInfo);
-		
 
-		 CompanyInfoRes companyInfoRes = new CompanyInfoRes();
+		_companyInfoRepository.save(companyInfo);
+
+		CompanyInfoRes companyInfoRes = new CompanyInfoRes();
 		return companyInfoRes;
 	}
-	
+
 	@Override
 	public CompanyInfoRes updateCompanyInfo(CompanyInfoReq companyInfoReq) {
 		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId())
 				.orElse(CompanyInfo.builder().build());
-		
+
 		companyInfo.setId(companyInfoReq.getId());
 		companyInfo.setCoAddress(companyInfoReq.getCoAddress());
 		companyInfo.setCoInvoice(companyInfoReq.getCoInvoice());
@@ -210,29 +195,28 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());
 		companyInfo.setIsUsing(isUsing);
-		
-		 _companyInfoRepository.save(companyInfo);
-		
 
-		 CompanyInfoRes companyInfoRes = new CompanyInfoRes();
+		_companyInfoRepository.save(companyInfo);
+
+		CompanyInfoRes companyInfoRes = new CompanyInfoRes();
 		return companyInfoRes;
 	}
-	
+
 	@Override
 	public CompanyInfoRes addCompanyInfoExports(CompanyInfoReq companyInfoReq) {
-		
-		
-		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId()).orElse(CompanyInfo.builder().build());
-		
+
+		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId())
+				.orElse(CompanyInfo.builder().build());
+
 		_companyInfoExportRepository.deleteCompanyinfoExport(companyInfo.getId());
-		
+
 		List<Common> list = companyInfoReq.getCompanyExportData();
-		
+
 		for (int i = 0; i < list.size(); i++) {
-			
-			CompanyInfoExport companyInfoExport=new CompanyInfoExport();
+
+			CompanyInfoExport companyInfoExport = new CompanyInfoExport();
 			Common common = _commonRepository.findById(list.get(i).getId()).orElse(Common.builder().build());
-			
+
 			companyInfoExport.setPreperOrder(list.get(i).getPreperOrder());
 			companyInfoExport.setCommon(common);
 			companyInfoExport.setCompanInfoy(companyInfo);
@@ -240,24 +224,24 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 			_companyInfoExportRepository.save(companyInfoExport);
 
 		}
-		
+
 		CompanyInfoRes companyInfoRes = new CompanyInfoRes();
 		return companyInfoRes;
-	 
+
 	}
-	
+
 	@Override
 	public CompanyInfoRes addCompanyInfoManages(CompanyInfoReq companyInfoReq) {
-		
-		
-		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId()).orElse(CompanyInfo.builder().build());
+
+		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId())
+				.orElse(CompanyInfo.builder().build());
 		List<Common> list = companyInfoReq.getCompanyManageData();
-		
+
 		for (int i = 0; i < list.size(); i++) {
-			
-			CompanyInfoManage companyInfoManage=new CompanyInfoManage();
+
+			CompanyInfoManage companyInfoManage = new CompanyInfoManage();
 			Common common = _commonRepository.findById(list.get(i).getId()).orElse(Common.builder().build());
-			
+
 			companyInfoManage.setPreperOrder(0);
 			companyInfoManage.setCommon(common);
 			companyInfoManage.setCompanInfoy(companyInfo);
@@ -265,58 +249,54 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 			_companyInfoManageRepository.save(companyInfoManage);
 
 		}
-		
+
 		CompanyInfoRes companyInfoRes = new CompanyInfoRes();
 		return companyInfoRes;
-	 
+
 	}
-	
+
 	@Override
 	public List<?> excelUpload(MultipartFile Multifile, CompanyInfoReq companyInfoReq) throws IOException {
-		
+
 		String extension = FilenameUtils.getExtension(Multifile.getOriginalFilename());
 
 		if (!extension.equals("xlsx") && !extension.equals("xls")) {
 			throw new IOException("엑셀파일만 업로드 해주세요.");
 		}
 
-
 		XSSFWorkbook workbook = new XSSFWorkbook(Multifile.getInputStream());
-		
+
 		// 첫번째 시트
 		XSSFSheet sheet = workbook.getSheetAt(0);
-		
-		
-		//마지막 row 숫자
+
+		// 마지막 row 숫자
 		int rowCount = sheet.getLastRowNum();
 		List<CompanyInfo> list = new ArrayList<>();
-		//i=1   rowCount+1 해야 마지막 row 데이터까지 읽어옴
-		for(int i=1; i<rowCount+1;i++) {
+		// i=1 rowCount+1 해야 마지막 row 데이터까지 읽어옴
+		for (int i = 1; i < rowCount + 1; i++) {
 			XSSFRow row = sheet.getRow(i);
 			CompanyInfo companyInfo = new CompanyInfo();
 			companyInfo.setIsUsing(true);
 			companyInfo.setCreateDt(new Date());
 			companyInfo.setUpdateDt(new Date());
-			
-			row.cellIterator().forEachRemaining(cell->{
-				
+
+			row.cellIterator().forEachRemaining(cell -> {
+
 				int cellIndex = cell.getColumnIndex();
 				switch (cell.getCellTypeEnum().name()) {
-				
+
 				case "STRING":
 					String string1 = cell.getStringCellValue();
-					excelUploadProcess01(cellIndex,string1,companyInfo);
-					
-					
-					
+					excelUploadProcess01(cellIndex, string1, companyInfo);
+
 					break;
 				case "NUMERIC":
-					cell.setCellType( HSSFCell.CELL_TYPE_STRING );
+					cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 					String numberToString = cell.getStringCellValue();
-					cellIndex = cell.getColumnIndex();		
-					
-					excelUploadProcess01(cellIndex,numberToString,companyInfo);
-					
+					cellIndex = cell.getColumnIndex();
+
+					excelUploadProcess01(cellIndex, numberToString, companyInfo);
+
 					break;
 				case "FORMULA":
 					String formula1 = cell.getCellFormula();
@@ -326,49 +306,43 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 				default:
 					break;
 				}
-				
-				
-			});
-			
-			
 
-				list.add(companyInfo);
-				_companyInfoRepository.save(companyInfo);	
-			
-			
+			});
+
+			list.add(companyInfo);
+			_companyInfoRepository.save(companyInfo);
+
 		}
-		
+
 		return list;
 	}
 
-	public void excelUploadProcess01(int cellIndex,String value,CompanyInfo companyInfo) {
-		//cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
-		//CompanyInfoId 입력값 없으면 insert 후보
-		if(cellIndex == 0 ) {
+	public void excelUploadProcess01(int cellIndex, String value, CompanyInfo companyInfo) {
+		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
+		// CompanyInfoId 입력값 없으면 insert 후보
+		if (cellIndex == 0) {
 			companyInfo.setId(new Long(value));
 		}
-		
-		if(cellIndex == 1) {
+
+		if (cellIndex == 1) {
 			companyInfo.setCoInvoice(value);
 		}
-		if(cellIndex == 2) {
+		if (cellIndex == 2) {
 			companyInfo.setCoNm(value);
 		}
-		if(cellIndex == 3) {
+		if (cellIndex == 3) {
 			companyInfo.setCoNmEn(value);
 		}
-		if(cellIndex == 4) {
+		if (cellIndex == 4) {
 			companyInfo.setCoNum(value);
 		}
-		if(cellIndex == 5) {
+		if (cellIndex == 5) {
 			companyInfo.setCoAddress(value);
 		}
-		if(cellIndex == 6) {
+		if (cellIndex == 6) {
 			companyInfo.setConsignee(value);
 		}
-		
+
 	}
 
-
-	
 }

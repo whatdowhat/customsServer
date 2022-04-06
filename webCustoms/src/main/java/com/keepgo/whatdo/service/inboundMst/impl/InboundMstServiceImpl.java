@@ -25,14 +25,17 @@ import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.FileUpload;
+import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
+import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
@@ -295,7 +298,22 @@ public class InboundMstServiceImpl implements InboundMstService {
 		inboundMasterRes.setBlNo(r.getBlNo());
 		return inboundMasterRes;
 	}
+	
+	@Override
+	public InboundMasterRes createInboundMaster(InboundMasterReq req) {
+		InboundMaster target = InboundMaster.builder().blNo(req.getBlNo())
 
+				// todo 사용자 세션 아이디로 수정해야됨.
+				.user(User.builder().id(new Long(1)).build())
+		
+				.isUsing(true).createDt(new Date()).updateDt(new Date())
+
+				.build();
+		target = _inboundMasterRepository.save(target);
+
+
+		return InboundMasterRes.builder().id(_inboundMasterRepository.findByBlNo(req.getBlNo()).getId()).blNo(req.getBlNo()).build();
+	}
 
 	@Override
 	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) {

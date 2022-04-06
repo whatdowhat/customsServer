@@ -69,6 +69,13 @@ public class FinalInboundController {
 		
 	}
 	
+	@RequestMapping(value = "/test/finalInboundAdd", method = {RequestMethod.POST })
+	public FinalInboundRes finalInboundAdd(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
+		
+		return  _finalInboundService.addFinalInbound(finalInboundReq);
+		
+	}
+	
 	@RequestMapping(value = "/test/finalInboundUpdate", method = {RequestMethod.POST })
 	public boolean finalInboundUpdate(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
 		
@@ -96,6 +103,16 @@ public class FinalInboundController {
 	
 		
 		return _finalInboundService.addFinalInboundMasterItems(finalInboundReq);
+
+	}
+	
+	@RequestMapping(value = "/test/addDataFinalInboundMasterItems", method = {RequestMethod.POST })
+
+	public  boolean addDataFinalInboundMasterItems(@RequestBody FinalInboundReq finalInboundReq) throws IOException, InterruptedException {
+
+	
+		
+		return _finalInboundService.addDataFinalInboundMasterItems(finalInboundReq);
 
 	}
 	

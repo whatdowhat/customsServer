@@ -29,6 +29,10 @@ public interface FinalInboundService {
 	
 	@Transactional
 	boolean createFinalInbound(FinalInboundReq finalInboundReq);
+	
+	@Transactional
+	FinalInboundRes addFinalInbound(FinalInboundReq finalInboundReq);
+	
 	@Transactional
 	boolean updateFinalInbound(FinalInboundReq finalInboundReq);
 	
@@ -37,5 +41,8 @@ public interface FinalInboundService {
 	
 	@Transactional
 	boolean addFinalInboundMasterItems(FinalInboundReq finalInboundReq);
+	
+	@Transactional
+	boolean addDataFinalInboundMasterItems(FinalInboundReq finalInboundReq);
 	
 }

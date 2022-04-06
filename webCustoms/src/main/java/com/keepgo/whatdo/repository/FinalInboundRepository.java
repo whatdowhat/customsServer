@@ -17,7 +17,7 @@ import com.keepgo.whatdo.entity.customs.FinalInbound;
 public interface FinalInboundRepository extends JpaRepository<FinalInbound, Long> {
 
 	
-	
+	FinalInbound findByCargoName(String cargoName);
 	
 	
 }

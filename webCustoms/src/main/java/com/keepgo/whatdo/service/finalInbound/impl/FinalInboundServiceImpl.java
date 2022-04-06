@@ -33,6 +33,7 @@ import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
@@ -94,19 +95,35 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							.hangCha(item.getHangCha())
 							.containerSizeStr(item.getContainerSizeStr())
 							.weatherCondition(item.getWeatherCondition())
-
-							.inboundMasters(item.getInboundMasters().stream().map(sub_item -> {
-								Map<String, Object> f = new HashMap<>();
-								f.put("workDate", sub_item.getInboundMaster().getWorkDate());
-								f.put("blNo", sub_item.getInboundMaster().getBlNo());
-								f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
-								f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
-								f.put("id", sub_item.getInboundMaster().getId());
-
-								return f;
-							}).collect(Collectors.toList()))
-
+							.createDt(item.getCreateDt()).updateDt(item.getUpdateDt())
 							.build();
+//					if(item.getInboundMasters()!=null ){
+//						dto.setInboundMasters(item.getInboundMasters().stream().map(sub_item -> {
+//							Map<String, Object> f = new HashMap<>();
+//							f.put("workDate", sub_item.getInboundMaster().getWorkDate());
+//							f.put("blNo", sub_item.getInboundMaster().getBlNo());
+//							f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+//							f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+//							f.put("id", sub_item.getInboundMaster().getId());
+//
+//							return f;
+//						}).collect(Collectors.toList()));
+//					}
+					
+					
+					
+//							.inboundMasters(item.getInboundMasters().stream().map(sub_item -> {
+//								Map<String, Object> f = new HashMap<>();
+//								f.put("workDate", sub_item.getInboundMaster().getWorkDate());
+//								f.put("blNo", sub_item.getInboundMaster().getBlNo());
+//								f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+//								f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+//								f.put("id", sub_item.getInboundMaster().getId());
+//
+//								return f;
+//							}).collect(Collectors.toList()))
+
+							
 
 					return dto;
 				}).collect(Collectors.toList());
@@ -144,6 +161,22 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //				.build()));
 
 		return true;
+	}
+	
+	@Override
+	public FinalInboundRes addFinalInbound(FinalInboundReq req) {
+		FinalInbound target = FinalInbound.builder().cargoName(req.getCargoName())
+
+				// todo 사용자 세션 아이디로 수정해야됨.
+				.user(User.builder().id(new Long(1)).build())
+
+				.isUsing(true).createDt(new Date()).updateDt(new Date())
+
+				.build();
+		target = _finalInboundRepository.save(target);
+
+
+		return FinalInboundRes.builder().id(_finalInboundRepository.findByCargoName(req.getCargoName()).getId()).cargoName(req.getCargoName()).build();
 	}
 	
 	@Override
@@ -233,6 +266,32 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		return true;
 	 
 	}
+	
+	@Override
+	public boolean addDataFinalInboundMasterItems(FinalInboundReq req) {
+		
+		int preperOrder = 0;
+		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId()).orElse(FinalInbound.builder().build());
+		InboundMaster inboundMaster = _inboundMasterRepository.findById(req.getInboundMasterId()).orElse(InboundMaster.builder().build());
+
+			
+			
+			FinalInboundInboundMaster finalInboundInboundMaster= new FinalInboundInboundMaster();
+			
+			
+			finalInboundInboundMaster.setFinalInbound(finalInbound);
+			finalInboundInboundMaster.setInboundMaster(inboundMaster);
+			finalInboundInboundMaster.setPreperOrder(preperOrder);
+			
+		_finalInboundInboundMasterRepository.save(finalInboundInboundMaster);
+			
+
+		
+		
+		
+		return true;
+	 
+	}
 
 	@Override
 	public FinalInboundRes getOne(Long id) {
@@ -258,19 +317,34 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.hangCha(r.getHangCha())
 				.containerSizeStr(r.getContainerSizeStr())
 				.weatherCondition(r.getWeatherCondition())
-				
-				.inboundMasters(r.getInboundMasters().stream().map(sub_item -> {
-					Map<String, Object> f = new HashMap<>();
-					f.put("workDate", sub_item.getInboundMaster().getWorkDate());
-					f.put("blNo", sub_item.getInboundMaster().getBlNo());
-					f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
-					f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
-					f.put("id", sub_item.getInboundMaster().getId());
-
-					return f;
-				}).collect(Collectors.toList()))
-				
+				.createDt(r.getCreateDt())
+				.updateDt(r.getUpdateDt())
 				.build();
+//		if(r.getInboundMasters()!=null ){
+//			dto.setInboundMasters(r.getInboundMasters().stream().map(sub_item -> {
+//				Map<String, Object> f = new HashMap<>();
+//				f.put("workDate", sub_item.getInboundMaster().getWorkDate());
+//				f.put("blNo", sub_item.getInboundMaster().getBlNo());
+//				f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+//				f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+//				f.put("id", sub_item.getInboundMaster().getId());
+//
+//				return f;
+//			}).collect(Collectors.toList()));
+//		}
+		
+//			.inboundMasters(r.getInboundMasters().stream().map(sub_item -> {
+//					Map<String, Object> f = new HashMap<>();
+//					f.put("workDate", sub_item.getInboundMaster().getWorkDate());
+//					f.put("blNo", sub_item.getInboundMaster().getBlNo());
+//					f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+//					f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+//					f.put("id", sub_item.getInboundMaster().getId());
+//
+//					return f;
+//				}).collect(Collectors.toList()))
+				
+				
 
 		return dto;
 	}

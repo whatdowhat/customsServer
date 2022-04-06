@@ -17,6 +17,8 @@ public interface InboundMstService {
 
 	@Transactional
 	InboundMasterRes addInboundMaster(InboundMasterReq inboundMasterReq);
+	@Transactional
+	InboundMasterRes createInboundMaster(InboundMasterReq inboundMasterReq);
 
 	@Transactional
 	InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq);

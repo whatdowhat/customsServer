@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
+import com.keepgo.whatdo.controller.FinalInbound.FinalInboundSpecification;
+import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -347,6 +350,37 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				
 
 		return dto;
+	}
+
+	
+	
+	@Override
+	public List<FinalInboundRes> getAllCondition(FinalInboundReq req) {
+		
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("incomeDt", req.getIncomeDt());
+		condition.put("incomeYearMonth", req.getIncomeYearMonth());
+		condition.put("departDtStr", req.getDepartDtStr());
+		condition.put("gubun", req.getGubun());
+		
+		List<FinalInboundRes>  r = _finalInboundRepository.findAll(FinalInboundSpecification.withCondition(condition))
+				.stream()
+				.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
+				.map(t->{
+					
+						
+					
+					return  FinalInboundRes.builder()
+							.id(t.getId())
+							.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
+							.gubunCode(t.getGubun())
+							.departDtStr(t.getDepartDtStr())
+							.title(t.getTitle())
+							.incomeDt(t.getIncomeDt())
+							.build();
+				}).collect(Collectors.toList());
+
+		return r;
 	}
 
 

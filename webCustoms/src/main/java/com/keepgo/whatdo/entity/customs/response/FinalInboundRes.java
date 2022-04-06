@@ -33,6 +33,11 @@ import lombok.ToString;
 public class FinalInboundRes {
 
 	private Long id;
+	private String title;
+	private String gubun;
+	private int gubunCode;
+	private String incomeYearMonth;
+	private String incomeDt;
 	private String departDtStr;
 	private String finalMasterBl;
 	private String containerNo;
@@ -45,6 +50,7 @@ public class FinalInboundRes {
 	private String hangCha;
 	private String containerSizeStr;
 	private String weatherCondition;
+	
 	
 	
 	private List<Map<String,Object>> inboundMasters = new ArrayList();

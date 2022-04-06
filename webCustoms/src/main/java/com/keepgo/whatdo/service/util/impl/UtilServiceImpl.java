@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.keepgo.whatdo.define.CoType;
+import com.keepgo.whatdo.define.CoTypeRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.service.util.UtilService;
 
@@ -33,7 +35,14 @@ public class UtilServiceImpl implements UtilService {
 			}
 
 		}
+//		spanAttr[1][10] = 0;
+		String spanAttrStr[][] = new String[2][20];
+		for (int i = 0; i < spanAttrStr.length; i++) {
+			for (int j = 0; j < spanAttrStr[i].length; j++) {
+				spanAttrStr[i][j] = "";
+			}
 
+		}
 		
 		
 //		private int companyNmSpan =1;
@@ -103,17 +112,64 @@ public class UtilServiceImpl implements UtilService {
 				item.setBoxCountSpan(spanAttr[1][3]);
 			}
 			
-			if (predict01(item.getMemo1()) && lastIndex != i) {
-				spanAttr[1][4] = spanAttr[1][4] + 1;
-			} else {
-				if ((i - spanAttr[1][4]) < 0) {
-					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-				} else {
-					list.get(i - spanAttr[1][4]).setMemo1Span(spanAttr[1][4]);
-				}
+//			if (predict01(item.getMemo1()) && lastIndex != i) {
+//				spanAttr[1][4] = spanAttr[1][4] + 1;
+//			} else {
+//				if ((i - spanAttr[1][4]) < 0) {
+//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+//				} else {
+//					list.get(i - spanAttr[1][4]).setMemo1Span(spanAttr[1][4]);
+//				}
+//				spanAttr[1][4] = 1;
+//				item.setMemo1Span(spanAttr[1][4]);
+//			}
+			
+			//필수값만 넣는 경우 병합.
+			//비고 1,2,3 적용
+			if (predict01_for_memo(item.getMemo1()) && lastIndex != i) {
+//				spanAttrStr//값비교 배열
+//				spanAttr//span 배열
+//				spanAttrStr[1][4] = String.valueOf(item.getMemo1());
+
+				//null이 아니거나 0이 아닌 값만 들어온다.
+				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
+					if(spanAttrStr[1][4].equals(String.valueOf(item.getMemo1()))) {
+						
+						//공백인경우
+						if(item.getMemo1() == "") {
+							item.setMemo1Span(1);
+						}else {
+							spanAttr[1][4] = spanAttr[1][4] + 1;
+							//시작 인덱스 span 값 할당.
+							list.get(spanAttr[0][4]).setMemo1Span(spanAttr[1][4]);
+							item.setMemo1Span(0);	
+						}
+						
+						
+					}else {
+						//시작인덱스
+						spanAttr[0][4] = i;
+
+						//처음부터 다시.
+						//스판 카운터 1
+						spanAttr[1][4] = 1;
+						item.setMemo1Span(spanAttr[1][4]);
+						//현재 값 넣어준다.
+						spanAttrStr[1][4] = String.valueOf(item.getMemo1());
+					}
+			}else {
+				//시작인덱스
+				spanAttr[0][4] = i;
+
+				//처음부터 다시.
+				//스판 카운터 1
 				spanAttr[1][4] = 1;
 				item.setMemo1Span(spanAttr[1][4]);
+				//현재 값 넣어준다.
+				spanAttrStr[1][4] = String.valueOf(item.getMemo1());
 			}
+			
+			
 			if (predict01(item.getMarking()) && lastIndex != i) {
 				spanAttr[1][5] = spanAttr[1][5] + 1;
 			} else {
@@ -126,28 +182,114 @@ public class UtilServiceImpl implements UtilService {
 				item.setMarkingSpan(spanAttr[1][5]);
 			}
 			//비고2
-			if (predict01(item.getMemo2()) && lastIndex != i) {
-				spanAttr[1][6] = spanAttr[1][6] + 1;
-			} else {
-				if ((i - spanAttr[1][6]) < 0) {
-					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-				} else {
-					list.get(i - spanAttr[1][6]).setMemo2Span(spanAttr[1][6]);
-				}
+//			if (predict01(item.getMemo2()) && lastIndex != i) {
+//				spanAttr[1][6] = spanAttr[1][6] + 1;
+//			} else {
+//				if ((i - spanAttr[1][6]) < 0) {
+//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+//				} else {
+//					list.get(i - spanAttr[1][6]).setMemo2Span(spanAttr[1][6]);
+//				}
+//				spanAttr[1][6] = 1;
+//				item.setMemo2Span(spanAttr[1][6]);
+//			}
+			
+			if (predict01_for_memo(item.getMemo2()) && lastIndex != i) {
+//				spanAttrStr//값비교 배열
+//				spanAttr//span 배열
+//				spanAttrStr[1][6] = String.valueOf(item.getMemo1());
+
+				//null이 아니거나 0이 아닌 값만 들어온다.
+				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
+					if(spanAttrStr[1][6].equals(String.valueOf(item.getMemo2()))) {
+						
+						//공백인경우
+						if(item.getMemo2() == "") {
+							item.setMemo2Span(1);
+						}else {
+							spanAttr[1][6] = spanAttr[1][6] + 1;
+							//시작 인덱스 span 값 할당.
+							list.get(spanAttr[0][6]).setMemo2Span(spanAttr[1][6]);
+							item.setMemo2Span(0);	
+						}
+						
+						
+					}else {
+						//시작인덱스
+						spanAttr[0][6] = i;
+
+						//처음부터 다시.
+						//스판 카운터 1
+						spanAttr[1][6] = 1;
+						item.setMemo2Span(spanAttr[1][6]);
+						//현재 값 넣어준다.
+						spanAttrStr[1][6] = String.valueOf(item.getMemo2());
+					}
+			}else {
+				//시작인덱스
+				spanAttr[0][6] = i;
+
+				//처음부터 다시.
+				//스판 카운터 1
 				spanAttr[1][6] = 1;
 				item.setMemo2Span(spanAttr[1][6]);
+				//현재 값 넣어준다.
+				spanAttrStr[1][6] = String.valueOf(item.getMemo2());
 			}
+			
 			//비고3
-			if (predict01(item.getMemo3()) && lastIndex != i) {
-				spanAttr[1][7] = spanAttr[1][7] + 1;
-			} else {
-				if ((i - spanAttr[1][7]) < 0) {
-					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-				} else {
-					list.get(i - spanAttr[1][7]).setMemo3Span(spanAttr[1][7]);
-				}
+//			if (predict01(item.getMemo3()) && lastIndex != i) {
+//				spanAttr[1][7] = spanAttr[1][7] + 1;
+//			} else {
+//				if ((i - spanAttr[1][7]) < 0) {
+//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+//				} else {
+//					list.get(i - spanAttr[1][7]).setMemo3Span(spanAttr[1][7]);
+//				}
+//				spanAttr[1][7] = 1;
+//				item.setMemo3Span(spanAttr[1][7]);
+//			}
+			if (predict01_for_memo(item.getMemo3()) && lastIndex != i) {
+//				spanAttrStr//값비교 배열
+//				spanAttr//span 배열
+//				spanAttrStr[1][7] = String.valueOf(item.getMemo1());
+
+				//null이 아니거나 0이 아닌 값만 들어온다.
+				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
+					if(spanAttrStr[1][7].equals(String.valueOf(item.getMemo3()))) {
+						
+						//공백인경우
+						if(item.getMemo3() == "") {
+							item.setMemo3Span(1);
+						}else {
+							spanAttr[1][7] = spanAttr[1][7] + 1;
+							//시작 인덱스 span 값 할당.
+							list.get(spanAttr[0][7]).setMemo3Span(spanAttr[1][7]);
+							item.setMemo3Span(0);	
+						}
+						
+						
+					}else {
+						//시작인덱스
+						spanAttr[0][7] = i;
+
+						//처음부터 다시.
+						//스판 카운터 1
+						spanAttr[1][7] = 1;
+						item.setMemo3Span(spanAttr[1][7]);
+						//현재 값 넣어준다.
+						spanAttrStr[1][7] = String.valueOf(item.getMemo3());
+					}
+			}else {
+				//시작인덱스
+				spanAttr[0][7] = i;
+
+				//처음부터 다시.
+				//스판 카운터 1
 				spanAttr[1][7] = 1;
 				item.setMemo3Span(spanAttr[1][7]);
+				//현재 값 넣어준다.
+				spanAttrStr[1][7] = String.valueOf(item.getMemo3());
 			}
 			
 //			private int weightSpan = 1;
@@ -177,30 +319,50 @@ public class UtilServiceImpl implements UtilService {
 				spanAttr[1][9] = 1;
 				item.setCbmSpan(spanAttr[1][9]);
 			}
-			if (predict01_for_co(item.getCoId()) && lastIndex != i) {
-				spanAttr[1][10] = spanAttr[1][10] + 1;
-			} else {
-				if ((i - spanAttr[1][10]) < 0) {
-					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-				} else {
-					list.get(i - spanAttr[1][10]).setCoIdSpan(spanAttr[1][10]);
-				}
-				spanAttr[1][10] = 1;
-				item.setCoIdSpan(spanAttr[1][10]);
-			}	
-//			if (predict01(item.getCoCode()) && lastIndex != i) {
-//				spanAttr[1][10] = spanAttr[1][10] + 1;
-//			} else {
-//				if ((i - spanAttr[1][10]) < 0) {
-//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
-//				} else {
-//					list.get(i - spanAttr[1][10]).setCoCodeSpan(spanAttr[1][10]);
-//				}
-//				spanAttr[1][10] = 1;
-//				item.setCoCodeSpan(spanAttr[1][10]);
-//			}	
 			
+			
+			//필수값만 넣는 경우 병합.
+			//비고 1,2,3 적용
+			if (predict01_for_co(item.getCoId()) && lastIndex != i) {
+//				spanAttrStr//값비교 배열
+//				spanAttr//span 배열
+//				spanAttrStr[1][10] = String.valueOf(item.getCoId());
 
+				//null이 아니거나 0이 아닌 값만 들어온다.
+				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
+					if(spanAttrStr[1][10].equals(String.valueOf(item.getCoId()))) {
+						
+						
+//						A(1,"FTA",1),
+//						B(2,"YATAI",2),
+//						C(3,"공백",3);
+						
+						//공백인경우
+						if(item.getCoId()== 3) {
+							item.setCoIdSpan(1);
+						}else {
+							spanAttr[1][10] = spanAttr[1][10] + 1;
+							//시작 인덱스 span 값 할당.
+							list.get(spanAttr[0][10]).setCoIdSpan(spanAttr[1][10]);
+							item.setCoIdSpan(0);	
+						}
+						
+						
+					}else {
+						//시작인덱스
+						spanAttr[0][10] = i;
+
+						//처음부터 다시.
+						//스판 카운터 1
+						spanAttr[1][10] = 1;
+						item.setCoIdSpan(spanAttr[1][10]);
+						//현재 값 넣어준다.
+						spanAttrStr[1][10] = String.valueOf(item.getCoId());
+					
+					}
+				
+			}
+			
 			if (predict01(item.getBlNo() ) && lastIndex != i) {
 				spanAttr[1][11] = spanAttr[1][11] + 1;
 			} else {
@@ -273,7 +435,7 @@ public class UtilServiceImpl implements UtilService {
 				spanAttr[1][17] = spanAttr[1][17] + 1;
 			} else {
 				if ((i - spanAttr[1][17]) < 0) {
-					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+					// 병합처리 해야됨. //0보자 작은2 index참조시 무시.
 				} else {
 					list.get(i - spanAttr[1][17]).setTotalPriceSpan(spanAttr[1][17]);
 				}
@@ -329,8 +491,14 @@ public class UtilServiceImpl implements UtilService {
 	
 	public boolean predict01_for_co(Long value) {
 		if (value == null ||value == 0  ) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
+	}
+	public boolean predict01_for_memo(String value) {
+		if (value == null || value.replaceAll(" ", "").equals("")) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -313,7 +315,7 @@ public class InboundServiceImpl implements InboundService {
 						.orderNo(item.getOrderNo())
 						.memo2(item.getMemo2())
 						.memo3(item.getMemo3())
-						.totalPrice(item.getReportPrice() * item.getItemCount())
+						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
 						.colorCode(item.getColorCode())
 						.inboundMasterId(item.getInboundMaster().getId())
@@ -424,11 +426,15 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setCoCode(list.get(i).getCoCode());
 			inbound.setColorCode(list.get(i).getColorCode());
 
-			if (list.get(i).getCoCode() != null) {
-				CoType.getList().stream().filter(co -> co.getName().equals(list.get(index).getCoCode())).findFirst()
-						.ifPresent(coType -> inbound.setCoId(coType.getId()));
-
-			}
+			inbound.setCoId(list.get(i).getCoId().intValue());
+//			if (list.get(i).getCoCode() != null) {
+//				CoType.getList().stream().filter(co -> co.getName().equals(list.get(index).getCoCode())).findFirst()
+//						.ifPresent(coType -> inbound.setCoId(coType.getId()));
+//
+//			}else {
+//				//공백시 3으로 고정
+//				list.get(i).setCoId(Long.valueOf(3));
+//			}
 
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
@@ -454,6 +460,7 @@ public class InboundServiceImpl implements InboundService {
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundReq.getInboundMasterId())
 				.orElse(InboundMaster.builder().build());
 		List<InboundReq> list = inboundReq.getInboundReqData();
+		List<Inbound> finalList = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {
 
 			Inbound inbound = new Inbound();
@@ -468,6 +475,9 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setMemo1(list.get(i).getMemo1());
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
+			if(list.get(i).getCoId()!=null) {
+				inbound.setCoId(list.get(i).getCoId().intValue());	
+			}
 			inbound.setCoCode(list.get(i).getCoCode());
 			if (list.get(i).getCoId() != null) {
 				inbound.setCoId(list.get(i).getCoId().intValue());
@@ -479,9 +489,58 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setOrderNo(orderNo);
 			inbound.setInboundMaster(inboundMaster);
 			inbound.setColorCode(list.get(i).getColorCode());
-			_inboundRepository.save(inbound);
+			finalList.add(inbound);
+			
 			orderNo = orderNo + 1;
 		}
+		
+		
+		Function<Inbound, Inbound> fn = (item)->{
+			
+			//박수 무게 계산 박스 수 * 무게상수
+//			Double d = new Double(0);
+//			if(item.getBoxCount() != null) {
+//				d = new Double(String.format("%.3f", new Double(item.getBoxCount() * item.getWeight())));	
+//			}else {
+//				
+//			}
+			
+			//cbm 문자 곱 * 박스 갯수
+//			if(item.getCbmStr() == null || item.getCbmStr().equals("")) {
+//				
+//			}else{
+//				String items[] = item.getCbmStr().split("\\*");
+//				List<Double> t= Stream.of(items)
+//						.map(t_item -> new Double("0."+t_item))
+//						.collect(Collectors.toList());
+////						;
+//				System.out.println(t);
+//				Double r = t.stream().reduce( (a,b)->a*b).get();
+//			
+//				item.setCbm(r * item.getBoxCount());
+//			}
+			
+			//total  = 수량 * 신고단가 
+			//소수 2째자리 
+//			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
+					
+			}else {
+				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+			}
+			
+			return item;
+			
+		};
+		
+		finalList = finalList.stream()
+		.map(fn).collect(Collectors.toList());
+		finalList.forEach(t->{
+			_inboundRepository.save(t);
+		});
+		
+		
+		
 
 		return InboundRes.builder().inboundMasterId(inboundReq.getInboundMasterId()).build();
 	}
@@ -540,7 +599,7 @@ public class InboundServiceImpl implements InboundService {
 
 			list.add(inboundRes);
 		}
-
+		list = excelUploadProcess03(list);
 		return list;
 	}
 
@@ -567,6 +626,11 @@ public class InboundServiceImpl implements InboundService {
 		if (cellIndex == 5) {
 			inboundRes.setWeight(new Double(value));
 		}
+		
+//		if (cellIndex == 6) {
+//			inboundRes.setCbmStr(value);
+//		}
+		
 		if (cellIndex == 6) {
 			inboundRes.setCbm(new Double(value));
 		}
@@ -591,12 +655,92 @@ public class InboundServiceImpl implements InboundService {
 		if (cellIndex == 13) {
 			inboundRes.setMemo3(value);
 		}
+//		if (cellIndex == 14) {
+//			inboundRes.setTotalPrice(new Double(value));
+//		}
 		if (cellIndex == 14) {
-			inboundRes.setTotalPrice(new Double(value));
-		}
-		if (cellIndex == 15) {
 			inboundRes.setEngNm(value);
 		}
+		if (cellIndex == 15) {
+			inboundRes.setColorCode(value);;
+		}
+	}
+	
+	public List<InboundRes> excelUploadProcess03(List<InboundRes> list) {
+		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
+		// commonid 입력값 없으면 insert 후보
+			
+		Function<InboundRes, InboundRes> fn = (item)->{
+			
+			//박수 무게 계산 박스 수 * 무게상수
+//			Double d = new Double(0);
+//			if(item.getBoxCount() != null) {
+//				d = new Double(String.format("%.3f", new Double(item.getBoxCount() * item.getWeight())));	
+//			}else {
+//				
+//			}
+			
+//			item.setWeight(d);
+			
+
+			
+//			A(1,"FTA",1),
+//			B(2,"YATAI",2),
+//			C(3," ",3);
+			
+			if(item.getCoCode() == null) {
+				item.setCoId(Long.valueOf(3));
+			}else {
+				
+				boolean isExist = CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().isPresent();
+				
+				if(isExist) {
+//				if(null == CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().orElseGet(null)) {
+					item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get().getId()));
+				}else {
+					item.setCoId(Long.valueOf(3));	
+				}
+//				Long coId = Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get();
+//				
+//				item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().ifPresent(t->). );
+			}
+					
+			//cbm 문자 곱 * 박스 갯수
+			if(item.getCbmStr() == null || item.getCbmStr().equals("")) {
+				
+			}else{
+				String items[] = item.getCbmStr().split("\\*");
+				List<Double> t= Stream.of(items)
+						.map(t_item -> new Double("0."+t_item))
+						.collect(Collectors.toList());
+//						;
+				System.out.println(t);
+				Double r = t.stream().reduce( (a,b)->a*b).get();
+			
+				item.setCbm(r * item.getBoxCount());
+			}
+			
+			//total  = 수량 * 신고단가 
+			//소수 2째자리 
+//			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
+					
+			}else {
+				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+			}
+			
+			
+			return item;
+			
+			
+			
+		};
+		
+		list = list.stream().map(fn).collect(Collectors.toList());
+		;
+		
+		return list;
+	
 	}
 
 }

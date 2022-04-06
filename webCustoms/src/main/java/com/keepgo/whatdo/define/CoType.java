@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 public enum CoType {
 
-	BL(0,"병합",0),
+//	BL(0,"",0),
 	A(1,"FTA",1),
 	B(2,"YATAI",2),
-	C(3,"공백",3);
+	C(3," ",3);
 	
 	Integer id;
 	String name;
@@ -20,6 +20,8 @@ public enum CoType {
 		this.name = name;
 		this.order = order;
 	}
+	
+	
 	
 	public static List<CoTypeRes> getList(){
 	

@@ -35,6 +35,9 @@ import lombok.ToString;
 public class FinalInboundReq {
 
 	private Long id;
+	private int gubun;
+	private String incomeYearMonth;
+	private String incomeDt;
 	private String departDtStr;
 	private String finalMasterBl;
 	private String containerNo;

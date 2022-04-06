@@ -116,11 +116,10 @@ public class FinalInboundController {
 
 	}
 	
-	@RequestMapping(value = "/test/finalInboundAll", method = {RequestMethod.POST })
+	@RequestMapping(value = "/test/getAllCondition", method = {RequestMethod.POST })
 	public List<?> finalInboundAll(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
 		
-
-		return  _finalInboundService.getAll(finalInboundReq);
+		return  _finalInboundService.getAllCondition(finalInboundReq);
 
 		
 	}

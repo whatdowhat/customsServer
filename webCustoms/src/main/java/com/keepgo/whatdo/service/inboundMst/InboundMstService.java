@@ -25,4 +25,5 @@ public interface InboundMstService {
 
 	@Transactional
 	InboundMasterRes getInboundMaster(Long inboundMstId);
+	
 }

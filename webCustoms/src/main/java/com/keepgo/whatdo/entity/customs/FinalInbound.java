@@ -25,6 +25,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "web_final_inbound")
@@ -34,7 +35,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@ToString
+@ToString
 public class FinalInbound {
 
 	@Id
@@ -42,6 +43,18 @@ public class FinalInbound {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	// 타이틀
+	@Column(name = "title")
+	private String title;
+	
+	// 구분
+	@Column(name = "gubun")
+	private int gubun;
+	
+	// 입항일
+	@Column(name = "incomeDt")
+	private String incomeDt;
+	
 	// 출발일
 	@Column(name = "departDt")
 	private String departDtStr;

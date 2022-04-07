@@ -168,8 +168,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	
 	@Override
 	public FinalInboundRes addFinalInbound(FinalInboundReq req) {
-		FinalInbound target = FinalInbound.builder().cargoName(req.getCargoName())
-
+		FinalInbound target = FinalInbound.builder().title(req.getTitle())
+				.incomeDt(req.getIncomeDt()).gubun(req.getGubun()).departDtStr(req.getDepartDtStr())
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
 
@@ -179,7 +179,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		target = _finalInboundRepository.save(target);
 
 
-		return FinalInboundRes.builder().id(_finalInboundRepository.findByCargoName(req.getCargoName()).getId()).cargoName(req.getCargoName()).build();
+		return FinalInboundRes.builder().id(_finalInboundRepository.findByTitle(req.getTitle()).getId()).build();
 	}
 	
 	@Override
@@ -306,9 +306,11 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				FinalInboundRes.builder()
 
 
-				.id(r.getId()).departDtStr(r.getDepartDtStr())
-				
-				
+				.id(r.getId())
+				.departDtStr(r.getDepartDtStr())
+				.title(r.getTitle())
+				.gubun(GubunType.getList().stream().filter(type->type.getId() == r.getGubun()).findFirst().get().getName())
+				.gubunCode(r.getGubun())
 				.finalMasterBl(r.getFinalMasterBl())
 				.containerNo(r.getContainerNo())
 				.containerPrice(r.getContainerPrice())

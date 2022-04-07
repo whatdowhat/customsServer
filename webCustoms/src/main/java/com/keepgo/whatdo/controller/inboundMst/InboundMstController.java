@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.mapper.UserMapper;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
@@ -78,6 +80,12 @@ public class InboundMstController {
 	public InboundMasterRes getInboundMaster(HttpServletRequest httpServletRequest,@RequestBody InboundMasterReq inboundMasterReq){
 		 
 		return  _inboundMstService.getInboundMaster(inboundMasterReq.getId());
+	}
+	@RequestMapping(value = "/test/get/oneInboundMaster", method = {RequestMethod.POST })
+	public InboundMasterRes oneInboundMaster(HttpServletRequest httpServletRequest,@RequestBody InboundMasterReq inboundMasterReq){
+		
+		return  _inboundMstService.getOne(inboundMasterReq.getId());
+		
 	}
 	
 }

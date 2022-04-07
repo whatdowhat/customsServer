@@ -28,7 +28,7 @@ public class InboundMasterReq {
 	
 	@Column(name = "blNo")
 	private String blNo;
-	private String freight;
+	private int freight;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "incomDt")
 	private Date incomDt;

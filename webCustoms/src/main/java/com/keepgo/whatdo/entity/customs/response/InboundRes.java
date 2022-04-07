@@ -177,6 +177,8 @@ public class InboundRes {
 	
 	private String freight;
 	
+	private int freightCode;
+	
 //	@Override
 //	public String toString() {
 ////		return "workData " + getWorkDate() +" : " + getWorkDateSpan();

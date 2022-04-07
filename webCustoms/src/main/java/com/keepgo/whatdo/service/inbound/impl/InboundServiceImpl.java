@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.define.FileTypeRes;
+import com.keepgo.whatdo.define.FreightType;
+import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -336,7 +338,9 @@ public class InboundServiceImpl implements InboundService {
 					}
 					if(index.size() == 0) {
 						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
-						rt.setFreight(item.getInboundMaster().getFreight());
+//						rt.setFreight(item.getInboundMaster().getFreight());
+						rt.setFreight(FreightType.getList().stream().filter(type->type.getId() ==item.getInboundMaster().getFreight()).findFirst().get().getName());
+						rt.setFreightCode(item.getInboundMaster().getFreight());
 						rt.setManagerNm("홍길동 과장");
 //						rt.setMasterCompanyNumber("sdfsadfSDF");)
 

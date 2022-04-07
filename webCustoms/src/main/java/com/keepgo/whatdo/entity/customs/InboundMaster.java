@@ -51,9 +51,9 @@ public class InboundMaster {
 	private String blNo;
 	
 
+		
 	@Column(name = "freight")
-	private String freight;
-	
+	private int freight;
 
 	
 	@JoinColumn(name = "companyInfoId")

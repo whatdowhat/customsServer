@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 
 @Service
@@ -14,7 +15,10 @@ public interface InboundMstService {
 
 	@Transactional
 	List<?> getInboundMaster();
-
+	
+	@Transactional
+	InboundMasterRes  getOne(Long id);
+	
 	@Transactional
 	InboundMasterRes addInboundMaster(InboundMasterReq inboundMasterReq);
 	@Transactional

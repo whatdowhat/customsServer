@@ -52,6 +52,8 @@ import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.CoTypeRes;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.define.FileTypeRes;
+import com.keepgo.whatdo.define.FreightType;
+import com.keepgo.whatdo.define.FreightTypeRes;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.define.GubunTypeRes;
 import com.keepgo.whatdo.entity.BaseInfo;
@@ -228,6 +230,13 @@ public class CommonController {
 			throws Exception, NumberFormatException {
 
 		return GubunType.getList();
+	}
+	@RequestMapping(value = "/common/freightType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<FreightTypeRes> freightType()
+			throws Exception, NumberFormatException {
+
+		return FreightType.getList();
 	}
 	
 }

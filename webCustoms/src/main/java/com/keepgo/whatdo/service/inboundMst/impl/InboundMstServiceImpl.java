@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.keepgo.whatdo.define.FileType;
+import com.keepgo.whatdo.define.FreightType;
+import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -185,7 +187,26 @@ public class InboundMstServiceImpl implements InboundMstService {
 
 	}
 
+	@Override
+	public InboundMasterRes getOne(Long id) {
+		
+		InboundMaster r = _inboundMasterRepository.findById(id).get();
+		
+		InboundMasterRes dto = 
+				
+				InboundMasterRes.builder()
+				.id(r.getId())
+				.blNo(r.getBlNo())
+				.freight(FreightType.getList().stream().filter(type->type.getId() == r.getFreight()).findFirst().get().getName())
+				.freightCode(r.getFreight())
+				.createDt(r.getCreateDt())
+				.updateDt(r.getUpdateDt())
+				.build();
 
+				
+
+		return dto;
+	}
 	@Override
 	public InboundMasterRes getInboundMaster(Long inboundMstId) {
 
@@ -195,7 +216,10 @@ public class InboundMstServiceImpl implements InboundMstService {
 		dto.setId(item.getId());
 		dto.setBlNo(item.getBlNo());
 		dto.setWorkDate(item.getWorkDate());
-		dto.setFreight(item.getFreight());
+		if(item.getFreight() != 0) {
+			dto.setFreight(FreightType.getList().stream().filter(type->type.getId() == item.getFreight()).findFirst().get().getName());
+			dto.setFreightCode(item.getFreight());
+		}
 		
 		if (item.getCompanyInfo() != null) {
 			dto.setCompanyInfoId(item.getCompanyInfo().getId());
@@ -301,7 +325,9 @@ public class InboundMstServiceImpl implements InboundMstService {
 	
 	@Override
 	public InboundMasterRes createInboundMaster(InboundMasterReq req) {
-		InboundMaster target = InboundMaster.builder().blNo(req.getBlNo())
+		InboundMaster target = InboundMaster.builder()
+				.blNo(req.getBlNo())
+				.freight(req.getFreight())
 
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
@@ -312,7 +338,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 		target = _inboundMasterRepository.save(target);
 
 
-		return InboundMasterRes.builder().id(_inboundMasterRepository.findByBlNo(req.getBlNo()).getId()).blNo(req.getBlNo()).build();
+		return InboundMasterRes.builder().id(_inboundMasterRepository.findByBlNo(req.getBlNo()).getId()).build();
 	}
 
 	@Override

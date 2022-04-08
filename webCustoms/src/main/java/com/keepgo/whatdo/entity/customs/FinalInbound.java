@@ -90,6 +90,10 @@ public class FinalInbound {
 	// 출항항구
 	@Column(name = "departPort")
 	private String departPort;
+	
+	// 도착항구
+	@Column(name = "incomePort")
+	private String incomePort;
 
 	// 항차
 	@Column(name = "hangCha")
@@ -102,7 +106,20 @@ public class FinalInbound {
 	// 중국 작업 당시 날씨
 	@Column(name = "weatherCondition")
 	private String weatherCondition;
-
+	
+	//중국 상검
+	@Column(name = "chinaSanggumYn")
+	private int chinaSanggumYn;
+	
+	//출항 지연
+	@Column(name = "departDelayYn")
+	private int departDelayYn;
+	
+	//관리대상지정
+	@Column(name = "gwanriYn")
+	private int gwanriYn;
+	
+	
 	@OneToMany(cascade = { CascadeType.REMOVE })
 	@JoinColumn(name = "finalInboundId")
 	@JsonManagedReference // 추가

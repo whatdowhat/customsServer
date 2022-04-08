@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.service.finalInbound.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -189,18 +190,20 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.orElse(FinalInbound.builder().build());
 		
 		finalInbound.setId(req.getId());
-		finalInbound.setDepartDtStr(req.getDepartDtStr());
-		finalInbound.setFinalMasterBl(req.getFinalMasterBl());
-		finalInbound.setContainerNo(req.getContainerNo());
-		finalInbound.setContainerPrice(req.getContainerPrice());
-		finalInbound.setDeliveryNm(req.getDeliveryNm());
-		finalInbound.setHangName(req.getHangName());
-		finalInbound.setSilNo(req.getSilNo());
+		finalInbound.setIncomeDt(req.getIncomeDt());
 		finalInbound.setCargoName(req.getCargoName());
 		finalInbound.setDepartPort(req.getDepartPort());
+		finalInbound.setIncomePort(req.getIncomePort());
+		finalInbound.setFinalMasterBl(req.getFinalMasterBl());
+		finalInbound.setContainerNo(req.getContainerNo());
+		finalInbound.setSilNo(req.getSilNo());
+		finalInbound.setHangName(req.getHangName());
 		finalInbound.setHangCha(req.getHangCha());
-		finalInbound.setContainerSizeStr(req.getContainerSizeStr());
-		finalInbound.setWeatherCondition(req.getWeatherCondition());
+		finalInbound.setGubun(req.getGubun());	
+		finalInbound.setChinaSanggumYn(req.getChinaSanggumYn());
+		finalInbound.setDepartDelayYn(req.getDepartDelayYn());
+		finalInbound.setGwanriYn(req.getGwanriYn());;
+		
 		finalInbound.setIsUsing(true);
 		finalInbound.setUpdateDt(new Date());
 		finalInbound.setCreateDt(new Date());
@@ -300,6 +303,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	public FinalInboundRes getOne(Long id) {
 		
 		FinalInbound r = _finalInboundRepository.findById(id).get();
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		
 		FinalInboundRes dto = 
 				
@@ -307,47 +311,44 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 
 				.id(r.getId())
-				.departDtStr(r.getDepartDtStr())
-				.title(r.getTitle())
+				.incomeDt(r.getIncomeDt())
+				.cargoName(r.getCargoName())
+				.incomePort(r.getIncomePort())
+				.departPort(r.getDepartPort())
+				.finalMasterBl(r.getFinalMasterBl())
 				.gubun(GubunType.getList().stream().filter(type->type.getId() == r.getGubun()).findFirst().get().getName())
 				.gubunCode(r.getGubun())
-				.finalMasterBl(r.getFinalMasterBl())
 				.containerNo(r.getContainerNo())
 				.containerPrice(r.getContainerPrice())
+				.silNo(r.getSilNo())
 				.deliveryNm(r.getDeliveryNm())
 				.hangName(r.getHangName())
-				.silNo(r.getSilNo())
-				.cargoName(r.getCargoName())
-				.departPort(r.getDepartPort())
 				.hangCha(r.getHangCha())
+				.chinaSanggumYn(r.getChinaSanggumYn())
+				.departDelayYn(r.getDepartDelayYn())
+				.gwanriYn(r.getGwanriYn())
+				.departDtStr(r.getDepartDtStr())
+				.title(r.getTitle())
+				
 				.containerSizeStr(r.getContainerSizeStr())
 				.weatherCondition(r.getWeatherCondition())
 				.createDt(r.getCreateDt())
 				.updateDt(r.getUpdateDt())
 				.build();
-//		if(r.getInboundMasters()!=null ){
-//			dto.setInboundMasters(r.getInboundMasters().stream().map(sub_item -> {
-//				Map<String, Object> f = new HashMap<>();
+		if(r.getInboundMasters().size()>0){
+			dto.setInboundMasters(r.getInboundMasters().stream().map(sub_item -> {
+				Map<String, Object> f = new HashMap<>();
 //				f.put("workDate", sub_item.getInboundMaster().getWorkDate());
-//				f.put("blNo", sub_item.getInboundMaster().getBlNo());
-//				f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
-//				f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
-//				f.put("id", sub_item.getInboundMaster().getId());
-//
-//				return f;
-//			}).collect(Collectors.toList()));
-//		}
+				f.put("workDate", format1.format(sub_item.getInboundMaster().getWorkDate()));
+				f.put("blNo", sub_item.getInboundMaster().getBlNo());
+				f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+				f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+				f.put("id", sub_item.getInboundMaster().getId());
+
+				return f;
+			}).collect(Collectors.toList()));
+		}
 		
-//			.inboundMasters(r.getInboundMasters().stream().map(sub_item -> {
-//					Map<String, Object> f = new HashMap<>();
-//					f.put("workDate", sub_item.getInboundMaster().getWorkDate());
-//					f.put("blNo", sub_item.getInboundMaster().getBlNo());
-//					f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
-//					f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
-//					f.put("id", sub_item.getInboundMaster().getId());
-//
-//					return f;
-//				}).collect(Collectors.toList()))
 				
 				
 

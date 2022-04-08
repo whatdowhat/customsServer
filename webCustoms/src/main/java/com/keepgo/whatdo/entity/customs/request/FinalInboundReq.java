@@ -51,6 +51,14 @@ public class FinalInboundReq {
 	private String hangCha;
 	private String containerSizeStr;
 	private String weatherCondition;
+	//중국 상검
+	private int chinaSanggumYn;
+	//출항 지연
+	private int departDelayYn;
+	//관리대상지정
+	private int gwanriYn;
+	//도착항구
+	private String incomePort;
 	private List<Long> inboundMasters = new ArrayList<>();
 	
 	

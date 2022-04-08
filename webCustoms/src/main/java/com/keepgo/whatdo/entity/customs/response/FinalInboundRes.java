@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -50,8 +52,14 @@ public class FinalInboundRes {
 	private String hangCha;
 	private String containerSizeStr;
 	private String weatherCondition;
-	
-	
+	//중국 상검
+	private int chinaSanggumYn;
+	//출항 지연
+	private int departDelayYn;
+	//관리대상지정
+	private int gwanriYn;
+	//도착항구
+	private String incomePort;
 	
 	private List<Map<String,Object>> inboundMasters = new ArrayList();
 	

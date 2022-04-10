@@ -8,10 +8,14 @@ import java.util.stream.Collectors;
 public enum FileType {
 
 	A(1,"인보이스/패킹",1),
-	B(2,"원산지증명서",2),
+	B(2,"FTA CO",2),
 	C(3,"O/BL",8), 
 	D(4,"인증서류",6), 
-	E(5,"화주서류",4);
+	E(5,"화주서류",4),
+	F(6,"RCEP CO",3),
+	G(7,"아태 CO",4),
+	H(8,"공장 CO",5),
+	I(9,"화주서류",6);
 
 	Integer id;
 	String name;

@@ -82,8 +82,6 @@ public class InboundMaster {
 	private User user;
 	
 	
-	
-	
 	//공통 컬럼.
 	@ExcelColumn(headerName="사용여부",order = 4)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")

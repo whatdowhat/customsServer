@@ -339,10 +339,16 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			dto.setInboundMasters(r.getInboundMasters().stream().map(sub_item -> {
 				Map<String, Object> f = new HashMap<>();
 //				f.put("workDate", sub_item.getInboundMaster().getWorkDate());
-				f.put("workDate", format1.format(sub_item.getInboundMaster().getWorkDate()));
+				if(sub_item.getInboundMaster().getWorkDate()!= null) {
+					f.put("workDate", format1.format(sub_item.getInboundMaster().getWorkDate()));	
+				}
 				f.put("blNo", sub_item.getInboundMaster().getBlNo());
-				f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
-				f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+				if(sub_item.getInboundMaster().getCompanyInfo()!= null) {
+					f.put("coNum", sub_item.getInboundMaster().getCompanyInfo().getCoNum());
+					f.put("companyNm", sub_item.getInboundMaster().getCompanyInfo().getCoNm());
+				}
+				
+				
 				f.put("id", sub_item.getInboundMaster().getId());
 
 				return f;

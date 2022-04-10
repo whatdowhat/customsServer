@@ -2,13 +2,16 @@ package com.keepgo.whatdo.service.util.impl;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.CoTypeRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.service.util.UtilService;
 
@@ -500,5 +503,42 @@ public class UtilServiceImpl implements UtilService {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Map<Long,String> getMakingForFTA(List<InboundRes> list) {
+		
+		Map<Long,String> result = new HashMap<>();
+		
+		int markingSpan = 0;
+		Long id = 0l;
+		
+		
+		for(int i=0; i<list.size();i++) {
+			markingSpan = list.get(i).getMarkingSpan();
+			
+			if(markingSpan>1) {
+				//marking이 병합되어있는경우 처리
+				
+				id = list.get(i).getId();
+				
+				for(int j=0; j<markingSpan;j++) {
+					result.put(list.get(i+j).getId(), list.get(i).getMarking() == null ? "" :  list.get(i).getMarking());
+				}	
+			}else {
+				//marking이 병합되지 않은경우
+				if(result.containsKey(list.get(i).getId())) {
+					//이미 병합처리로 처리된 항목은 제외
+				}else {
+					//그게 아닌 한개짜리라면 marking 셋팅
+					result.put(list.get(i).getId(), list.get(i).getMarking() == null ? "" :  list.get(i).getMarking());	
+				}
+				
+				
+			}
+		}
+		
+		
+		return result;
 	}
 }

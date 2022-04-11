@@ -10,7 +10,9 @@ public enum CoType {
 //	BL(0,"",0),
 	A(1,"FTA",1),
 	B(2,"YATAI",2),
-	C(3," ",3);
+	C(3," ",5),
+	D(4,"RCEP",3);
+//	E(5,"YATAI",4);
 	
 	Integer id;
 	String name;

@@ -467,15 +467,16 @@ public class InboundServiceImpl implements InboundService {
 		List<Inbound> finalList = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {
 
+			
 			Inbound inbound = new Inbound();
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
 			inbound.setMarking(list.get(i).getMarking());
 			inbound.setKorNm(list.get(i).getKorNm());
-			inbound.setItemCount(list.get(i).getItemCount());
+			inbound.setItemCount( (list.get(i).getItemCount() ==  null ? new Double(0) : list.get(i).getItemCount()));
 			inbound.setBoxCount(list.get(i).getBoxCount());
 			inbound.setWeight(list.get(i).getWeight());
 			inbound.setCbm(list.get(i).getCbm());
-			inbound.setReportPrice(list.get(i).getReportPrice());
+			inbound.setReportPrice((list.get(i).getReportPrice() ==  null ? new Double(0) : list.get(i).getReportPrice()));
 			inbound.setMemo1(list.get(i).getMemo1());
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
@@ -488,7 +489,7 @@ public class InboundServiceImpl implements InboundService {
 			}
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
-			inbound.setTotalPrice(list.get(i).getTotalPrice());
+			inbound.setTotalPrice(inbound.getReportPrice() * inbound.getItemCount());
 			inbound.setEngNm(list.get(i).getEngNm());
 			inbound.setOrderNo(orderNo);
 			inbound.setInboundMaster(inboundMaster);

@@ -1051,7 +1051,7 @@ public class ExcelServiceImpl implements ExcelService {
 		List<Integer> count = new ArrayList<Integer>();
 		origin.cellIterator().forEachRemaining(cell->{
 						
-			if(count.size() < 10) {
+			if(count.size() < 11) {
 				
 				target.createCell(cell.getColumnIndex());
 
@@ -1063,15 +1063,15 @@ public class ExcelServiceImpl implements ExcelService {
 				//
 				if(item.getOrderNo() == 1) {
 
-					if(count.size() == 8) {
-						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 8, 9));
+					if(count.size() == 9) {
+						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 9, 10));
 						target.getCell(cell.getColumnIndex()).setCellValue(getDateStr(item.getDepartDtStr()));
 					}
 				}else{
-					if(count.size() == 8) {
-						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 8, 9));
+					if(count.size() == 9) {
+						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 9, 10));
 						target.getCell(cell.getColumnIndex()).setCellValue("");
-					}
+											}
 				}
 				
 				
@@ -1088,39 +1088,38 @@ public class ExcelServiceImpl implements ExcelService {
 		List<Integer> count = new ArrayList<Integer>();
 		origin.cellIterator().forEachRemaining(cell->{
 						
-			if(count.size() < 10) {
+			if(count.size() < 11) {
 				target.createCell(cell.getColumnIndex());
 
 				CellStyle newCellStyle = cell.getCellStyle();
 				newCellStyle.cloneStyleFrom(cell.getCellStyle());
 				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
-//				target.getCell(cell.getColumnIndex()).setCellValue(cell.getStringCellValue());
 
 				if(count.size() == 0) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getHsCode());
-				}
-				if(count.size() == 1) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getMaking());
-				}
-				if(count.size() == 2) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getEngNm());
-				}if(count.size() == 3) {
 					
+				}if(count.size() == 1) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getHsCode());
+				}if(count.size() == 2) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getMaking());
+				}if(count.size() == 3) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getEngNm());
 				}if(count.size() == 4) {
 					
 				}if(count.size() == 5) {
 					
 				}if(count.size() == 6) {
+					
+				}if(count.size() == 7) {
 					target.getCell(cell.getColumnIndex()).setCellValue(item.getData08());
 				}
-				if(count.size() == 7) {
+				if(count.size() == 8) {
 					target.getCell(cell.getColumnIndex()).setCellValue(item.getItemCount());
 				}
 				
-				if(count.size() == 8) {
+				if(count.size() == 9) {
 					if(item.getOrderNo() == 1) {
-						if(count.size() == 8) {
-							workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 8, 9));
+						if(count.size() == 9) {
+							workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 9, 10));
 							target.getCell(cell.getColumnIndex()).setCellValue(item.getCompanyInvoice());
 						}
 					}

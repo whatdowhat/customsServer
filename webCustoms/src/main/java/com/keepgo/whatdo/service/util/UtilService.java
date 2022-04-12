@@ -16,4 +16,8 @@ public interface UtilService {
 	
 	public Map<Long,String> getMakingForFTA(List<InboundRes> list);
 	
+	public Map<Long,String> getMakingForRCEP(List<InboundRes> list);
+	
+	public Map<Long,String> getMakingForYATAI(List<InboundRes> list);
+	
 }

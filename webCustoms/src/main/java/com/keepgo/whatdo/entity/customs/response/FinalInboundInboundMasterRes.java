@@ -1,4 +1,8 @@
-package com.keepgo.whatdo.entity.customs.request;
+package com.keepgo.whatdo.entity.customs.response;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +19,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-public class FinalInboundInboundMasterReq {
+public class FinalInboundInboundMasterRes {
 
 	private Long id;
 	private Long finalInboundId;
 	private Long inboundMasterId;
 	private int preperOrder;
+	
+	
 }
+

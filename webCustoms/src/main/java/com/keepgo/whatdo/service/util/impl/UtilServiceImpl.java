@@ -541,4 +541,78 @@ public class UtilServiceImpl implements UtilService {
 		
 		return result;
 	}
+	
+	@Override
+	public Map<Long,String> getMakingForRCEP(List<InboundRes> list) {
+		
+		Map<Long,String> result = new HashMap<>();
+		
+		int markingSpan = 0;
+		Long id = 0l;
+		
+		
+		for(int i=0; i<list.size();i++) {
+			markingSpan = list.get(i).getMarkingSpan();
+			
+			if(markingSpan>1) {
+				//marking이 병합되어있는경우 처리
+				
+				id = list.get(i).getId();
+				
+				for(int j=0; j<markingSpan;j++) {
+					result.put(list.get(i+j).getId(), list.get(i).getMarking() == null ? "" :  list.get(i).getMarking());
+				}	
+			}else {
+				//marking이 병합되지 않은경우
+				if(result.containsKey(list.get(i).getId())) {
+					//이미 병합처리로 처리된 항목은 제외
+				}else {
+					//그게 아닌 한개짜리라면 marking 셋팅
+					result.put(list.get(i).getId(), list.get(i).getMarking() == null ? "" :  list.get(i).getMarking());	
+				}
+				
+				
+			}
+		}
+		
+		
+		return result;
+	}
+	
+	@Override
+	public Map<Long,String> getMakingForYATAI(List<InboundRes> list) {
+		
+		Map<Long,String> result = new HashMap<>();
+		
+		int markingSpan = 0;
+		Long id = 0l;
+		
+		
+		for(int i=0; i<list.size();i++) {
+			markingSpan = list.get(i).getMarkingSpan();
+			
+			if(markingSpan>1) {
+				//marking이 병합되어있는경우 처리
+				
+				id = list.get(i).getId();
+				
+				for(int j=0; j<markingSpan;j++) {
+					result.put(list.get(i+j).getId(), list.get(i).getMarking() == null ? "" :  list.get(i).getMarking());
+				}	
+			}else {
+				//marking이 병합되지 않은경우
+				if(result.containsKey(list.get(i).getId())) {
+					//이미 병합처리로 처리된 항목은 제외
+				}else {
+					//그게 아닌 한개짜리라면 marking 셋팅
+					result.put(list.get(i).getId(), list.get(i).getMarking() == null ? "" :  list.get(i).getMarking());	
+				}
+				
+				
+			}
+		}
+		
+		
+		return result;
+	}
 }

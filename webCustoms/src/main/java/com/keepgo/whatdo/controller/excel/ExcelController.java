@@ -24,6 +24,8 @@ import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
+import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 import com.keepgo.whatdo.service.excel.ExcelService;
@@ -74,5 +76,38 @@ public class ExcelController {
 		ExcelFTARes s = _excelService.ftaData(req);
 		_excelService.fta(s, response);
 	}
+	
+	@RequestMapping(value = "/excel/document/rcepData", method = { RequestMethod.POST })
+	public ExcelRCEPRes excelRCEPRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.rcepData(req);
+	}
+	
+	@RequestMapping(value = "/excel/document/rcep", method = { RequestMethod.POST })
+	public void rcep(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+		ExcelRCEPRes s =_excelService.rcepData(req);
+		_excelService.rcep(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/yataiData", method = { RequestMethod.POST })
+	public ExcelYATAIRes excelYATAIRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.yataiData(req);
+	}
+	
+	@RequestMapping(value = "/excel/document/yatai", method = { RequestMethod.POST })
+	public void yatai(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+		ExcelYATAIRes s =_excelService.yataiData(req);
+		_excelService.yatai(s, response);
+	}
+	
 
 }

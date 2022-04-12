@@ -20,6 +20,8 @@ import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 @Repository
 public interface FinalInboundInboundMasterRepository extends JpaRepository<FinalInboundInboundMaster, Long> {
 
+	FinalInboundInboundMaster findByFinalInboundIdAndInboundMasterId(Long finalInboundId, Long inboundMasterId);
+	
 	
 	@Transactional
 	@Modifying

@@ -6,7 +6,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundInboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 
@@ -29,5 +31,8 @@ public interface InboundMstService {
 
 	@Transactional
 	InboundMasterRes getInboundMaster(Long inboundMstId);
+	
+	@Transactional
+	FinalInboundInboundMasterRes getMappingInfo(FinalInboundInboundMasterReq req);
 	
 }

@@ -28,15 +28,18 @@ import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.FileUpload;
 import com.keepgo.whatdo.entity.customs.FinalInbound;
+import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
+import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundInboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
@@ -45,6 +48,7 @@ import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
+import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.inbound.InboundService;
@@ -73,6 +77,9 @@ public class InboundMstServiceImpl implements InboundMstService {
 	CompanyInfoRepository _companyInfoRepository;
 	@Autowired
 	CompanyInfoExportRepository _companyInfoExportRepository;
+	@Autowired
+	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
+	
 
 	@Override
 	public List<?> getInboundMaster() {
@@ -377,6 +384,23 @@ public class InboundMstServiceImpl implements InboundMstService {
 
 		InboundMasterRes inboundMasterRes = new InboundMasterRes();
 		return inboundMasterRes;
+	}
+	
+	@Override
+	public FinalInboundInboundMasterRes getMappingInfo(FinalInboundInboundMasterReq req) {
+		
+		 FinalInboundInboundMaster r = _finalInboundInboundMasterRepository.findByFinalInboundIdAndInboundMasterId(req.getFinalInboundId(), req.getInboundMasterId());
+		
+		 FinalInboundInboundMasterRes dto = 
+				
+				 FinalInboundInboundMasterRes.builder()
+				.id(r.getId())
+				
+				.build();
+
+				
+
+		return dto;
 	}
 
 }

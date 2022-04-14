@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.service.inbound;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 
 @Service
 public interface InboundService {
@@ -51,4 +53,6 @@ public interface InboundService {
 	
 	@Transactional
 	InboundRes deleteInbound(InboundReq inboundReq);
+	@Transactional
+	InboundViewRes changeInbound(List<InboundRes> list);
 }

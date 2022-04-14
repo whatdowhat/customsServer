@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 
 @Service
 public interface UtilService {
 
 	public List<InboundRes> changeExcelFormatNew(List<InboundRes> list);
-	
+//	public List<InboundViewRes> changeFormatNew(List<InboundViewRes> list);
 	
 	public Map<Long,String> getMakingForFTA(List<InboundRes> list);
 	

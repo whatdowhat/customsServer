@@ -39,7 +39,8 @@ public class InboundReq {
 	private Long id;
 	
 	private Long coId;
-	
+	private Long color;
+	private String colorCode;
 	@Column(name = "orderNo")
 	private int orderNo;
 	
@@ -48,7 +49,7 @@ public class InboundReq {
 	private Date workDate;
 
 	
-	private String colorCode;
+	
 	
 	
 	@Column(name = "companyNm")

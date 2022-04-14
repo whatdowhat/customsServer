@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.service.finalInbound;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -26,7 +27,7 @@ public interface FinalInboundService {
 	boolean createFinalInbound(FinalInboundReq finalInboundReq);
 	
 	@Transactional
-	FinalInboundRes addFinalInbound(FinalInboundReq finalInboundReq);
+	FinalInboundRes addFinalInbound(FinalInboundReq finalInboundReq)throws ParseException;
 	
 	@Transactional
 	boolean updateFinalInbound(FinalInboundReq finalInboundReq);

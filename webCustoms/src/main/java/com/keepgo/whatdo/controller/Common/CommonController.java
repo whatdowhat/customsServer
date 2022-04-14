@@ -50,6 +50,8 @@ import org.springframework.web.servlet.View;
 
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.CoTypeRes;
+import com.keepgo.whatdo.define.ColorType;
+import com.keepgo.whatdo.define.ColorTypeRes;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.define.FileTypeRes;
 import com.keepgo.whatdo.define.FreightType;
@@ -238,5 +240,11 @@ public class CommonController {
 
 		return FreightType.getList();
 	}
-	
+	@RequestMapping(value = "/common/colorType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<ColorTypeRes> colorType()
+			throws Exception, NumberFormatException {
+
+		return ColorType.getList();
+	}
 }

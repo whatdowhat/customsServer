@@ -165,5 +165,6 @@ private Double totalWeight;
 private Double totalCbm;
 //최종 총액
 private Double finalTotalPrice;
-	
+//미리보기용 작업일자
+private String forViewWorkDate;
 }

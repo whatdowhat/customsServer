@@ -52,7 +52,9 @@ public class Inbound {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "workDate")
 	private Date workDate;
-
+	
+	@Column(name = "color")
+	private Integer color;
 	
 	@JoinColumn(name = "inboundMasterId")
 	@ExcelColumn(headerName="inboundMasterId",order = 2)
@@ -74,8 +76,7 @@ public class Inbound {
 	@Column(name = "marking")
 	private String marking;
 	
-	@Column(name = "ColorCode")
-	private String ColorCode;
+	
 	
 	@Column(name = "korNm")
 	private String korNm;
@@ -124,6 +125,8 @@ public class Inbound {
 	@Transient
 //	@Column(name = "coCode")
 	private String coNm;
+	@Transient
+	private String colorCode;
 	
 	@Column(name = "totalPrice")
 	private Double totalPrice;

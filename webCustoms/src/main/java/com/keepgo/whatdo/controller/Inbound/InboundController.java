@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.controller.Inbound;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
@@ -152,11 +154,21 @@ public class InboundController {
 	}
 	
 	@RequestMapping(value = "/test/inboundByInboundMasterId", method = {RequestMethod.POST })
-	public List<InboundRes> inboundByInboundMasterId(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception {
+	public List<InboundRes> inboundByInboundMasterId(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception{
 
 		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(inboundReq);
 		//출력모드
 		List<InboundRes> result = _utilService.changeExcelFormatNew(list);
+		return  result;
+	}
+	
+	@RequestMapping(value = "/test/changeInbound", method = {RequestMethod.POST })
+	public InboundViewRes changeInbound(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception{
+
+		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(inboundReq);
+		//출력모드
+		List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
+		InboundViewRes result = _InboundService.changeInbound(result2);
 		return  result;
 	}
 	

@@ -96,7 +96,8 @@ public class InboundMasterReq {
 	
 	
 	private String workDate;
-	
+	//미리보기용 작업일자
+	private String forViewWorkDate;
 	
 	
 	

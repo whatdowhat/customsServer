@@ -101,6 +101,7 @@ public class InboundMaster {
 	@JoinColumn(name = "inboundMasterId")
 	@JsonManagedReference  // 추가
 	private List<FileUpload> fileUploads = new ArrayList<>();
-	
-	
+	//미리보기용 작업일자
+	@Transient
+	private String forViewWorkDate;
 }

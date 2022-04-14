@@ -1,16 +1,21 @@
 package com.keepgo.whatdo.service.inbound.impl;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.keepgo.whatdo.define.CoType;
+import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.define.FileTypeRes;
 import com.keepgo.whatdo.define.FreightType;
@@ -39,6 +45,7 @@ import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
@@ -289,7 +296,7 @@ public class InboundServiceImpl implements InboundService {
 	}
 
 	@Override
-	public List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq) {
+	public List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq)  {
 		
 		
 		List<Integer> index = new ArrayList<Integer>();
@@ -319,7 +326,9 @@ public class InboundServiceImpl implements InboundService {
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
-						.colorCode(item.getColorCode())
+//						.color(item.getColorCode())
+//						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
+//						.colorCode(item.getColor())
 						.inboundMasterId(item.getInboundMaster().getId())
 //						.coId(Long.valueOf(item.getCoId()))
 //						.coCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName())
@@ -332,6 +341,16 @@ public class InboundServiceImpl implements InboundService {
 						for(int i=0; i<CoType.getList().size();i++) {
 							if(CoType.getList().get(i).getId() ==item.getCoId() ) {
 								rt.setCoCode(CoType.getList().get(i).getName());							
+							}
+						}
+//						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+					}
+					if(item.getColor() !=null ) {
+						rt.setColorId(Long.valueOf(item.getColor()));
+						for(int i=0; i<ColorType.getList().size();i++) {
+							if(ColorType.getList().get(i).getId() ==item.getColor() ) {
+								rt.setColorCode(ColorType.getList().get(i).getCode());
+								rt.setColor(ColorType.getList().get(i).getShowName());
 							}
 						}
 //						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
@@ -357,6 +376,8 @@ public class InboundServiceImpl implements InboundService {
 						}
 						
 						rt.setWorkDate(item.getInboundMaster().getWorkDate());
+						String forViewWorkDate = DateFormatUtils.format(item.getInboundMaster().getWorkDate(), "MM월 dd일");
+						rt.setForViewWorkDate(forViewWorkDate);
 						rt.setBlNo(item.getInboundMaster().getBlNo());
 					}
 //					if(index.size() == 1) {
@@ -428,7 +449,7 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
-			inbound.setColorCode(list.get(i).getColorCode());
+			inbound.setColor(list.get(i).getColor().intValue());
 
 			inbound.setCoId(list.get(i).getCoId().intValue());
 //			if (list.get(i).getCoCode() != null) {
@@ -484,16 +505,19 @@ public class InboundServiceImpl implements InboundService {
 				inbound.setCoId(list.get(i).getCoId().intValue());	
 			}
 			inbound.setCoCode(list.get(i).getCoCode());
-			if (list.get(i).getCoId() != null) {
-				inbound.setCoId(list.get(i).getCoId().intValue());
+			
+			if(list.get(i).getColor()!=null) {
+				inbound.setColor(list.get(i).getColor().intValue());	
 			}
+			inbound.setColorCode(list.get(i).getColorCode());
+			
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
 			inbound.setTotalPrice(inbound.getReportPrice() * inbound.getItemCount());
 			inbound.setEngNm(list.get(i).getEngNm());
 			inbound.setOrderNo(orderNo);
 			inbound.setInboundMaster(inboundMaster);
-			inbound.setColorCode(list.get(i).getColorCode());
+//			inbound.setColor(list.get(i).getColor());
 			finalList.add(inbound);
 			
 			orderNo = orderNo + 1;
@@ -574,9 +598,11 @@ public class InboundServiceImpl implements InboundService {
 		// 마지막 row 숫자
 		int rowCount = sheet.getLastRowNum();
 		List<InboundRes> list = new ArrayList<>();
+		Map<String,Boolean> validations = new HashedMap<>();
 		// i=1 rowCount+1 해야 마지막 row 데이터까지 읽어옴
 		for (int i = 1; i < rowCount + 1; i++) {
 			XSSFRow row = sheet.getRow(i);
+//			boolean validation = true;
 			InboundRes inboundRes = new InboundRes();
 			row.cellIterator().forEachRemaining(cell -> {
 				int cellIndex = cell.getColumnIndex();
@@ -585,6 +611,7 @@ public class InboundServiceImpl implements InboundService {
 				case "STRING":
 					String string1 = cell.getStringCellValue();
 					excelUploadProcess02(cellIndex, string1, inboundRes);
+					
 					break;
 				case "NUMERIC":
 					cell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -602,7 +629,12 @@ public class InboundServiceImpl implements InboundService {
 
 			});
 
-			list.add(inboundRes);
+			if(inboundRes.getEngNm()==null||inboundRes.getEngNm().equals("")) {
+				
+			}else {
+				list.add(inboundRes);
+			}
+			
 		}
 		list = excelUploadProcess03(list);
 		return list;
@@ -614,7 +646,6 @@ public class InboundServiceImpl implements InboundService {
 		if (cellIndex == 0) {
 
 			inboundRes.setCompanyNm(value);
-
 		}
 		if (cellIndex == 1) {
 			inboundRes.setMarking(value);
@@ -630,12 +661,7 @@ public class InboundServiceImpl implements InboundService {
 		}
 		if (cellIndex == 5) {
 			inboundRes.setWeight(new Double(value));
-		}
-		
-//		if (cellIndex == 6) {
-//			inboundRes.setCbmStr(value);
-//		}
-		
+		}	
 		if (cellIndex == 6) {
 			inboundRes.setCbm(new Double(value));
 		}
@@ -664,11 +690,12 @@ public class InboundServiceImpl implements InboundService {
 //			inboundRes.setTotalPrice(new Double(value));
 //		}
 		if (cellIndex == 14) {
-			inboundRes.setEngNm(value);
+				inboundRes.setEngNm(value);	
 		}
 		if (cellIndex == 15) {
-			inboundRes.setColorCode(value);;
+			inboundRes.setColor(value);;
 		}
+		
 	}
 	
 	public List<InboundRes> excelUploadProcess03(List<InboundRes> list) {
@@ -746,6 +773,117 @@ public class InboundServiceImpl implements InboundService {
 		
 		return list;
 	
+	}
+	
+	@Override
+	public InboundViewRes changeInbound(List<InboundRes> list)  {
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		Double itemCountSum=list.get(0).getItemCountSum();
+		Double boxCountSum=list.get(0).getBoxCountSum();
+		Double weightSum=list.get(0).getWeightSum();
+		Double cbmSum = list.get(0).getCbmSum();
+		Double totalPriceSum = list.get(0).getTotalPriceSum();		
+		
+		
+		
+		InboundViewRes inboundViewRes= new InboundViewRes();
+		
+		inboundViewRes.setItemCountSum(decimalFormat2.format(itemCountSum));
+		inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
+		inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
+		inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
+		inboundViewRes.setTotalPriceSum(decimalFormat.format(totalPriceSum));
+		inboundViewRes.setFreight(list.get(0).getFreight());
+		inboundViewRes.setManagerNm(list.get(0).getManagerNm());
+		
+		
+		inboundViewRes.setInbounds(list.stream().map(sub_item -> {
+				Map<String, Object> f = new HashMap<>();
+//				
+				if(sub_item.getForViewWorkDate()!= null) {
+					f.put("forViewWorkDate", sub_item.getForViewWorkDate());
+				}
+				if(sub_item.getCompanyNm()!= null) {
+					f.put("companyNm", sub_item.getCompanyNm());
+				}
+				if( sub_item.getMasterExport()!= null) {
+					f.put("masterExport", sub_item.getMasterExport());
+				}
+				if( sub_item.getMasterExportAddr()!= null) {
+					f.put("masterExportAddr", sub_item.getMasterExportAddr());
+				}
+				if( sub_item.getMasterCompany()!= null) {
+					f.put("masterCompany", sub_item.getMasterCompany());
+				}
+				if( sub_item.getMasterCompanyNumber()!= null) {
+					f.put("masterCompanyNumber", sub_item.getMasterCompanyNumber());
+				}
+				if( sub_item.getBlNo()!= null) {
+					f.put("blNo", sub_item.getBlNo());
+				}
+			
+				f.put("orderNo", sub_item.getOrderNo());
+				f.put("korNm", sub_item.getKorNm());
+				f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
+				f.put("boxCount", decimalFormat2.format(sub_item.getBoxCount()));
+				f.put("weight", decimalFormat2.format(sub_item.getWeight()));
+				f.put("cbm", decimalFormat.format(sub_item.getCbm()));
+				f.put("reportPrice", decimalFormat.format(sub_item.getReportPrice()));
+				f.put("totalPrice", decimalFormat.format(sub_item.getTotalPrice()));
+				if(sub_item.getMemo1()!= null) {
+					f.put("memo1", sub_item.getMemo1());
+				}
+				if(sub_item.getMemo2()!= null) {
+					f.put("memo2", sub_item.getMemo2());
+				}
+				if(sub_item.getMemo3()!= null) {
+					f.put("memo3", sub_item.getMemo3());
+				}
+							
+				f.put("itemNo", sub_item.getItemNo());
+				f.put("hsCode", sub_item.getHsCode());
+				if(sub_item.getCoCode()!= null) {
+					f.put("coCode", sub_item.getCoCode());
+				}
+				if(sub_item.getColorCode()!= null) {
+					f.put("colorCode", sub_item.getColorCode());
+				}
+				if(sub_item.getMarking()!= null) {
+					f.put("marking", sub_item.getMarking());
+				}
+				
+				
+				f.put("engNm", sub_item.getEngNm());
+				
+				f.put("companyNmSpan", sub_item.getCompanyNmSpan());
+				f.put("markingSpan", sub_item.getMarkingSpan());
+				f.put("korNmSpan", sub_item.getKorNmSpan());
+				f.put("itemCountSpan", sub_item.getItemCountSpan());
+				f.put("boxCountSpan", sub_item.getBoxCountSpan());
+				f.put("weightSpan", sub_item.getWeightSpan());
+				f.put("cbmSpan", sub_item.getCbmSpan());
+				f.put("reportPriceSpan", sub_item.getReportPriceSpan());
+				f.put("memo1Span", sub_item.getMemo1Span());
+				f.put("memo2Span", sub_item.getMemo2Span());
+				f.put("memo3Span", sub_item.getMemo3Span());
+				f.put("itemNoSpan", sub_item.getItemNoSpan());
+				f.put("hsCodeSpan", sub_item.getHsCodeSpan());
+				f.put("workDateSpan", sub_item.getWorkDateSpan());
+				f.put("blNoSpan", sub_item.getBlNoSpan());
+				f.put("masterCompanySpan", sub_item.getMasterCompanySpan());
+				f.put("masterExportSpan", sub_item.getMasterExportSpan());
+				f.put("exportNmSpan", sub_item.getExportNmSpan());
+				f.put("coCodeSpan", sub_item.getCoCodeSpan());
+				f.put("coIdSpan", sub_item.getCoIdSpan());
+				f.put("totalPriceSpan", sub_item.getTotalPriceSpan());
+				f.put("engNmSpan", sub_item.getEngNmSpan());
+	
+				return f;
+			}).collect(Collectors.toList()));
+		
+			
+		 return inboundViewRes;
 	}
 
 }

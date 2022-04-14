@@ -13,6 +13,7 @@ import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.CoTypeRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.service.util.UtilService;
 
 import lombok.Builder;
@@ -80,7 +81,8 @@ public class UtilServiceImpl implements UtilService {
 				item.setCompanyNmSpan(spanAttr[1][0]);
 			}
 			
-			if (predict01(item.getWorkDate()) && lastIndex != i) {
+				//미리보기 작업일자 형식변환
+			if (predict01(item.getForViewWorkDate()) && lastIndex != i) {
 				spanAttr[1][1] = spanAttr[1][1] + 1; // [0]:start , [0]:columindex , value :병합 카운터
 			} else {
 				if ((i - spanAttr[1][1]) < 0) {
@@ -530,6 +532,8 @@ public class UtilServiceImpl implements UtilService {
 
 		return list;
 	}
+	
+	
 
 	public boolean predict01(String value) {
 		if (value == null || value.replaceAll(" ", "").equals("")) {

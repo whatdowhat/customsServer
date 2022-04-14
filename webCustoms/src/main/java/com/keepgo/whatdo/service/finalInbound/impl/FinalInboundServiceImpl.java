@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.service.finalInbound.impl;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -168,9 +169,22 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	}
 	
 	@Override
-	public FinalInboundRes addFinalInbound(FinalInboundReq req) {
-		FinalInbound target = FinalInbound.builder().title(req.getTitle())
-				.incomeDt(req.getIncomeDt()).gubun(req.getGubun()).departDtStr(req.getDepartDtStr())
+	public FinalInboundRes addFinalInbound(FinalInboundReq req) throws ParseException {
+		String depart=req.getDepartDtStr();
+		String income=req.getIncomeDt();
+		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyymmdd");
+	
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-mm-dd");
+		Date tempDate = null;
+		Date tempDate2 = null;
+		tempDate = beforeFormat.parse(depart);
+		tempDate2 = beforeFormat.parse(income);
+		
+		FinalInbound target = FinalInbound.builder()
+				.title(req.getTitle())
+				.gubun(req.getGubun())
+				.incomeDt(afterFormat.format(tempDate2))
+				.departDtStr(afterFormat.format(tempDate))
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
 
@@ -228,13 +242,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean deleteFinalInboundMasterItems(FinalInboundReq req) {
 		
-		
-		
-		
 		_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), req.getInboundMasterId());
-		
-		
-		
 		
 		return true;
 	 

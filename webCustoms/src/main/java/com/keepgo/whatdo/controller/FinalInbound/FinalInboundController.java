@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.controller.FinalInbound;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +71,7 @@ public class FinalInboundController {
 	}
 	
 	@RequestMapping(value = "/test/finalInboundAdd", method = {RequestMethod.POST })
-	public FinalInboundRes finalInboundAdd(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
+	public FinalInboundRes finalInboundAdd(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq)throws ParseException{
 		
 		return  _finalInboundService.addFinalInbound(finalInboundReq);
 		

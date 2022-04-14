@@ -36,7 +36,9 @@ public class InboundRes {
 	private Long inboundMasterId;
 	private Long coId;
 	private int orderNo;
-	
+	private String color;
+	private String colorCode;
+	private Long colorId;
 	private String masterCompany;
 	private String masterCompanyNumber;
 	private String masterExport;
@@ -48,7 +50,8 @@ public class InboundRes {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date workDate;
 
-	
+	//미리보기용 작업일자
+	private String forViewWorkDate;
 //	//발송업체 회사
 //	@JoinColumn(name = "companyInfoId")
 //	@ManyToOne(fetch = FetchType.LAZY)
@@ -57,7 +60,7 @@ public class InboundRes {
 	//발송업체 //0번
 	private String managerNm;
 	private String companyNm;
-	private String colorCode;
+	
 	private String marking;
 	private String korNm;
 

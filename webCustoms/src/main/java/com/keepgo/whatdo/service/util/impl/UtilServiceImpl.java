@@ -522,7 +522,30 @@ public class UtilServiceImpl implements UtilService {
 				}
 				spanAttr[1][17] = 1;
 				item.setTotalPriceSpan(spanAttr[1][17]);
-			}	
+			}
+			
+//			if (predict01(item.getOrderNoStr()) && lastIndex != i) {
+//				spanAttr[1][18] = spanAttr[1][18] + 1; // [0]:start , [0]:columindex , value :병합 카운터
+//			} else {
+//				if ((i - spanAttr[1][18]) < 0) {
+//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+//				} else {
+//					list.get(i - spanAttr[1][18]).setOrderNoStrSpan(spanAttr[1][18]);
+//				}
+//				spanAttr[1][18] = 1;
+//				item.setOrderNoStrSpan(spanAttr[1][18]);
+//			}
+//			if (predict01(item.getForViewWorkDate()) && lastIndex != i) {
+//				spanAttr[1][19] = spanAttr[1][19] + 1; // [0]:start , [0]:columindex , value :병합 카운터
+//			} else {
+//				if ((i - spanAttr[1][1]) < 0) {
+//					// 병합처리 해야됨. //0보자 작은 index참조시 무시.
+//				} else {
+//					list.get(i - spanAttr[1][19]).setWorkDateSpan(spanAttr[1][19]);
+//				}
+//				spanAttr[1][19] = 1;
+//				item.setWorkDateSpan(spanAttr[1][19]);
+//			}
 
 
 		}

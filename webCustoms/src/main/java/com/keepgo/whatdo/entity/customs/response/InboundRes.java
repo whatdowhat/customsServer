@@ -36,6 +36,7 @@ public class InboundRes {
 	private Long inboundMasterId;
 	private Long coId;
 	private int orderNo;
+	private String orderNoStr;
 	private String color;
 	private String colorCode;
 	private Long colorId;
@@ -49,6 +50,9 @@ public class InboundRes {
 	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date workDate;
+	
+	private String workDateStr;
+	
 
 	//미리보기용 작업일자
 	private String forViewWorkDate;
@@ -170,6 +174,10 @@ public class InboundRes {
 	private int totalPriceSpan=1;
 	@Builder.Default
 	private int engNmSpan=1;
+	@Builder.Default
+	private int workDtStrSpan=1;
+	@Builder.Default
+	private int orderNoStrSpan=1;
 	
 	
 	private Double itemCountSum;

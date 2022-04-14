@@ -3,6 +3,7 @@ package com.keepgo.whatdo.service.inbound.impl;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -643,57 +644,65 @@ public class InboundServiceImpl implements InboundService {
 	public void excelUploadProcess02(int cellIndex, String value, InboundRes inboundRes) {
 		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
 		// commonid 입력값 없으면 insert 후보
+		
 		if (cellIndex == 0) {
+			inboundRes.setOrderNoStr(value);
+			
+		}
+		if (cellIndex == 1) {
+
+			inboundRes.setWorkDateStr(value);
+		}
+		
+		if (cellIndex == 2) {
 
 			inboundRes.setCompanyNm(value);
 		}
-		if (cellIndex == 1) {
+		if (cellIndex == 3) {
 			inboundRes.setMarking(value);
 		}
-		if (cellIndex == 2) {
+		if (cellIndex == 4) {
 			inboundRes.setKorNm(value);
 		}
-		if (cellIndex == 3) {
+		if (cellIndex == 5) {
 			inboundRes.setItemCount(new Double(value));
 		}
-		if (cellIndex == 4) {
+		if (cellIndex == 6) {
 			inboundRes.setBoxCount(new Double(value));
 		}
-		if (cellIndex == 5) {
+		if (cellIndex == 7) {
 			inboundRes.setWeight(new Double(value));
 		}	
-		if (cellIndex == 6) {
+		if (cellIndex == 8) {
 			inboundRes.setCbm(new Double(value));
 		}
-		if (cellIndex == 7) {
+		if (cellIndex == 9) {
 			inboundRes.setReportPrice(new Double(value));
 		}
-		if (cellIndex == 8) {
+		if (cellIndex == 10) {
 			inboundRes.setMemo1(value);
 		}
-		if (cellIndex == 9) {
+		if (cellIndex == 11) {
 			inboundRes.setItemNo(value);
 		}
-		if (cellIndex == 10) {
+		if (cellIndex == 12) {
 			inboundRes.setHsCode(value);
 		}
-		if (cellIndex == 11) {
+		if (cellIndex == 13) {
 			inboundRes.setCoCode(value);
 		}
-		if (cellIndex == 12) {
+		if (cellIndex == 14) {
 			inboundRes.setMemo2(value);
 		}
-		if (cellIndex == 13) {
+		if (cellIndex == 15) {
 			inboundRes.setMemo3(value);
 		}
-//		if (cellIndex == 14) {
-//			inboundRes.setTotalPrice(new Double(value));
-//		}
-		if (cellIndex == 14) {
+
+		if (cellIndex == 16) {
 				inboundRes.setEngNm(value);	
 		}
-		if (cellIndex == 15) {
-			inboundRes.setColor(value);;
+		if (cellIndex == 17) {
+			inboundRes.setColor(value);
 		}
 		
 	}

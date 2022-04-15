@@ -371,11 +371,11 @@ public class InboundServiceImpl implements InboundService {
 //						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
 					}
 					if(index.size() == 0) {
-						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
+//						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
 //						rt.setFreight(item.getInboundMaster().getFreight());
 						rt.setFreight(FreightType.getList().stream().filter(type->type.getId() ==item.getInboundMaster().getFreight()).findFirst().get().getName());
 						rt.setFreightCode(item.getInboundMaster().getFreight());
-						rt.setManagerNm("홍길동 과장");
+//						rt.setManagerNm("홍길동 과장");
 //						rt.setMasterCompanyNumber("sdfsadfSDF");)
 
 						if(item.getInboundMaster().getCompanyInfo()!=null) {
@@ -384,15 +384,15 @@ public class InboundServiceImpl implements InboundService {
 							rt.setCompanyNm(item.getInboundMaster().getCompanyInfo().getCoNm());
 							
 						}
-						rt.setMasterExport("EXLFLDKE FLAKD .D  VLA ");
-						rt.setMasterExportAddr("DKEIPQ FPA V Z Z EIWWJF ALDLK BV C ALSLD FKS DLF SLDKF ");
+//						rt.setMasterExport("EXLFLDKE FLAKD .D  VLA ");
+//						rt.setMasterExportAddr("DKEIPQ FPA V Z Z EIWWJF ALDLK BV C ALSLD FKS DLF SLDKF ");
 						if(item.getInboundMaster().getComExport()!=null) {
 							rt.setMasterExport(item.getInboundMaster().getComExport().getValue()+"\n"+item.getInboundMaster().getComExport().getValue2());	
 						}
 						
 						rt.setWorkDate(item.getInboundMaster().getWorkDate());
-						String forViewWorkDate = DateFormatUtils.format(item.getInboundMaster().getWorkDate(), "MM월 dd일");
-						rt.setForViewWorkDate(forViewWorkDate);
+//						String forViewWorkDate = DateFormatUtils.format(item.getInboundMaster().getWorkDate(), "MM월 dd일");
+//						rt.setForViewWorkDate(forViewWorkDate);
 						rt.setBlNo(item.getInboundMaster().getBlNo());
 					}
 //					if(index.size() == 1) {
@@ -441,7 +441,7 @@ public class InboundServiceImpl implements InboundService {
 //				(inboundReq.getCoId() !=null ) ? inboundReq.getCoId() : new Long(0) 
 //				
 //				).orElse(null);
-
+		
 		List<InboundReq> list = inboundReq.getInboundReqData();
 		for (int i = 0; i < list.size(); i++) {
 
@@ -501,6 +501,70 @@ public class InboundServiceImpl implements InboundService {
 		}
 
 		return InboundRes.builder().inboundMasterId(inboundReq.getInboundMasterId()).build();
+	}
+	
+	@Override
+	public List <?> excelCommitInboundDataForFinalInbound(List <InboundRes> list) {
+		int orderNo = 1;
+
+//		List<Inbound> inboundList = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId());
+//		for (int i = 0; i < inboundList.size(); i++) {
+//			_inboundRepository.delete(inboundList.get(i));
+//		}
+
+		
+		List <Inbound> result = new ArrayList<>();
+		
+		for (int i = 0; i < list.size(); i++) {
+
+
+
+			int index = i;
+
+			Inbound inbound = new Inbound();
+			inbound.setWorkDateStr(list.get(i).getWorkDateStr());
+			
+			inbound.setOrderNoStr(list.get(i).getOrderNoStr());
+			inbound.setCompanyNm(list.get(i).getCompanyNm());
+			inbound.setMarking(list.get(i).getMarking());
+			inbound.setKorNm(list.get(i).getKorNm());
+			inbound.setItemCount(list.get(i).getItemCount());
+			inbound.setBoxCount(list.get(i).getBoxCount());
+			inbound.setWeight(list.get(i).getWeight());
+			inbound.setCbm(list.get(i).getCbm());
+			inbound.setReportPrice(list.get(i).getReportPrice());
+			inbound.setMemo1(list.get(i).getMemo1());
+			inbound.setItemNo(list.get(i).getItemNo());
+			inbound.setHsCode(list.get(i).getHsCode());
+			inbound.setCoCode(list.get(i).getCoCode());
+			if(list.get(i).getColor()!=null) {
+				for(int j=0; j<ColorType.getList().size();j++) {
+					if(ColorType.getList().get(j).getShowName().equals(list.get(i).getColor())) {
+						inbound.setColor(ColorType.getList().get(j).getId());
+					}else {
+					}
+				}
+				
+			}else {
+				inbound.setColor(Integer.valueOf(0));
+			}
+
+			inbound.setCoId(list.get(i).getCoId().intValue());
+
+			inbound.setMemo2(list.get(i).getMemo2());
+			inbound.setMemo3(list.get(i).getMemo3());
+			inbound.setTotalPrice(list.get(i).getTotalPrice());
+			inbound.setEngNm(list.get(i).getEngNm());
+			inbound.setOrderNo(orderNo);
+			InboundMaster inboundMaster = _inboundMasterRepository.findById(list.get(i).getInboundMasterId())
+					.orElse(InboundMaster.builder().build());
+			inbound.setInboundMaster(inboundMaster);
+			_inboundRepository.save(inbound);
+			orderNo = orderNo + 1;
+			result.add(inbound);
+		}
+
+		return result;
 	}
 
 	@Override

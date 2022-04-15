@@ -6,13 +6,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
@@ -20,6 +23,7 @@ import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
+import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.mapper.UserMapper;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
@@ -28,7 +32,9 @@ import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.finalInbound.FinalInboundService;
+import com.keepgo.whatdo.service.inbound.InboundService;
 import com.keepgo.whatdo.service.inboundMst.InboundMstService;
+import com.keepgo.whatdo.service.util.UtilService;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true" ) // 컨트롤러에서 설정
@@ -62,6 +68,10 @@ public class FinalInboundController {
 	
 	@Autowired
 	FinalInboundService _finalInboundService;
+	@Autowired
+	InboundService _InboundService;
+	@Autowired
+	UtilService _utilService;
 	
 	@RequestMapping(value = "/test/finalInboundCreate", method = {RequestMethod.POST })
 	public boolean finalInboundCreate(HttpServletRequest httpServletRequest,@RequestBody FinalInboundReq finalInboundReq){
@@ -123,6 +133,29 @@ public class FinalInboundController {
 		return  _finalInboundService.getAllCondition(finalInboundReq);
 
 		
+	}
+	
+	@RequestMapping(value = "/test/FinalInboundExcelRead", method = { RequestMethod.POST })
+	@ResponseBody
+	public boolean excelRead(MultipartFile file, String test, HttpServletRequest req)
+			throws Exception, NumberFormatException {
+		System.out.println("here!");
+		System.out.println(file);
+		System.out.println(test);
+		
+
+		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+		if (!extension.equals("xlsx") && !extension.equals("xls")) {
+			throw new IOException("엑셀파일만 업로드 해주세요.");
+		}
+
+
+		 
+
+		//출력모드
+//			List<InboundRes> result = _utilService.changeExcelFormatNew(list);
+		return _finalInboundService.excelRead(file, null, test);
 	}
 
 	

@@ -352,20 +352,20 @@ public class InboundMstServiceImpl implements InboundMstService {
 	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) throws ParseException {
 		InboundMaster inboundMaster = new InboundMaster();
 		
-		String workDt=inboundMasterReq.getWorkDate();
-		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyyMMdd");
-		Date tempDate = null;
-		tempDate = beforeFormat.parse(workDt);
-		SimpleDateFormat foramt1 = new SimpleDateFormat("yyyy-MM-dd");
-		
-		
+//		String workDt=inboundMasterReq.getWorkDate();
+//		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyyMMdd");
+//		Date tempDate = null;
+//		tempDate = beforeFormat.parse(workDt);
+//		SimpleDateFormat foramt1 = new SimpleDateFormat("yyyy-MM-dd");
+//		
+//		
 		InboundMaster target =  _inboundMasterRepository.findById(inboundMasterReq.getId()).get();
-		inboundMaster.setWorkDate((inboundMasterReq.getWorkDate()== null) ? new Date()
-				: tempDate);
+//		inboundMaster.setWorkDate((inboundMasterReq.getWorkDate()== null) ? new Date()
+//				: tempDate);
 		
 		target.setBlNo(inboundMasterReq.getBlNo());
 		target.setUpdateDt(new Date());
-		target.setWorkDate(inboundMaster.getWorkDate());
+//		target.setWorkDate(inboundMaster.getWorkDate());
 		target.setIsUsing(true);
 		target.setFreight(inboundMasterReq.getFreight());
 

@@ -46,6 +46,9 @@ public interface InboundService {
 	@Transactional
 	InboundRes excelCommitInboundData(InboundReq inboundReq);
 	@Transactional
+	List<?> excelCommitInboundDataForFinalInbound(List <InboundRes> list);
+	
+	@Transactional
 	InboundRes inboundCommit(InboundReq inboundReq);
 	
 	@Transactional

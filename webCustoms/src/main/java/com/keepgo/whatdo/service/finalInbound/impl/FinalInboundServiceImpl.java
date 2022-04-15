@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 import com.keepgo.whatdo.controller.FinalInbound.FinalInboundSpecification;
 import com.keepgo.whatdo.define.CoType;
+import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
@@ -36,6 +37,7 @@ import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
 import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
+import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
@@ -54,6 +56,7 @@ import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
+import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
 import com.keepgo.whatdo.service.finalInbound.FinalInboundService;
 
@@ -80,6 +83,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	
 	@Autowired
 	InboundMasterRepository _inboundMasterRepository;
+	
+	@Autowired
+	
+	InboundRepository _inboundRepository;
 
 	@Override
 	public List<?> getAll(FinalInboundReq req) {
@@ -405,7 +412,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	}
 	
 	@Override
-	public List<?> excelRead(MultipartFile file, InboundReq Req) throws IOException {
+	public boolean excelRead(MultipartFile file, InboundReq Req, String id) throws IOException {
 
 		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -421,10 +428,11 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		
 		
 		
-		List<InboundRes> list = new ArrayList<>();
+		//List<InboundRes> list = new ArrayList<>();
 		
 		for(int j=0;j<sheetNum;j++) {
 			//시트이름
+			List<Inbound> list = new ArrayList<>();
 			String sheetName = workbook.getSheetAt(j).getSheetName();
 			InboundMaster target = InboundMaster.builder()
 					.blNo(sheetName)
@@ -432,11 +440,28 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 					// todo 사용자 세션 아이디로 수정해야됨.
 					.user(User.builder().id(new Long(1)).build())
+					.freight(1)
 			
 					.isUsing(true).createDt(new Date()).updateDt(new Date())
 
 					.build();
 			target = _inboundMasterRepository.save(target);
+			
+			
+			FinalInbound finalInbound = _finalInboundRepository.findById(Long.valueOf(id)).orElse(FinalInbound.builder().build());
+//			InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterId).orElse(InboundMaster.builder().build());
+			FinalInboundInboundMaster finalInboundInboundMaster= new FinalInboundInboundMaster();
+			
+			
+			finalInboundInboundMaster.setFinalInbound(finalInbound);
+			finalInboundInboundMaster.setInboundMaster(target);
+			finalInboundInboundMaster.setPreperOrder(0);
+			
+
+			_finalInboundInboundMasterRepository.save(finalInboundInboundMaster);
+			
+			
+			
 			//시트
 			XSSFSheet sheet = workbook.getSheetAt(j);
 			// 마지막 row 숫자
@@ -445,7 +470,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			for (int i = 1; i < rowCount + 1; i++) {
 				XSSFRow row = sheet.getRow(i);
 //				boolean validation = true;
-				InboundRes inboundRes = new InboundRes();
+				Inbound inbound = new Inbound();
 				row.cellIterator().forEachRemaining(cell -> {
 					int cellIndex = cell.getColumnIndex();
 					switch (cell.getCellTypeEnum().name()) {
@@ -453,7 +478,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					case "STRING":
 						String string1 = cell.getStringCellValue();
 						try {
-							excelUploadProcess02(cellIndex, string1, inboundRes);
+							excelUploadProcess02(cellIndex, string1, inbound);
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -465,7 +490,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 						String numberToString = cell.getStringCellValue();
 						cellIndex = cell.getColumnIndex();
 						try {
-							excelUploadProcess02(cellIndex, numberToString, inboundRes);
+							excelUploadProcess02(cellIndex, numberToString, inbound);
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -480,30 +505,78 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					}
 
 				});
-
-				if(inboundRes.getEngNm()==null||inboundRes.getEngNm().equals("")) {
+				
+				
+				if(inbound.getEngNm()==null||inbound.getEngNm().equals("")) {
 					
 				}else {
-					Long masterId=_inboundMasterRepository.findByBlNo(sheetName).getId();
-					inboundRes.setInboundMasterId(masterId);
-					list.add(inboundRes);
+					if(inbound.getColorName()!=null) {
+						for(int k=0; k<ColorType.getList().size();k++) {
+							if(ColorType.getList().get(k).getShowName().equals(inbound.getColorName())) {
+								inbound.setColor(ColorType.getList().get(k).getId());
+							}else {
+
+							}
+						}
+						
+					}else {
+						inbound.setColor(Integer.valueOf(0));
+					}
+					if(inbound.getCoCode()!=null) {
+						for(int k=0; k<CoType.getList().size();k++) {
+							if(CoType.getList().get(k).getName().equals(inbound.getCoCode())) {
+								inbound.setCoId(CoType.getList().get(k).getId());
+							}else {
+
+							}
+						}
+						
+					}else {
+						inbound.setCoId(Integer.valueOf(3));
+					}
+					
+					inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
+					inbound.setInboundMaster(target);
+					
+					list.add(inbound);
 				}
 				
 			}
+			
+			saveItems(list);
+			// function list for save
+			//
+			//for list
+			
 		}
 		
+		//excel sheet 2
+		//for t ->{
+		//
+		// get sheetname ;
+		// id = save()
+		//  1~4 
+		// list<inbound> enetiy  
+		// save - 
+		// for  - list<inbound>
+		// save 
+		//}
 		
-		list = excelUploadProcess03(list);
-		return list;
+		
+		
+		return true;
 	}
 
-	public void excelUploadProcess02(int cellIndex, String value, InboundRes inboundRes) throws ParseException {
+	
+	
+	
+	public void excelUploadProcess02(int cellIndex, String value, Inbound inbound) throws ParseException {
 		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
 		// commonid 입력값 없으면 insert 후보
 		
 		if (cellIndex == 0) {
 			
-			inboundRes.setOrderNoStr(value);
+			inbound.setOrderNoStr(value);
 			
 		}
 		if (cellIndex == 1) {
@@ -513,139 +586,72 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			Date d=null;
 			d=format1.parse(value);
 			String b= format2.format(d);
-			inboundRes.setWorkDateStr(b);
+			inbound.setWorkDateStr(b);
 			
 		}
 		
 		if (cellIndex == 2) {
 
-			inboundRes.setCompanyNm(value);
+			inbound.setCompanyNm(value);
 		}
 		if (cellIndex == 3) {
-			inboundRes.setMarking(value);
+			inbound.setMarking(value);
 		}
 		if (cellIndex == 4) {
-			inboundRes.setKorNm(value);
+			inbound.setKorNm(value);
 		}
 		if (cellIndex == 5) {
-			inboundRes.setItemCount(new Double(value));
+			inbound.setItemCount(new Double(value));
 		}
 		if (cellIndex == 6) {
-			inboundRes.setBoxCount(new Double(value));
+			inbound.setBoxCount(new Double(value));
 		}
 		if (cellIndex == 7) {
-			inboundRes.setWeight(new Double(value));
+			inbound.setWeight(new Double(value));
 		}	
 		if (cellIndex == 8) {
-			inboundRes.setCbm(new Double(value));
+			inbound.setCbm(new Double(value));
 		}
 		if (cellIndex == 9) {
-			inboundRes.setReportPrice(new Double(value));
+			inbound.setReportPrice(new Double(value));
 		}
 		if (cellIndex == 10) {
-			inboundRes.setMemo1(value);
+			inbound.setMemo1(value);
 		}
 		if (cellIndex == 11) {
-			inboundRes.setItemNo(value);
+			inbound.setItemNo(value);
 		}
 		if (cellIndex == 12) {
-			inboundRes.setHsCode(value);
+			inbound.setHsCode(value);
 		}
 		if (cellIndex == 13) {
-			inboundRes.setCoCode(value);
+			inbound.setCoCode(value);
 		}
 		if (cellIndex == 14) {
-			inboundRes.setMemo2(value);
+			inbound.setMemo2(value);
 		}
 		if (cellIndex == 15) {
-			inboundRes.setMemo3(value);
+			inbound.setMemo3(value);
 		}
 
 		if (cellIndex == 16) {
-				inboundRes.setEngNm(value);	
+			inbound.setEngNm(value);	
 		}
 		if (cellIndex == 17) {
-			inboundRes.setColor(value);
+			inbound.setColorName(value);
+			
 		}
 		
 	}
 	
-	public List<InboundRes> excelUploadProcess03(List<InboundRes> list) {
-		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
-		// commonid 입력값 없으면 insert 후보
-			
-		Function<InboundRes, InboundRes> fn = (item)->{
-			
-			//박수 무게 계산 박스 수 * 무게상수
-//			Double d = new Double(0);
-//			if(item.getBoxCount() != null) {
-//				d = new Double(String.format("%.3f", new Double(item.getBoxCount() * item.getWeight())));	
-//			}else {
-//				
-//			}
-			
-//			item.setWeight(d);
-			
-
-			
-//			A(1,"FTA",1),
-//			B(2,"YATAI",2),
-//			C(3," ",3);
-			
-			if(item.getCoCode() == null) {
-				item.setCoId(Long.valueOf(3));
-			}else {
-				
-				boolean isExist = CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().isPresent();
-				
-				if(isExist) {
-//				if(null == CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().orElseGet(null)) {
-					item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get().getId()));
-				}else {
-					item.setCoId(Long.valueOf(3));	
-				}
-//				Long coId = Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get();
-//				
-//				item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().ifPresent(t->). );
-			}
-					
-			//cbm 문자 곱 * 박스 갯수
-			if(item.getCbmStr() == null || item.getCbmStr().equals("")) {
-				
-			}else{
-				String items[] = item.getCbmStr().split("\\*");
-				List<Double> t= Stream.of(items)
-						.map(t_item -> new Double("0."+t_item))
-						.collect(Collectors.toList());
-//						;
-				System.out.println(t);
-				Double r = t.stream().reduce( (a,b)->a*b).get();
-			
-				item.setCbm(r * item.getBoxCount());
-			}
-			
-			//total  = 수량 * 신고단가 
-			//소수 2째자리 
-//			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
-			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
-					
-			}else {
-				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
-			}
-			
-			
-			return item;
-			
-			
-			
-		};
-		
-		list = list.stream().map(fn).collect(Collectors.toList());
-		;
-		
-		return list;
 	
+	public void saveItems(List<Inbound> l ) {
+		for(int k=0; k<l.size();k++) {
+			Inbound inbound = new Inbound();
+			inbound=l.get(k);
+			inbound=_inboundRepository.save(inbound);
+		}
+		
 	}
-
 
 }

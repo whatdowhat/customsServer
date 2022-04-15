@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.controller.inboundMst;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +70,7 @@ public class InboundMstController {
 		return  _inboundMstService.createInboundMaster(inboundMasterReq);
 	}
 	@RequestMapping(value = "/test/update/inboundMst", method = {RequestMethod.POST })
-	public boolean updateInboundMaster(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){
+	public boolean updateInboundMaster(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq)throws ParseException{
 		_inboundMstService.updateInboundMaster(inboundMasterReq);
 		return  true;
 	}

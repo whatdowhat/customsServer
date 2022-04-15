@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.keepgo.whatdo.controller.FinalInbound.FinalInboundSpecification;
+import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
@@ -43,6 +46,7 @@ import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
@@ -398,6 +402,249 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				}).collect(Collectors.toList());
 
 		return r;
+	}
+	
+	@Override
+	public List<?> excelRead(MultipartFile file, InboundReq Req) throws IOException {
+
+		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+		if (!extension.equals("xlsx") && !extension.equals("xls")) {
+			throw new IOException("엑셀파일만 업로드 해주세요.");
+		}
+		XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+		
+		//시트갯수
+		int sheetNum = workbook.getNumberOfSheets();
+		
+		// 첫번째 시트
+		
+		
+		
+		List<InboundRes> list = new ArrayList<>();
+		
+		for(int j=0;j<sheetNum;j++) {
+			//시트이름
+			String sheetName = workbook.getSheetAt(j).getSheetName();
+			InboundMaster target = InboundMaster.builder()
+					.blNo(sheetName)
+					
+
+					// todo 사용자 세션 아이디로 수정해야됨.
+					.user(User.builder().id(new Long(1)).build())
+			
+					.isUsing(true).createDt(new Date()).updateDt(new Date())
+
+					.build();
+			target = _inboundMasterRepository.save(target);
+			//시트
+			XSSFSheet sheet = workbook.getSheetAt(j);
+			// 마지막 row 숫자
+			int rowCount = sheet.getLastRowNum();
+			// i=1 rowCount+1 해야 마지막 row 데이터까지 읽어옴
+			for (int i = 1; i < rowCount + 1; i++) {
+				XSSFRow row = sheet.getRow(i);
+//				boolean validation = true;
+				InboundRes inboundRes = new InboundRes();
+				row.cellIterator().forEachRemaining(cell -> {
+					int cellIndex = cell.getColumnIndex();
+					switch (cell.getCellTypeEnum().name()) {
+
+					case "STRING":
+						String string1 = cell.getStringCellValue();
+						try {
+							excelUploadProcess02(cellIndex, string1, inboundRes);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						break;
+					case "NUMERIC":
+						cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+						String numberToString = cell.getStringCellValue();
+						cellIndex = cell.getColumnIndex();
+						try {
+							excelUploadProcess02(cellIndex, numberToString, inboundRes);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					case "FORMULA":
+						String formula1 = cell.getCellFormula();
+						cell.setCellFormula(formula1);
+						break;
+					default:
+						break;
+					}
+
+				});
+
+				if(inboundRes.getEngNm()==null||inboundRes.getEngNm().equals("")) {
+					
+				}else {
+					Long masterId=_inboundMasterRepository.findByBlNo(sheetName).getId();
+					inboundRes.setInboundMasterId(masterId);
+					list.add(inboundRes);
+				}
+				
+			}
+		}
+		
+		
+		list = excelUploadProcess03(list);
+		return list;
+	}
+
+	public void excelUploadProcess02(int cellIndex, String value, InboundRes inboundRes) throws ParseException {
+		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
+		// commonid 입력값 없으면 insert 후보
+		
+		if (cellIndex == 0) {
+			
+			inboundRes.setOrderNoStr(value);
+			
+		}
+		if (cellIndex == 1) {
+
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
+			SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+			Date d=null;
+			d=format1.parse(value);
+			String b= format2.format(d);
+			inboundRes.setWorkDateStr(b);
+			
+		}
+		
+		if (cellIndex == 2) {
+
+			inboundRes.setCompanyNm(value);
+		}
+		if (cellIndex == 3) {
+			inboundRes.setMarking(value);
+		}
+		if (cellIndex == 4) {
+			inboundRes.setKorNm(value);
+		}
+		if (cellIndex == 5) {
+			inboundRes.setItemCount(new Double(value));
+		}
+		if (cellIndex == 6) {
+			inboundRes.setBoxCount(new Double(value));
+		}
+		if (cellIndex == 7) {
+			inboundRes.setWeight(new Double(value));
+		}	
+		if (cellIndex == 8) {
+			inboundRes.setCbm(new Double(value));
+		}
+		if (cellIndex == 9) {
+			inboundRes.setReportPrice(new Double(value));
+		}
+		if (cellIndex == 10) {
+			inboundRes.setMemo1(value);
+		}
+		if (cellIndex == 11) {
+			inboundRes.setItemNo(value);
+		}
+		if (cellIndex == 12) {
+			inboundRes.setHsCode(value);
+		}
+		if (cellIndex == 13) {
+			inboundRes.setCoCode(value);
+		}
+		if (cellIndex == 14) {
+			inboundRes.setMemo2(value);
+		}
+		if (cellIndex == 15) {
+			inboundRes.setMemo3(value);
+		}
+
+		if (cellIndex == 16) {
+				inboundRes.setEngNm(value);	
+		}
+		if (cellIndex == 17) {
+			inboundRes.setColor(value);
+		}
+		
+	}
+	
+	public List<InboundRes> excelUploadProcess03(List<InboundRes> list) {
+		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
+		// commonid 입력값 없으면 insert 후보
+			
+		Function<InboundRes, InboundRes> fn = (item)->{
+			
+			//박수 무게 계산 박스 수 * 무게상수
+//			Double d = new Double(0);
+//			if(item.getBoxCount() != null) {
+//				d = new Double(String.format("%.3f", new Double(item.getBoxCount() * item.getWeight())));	
+//			}else {
+//				
+//			}
+			
+//			item.setWeight(d);
+			
+
+			
+//			A(1,"FTA",1),
+//			B(2,"YATAI",2),
+//			C(3," ",3);
+			
+			if(item.getCoCode() == null) {
+				item.setCoId(Long.valueOf(3));
+			}else {
+				
+				boolean isExist = CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().isPresent();
+				
+				if(isExist) {
+//				if(null == CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().orElseGet(null)) {
+					item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get().getId()));
+				}else {
+					item.setCoId(Long.valueOf(3));	
+				}
+//				Long coId = Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get();
+//				
+//				item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().ifPresent(t->). );
+			}
+					
+			//cbm 문자 곱 * 박스 갯수
+			if(item.getCbmStr() == null || item.getCbmStr().equals("")) {
+				
+			}else{
+				String items[] = item.getCbmStr().split("\\*");
+				List<Double> t= Stream.of(items)
+						.map(t_item -> new Double("0."+t_item))
+						.collect(Collectors.toList());
+//						;
+				System.out.println(t);
+				Double r = t.stream().reduce( (a,b)->a*b).get();
+			
+				item.setCbm(r * item.getBoxCount());
+			}
+			
+			//total  = 수량 * 신고단가 
+			//소수 2째자리 
+//			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
+					
+			}else {
+				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+			}
+			
+			
+			return item;
+			
+			
+			
+		};
+		
+		list = list.stream().map(fn).collect(Collectors.toList());
+		;
+		
+		return list;
+	
 	}
 
 

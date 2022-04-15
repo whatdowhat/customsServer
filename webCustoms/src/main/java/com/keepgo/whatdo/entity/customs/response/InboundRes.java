@@ -52,8 +52,8 @@ public class InboundRes {
 	private Date workDate;
 	
 	private String workDateStr;
-	
-
+	//미리보기용 작업일자
+	private String forViewWorkDateStr;
 	//미리보기용 작업일자
 	private String forViewWorkDate;
 //	//발송업체 회사
@@ -175,7 +175,7 @@ public class InboundRes {
 	@Builder.Default
 	private int engNmSpan=1;
 	@Builder.Default
-	private int workDtStrSpan=1;
+	private int workDateStrSpan=1;
 	@Builder.Default
 	private int orderNoStrSpan=1;
 	

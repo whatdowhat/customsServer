@@ -311,6 +311,9 @@ public class InboundServiceImpl implements InboundService {
 				
 						
 						.id(item.getId())
+						.orderNoStr(item.getOrderNoStr())
+						.workDateStr(item.getWorkDateStr())
+						
 						.companyNm(item.getCompanyNm())
 						.marking(item.getMarking())
 						.korNm(item.getKorNm())
@@ -336,7 +339,18 @@ public class InboundServiceImpl implements InboundService {
 						
 						.build();
 						
-					
+					if(item.getWorkDateStr()!=null) {
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						Date d=null;
+						try {
+							d=format.parse(item.getWorkDateStr());
+							String forViewWorkDateStr = DateFormatUtils.format(d, "MM월 dd일");
+							rt.setForViewWorkDateStr(forViewWorkDateStr);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 					if(item.getCoId() != null) {
 						rt.setCoId(Long.valueOf(item.getCoId()));
 						for(int i=0; i<CoType.getList().size();i++) {
@@ -438,6 +452,9 @@ public class InboundServiceImpl implements InboundService {
 			int index = i;
 
 			Inbound inbound = new Inbound();
+			inbound.setWorkDateStr(list.get(i).getWorkDateStr());
+			
+			inbound.setOrderNoStr(list.get(i).getOrderNoStr());
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
 			inbound.setMarking(list.get(i).getMarking());
 			inbound.setKorNm(list.get(i).getKorNm());
@@ -450,7 +467,18 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
 			inbound.setCoCode(list.get(i).getCoCode());
-			inbound.setColor(list.get(i).getColor().intValue());
+			if(list.get(i).getColor()!=null) {
+				for(int j=0; j<ColorType.getList().size();j++) {
+					if(ColorType.getList().get(j).getShowName().equals(list.get(i).getColor())) {
+						inbound.setColor(ColorType.getList().get(j).getId());
+					}else {
+//						inbound.setColor(Integer.valueOf(0));
+					}
+				}
+				
+			}else {
+				inbound.setColor(Integer.valueOf(0));
+			}
 
 			inbound.setCoId(list.get(i).getCoId().intValue());
 //			if (list.get(i).getCoCode() != null) {
@@ -491,6 +519,8 @@ public class InboundServiceImpl implements InboundService {
 
 			
 			Inbound inbound = new Inbound();
+			inbound.setWorkDateStr(list.get(i).getWorkDateStr());
+			inbound.setOrderNoStr(list.get(i).getOrderNoStr());
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
 			inbound.setMarking(list.get(i).getMarking());
 			inbound.setKorNm(list.get(i).getKorNm());
@@ -508,9 +538,17 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setCoCode(list.get(i).getCoCode());
 			
 			if(list.get(i).getColor()!=null) {
-				inbound.setColor(list.get(i).getColor().intValue());	
+				for(int j=0; j<ColorType.getList().size();j++) {
+					if(ColorType.getList().get(j).getShowName().equals(list.get(i).getColor())) {
+						inbound.setColor(ColorType.getList().get(j).getId());
+					}else {
+
+					}
+				}
+				
+			}else {
+				inbound.setColor(Integer.valueOf(0));
 			}
-			inbound.setColorCode(list.get(i).getColorCode());
 			
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
@@ -596,6 +634,7 @@ public class InboundServiceImpl implements InboundService {
 		XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
 		// 첫번째 시트
 		XSSFSheet sheet = workbook.getSheetAt(0);
+		String sheetName = workbook.getSheetAt(0).getSheetName();
 		// 마지막 row 숫자
 		int rowCount = sheet.getLastRowNum();
 		List<InboundRes> list = new ArrayList<>();
@@ -611,14 +650,24 @@ public class InboundServiceImpl implements InboundService {
 
 				case "STRING":
 					String string1 = cell.getStringCellValue();
-					excelUploadProcess02(cellIndex, string1, inboundRes);
+					try {
+						excelUploadProcess02(cellIndex, string1, inboundRes);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					break;
 				case "NUMERIC":
 					cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 					String numberToString = cell.getStringCellValue();
 					cellIndex = cell.getColumnIndex();
-					excelUploadProcess02(cellIndex, numberToString, inboundRes);
+					try {
+						excelUploadProcess02(cellIndex, numberToString, inboundRes);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					break;
 				case "FORMULA":
 					String formula1 = cell.getCellFormula();
@@ -641,17 +690,24 @@ public class InboundServiceImpl implements InboundService {
 		return list;
 	}
 
-	public void excelUploadProcess02(int cellIndex, String value, InboundRes inboundRes) {
+	public void excelUploadProcess02(int cellIndex, String value, InboundRes inboundRes) throws ParseException {
 		// cellIndex는 1개 row의 순차적 cell 의미 , value는 cellIndex의 value
 		// commonid 입력값 없으면 insert 후보
 		
 		if (cellIndex == 0) {
+			
 			inboundRes.setOrderNoStr(value);
 			
 		}
 		if (cellIndex == 1) {
 
-			inboundRes.setWorkDateStr(value);
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
+			SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+			Date d=null;
+			d=format1.parse(value);
+			String b= format2.format(d);
+			inboundRes.setWorkDateStr(b);
+			
 		}
 		
 		if (cellIndex == 2) {
@@ -813,6 +869,15 @@ public class InboundServiceImpl implements InboundService {
 				if(sub_item.getForViewWorkDate()!= null) {
 					f.put("forViewWorkDate", sub_item.getForViewWorkDate());
 				}
+				if(sub_item.getForViewWorkDateStr()!= null) {
+					f.put("forViewWorkDateStr", sub_item.getForViewWorkDateStr());
+				}
+				if(sub_item.getOrderNoStr()!= null) {
+					f.put("orderNoStr", sub_item.getOrderNoStr());
+				}
+				if(sub_item.getWorkDateStr()!= null) {
+					f.put("workDateStr", sub_item.getWorkDateStr());
+				}
 				if(sub_item.getCompanyNm()!= null) {
 					f.put("companyNm", sub_item.getCompanyNm());
 				}
@@ -887,6 +952,8 @@ public class InboundServiceImpl implements InboundService {
 				f.put("coIdSpan", sub_item.getCoIdSpan());
 				f.put("totalPriceSpan", sub_item.getTotalPriceSpan());
 				f.put("engNmSpan", sub_item.getEngNmSpan());
+				f.put("workDateStrSpan", sub_item.getWorkDateStrSpan());
+				f.put("orderNoStrSpan", sub_item.getOrderNoStrSpan());
 	
 				return f;
 			}).collect(Collectors.toList()));

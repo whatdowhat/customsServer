@@ -52,10 +52,17 @@ public class Inbound {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "workDate")
 	private Date workDate;
+	@Column(name = "workDateStr")
+	private String workDateStr;
+	
+	
+	@Column(name = "orderNoStr")
+	private String orderNoStr;
 	
 	@Column(name = "color")
 	private Integer color;
-	
+	@Transient
+	private String colorName;
 	@JoinColumn(name = "inboundMasterId")
 	@ExcelColumn(headerName="inboundMasterId",order = 2)
 	@ManyToOne(fetch = FetchType.LAZY)

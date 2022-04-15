@@ -349,18 +349,19 @@ public class InboundMstServiceImpl implements InboundMstService {
 	}
 
 	@Override
-	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) {
+	public InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) throws ParseException {
 		InboundMaster inboundMaster = new InboundMaster();
+		
+		String workDt=inboundMasterReq.getWorkDate();
+		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyyMMdd");
+		Date tempDate = null;
+		tempDate = beforeFormat.parse(workDt);
 		SimpleDateFormat foramt1 = new SimpleDateFormat("yyyy-MM-dd");
-
+		
 		
 		InboundMaster target =  _inboundMasterRepository.findById(inboundMasterReq.getId()).get();
-		try {
-			inboundMaster.setWorkDate((inboundMasterReq.getWorkDate()== null) ? new Date()
-					: foramt1.parse(inboundMasterReq.getWorkDate()));
-		} catch (ParseException e) {
-			inboundMaster.setWorkDate(new Date());
-		}
+		inboundMaster.setWorkDate((inboundMasterReq.getWorkDate()== null) ? new Date()
+				: tempDate);
 		
 		target.setBlNo(inboundMasterReq.getBlNo());
 		target.setUpdateDt(new Date());

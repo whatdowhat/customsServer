@@ -1,13 +1,16 @@
 package com.keepgo.whatdo.service.finalInbound;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
+import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 
 @Service
@@ -41,4 +44,6 @@ public interface FinalInboundService {
 	@Transactional
 	boolean addDataFinalInboundMasterItems(FinalInboundReq finalInboundReq);
 	
+	@Transactional
+	List<?> excelRead(MultipartFile file,InboundReq inboundReq) throws IOException;
 }

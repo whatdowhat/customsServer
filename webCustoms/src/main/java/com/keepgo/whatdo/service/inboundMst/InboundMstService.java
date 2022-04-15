@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.service.inboundMst;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,7 +28,7 @@ public interface InboundMstService {
 	InboundMasterRes createInboundMaster(InboundMasterReq inboundMasterReq);
 
 	@Transactional
-	InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq);
+	InboundMasterRes updateInboundMaster(InboundMasterReq inboundMasterReq) throws ParseException;
 
 	@Transactional
 	InboundMasterRes getInboundMaster(Long inboundMstId);

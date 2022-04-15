@@ -157,7 +157,10 @@ public class InboundViewRes {
 	private int totalPriceSpan=1;
 	@Builder.Default
 	private int engNmSpan=1;
-	
+	@Builder.Default
+	private int workDateStrSpan=1;
+	@Builder.Default
+	private int orderNoStrSpan=1;
 	
 	
 	

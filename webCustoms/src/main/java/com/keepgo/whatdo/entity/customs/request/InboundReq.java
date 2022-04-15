@@ -39,7 +39,8 @@ public class InboundReq {
 	private Long id;
 	
 	private Long coId;
-	private Long color;
+	private Long colorId;
+	private String color;
 	private String colorCode;
 	@Column(name = "orderNo")
 	private int orderNo;
@@ -47,8 +48,8 @@ public class InboundReq {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "workDate")
 	private Date workDate;
-
-	
+	private String workDateStr;
+	private String orderNoStr;
 	
 	
 	

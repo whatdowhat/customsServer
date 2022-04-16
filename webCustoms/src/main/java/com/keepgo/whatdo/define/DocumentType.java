@@ -10,8 +10,8 @@ public enum DocumentType {
 
 //	BL(0,"",0),
 	A(1,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),
-	B(2,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"RCEP.xlsx",2),
-	C(3,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"YATAI.xlsx",3),
+	B(2,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"RCEP2.xlsx",2),
+	C(3,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"YATAI2.xlsx",3),
 	D(4,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),
 	E(5,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),
 	F(6,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),

@@ -114,7 +114,7 @@ public class ExcelServiceImpl implements ExcelService {
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
-			
+			workbook.setSheetName(0, excelFTARes.getFileNm());
 
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			Collections.reverse(excelFTARes.getSubItem());			
@@ -135,7 +135,7 @@ public class ExcelServiceImpl implements ExcelService {
 			chageData(sheet,excelFTARes, workbook);
 			
 			//item add
-			String fileName = excelFTARes.getFileNm()+".xlsx";
+			String fileName = excelFTARes.getFileNm()+"_FTA.xlsx";
 	        response.setContentType("application/download;charset=utf-8");
 	        response.setHeader("custom-header",fileName);
 			workbook.write(response.getOutputStream());
@@ -169,7 +169,6 @@ public class ExcelServiceImpl implements ExcelService {
 				CellType NUMERIC = CellType.NUMERIC;
 				CellType FORMULA = CellType.FORMULA;
 				row.cellIterator().forEachRemaining(cell ->{
-					System.out.println("CELL_TYPE_STRING:::: " + columnIndex+ " 열 = ");
 					switch (cell.getCellTypeEnum().name()) {
 					case "STRING":
 						String value = cell.getStringCellValue();
@@ -184,7 +183,6 @@ public class ExcelServiceImpl implements ExcelService {
 						
 						break;
 					case "NUMERIC":
-						System.out.println("CELL_TYPE_NUMERIC: : " + columnIndex+ " 열 = " + cell.getDateCellValue());
 						if (DateUtil.isCellDateFormatted(cell)) {
 							Date date1 = cell.getDateCellValue();
 							cell.setCellValue(date1);
@@ -194,7 +192,6 @@ public class ExcelServiceImpl implements ExcelService {
 						}
 						break;
 					case "FORMULA":
-						System.out.println("CELL_TYPE_FORMULA:: : " + columnIndex+ " 열 = " + cell.getCellFormula());
 						String formula1 = cell.getCellFormula();
 						cell.setCellFormula(formula1);
 						break;
@@ -208,34 +205,13 @@ public class ExcelServiceImpl implements ExcelService {
 				
 		}
 		
-		
-//		for (int i = 0;  i< rowCount; i++) 
-//		{
-//		    XSSFRow row = sheet.getRow(i);
-//		    for(int j=0; j<deleteList.size();j++) {
-//		    	if(deleteList.get(j).equals(row.getRowNum()))
-//			    {
-//		    		sheet.removeRow(row);
-////			        sheet.shiftRows(row.getRowNum() , sheet.getLastRowNum() , -1);
-//			        i--;
-//			    }	
-//		    }
-////		    sheet.removeRow(row);
-//		}
-//	deleteList.stream().forEach(t->{
-//			XSSFRow row = sheet.getRow(t);
-//			sheet.removeRow(row);
-////		    sheet.shiftRows(t.getRowNum()+1, sheet.getLastRowNum(), -1);
-////		    sheet.shiftRows(t.getRowNum() + 1, sheet.getLastRowNum() + 1, -1);
-////			sheet.dele
-//	
-//	});
-	
 	deleteList.stream().forEach(t->{
 		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
 	});
-//	sheet.shiftRows(28 , sheet.getLastRowNum() , -1);
-//	sheet.shiftRows(row.getRowNum() , sheet.getLastRowNum() , -1);;
+	deleteList.stream().forEach(t->{
+		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+	});
+		
 		
 	}
 	public String convertData(String target,ExcelFTARes excelFTARes) {
@@ -334,12 +310,13 @@ public class ExcelServiceImpl implements ExcelService {
 					if(count.size() == 7) {
 						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
 						target.getCell(cell.getColumnIndex()).setCellValue(getDateStr(item.getDepartDtStr()));
+//						target.getCell(cell.getColumnIndex()).setCellValue("TAAAA");
 					}
 				}else{
-					if(count.size() == 7) {
-						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
-						target.getCell(cell.getColumnIndex()).setCellValue("");
-					}
+//					if(count.size() == 7) {
+//						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
+//						target.getCell(cell.getColumnIndex()).setCellValue("");
+//					}
 				}
 				
 				
@@ -536,7 +513,7 @@ public class ExcelServiceImpl implements ExcelService {
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
-			
+			workbook.setSheetName(0, excelRCEPRes.getFileNm());
 
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			Collections.reverse(excelRCEPRes.getSubItem());			
@@ -559,7 +536,7 @@ public class ExcelServiceImpl implements ExcelService {
 			chageDataforRCEP(sheet,excelRCEPRes, workbook);
 			
 			//item add
-			String fileName = excelRCEPRes.getFileNm()+".xlsx";
+			String fileName = excelRCEPRes.getFileNm()+"_RCEP.xlsx";
 	        response.setContentType("application/download;charset=utf-8");
 	        response.setHeader("custom-header",fileName);
 			workbook.write(response.getOutputStream());
@@ -594,7 +571,6 @@ public class ExcelServiceImpl implements ExcelService {
 				CellType NUMERIC = CellType.NUMERIC;
 				CellType FORMULA = CellType.FORMULA;
 				row.cellIterator().forEachRemaining(cell ->{
-					System.out.println("CELL_TYPE_STRING:::: " + columnIndex+ " 열 = ");
 					switch (cell.getCellTypeEnum().name()) {
 					case "STRING":
 						String value = cell.getStringCellValue();
@@ -609,7 +585,6 @@ public class ExcelServiceImpl implements ExcelService {
 						
 						break;
 					case "NUMERIC":
-						System.out.println("CELL_TYPE_NUMERIC: : " + columnIndex+ " 열 = " + cell.getDateCellValue());
 						if (DateUtil.isCellDateFormatted(cell)) {
 							Date date1 = cell.getDateCellValue();
 							cell.setCellValue(date1);
@@ -619,7 +594,6 @@ public class ExcelServiceImpl implements ExcelService {
 						}
 						break;
 					case "FORMULA":
-						System.out.println("CELL_TYPE_FORMULA:: : " + columnIndex+ " 열 = " + cell.getCellFormula());
 						String formula1 = cell.getCellFormula();
 						cell.setCellFormula(formula1);
 						break;
@@ -639,7 +613,9 @@ public class ExcelServiceImpl implements ExcelService {
 	deleteList.stream().forEach(t->{
 		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
 	});
-
+	deleteList.stream().forEach(t->{
+		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+	});
 		
 	}
 	public String convertDataForRCEP(String target,ExcelRCEPRes excelRCEPRes) {
@@ -770,7 +746,7 @@ public class ExcelServiceImpl implements ExcelService {
 				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
 //				target.getCell(cell.getColumnIndex()).setCellValue(cell.getStringCellValue());
 
-				if(count.size() == 0) {
+				if(count.size( ) == 0) {
 					target.getCell(cell.getColumnIndex()).setCellValue(item.getOrderNo());
 				}
 				if(count.size() == 1) {
@@ -806,6 +782,8 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 		count.add(1);
 		});
+		
+		
 		
 	}
 
@@ -900,9 +878,10 @@ public class ExcelServiceImpl implements ExcelService {
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
-			
+			workbook.setSheetName(0, excelYATAIRes.getFileNm());
 
 			XSSFSheet sheet = workbook.getSheetAt(0);
+			
 			Collections.reverse(excelYATAIRes.getSubItem());			
 			//item add
 			//문서마다 시작하는 숫자가 고정
@@ -916,11 +895,11 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 //			
 			//data 치환
-		
+			
 			chageDataforYATAI(sheet,excelYATAIRes, workbook);
 			
 			//item add
-			String fileName = excelYATAIRes.getFileNm()+".xlsx";
+			String fileName = excelYATAIRes.getFileNm()+"_YATAI.xlsx";
 	        response.setContentType("application/download;charset=utf-8");
 	        response.setHeader("custom-header",fileName);
 			workbook.write(response.getOutputStream());
@@ -955,7 +934,6 @@ public class ExcelServiceImpl implements ExcelService {
 				CellType NUMERIC = CellType.NUMERIC;
 				CellType FORMULA = CellType.FORMULA;
 				row.cellIterator().forEachRemaining(cell ->{
-//					System.out.println("CELL_TYPE_STRING:::: " + columnIndex+ " 열 = ");
 					switch (cell.getCellTypeEnum().name()) {
 					case "STRING":
 						String value = cell.getStringCellValue();
@@ -970,7 +948,6 @@ public class ExcelServiceImpl implements ExcelService {
 						
 						break;
 					case "NUMERIC":
-//						System.out.println("CELL_TYPE_NUMERIC: : " + columnIndex+ " 열 = " + cell.getDateCellValue());
 						if (DateUtil.isCellDateFormatted(cell)) {
 							Date date1 = cell.getDateCellValue();
 							cell.setCellValue(date1);
@@ -980,7 +957,6 @@ public class ExcelServiceImpl implements ExcelService {
 						}
 						break;
 					case "FORMULA":
-						System.out.println("CELL_TYPE_FORMULA:: : " + columnIndex+ " 열 = " + cell.getCellFormula());
 						String formula1 = cell.getCellFormula();
 						cell.setCellFormula(formula1);
 						break;
@@ -1012,6 +988,12 @@ public class ExcelServiceImpl implements ExcelService {
 		}else if(target.contains("${data03}")) {
 			
 			String OriginStr = target;
+			if(excelYATAIRes.getData03() == null) {
+				excelYATAIRes.setData03("null");
+			}
+			if(excelYATAIRes.getData04() == null) {
+				excelYATAIRes.setData04("null");
+			}
 			OriginStr = OriginStr.replace("${data03}", excelYATAIRes.getData03());
 			OriginStr = OriginStr.replace("${data04}", excelYATAIRes.getData04());
 			return OriginStr;
@@ -1186,6 +1168,7 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
 				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice()+yyMMdd+"B");
 				subRes.setDepartDtStr(departDt);
+				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
 				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
 				
 				
@@ -1197,7 +1180,8 @@ public class ExcelServiceImpl implements ExcelService {
 				
 			}
 
-			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
+//			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
+			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
 			item.setTotalBoxCountEng("TOTAL: ("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
 			item.setSubItem(sublist);
 			return item; 

@@ -339,7 +339,7 @@ public class InboundServiceImpl implements InboundService {
 						
 						.build();
 						
-					if(item.getWorkDateStr()!=null) {
+					if(item.getWorkDateStr()!=null && !(item.getWorkDateStr().replaceAll(" ", "").equals(""))) {
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 						Date d=null;
 						try {
@@ -964,9 +964,26 @@ public class InboundServiceImpl implements InboundService {
 				f.put("orderNo", sub_item.getOrderNo());
 				f.put("korNm", sub_item.getKorNm());
 				f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
-				f.put("boxCount", decimalFormat2.format(sub_item.getBoxCount()));
-				f.put("weight", decimalFormat2.format(sub_item.getWeight()));
-				f.put("cbm", decimalFormat.format(sub_item.getCbm()));
+				if(sub_item.getBoxCount() == null) {
+					f.put("boxCount",  "0");
+				}else {
+					f.put("boxCount",  decimalFormat2.format(sub_item.getBoxCount()));	
+				}
+				
+				if(sub_item.getWeight() == null) {
+					f.put("weight",  "0");
+				}else {
+					f.put("weight", decimalFormat2.format(sub_item.getWeight()));	
+				}
+				
+				if(sub_item.getCbm() == null) {
+					f.put("cbm",  "0");
+				}else {
+					f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+				}
+				
+				
+				
 				f.put("reportPrice", decimalFormat.format(sub_item.getReportPrice()));
 				f.put("totalPrice", decimalFormat.format(sub_item.getTotalPrice()));
 				if(sub_item.getMemo1()!= null) {

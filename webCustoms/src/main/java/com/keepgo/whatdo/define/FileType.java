@@ -14,8 +14,8 @@ public enum FileType {
 	E(5,"화주서류",4),
 	F(6,"RCEP CO",3),
 	G(7,"아태 CO",4),
-	H(8,"공장 CO",5),
-	I(9,"화주서류",6);
+	H(8,"공장 CO",5);
+//	I(9,"화주서류",6);
 
 	Integer id;
 	String name;

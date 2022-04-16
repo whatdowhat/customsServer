@@ -59,43 +59,24 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
 
 					CompanyInfoRes dto = CompanyInfoRes.builder()
-//						.id(item.getId())
-//					.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
-//					.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt())
-//					.manages(item.getManages().stream().map(subitem -> subitem.getCommon())
-//							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
-//					.exports(item.getExports().stream().map(subitem -> subitem.getCommon())
-////							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
-////							.collect(Collectors.toMap(Common::getId, t -> t.getValue() ,Common::getId, t -> t.getValue() )))
-//					.build();
 
 							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
 							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
 							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
 							.manager(item.getManager())
-//					.managers(item.getManages().stream().map(sub_item->{
-//						Map<String,Object> f = new HashMap<>();
-//						f.put("comNm", sub_item.getCommon().getNm());
-//						f.put("comValue", sub_item.getCommon().getValue());
-//						f.put("comValue2", sub_item.getCommon().getValue2());
-//						f.put("preperOrder", sub_item.getPreperOrder());
-//						f.put("id", sub_item.getId());
-//						
-//						return f;
-//					}).collect(Collectors.toList()) )
-							.exports(item.getExports().stream().map(sub_item -> {
-								Map<String, Object> f = new HashMap<>();
-								f.put("comNm", sub_item.getCommon().getNm());
-								f.put("comValue", sub_item.getCommon().getValue());
-								f.put("comValue2", sub_item.getCommon().getValue2());
-								f.put("preperOrder", sub_item.getPreperOrder());
-								f.put("id", sub_item.getCommon().getId());
-
-								return f;
-							}).collect(Collectors.toList()))
-//					.exports(item.getExports().stream().map(subitem -> subitem.getCommon())
-//							.collect(Collectors.toMap(Common::getId, t -> t.getValue())))
-//							.collect(Collectors.toMap(Common::getId, t -> t.getValue() ,Common::getId, t -> t.getValue() )))
+							
+//							.exports(item.getExports().stream().map(sub_item -> {
+//								Map<String, Object> f = new HashMap<>();
+//								f.put("comNm", sub_item.getCommon().getNm());
+//								f.put("comValue", sub_item.getCommon().getValue());
+//								f.put("comValue2", sub_item.getCommon().getValue2());
+//								f.put("preperOrder", sub_item.getPreperOrder());
+//								f.put("id", sub_item.getCommon().getId());
+//
+//								return f;
+//							})
+//									
+//									.collect(Collectors.toList()))
 							.build();
 
 					return dto;
@@ -343,6 +324,39 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 			companyInfo.setConsignee(value);
 		}
 
+	}
+
+	@Override
+	public CompanyInfoRes getCompanyInfoExports(CompanyInfoReq companyInfoReq) {
+		
+		CompanyInfoRes res = _companyInfoRepository.findById(companyInfoReq.getId())
+				
+				.map(item -> {
+
+					CompanyInfoRes dto = CompanyInfoRes.builder()
+
+							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
+							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
+							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
+							.manager(item.getManager())
+							
+							.exports(item.getExports().stream().map(sub_item -> {
+								Map<String, Object> f = new HashMap<>();
+								f.put("comNm", sub_item.getCommon().getNm());
+								f.put("comValue", sub_item.getCommon().getValue());
+								f.put("comValue2", sub_item.getCommon().getValue2());
+								f.put("preperOrder", sub_item.getPreperOrder());
+								f.put("id", sub_item.getCommon().getId());
+
+								return f;
+							})
+//									
+									.collect(Collectors.toList()))
+							.build();
+
+					return dto;
+				}).get();
+		return res;
 	}
 
 }

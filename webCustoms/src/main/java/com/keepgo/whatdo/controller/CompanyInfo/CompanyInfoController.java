@@ -118,6 +118,16 @@ public class CompanyInfoController {
 
 		
 	}
+	
+	@RequestMapping(value = "/company/companyInfoExports", method = {RequestMethod.POST })
+	public CompanyInfoRes getCompanyInfoExports(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+
+		return  _companyInfoService.getCompanyInfoExports(companyInfoReq);
+
+		
+	}
+	
 	@RequestMapping(value = "/company/companyInfoDelete", method = {RequestMethod.POST })
 	public boolean companyInfoDelete(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
 		

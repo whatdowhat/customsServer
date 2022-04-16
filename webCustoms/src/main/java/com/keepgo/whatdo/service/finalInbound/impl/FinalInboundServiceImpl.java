@@ -203,9 +203,18 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 				.build();
 		target = _finalInboundRepository.save(target);
+		
+		
+		FinalInboundRes result = FinalInboundRes
+				.builder()
+				.id(target.getId())
+//				.title(target.getTitle())
+				.title(target.getTitle())
+				.build();		
 
-
-		return FinalInboundRes.builder().id(_finalInboundRepository.findByTitle(req.getTitle()).getId()).build();
+		return result;
+//		return FinalInboundRes.builder().id(_finalInboundRepository.findById(target.getId()).ti findByTitle(req.getTitle()).getId()).build();
+//		return FinalInboundRes.builder().id(_finalInboundRepository.findByTitle(req.getTitle()).getId()).build();
 	}
 	
 	@Override

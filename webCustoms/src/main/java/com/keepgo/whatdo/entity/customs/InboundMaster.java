@@ -49,8 +49,10 @@ public class InboundMaster {
 	
 	@Column(name = "blNo")
 	private String blNo;
+	//담당자
+	@Column(name = "manager")
+	private String manager;
 	
-
 		
 	@Column(name = "freight")
 	private int freight;

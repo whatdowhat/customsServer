@@ -97,6 +97,7 @@ public class CommonServiceImpl implements CommonService {
 						.id(item.getId())
 						.value(item.getValue())
 						.value2(item.getValue2())
+						.value3(item.getValue3())
 						.commonMasterId(item.getCommonMaster().getId())
 						.isUsing(item.getIsUsing())
 						.createDt(item.getCreateDt())
@@ -149,6 +150,7 @@ public class CommonServiceImpl implements CommonService {
 		common.setCommonMaster(master);
 		common.setValue(commonReq.getValue());
 		common.setValue2(commonReq.getValue2());
+		common.setValue3(commonReq.getValue3());
 		common.setCreateDt(new Date());
 		common.setUpdateDt(new Date());
 		common.setNm(commonReq.getName());
@@ -170,6 +172,7 @@ public class CommonServiceImpl implements CommonService {
 		common.setId(commonReq.getId());		
 		common.setValue(commonReq.getValue());
 		common.setValue2(commonReq.getValue2());
+		common.setValue3(commonReq.getValue3());
 		common.setCreateDt(new Date());
 		common.setUpdateDt(new Date());
 		common.setUser(new Long(1));

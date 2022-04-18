@@ -50,7 +50,7 @@ public class InboundReq {
 	private Date workDate;
 	private String workDateStr;
 	private String orderNoStr;
-	
+	private String jejil;
 	
 	
 	@Column(name = "companyNm")
@@ -169,6 +169,10 @@ public class InboundReq {
 	@Transient
 	@Builder.Default
 	private int workDateSpan = 1;
+	
+	@Transient
+	@Builder.Default
+	private int jejilSpan = 1;
 
 //	@Override
 //	public String toString() {

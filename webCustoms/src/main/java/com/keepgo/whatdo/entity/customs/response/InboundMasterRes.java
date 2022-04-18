@@ -44,6 +44,8 @@ private String blNo;
 
 private String freight;
 private int freightCode;
+//담당자
+private String manager;
 
 @JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 @Column(name = "incomDt")

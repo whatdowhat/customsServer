@@ -67,6 +67,7 @@ import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.excel.ExcelService;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
+import com.keepgo.whatdo.service.util.EnglishNumberToWords;
 import com.keepgo.whatdo.service.util.UtilService;
 
 @Component
@@ -205,12 +206,12 @@ public class ExcelServiceImpl implements ExcelService {
 				
 		}
 		
-	deleteList.stream().forEach(t->{
-		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
-	});
-	deleteList.stream().forEach(t->{
-		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
-	});
+//	deleteList.stream().forEach(t->{
+//		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+//	});
+//	deleteList.stream().forEach(t->{
+//		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+//	});
 		
 		
 	}
@@ -444,14 +445,18 @@ public class ExcelServiceImpl implements ExcelService {
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
+				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
 				sublist.add(subRes);
 //				index.add(1);
 //				return subRes;
 				
 			}
 //			ExcelFTASubRes to;to.getItemCount()
-			Double total = sublist.stream().mapToDouble(ExcelFTASubRes::getItemCount).sum();
-			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
+//			Double total = sublist.stream().mapToDouble(ExcelFTASubRes::getItemCount).sum();
+//			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
+			
+			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelFTASubRes::getBoxCount).sum();
+			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
 			item.setSubItem(sublist);
 			return item; 
 		}).get();
@@ -847,14 +852,17 @@ public class ExcelServiceImpl implements ExcelService {
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
+				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
 				sublist.add(subRes);
 //				index.add(1);
 //				return subRes;
 				
 			}
 //			ExcelFTASubRes to;to.getItemCount()
-			Double total = sublist.stream().mapToDouble(ExcelRCEPSubRes::getItemCount).sum();
-			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
+//			Double total = sublist.stream().mapToDouble(ExcelRCEPSubRes::getItemCount).sum();
+//			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
+			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelRCEPSubRes::getBoxCount).sum();
+			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
 			item.setSubItem(sublist);
 			return item; 
 		}).get();
@@ -1180,9 +1188,9 @@ public class ExcelServiceImpl implements ExcelService {
 				
 			}
 
-//			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
-			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
-			item.setTotalBoxCountEng("TOTAL: ("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
+//			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
+			item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
 			item.setSubItem(sublist);
 			return item; 
 		}).get();

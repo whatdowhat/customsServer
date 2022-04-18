@@ -223,6 +223,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 		dto.setId(item.getId());
 		dto.setBlNo(item.getBlNo());
 		dto.setWorkDate(item.getWorkDate());
+		dto.setManager(item.getManager());
 		if(item.getFreight() != 0) {
 			dto.setFreight(FreightType.getList().stream().filter(type->type.getId() == item.getFreight()).findFirst().get().getName());
 			dto.setFreightCode(item.getFreight());
@@ -368,6 +369,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 //		target.setWorkDate(inboundMaster.getWorkDate());
 		target.setIsUsing(true);
 		target.setFreight(inboundMasterReq.getFreight());
+		target.setManager(inboundMasterReq.getManager());
 
 		//todo 사용자 세션 아이디로 수정해야됨.
 		inboundMaster.setUser(User.builder().id(new Long(1)).build());

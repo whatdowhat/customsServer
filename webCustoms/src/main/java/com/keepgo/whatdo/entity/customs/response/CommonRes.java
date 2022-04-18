@@ -27,6 +27,7 @@ public class CommonRes {
 	private Boolean isUsing;
 	private String value;
 	private String value2;
+	private String value3;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date createDt;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

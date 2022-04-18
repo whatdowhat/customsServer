@@ -141,6 +141,9 @@ public class Inbound {
 	@Column(name = "engNm")
 	private String engNm;
 	
+	@Column(name = "jejil")
+	private String jejil;
+	
 	
 	@OneToMany
 	@JoinColumn(name = "inboundId")
@@ -203,6 +206,9 @@ public class Inbound {
 	@Builder.Default
 	private int workDateSpan = 1;
 
+	@Transient
+	@Builder.Default
+	private int jejilSpan = 1;
 	@Override
 	public String toString() {
 //		return "workData " + getWorkDate() +" : " + getWorkDateSpan();

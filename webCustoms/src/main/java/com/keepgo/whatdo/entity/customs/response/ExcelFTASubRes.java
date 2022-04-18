@@ -26,6 +26,7 @@ public class ExcelFTASubRes {
 	private String hsCode;
 	private String data10;
 	private Double itemCount;
+	private Double boxCount;
 	private String companyInvoice;
 	
 	private String departDtStr;

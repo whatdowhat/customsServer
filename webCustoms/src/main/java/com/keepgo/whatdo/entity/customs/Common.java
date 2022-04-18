@@ -61,6 +61,9 @@ public class Common {
 	@Column(name = "value2")
 	private String value2;
 	
+	@Column(name = "value3")
+	private String value3;
+	
 	@ExcelColumn(headerName="사용여부",order = 5)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")
 	private Boolean isUsing;

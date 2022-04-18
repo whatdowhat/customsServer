@@ -181,15 +181,15 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	
 	@Override
 	public FinalInboundRes addFinalInbound(FinalInboundReq req) throws ParseException {
-		String depart=req.getDepartDtStr();
-		String income=req.getIncomeDt();
+//		String depart=req.getDepartDtStr();
+//		String income=req.getIncomeDt();
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyymmdd");
 	
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-mm-dd");
-		Date tempDate = null;
-		Date tempDate2 = null;
-		tempDate = beforeFormat.parse(depart);
-		tempDate2 = beforeFormat.parse(income);
+		Date tempDate = req.getDepartDate();
+		Date tempDate2 = req.getIncomeDate();
+//		tempDate = beforeFormat.parse(depart);
+//		tempDate2 = beforeFormat.parse(income);
 		
 		FinalInbound target = FinalInbound.builder()
 				.title(req.getTitle())
@@ -219,12 +219,19 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	
 	@Override
 	public boolean updateFinalInbound(FinalInboundReq req) {
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date tempDate = req.getDepartDate();
+		Date tempDate2 = req.getIncomeDate();
+		
+		
 		
 		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId())
 				.orElse(FinalInbound.builder().build());
 		
 		finalInbound.setId(req.getId());
-		finalInbound.setIncomeDt(req.getIncomeDt());
+		finalInbound.setIncomeDt(afterFormat.format(tempDate2));
+		finalInbound.setDepartDtStr(afterFormat.format(tempDate));
+		
 		finalInbound.setCargoName(req.getCargoName());
 		finalInbound.setDepartPort(req.getDepartPort());
 		finalInbound.setIncomePort(req.getIncomePort());
@@ -434,7 +441,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		int sheetNum = workbook.getNumberOfSheets();
 		
 		// 첫번째 시트
-		
+		int orderNo = 1;
 		
 		
 		//List<InboundRes> list = new ArrayList<>();
@@ -543,11 +550,15 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					}else {
 						inbound.setCoId(Integer.valueOf(3));
 					}
+					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
+						inbound.setBoxCount(new Double(0));
+					}
 					
 					inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					inbound.setInboundMaster(target);
-					
+					inbound.setOrderNo(orderNo);
 					list.add(inbound);
+					orderNo = orderNo + 1;
 				}
 				
 			}
@@ -628,25 +639,27 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			inbound.setMemo1(value);
 		}
 		if (cellIndex == 11) {
-			inbound.setItemNo(value);
-		}
-		if (cellIndex == 12) {
-			inbound.setHsCode(value);
-		}
-		if (cellIndex == 13) {
-			inbound.setCoCode(value);
-		}
-		if (cellIndex == 14) {
 			inbound.setMemo2(value);
 		}
-		if (cellIndex == 15) {
+		if (cellIndex == 12) {
 			inbound.setMemo3(value);
 		}
-
+		if (cellIndex == 13) {
+			inbound.setItemNo(value);
+		}
+		if (cellIndex == 14) {
+			inbound.setJejil(value);
+		}
+		if (cellIndex == 15) {
+			inbound.setHsCode(value);
+		}
 		if (cellIndex == 16) {
-			inbound.setEngNm(value);	
+			inbound.setCoCode(value);
 		}
 		if (cellIndex == 17) {
+			inbound.setEngNm(value);	
+		}
+		if (cellIndex == 18) {
 			inbound.setColorName(value);
 			
 		}

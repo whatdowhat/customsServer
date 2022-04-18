@@ -313,12 +313,13 @@ public class InboundServiceImpl implements InboundService {
 						.id(item.getId())
 						.orderNoStr(item.getOrderNoStr())
 						.workDateStr(item.getWorkDateStr())
-						
+						.jejil(item.getJejil())
 						.companyNm(item.getCompanyNm())
 						.marking(item.getMarking())
 						.korNm(item.getKorNm())
 						.itemCount(item.getItemCount())
 						.boxCount(item.getBoxCount())
+						.jejil(item.getJejil())
 						.weight(item.getWeight())
 						.cbm(item.getCbm())
 						.reportPrice(item.getReportPrice())
@@ -453,7 +454,7 @@ public class InboundServiceImpl implements InboundService {
 
 			Inbound inbound = new Inbound();
 			inbound.setWorkDateStr(list.get(i).getWorkDateStr());
-			
+			inbound.setJejil(list.get(i).getJejil());
 			inbound.setOrderNoStr(list.get(i).getOrderNoStr());
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
 			inbound.setMarking(list.get(i).getMarking());
@@ -503,69 +504,7 @@ public class InboundServiceImpl implements InboundService {
 		return InboundRes.builder().inboundMasterId(inboundReq.getInboundMasterId()).build();
 	}
 	
-	@Override
-	public List <?> excelCommitInboundDataForFinalInbound(List <InboundRes> list) {
-		int orderNo = 1;
-
-//		List<Inbound> inboundList = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId());
-//		for (int i = 0; i < inboundList.size(); i++) {
-//			_inboundRepository.delete(inboundList.get(i));
-//		}
-
-		
-		List <Inbound> result = new ArrayList<>();
-		
-		for (int i = 0; i < list.size(); i++) {
-
-
-
-			int index = i;
-
-			Inbound inbound = new Inbound();
-			inbound.setWorkDateStr(list.get(i).getWorkDateStr());
-			
-			inbound.setOrderNoStr(list.get(i).getOrderNoStr());
-			inbound.setCompanyNm(list.get(i).getCompanyNm());
-			inbound.setMarking(list.get(i).getMarking());
-			inbound.setKorNm(list.get(i).getKorNm());
-			inbound.setItemCount(list.get(i).getItemCount());
-			inbound.setBoxCount(list.get(i).getBoxCount());
-			inbound.setWeight(list.get(i).getWeight());
-			inbound.setCbm(list.get(i).getCbm());
-			inbound.setReportPrice(list.get(i).getReportPrice());
-			inbound.setMemo1(list.get(i).getMemo1());
-			inbound.setItemNo(list.get(i).getItemNo());
-			inbound.setHsCode(list.get(i).getHsCode());
-			inbound.setCoCode(list.get(i).getCoCode());
-			if(list.get(i).getColor()!=null) {
-				for(int j=0; j<ColorType.getList().size();j++) {
-					if(ColorType.getList().get(j).getShowName().equals(list.get(i).getColor())) {
-						inbound.setColor(ColorType.getList().get(j).getId());
-					}else {
-					}
-				}
-				
-			}else {
-				inbound.setColor(Integer.valueOf(0));
-			}
-
-			inbound.setCoId(list.get(i).getCoId().intValue());
-
-			inbound.setMemo2(list.get(i).getMemo2());
-			inbound.setMemo3(list.get(i).getMemo3());
-			inbound.setTotalPrice(list.get(i).getTotalPrice());
-			inbound.setEngNm(list.get(i).getEngNm());
-			inbound.setOrderNo(orderNo);
-			InboundMaster inboundMaster = _inboundMasterRepository.findById(list.get(i).getInboundMasterId())
-					.orElse(InboundMaster.builder().build());
-			inbound.setInboundMaster(inboundMaster);
-			_inboundRepository.save(inbound);
-			orderNo = orderNo + 1;
-			result.add(inbound);
-		}
-
-		return result;
-	}
+	
 
 	@Override
 	public InboundRes inboundCommit(InboundReq inboundReq) {
@@ -585,6 +524,7 @@ public class InboundServiceImpl implements InboundService {
 			Inbound inbound = new Inbound();
 			inbound.setWorkDateStr(list.get(i).getWorkDateStr());
 			inbound.setOrderNoStr(list.get(i).getOrderNoStr());
+			inbound.setJejil(list.get(i).getJejil());
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
 			inbound.setMarking(list.get(i).getMarking());
 			inbound.setKorNm(list.get(i).getKorNm());
@@ -746,6 +686,9 @@ public class InboundServiceImpl implements InboundService {
 			if(inboundRes.getEngNm()==null||inboundRes.getEngNm().equals("")) {
 				
 			}else {
+				if(inboundRes.getBoxCount()==null||inboundRes.getBoxCount().equals("")) {
+					inboundRes.setBoxCount(new Double(0));
+				}
 				list.add(inboundRes);
 			}
 			
@@ -803,25 +746,27 @@ public class InboundServiceImpl implements InboundService {
 			inboundRes.setMemo1(value);
 		}
 		if (cellIndex == 11) {
-			inboundRes.setItemNo(value);
-		}
-		if (cellIndex == 12) {
-			inboundRes.setHsCode(value);
-		}
-		if (cellIndex == 13) {
-			inboundRes.setCoCode(value);
-		}
-		if (cellIndex == 14) {
 			inboundRes.setMemo2(value);
 		}
-		if (cellIndex == 15) {
+		if (cellIndex == 12) {
 			inboundRes.setMemo3(value);
 		}
-
+		if (cellIndex == 13) {
+			inboundRes.setItemNo(value);
+		}
+		if (cellIndex == 14) {
+			inboundRes.setJejil(value);
+		}
+		if (cellIndex == 15) {
+			inboundRes.setHsCode(value);
+		}
 		if (cellIndex == 16) {
-				inboundRes.setEngNm(value);	
+			inboundRes.setCoCode(value);
 		}
 		if (cellIndex == 17) {
+				inboundRes.setEngNm(value);	
+		}
+		if (cellIndex == 18) {
 			inboundRes.setColor(value);
 		}
 		
@@ -964,7 +909,7 @@ public class InboundServiceImpl implements InboundService {
 				f.put("orderNo", sub_item.getOrderNo());
 				f.put("korNm", sub_item.getKorNm());
 				f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
-				if(sub_item.getBoxCount() == null) {
+				if(sub_item.getBoxCount() == 0) {
 					f.put("boxCount",  "0");
 				}else {
 					f.put("boxCount",  decimalFormat2.format(sub_item.getBoxCount()));	
@@ -1007,6 +952,9 @@ public class InboundServiceImpl implements InboundService {
 				if(sub_item.getMarking()!= null) {
 					f.put("marking", sub_item.getMarking());
 				}
+				if(sub_item.getJejil()!= null) {
+					f.put("jejil", sub_item.getJejil());
+				}
 				
 				
 				f.put("engNm", sub_item.getEngNm());
@@ -1035,7 +983,7 @@ public class InboundServiceImpl implements InboundService {
 				f.put("engNmSpan", sub_item.getEngNmSpan());
 				f.put("workDateStrSpan", sub_item.getWorkDateStrSpan());
 				f.put("orderNoStrSpan", sub_item.getOrderNoStrSpan());
-	
+				f.put("jejelSpan", sub_item.getJejilSpan());
 				return f;
 			}).collect(Collectors.toList()));
 		

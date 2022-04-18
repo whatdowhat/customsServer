@@ -51,6 +51,8 @@ public class FinalInboundReq {
 	private String hangCha;
 	private String containerSizeStr;
 	private String weatherCondition;
+	private Date incomeDate;
+	private Date departDate;
 	//중국 상검
 	private int chinaSanggumYn;
 	//출항 지연

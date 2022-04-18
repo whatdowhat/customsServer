@@ -32,7 +32,8 @@ public class InboundMasterReq {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	@Column(name = "incomDt")
 	private Date incomDt;
-
+	//담당자
+	private String manager;
 	//창구
 	@Column(name = "cargo")
 	private String cargo;

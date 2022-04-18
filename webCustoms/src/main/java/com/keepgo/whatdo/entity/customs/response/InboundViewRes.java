@@ -161,7 +161,8 @@ public class InboundViewRes {
 	private int workDateStrSpan=1;
 	@Builder.Default
 	private int orderNoStrSpan=1;
-	
+	@Builder.Default
+	private int jejilSpan=1;
 	
 	
 

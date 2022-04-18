@@ -40,7 +40,7 @@ public class CommonReq {
 	
 	@ExcelColumn(headerName="코드값2",order = 4)
 	private String value2;
-	
+	private String value3;
 	
 	private Boolean isUsing;
 	

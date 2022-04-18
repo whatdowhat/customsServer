@@ -464,41 +464,41 @@ public class UtilServiceImpl implements UtilService {
 //				spanAttr[1][15] = 1;
 //				item.setItemNoSpan(spanAttr[1][15]);
 //			}	
-			if (predict01_for_memo(item.getHsCode()) && lastIndex != i) {
-				if (spanAttrStr[1][16].equals(String.valueOf(item.getHsCode()))) {
-
-					// 공백인경우
-					if (item.getHsCode() == "") {
-						item.setHsCodeSpan(1);
-					} else {
-						spanAttr[1][16] = spanAttr[1][16] + 1;
-						// 시작 인덱스 span 값 할당.
-						list.get(spanAttr[0][16]).setHsCodeSpan(spanAttr[1][16]);
-						item.setHsCodeSpan(0);
-					}
-
-				} else {
-					// 시작인덱스
-					spanAttr[0][16] = i;
-
-					// 처음부터 다시.
-					// 스판 카운터 1
-					spanAttr[1][16] = 1;
-					item.setHsCodeSpan(spanAttr[1][16]);
-					// 현재 값 넣어준다.
-					spanAttrStr[1][16] = String.valueOf(item.getHsCode());
-				}
-			} else {
-				// 시작인덱스
-				spanAttr[0][16] = i;
-
-				// 처음부터 다시.
-				// 스판 카운터 1
-				spanAttr[1][16] = 1;
-				item.setHsCodeSpan(spanAttr[1][16]);
-				// 현재 값 넣어준다.
-				spanAttrStr[1][16] = String.valueOf(item.getHsCode());
-			}
+//			if (predict01_for_memo(item.getHsCode()) && lastIndex != i) {
+//				if (spanAttrStr[1][16].equals(String.valueOf(item.getHsCode()))) {
+//
+//					// 공백인경우
+//					if (item.getHsCode() == "") {
+//						item.setHsCodeSpan(1);
+//					} else {
+//						spanAttr[1][16] = spanAttr[1][16] + 1;
+//						// 시작 인덱스 span 값 할당.
+//						list.get(spanAttr[0][16]).setHsCodeSpan(spanAttr[1][16]);
+//						item.setHsCodeSpan(0);
+//					}
+//
+//				} else {
+//					// 시작인덱스
+//					spanAttr[0][16] = i;
+//
+//					// 처음부터 다시.
+//					// 스판 카운터 1
+//					spanAttr[1][16] = 1;
+//					item.setHsCodeSpan(spanAttr[1][16]);
+//					// 현재 값 넣어준다.
+//					spanAttrStr[1][16] = String.valueOf(item.getHsCode());
+//				}
+//			} else {
+//				// 시작인덱스
+//				spanAttr[0][16] = i;
+//
+//				// 처음부터 다시.
+//				// 스판 카운터 1
+//				spanAttr[1][16] = 1;
+//				item.setHsCodeSpan(spanAttr[1][16]);
+//				// 현재 값 넣어준다.
+//				spanAttrStr[1][16] = String.valueOf(item.getHsCode());
+//			}
 			
 //			if (predict01(item.getHsCode() ) && lastIndex != i) {
 //				spanAttr[1][16] = spanAttr[1][16] + 1;

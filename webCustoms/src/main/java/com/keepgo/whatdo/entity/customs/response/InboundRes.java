@@ -113,7 +113,8 @@ public class InboundRes {
 	private String businessman;
 	
 	private String blNo;
-
+	
+	private String jejil;
 //	
 //	//담당자
 //	@JoinColumn(name = "manageId")
@@ -178,6 +179,8 @@ public class InboundRes {
 	private int workDateStrSpan=1;
 	@Builder.Default
 	private int orderNoStrSpan=1;
+	@Builder.Default
+	private int jejilSpan=1;
 	
 	
 	private Double itemCountSum;

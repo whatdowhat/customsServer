@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,8 @@ import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
@@ -107,6 +111,35 @@ public class ExcelController {
 
 		ExcelYATAIRes s =_excelService.yataiData(req);
 		_excelService.yatai(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/inpack", method = { RequestMethod.POST })
+	public void inpack(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+//		ExcelYATAIRes s =_excelService.yataiData(req);
+		ExcelInpackRes s = new ExcelInpackRes();
+		s.setFileNm("test");
+		s.setData01("d1");
+		s.setData03("d3");
+		s.setData04("d4");
+		s.setData05("d5");
+		s.setData06("d6");
+		s.setData07("d7");
+		s.setData08("d8");
+		s.setData09("d9");
+		
+		ExcelInpackSubRes sub = new ExcelInpackSubRes();
+		sub.setHsCode("hs code1");
+		sub.setEngNm("enNm1");
+		sub.setItemCount(40d);
+		sub.setItemPrice(3d);
+		
+		List<ExcelInpackSubRes> subList = new ArrayList<>();
+		subList.add(sub);
+		s.setSubItem(subList);
+		
+		_excelService.inpack(s, response);
 	}
 	
 

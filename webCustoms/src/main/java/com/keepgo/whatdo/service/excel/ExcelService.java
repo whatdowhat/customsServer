@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 
@@ -32,4 +33,8 @@ public interface ExcelService {
 	
 	@Transactional
 	boolean yatai(ExcelYATAIRes excelYATAIRes,HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	boolean inpack(ExcelInpackRes excelInpackRes,HttpServletResponse response) throws Exception;
+	
 }

@@ -2,16 +2,10 @@ package com.keepgo.whatdo.service.excel.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -19,55 +13,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
-import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAISubRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
-import com.keepgo.whatdo.repository.CommonRepository;
-import com.keepgo.whatdo.repository.FileUploadRepository;
 import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.excel.ExcelService;
-import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
-import com.keepgo.whatdo.service.util.EnglishNumberToWords;
 import com.keepgo.whatdo.service.util.UtilService;
 
 @Component
@@ -206,12 +187,12 @@ public class ExcelServiceImpl implements ExcelService {
 				
 		}
 		
-//	deleteList.stream().forEach(t->{
-//		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
-//	});
-//	deleteList.stream().forEach(t->{
-//		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
-//	});
+	deleteList.stream().forEach(t->{
+		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+	});
+	deleteList.stream().forEach(t->{
+		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+	});
 		
 		
 	}
@@ -445,18 +426,14 @@ public class ExcelServiceImpl implements ExcelService {
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
-				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
 				sublist.add(subRes);
 //				index.add(1);
 //				return subRes;
 				
 			}
 //			ExcelFTASubRes to;to.getItemCount()
-//			Double total = sublist.stream().mapToDouble(ExcelFTASubRes::getItemCount).sum();
-//			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
-			
-			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelFTASubRes::getBoxCount).sum();
-			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+			Double total = sublist.stream().mapToDouble(ExcelFTASubRes::getItemCount).sum();
+			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
 			item.setSubItem(sublist);
 			return item; 
 		}).get();
@@ -852,17 +829,14 @@ public class ExcelServiceImpl implements ExcelService {
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
-				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
 				sublist.add(subRes);
 //				index.add(1);
 //				return subRes;
 				
 			}
 //			ExcelFTASubRes to;to.getItemCount()
-//			Double total = sublist.stream().mapToDouble(ExcelRCEPSubRes::getItemCount).sum();
-//			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
-			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelRCEPSubRes::getBoxCount).sum();
-			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+			Double total = sublist.stream().mapToDouble(ExcelRCEPSubRes::getItemCount).sum();
+			item.setTotalCountEng("TOTAL ("+String.valueOf(total.intValue())+")"); 
 			item.setSubItem(sublist);
 			return item; 
 		}).get();
@@ -1188,14 +1162,262 @@ public class ExcelServiceImpl implements ExcelService {
 				
 			}
 
-			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
-//			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
-			item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+//			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
+			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
+			item.setTotalBoxCountEng("TOTAL: ("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
 			item.setSubItem(sublist);
 			return item; 
 		}).get();
 		
 		return result;
+	}
+
+	@Override
+	public boolean inpack(ExcelInpackRes excelInpackRes, HttpServletResponse response) throws Exception {
+		
+		String path = DocumentType.getList().stream().filter(t->t.getId() == 4).findFirst().get().getName();
+
+
+		try {
+
+			
+			Resource resource = resourceLoader.getResource(path); 
+			
+
+			File file = new File(resource.getURI());;
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, excelInpackRes.getFileNm());
+
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			
+			Collections.reverse(excelInpackRes.getSubItem());			
+			//item add
+			//문서마다 시작하는 숫자가 고정
+			int startCount = 25;
+			for(int i=0; i<excelInpackRes.getSubItem().size();i++) {
+				
+			
+				shiftRowForInpack(startCount, sheet,"D", excelInpackRes.getSubItem().get(i), workbook);
+				shiftRowForInpack(startCount+1,sheet,"BL",excelInpackRes.getSubItem().get(i), workbook);
+				
+			}
+//			
+			//data 치환
+			
+			chageDataforInpack(sheet,excelInpackRes, workbook);
+			
+			//item add
+			String fileName = excelInpackRes.getFileNm()+"_Inpack.xlsx";
+	        response.setContentType("application/download;charset=utf-8");
+	        response.setHeader("custom-header",fileName);
+			workbook.write(response.getOutputStream());
+			workbook.close();
+			
+		
+			
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		return true;
+	}
+	
+	public void chageDataforInpack(XSSFSheet sheet,ExcelInpackRes excelInpackRes,XSSFWorkbook workbook) {
+		int startRowNum = 0;
+		int rowIndex = 0;
+		int columnIndex = 0;
+		int rowCount = sheet.getLastRowNum();
+		List<Integer> deleteList = new ArrayList<Integer>(); 
+		
+		for (int i = 0;  i< rowCount; i++) {
+			XSSFRow row = sheet.getRow(i);
+			
+//				if(row != null) {
+			System.out.println("rowcount::"+i);
+			if(row == null) break;
+					row.cellIterator().forEachRemaining(cell ->{
+						switch (cell.getCellTypeEnum().name()) {
+						case "STRING":
+							String value = cell.getStringCellValue();
+							
+							cell.setCellValue(convertDataForInpack(value,excelInpackRes));	
+							//template row 삭제 처리
+							if(value.contains("${deleteRow}")) {
+//								sheet.removeRow();
+								cell.setCellValue("");
+								deleteList.add(row.getRowNum());
+							}
+							
+							break;
+						case "NUMERIC":
+							if (DateUtil.isCellDateFormatted(cell)) {
+								Date date1 = cell.getDateCellValue();
+								cell.setCellValue(date1);
+							} else {
+								double cellValue1 = cell.getNumericCellValue();
+								cell.setCellValue(cellValue1);
+							}
+							break;
+						case "FORMULA":
+							String formula1 = cell.getCellFormula();
+							cell.setCellFormula(formula1);
+							break;
+
+
+						default:
+							break;
+						}
+						
+					});
+					
+				}
+
+				
+//		}
+		
+		
+
+	
+//	deleteList.stream().forEach(t->{
+//		sheet.shiftRows(t , sheet.getLastRowNum() , -1);
+//	});
+
+		
+	}
+	public String convertDataForInpack(String target,ExcelInpackRes excelInpackRes) {
+		
+		if(target.contains("${data01}")) {
+			return excelInpackRes.getData01();
+		}else if(target.contains("${data02}")) {
+			return excelInpackRes.getData02();
+		}else if(target.contains("${data03}")) {
+			
+			String OriginStr = target;
+			if(excelInpackRes.getData03() == null) {
+				excelInpackRes.setData03("null");
+			}
+			if(excelInpackRes.getData04() == null) {
+				excelInpackRes.setData04("null");
+			}
+			OriginStr = OriginStr.replace("${data03}", excelInpackRes.getData03());
+			OriginStr = OriginStr.replace("${data04}", excelInpackRes.getData04());
+			return OriginStr;
+			
+		}else if(target.contains("${data04}")) {
+			return excelInpackRes.getData04();
+		}else if(target.contains("${totalBoxCountEng}")) {
+			return excelInpackRes.getTotalCountEng();
+		}
+		else {
+			return target;
+		}
+		
+		
+	}
+	
+	public  void shiftRowForInpack(int startIndex,XSSFSheet sheet,String type,ExcelInpackSubRes item,XSSFWorkbook workbook) {
+		sheet.shiftRows(startIndex, sheet.getLastRowNum(), 1, true, true);
+		writeDataForInpack(startIndex,sheet,type,item,workbook);
+	}
+	
+	public  void writeDataForInpack(int startIndex,XSSFSheet sheet,String type,ExcelInpackSubRes item,XSSFWorkbook workbook) {
+		
+//			XSSFRow target = sheet.getRow(startIndex);
+			XSSFRow target = sheet.createRow(startIndex);	
+			if(type.equals("BL")) {
+				CopyRowBlankForInpack(target,sheet.getRow(startIndex+1),item,workbook,startIndex);	
+			}else {
+				CopyRowDataForInpack(target,sheet.getRow(startIndex+2),item,workbook,startIndex);
+			}
+			
+			
+	}
+	
+	public  void CopyRowBlankForInpack(XSSFRow target,XSSFRow origin,ExcelInpackSubRes item,XSSFWorkbook workbook,int startIndex) {
+		List<Integer> count = new ArrayList<Integer>();
+		origin.cellIterator().forEachRemaining(cell->{
+						
+			if(count.size() < 11) {
+				
+				target.createCell(cell.getColumnIndex());
+
+				CellStyle newCellStyle = cell.getCellStyle();
+				newCellStyle.cloneStyleFrom(cell.getCellStyle());
+				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
+				
+				//첫번째인경우 
+				//
+				if(item.getOrderNo() == 1) {
+
+					if(count.size() == 9) {
+						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 9, 10));
+						target.getCell(cell.getColumnIndex()).setCellValue(getDateStr(item.getDepartDtStr()));
+					}
+				}else{
+					if(count.size() == 9) {
+						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 9, 10));
+						target.getCell(cell.getColumnIndex()).setCellValue("");
+											}
+				}
+				
+				
+				
+				
+			}else {
+
+			}
+		count.add(1);
+		});
+		
+	}
+	public  void CopyRowDataForInpack(XSSFRow target,XSSFRow origin,ExcelInpackSubRes item,XSSFWorkbook workbook,int startIndex) {
+		List<Integer> count = new ArrayList<Integer>();
+		origin.cellIterator().forEachRemaining(cell->{
+						
+			if(count.size() < 11) {
+				target.createCell(cell.getColumnIndex());
+
+				CellStyle newCellStyle = cell.getCellStyle();
+				newCellStyle.cloneStyleFrom(cell.getCellStyle());
+				target.getCell(cell.getColumnIndex()).getCellStyle().cloneStyleFrom(newCellStyle);
+//				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
+
+				if(count.size() == 0) {
+					
+				}if(count.size() == 1) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getHsCode());
+				}if(count.size() == 2) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getMaking());
+				}if(count.size() == 3) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getEngNm());
+				}if(count.size() == 4) {
+					
+				}if(count.size() == 5) {
+					
+				}if(count.size() == 6) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getItemCount());
+				}if(count.size() == 7) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getData08());
+				}
+				if(count.size() == 8) {
+//					target.getCell(cell.getColumnIndex()).setCellValue(item.getItemCount());
+				}
+				
+				if(count.size() == 9) {
+					target.getCell(cell.getColumnIndex()).setCellValue(item.getItemPrice());
+				}
+				
+				
+			}else {
+
+			}
+		count.add(1);
+		});
+		
 	}
 	
 }

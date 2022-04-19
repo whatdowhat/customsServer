@@ -84,6 +84,11 @@ public class CompanyInfo {
 
 	@Column(name = "manager")
 	private String manager;
+	
+	@ExcelColumn(headerName="포워딩부호",order = 5)
+	@Column(name = "forwarding")
+	private String forwarding;
+	
 	@Transient
 	private String managerLevel;
 	@Transient

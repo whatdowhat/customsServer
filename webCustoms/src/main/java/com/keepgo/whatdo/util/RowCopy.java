@@ -13,16 +13,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class RowCopy {
 	public static void main(String[] args) throws Exception{
-		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\test.xlsx"));
+		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
 		XSSFSheet sheet = workbook.getSheetAt(0);
 //        HSSFSheet sheet = workbook.getSheet("Sheet1");
         
         
-        copyRow(workbook, sheet, 0, 1);
-        copyRow(workbook, sheet, 0, 1);
-        copyRow(workbook, sheet, 0, 1);
-        copyRow(workbook, sheet, 0, 1);
-        copyRow(workbook, sheet, 0, 1);
+        copyRow(workbook, sheet, 23, 23+2);
+        copyRow(workbook, sheet, 24, 24+2);
+//        copyRow(workbook, sheet, 0, 1);
+//        copyRow(workbook, sheet, 0, 1);
+//        copyRow(workbook, sheet, 0, 1);
         FileOutputStream out = new FileOutputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack_r.xlsx");
         workbook.write(out);
         out.close();

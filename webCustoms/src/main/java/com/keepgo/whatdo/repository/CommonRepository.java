@@ -21,6 +21,7 @@ public interface CommonRepository extends JpaRepository<Common, Long>{
 	List<Common> findAll(Specification<Common> condition);
 	public Common findByNm(String nm);
 	public Common findByValue(String value);
+	public Common findByValue3(String value3);
 	
 	@Query("select m from Common m ")
 	List<Common> findAll();

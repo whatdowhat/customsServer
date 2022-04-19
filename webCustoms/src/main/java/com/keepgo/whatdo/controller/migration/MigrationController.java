@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,11 +32,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -43,6 +46,7 @@ import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
@@ -68,9 +72,67 @@ public class MigrationController {
 	@Autowired
 	CompanyInfoExportRepository _CompanyInfoExportRepository;
 	
+	@Autowired
+	ResourceLoader resourceLoader;
 	
 	static final Logger log = LoggerFactory.getLogger(MigrationController.class);
 
+	@RequestMapping(value = "/migration/common/shipper", method = { RequestMethod.POST })
+	public boolean shipper(ExcelFTARes excelFTARes,HttpServletResponse response) throws Exception {
+
+		String path = "classpath:static"+File.separatorChar+"common"+File.separatorChar+"common.xlsx";
+
+		try {
+			
+			Resource resource = resourceLoader.getResource(path); 
+			
+//			File file = new File(path);
+			File file = new File(resource.getURI());;
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+//			workbook.setSheetName(0, excelFTARes.getFileNm());
+
+			XSSFSheet sheet = workbook.getSheetAt(1);
+			
+			int lastRow = sheet.getLastRowNum();
+			
+			
+			for(int i=1; i<lastRow+1;i++) {
+				XSSFRow row = sheet.getRow(i);
+				
+				if(row.getCell(4) != null && row.getCell(4).getStringCellValue() != null ) {
+					Common comm = Common.builder()
+							.commonMaster(CommonMaster.builder().id(2l).build())
+							.value(row.getCell(2).getStringCellValue())
+							.value2(row.getCell(3).getStringCellValue())
+							.value3(row.getCell(4).getStringCellValue())
+							.createDt(new Date())
+							.updateDt(new Date())
+							.nm("쉬퍼")
+							.preperOrder(1)
+							.isUsing(true)
+							.user(0l)
+							.build();
+					_commonRepository.save(comm);	
+				}else {
+					System.out.println("nono:::"+i);
+				}
+			}
+			
+		
+			
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		return true;
+//		return null;
+	}
+	
+	
 	// 공통 쉬퍼 migration by shipper
 	@RequestMapping(value = "/migration/shopper", method = { RequestMethod.POST })
 	public List<Common> shopper(HttpServletRequest httpServletRequest, @RequestBody CommonReq commonReq,
@@ -216,21 +278,23 @@ public class MigrationController {
 	public List<CompanyInfo> company(HttpServletRequest httpServletRequest, @RequestBody CommonReq commonReq,
 		HttpServletResponse response) throws Exception {
 
-		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어).xlsx";
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		
+		String path = "classpath:static"+File.separatorChar+"common"+File.separatorChar+"company.xlsx";
+
+			
+		
 		try {
-			Path filePath = Paths.get(path);
-			Resource resource = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
-			File file = new File(path);
+
+			Resource resource = resourceLoader.getResource(path); 
+			File file = new File(resource.getURI());;
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
-
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			// 첫번째 시트
-//			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet = workbook.getSheetAt(0);
 			// 세번째 시트
-			XSSFSheet sheet = workbook.getSheetAt(2);
+//			XSSFSheet sheet = workbook.getSheetAt(2);
 
 			int startRowNum = 0;
 			int rowIndex = 0;
@@ -253,13 +317,56 @@ public class MigrationController {
 		return list;
 
 	}
+	@RequestMapping(value = "/migration/company2", method = { RequestMethod.POST })
+	public List<CompanyInfo> company2(HttpServletRequest httpServletRequest, @RequestBody CommonReq commonReq,
+		HttpServletResponse response) throws Exception {
+
+		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
+		
+		String path = "classpath:static"+File.separatorChar+"common"+File.separatorChar+"company.xlsx";
+
+			
+		
+		try {
+
+			Resource resource = resourceLoader.getResource(path); 
+			File file = new File(resource.getURI());;
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+
+			XSSFSheet sheet = workbook.getSheetAt(2);
+
+			int startRowNum = 0;
+			int rowIndex = 0;
+			int columnIndex = 0;
+			boolean complete = false;
+
+			list = getListCompany2(sheet);
+			list.stream().forEach(item->{
+				_companyInfoRepository.save(item);
+			});
+			
+
+			
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		return list;
+
+	}
+	
 	//get companyinfo ==> consignee
 	public List<CompanyInfo> getListCompany(XSSFSheet sheet) {
 		
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		
 //		for (int i = 2; i <= 2; i++) {
-		for (int i = 2; i < sheet.getLastRowNum()+1; i++) {
+		for (int i = 2; i < 442; i++) {
+//		for (int i = 2; i < sheet.getLastRowNum()+1; i++) {
 //		for (int i = 0; i < sheet.getLastRowNum(); i++) {
 			XSSFRow row = sheet.getRow(i);
 
@@ -273,7 +380,7 @@ public class MigrationController {
 			companyInfo.setCreateDt(new Date());
 			companyInfo.setUpdateDt(new Date());
 			companyInfo.setUser(User.builder().id(new Long(1)).build());
-			
+			if(row == null) break;
 			row.cellIterator().forEachRemaining(cell -> {
 				switch (cell.getCellTypeEnum().name()) {
 				case "STRING":
@@ -354,7 +461,107 @@ public class MigrationController {
 		return list;
 		
 	}
-	
+	//get companyinfo ==> consignee
+		public List<CompanyInfo> getListCompany2(XSSFSheet sheet) {
+			
+			List<CompanyInfo> list = new ArrayList<CompanyInfo>();
+			
+//			for (int i = 2; i <= 2; i++) {
+			for (int i = 2; i < 156; i++) {
+//			for (int i = 2; i < sheet.getLastRowNum()+1; i++) {
+//			for (int i = 0; i < sheet.getLastRowNum(); i++) {
+				XSSFRow row = sheet.getRow(i);
+
+				final int rowInx = i;
+
+				CellType NUMERIC = CellType.NUMERIC;
+				CellType FORMULA = CellType.FORMULA;
+				
+				CompanyInfo companyInfo = new CompanyInfo();
+				companyInfo.setIsUsing(true);
+				companyInfo.setCreateDt(new Date());
+				companyInfo.setUpdateDt(new Date());
+				companyInfo.setUser(User.builder().id(new Long(1)).build());
+				if(row == null) break;
+				row.cellIterator().forEachRemaining(cell -> {
+					switch (cell.getCellTypeEnum().name()) {
+					case "STRING":
+						String string1 = cell.getStringCellValue();
+//						System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+
+						if(cell.getColumnIndex()==1) {
+							//상호(한글)
+							companyInfo.setCoNm(string1);	
+						}
+						if(cell.getColumnIndex()==2) {
+							//상호(영문)
+							companyInfo.setCoNmEn(string1);
+						}
+						if(cell.getColumnIndex()==3) {
+							companyInfo.setConsignee(string1);	
+						}
+						if(cell.getColumnIndex()==4) {
+							companyInfo.setCoNum(string1);	
+						}
+						if(cell.getColumnIndex()==5) {
+							companyInfo.setCoAddress(string1);	
+						}
+						if(cell.getColumnIndex()==6) {
+							companyInfo.setForwarding(string1);
+//							companyInfo.setManager(string1);	
+						}
+//						if(cell.getColumnIndex()==7) {
+//							companyInfo.setCoInvoice(string1);	
+//						}
+						
+//						
+						break;
+					case "NUMERIC":
+//						System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
+						cell.setCellType( HSSFCell.CELL_TYPE_STRING );
+						String numberToString = cell.getStringCellValue();
+								
+						if(cell.getColumnIndex()==1) {
+							//상호(한글)
+							companyInfo.setCoNm(numberToString );	
+						}
+						if(cell.getColumnIndex()==2) {
+							//상호(영문)
+							companyInfo.setCoNmEn(numberToString );
+						}
+						if(cell.getColumnIndex()==3) {
+							companyInfo.setConsignee(numberToString );	
+						}
+						if(cell.getColumnIndex()==4) {
+							companyInfo.setCoNum(numberToString );	
+						}
+						if(cell.getColumnIndex()==5) {
+							companyInfo.setCoAddress(numberToString );	
+						}
+						if(cell.getColumnIndex()==6) {
+							companyInfo.setForwarding(numberToString);
+//							companyInfo.setManager(string1);	
+						}
+						break;
+					case "FORMULA":
+						System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+						String formula1 = cell.getCellFormula();
+						cell.setCellFormula(formula1);
+						break;
+
+					default:
+						break;
+					}
+					
+					
+				});
+				
+				System.out.println("######company####### info" + companyInfo.toString());
+				list.add(companyInfo);
+			}
+			return list;
+			
+		}
 	
 	// 공통 담당자 migration by consignee
 	@RequestMapping(value = "/migration/common_managers", method = { RequestMethod.POST })
@@ -487,19 +694,17 @@ public class MigrationController {
 	@RequestMapping(value = "/migration/company_exports", method = { RequestMethod.POST })
 	public List<CompanyInfo> company_exports(HttpServletRequest httpServletRequest, @RequestBody CommonReq commonReq,
 			HttpServletResponse response) throws Exception {
-
+		String path = "classpath:static"+File.separatorChar+"common"+File.separatorChar+"company.xlsx";
 //		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어)-정리중.xlsx";
-		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어).xlsx";
+//		String path = "C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\migration\\거래처코드(씨앤에어).xlsx";
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		Set<Common> sets = new HashSet<Common>();
 		try {
-			Path filePath = Paths.get(path);
-			Resource resource = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
-
-			File file = new File(path);
+			
+			Resource resource = resourceLoader.getResource(path); 
+			File file = new File(resource.getURI());;
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
-
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			// 첫번째 시트
 //			XSSFSheet sheet = workbook.getSheetAt(1);
@@ -521,7 +726,7 @@ public class MigrationController {
 		
 		List<CompanyInfo> list = new ArrayList<CompanyInfo>();
 		
-		for (int i = 2; i < sheet.getLastRowNum()+1; i++) {
+		for (int i = 2; i < 156; i++) {
 //		for (int i = 0; i < sheet.getLastRowNum(); i++) {
 			XSSFRow row = sheet.getRow(i);
 
@@ -554,8 +759,9 @@ public class MigrationController {
 					if(cell.getColumnIndex()==3) {
 						companyInfo.setCoNum(string1);	
 					}
-					if(cell.getColumnIndex()==4 || cell.getColumnIndex()==6 || cell.getColumnIndex()==8 || cell.getColumnIndex()==10 || cell.getColumnIndex() ==12) {
-						Common manager_target = _commonRepository.getComonMasterValue(new Long(2),string1);
+					if(cell.getColumnIndex()==4 || cell.getColumnIndex()==5 || cell.getColumnIndex()==6 || cell.getColumnIndex()==7|| cell.getColumnIndex() ==8) {
+						Common manager_target = _commonRepository.findByValue3(string1);
+						
 						CompanyInfo company_Target = _companyInfoRepository.findByCoNum(companyInfo.getCoNum());
 						_CompanyInfoExportRepository.save(CompanyInfoExport.builder().common(manager_target).companInfoy(company_Target).build());
 						list.add(companyInfo);
@@ -580,8 +786,8 @@ public class MigrationController {
 					if(cell.getColumnIndex()==3) {
 						companyInfo.setCoNum(numberToString);	
 					}
-					if(cell.getColumnIndex()==4 || cell.getColumnIndex()==6 || cell.getColumnIndex()==8 || cell.getColumnIndex()==10 || cell.getColumnIndex() ==12) {
-						Common manager_target = _commonRepository.getComonMasterValue(new Long(2),numberToString);
+					if(cell.getColumnIndex()==4 || cell.getColumnIndex()==5 || cell.getColumnIndex()==6 || cell.getColumnIndex()==7|| cell.getColumnIndex() ==8) {
+						Common manager_target = _commonRepository.findByValue3(numberToString);
 						CompanyInfo company_Target = _companyInfoRepository.findByCoNum(companyInfo.getCoNum());
 						_CompanyInfoExportRepository.save(CompanyInfoExport.builder().common(manager_target).companInfoy(company_Target).build());
 						list.add(companyInfo);

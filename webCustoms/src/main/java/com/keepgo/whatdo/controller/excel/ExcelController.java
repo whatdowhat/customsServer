@@ -135,9 +135,18 @@ public class ExcelController {
 		sub.setItemCount(40d);
 		sub.setItemPrice(3d);
 		
+		
 		List<ExcelInpackSubRes> subList = new ArrayList<>();
 		subList.add(sub);
+		sub = new ExcelInpackSubRes();
+		sub.setHsCode("hs code1");
+		sub.setEngNm("enNm1");
+		sub.setItemCount(40d);
+		sub.setItemPrice(3d);
+//		subList.add(sub);
+//		subList.add(sub);
 		s.setSubItem(subList);
+		
 		
 		_excelService.inpack(s, response);
 	}

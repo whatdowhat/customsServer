@@ -21,15 +21,16 @@ public class ExcelInpackSubRes {
 
 	//no
 	private int orderNo;
-	private String hsCode;
-	private String making;
 	private String engNm;
+	private String jejil;
+	private String hsCode;
 	private Double boxCount;
-	private String data08;
 	private Double itemCount;
 	private Double itemPrice;
-	private String companyInvoice;
-	private String departDtStr;
+	private Double totalPrice;
+	private Double weight;
+	private Double totalWeight;
+	private Double cbm;
 	
 	
 }

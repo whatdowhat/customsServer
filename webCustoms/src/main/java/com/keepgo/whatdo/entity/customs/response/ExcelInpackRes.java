@@ -27,28 +27,29 @@ public class ExcelInpackRes {
 	String data01;
 	//2. 고정
 	@Builder.Default
-	String data02 = "SI-";
-	//3. 통관사업자(컨사이니) 이름+주소
+	String data02 = "SJ-";
+	//3. 인보이스번호
 	String data03;
-	//4. 출항일/항명항차/출항항구/입항항구  순
-	String data04;
-	//5. 1번과 동일
+	//4. CO발급일자
+	@Builder.Default
+	String data04="2022-01-01";
+	//5. 컨사이니명+사업자번호+주소
 	String data05;
-	//6. 한 품목당 하나의 숫자 부여. 5개품목이면 1~ 5
+	//6. 출항일
 	String data06;
-	//7. 마킹
+	//7. 항명/항차
 	String data07;
-	//8. 품명 / 맨 아래에 해당 하우스비엘에서 해당CO를 받는 박스수량
+	//8. 출항 항구
 	String data08;
-	//9. 세번
+	//9. 입항 항구
 	String data09;
-	//10. 고정
+//	//10. 고정
 	@Builder.Default
 	String data10 = "WP";
-	//11. 수량
-	Double data11;
-	//12. 인보이스 번호/신청일
-	String data12;
+//	//11. 수량
+//	Double data11;
+//	//12. 인보이스 번호/신청일
+//	String data12;
 	
 	String totalCountEng;
 	

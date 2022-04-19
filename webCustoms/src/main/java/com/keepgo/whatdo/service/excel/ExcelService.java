@@ -35,6 +35,9 @@ public interface ExcelService {
 	boolean yatai(ExcelYATAIRes excelYATAIRes,HttpServletResponse response) throws Exception;
 	
 	@Transactional
+	ExcelInpackRes inpackData(FinalInboundInboundMasterReq req) throws Exception;
+	
+	@Transactional
 	boolean inpack(ExcelInpackRes excelInpackRes,HttpServletResponse response) throws Exception;
 	
 }

@@ -185,7 +185,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //		String income=req.getIncomeDt();
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyymmdd");
 	
-		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-mm-dd");
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
 //		tempDate = beforeFormat.parse(depart);

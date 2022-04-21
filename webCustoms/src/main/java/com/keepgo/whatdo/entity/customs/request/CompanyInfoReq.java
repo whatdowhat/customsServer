@@ -28,21 +28,23 @@ import lombok.ToString;
 public class CompanyInfoReq {
 	@ExcelColumn(headerName="CompanyInfoId",order = 1)
 	private Long id;
-	@ExcelColumn(headerName="coInvoice",order = 2)
+	@ExcelColumn(headerName="담당자",order = 2)
+	private String manager;
+	@ExcelColumn(headerName="coInvoice",order = 3)
 	private String coInvoice;
-	@ExcelColumn(headerName="사업자이름",order = 3)
+	@ExcelColumn(headerName="사업자이름",order = 4)
 	private String coNm;
-	@ExcelColumn(headerName="사업자영문명",order = 4)
+	@ExcelColumn(headerName="사업자영문명",order = 5)
 	private String coNmEn;
-	@ExcelColumn(headerName="사업자번호",order = 5)
+	@ExcelColumn(headerName="사업자번호",order = 6)
 	private String coNum;
-	@ExcelColumn(headerName="사업자주소",order = 6)
+	@ExcelColumn(headerName="사업자주소",order = 7)
 	private String coAddress;
-	@ExcelColumn(headerName="consignee",order = 7)
+	@ExcelColumn(headerName="consignee",order = 8)
 	private String consignee;
 	private List<Long> exports = new ArrayList<>();
 //	private List<Long> manages = new ArrayList<>();
-	private String manager;
+	
 	
 	private Boolean isUsing;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

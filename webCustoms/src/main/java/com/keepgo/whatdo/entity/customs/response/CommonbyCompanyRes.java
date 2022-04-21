@@ -25,6 +25,7 @@ public class CommonbyCompanyRes {
 	private String name;
 	private String value;
 	private String value2;
+	private String value3;
 	private int preperOrder;
 	private Long companyInfoExportId;
 	private Long companInfoyId;

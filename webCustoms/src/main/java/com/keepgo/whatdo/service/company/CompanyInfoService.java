@@ -13,6 +13,7 @@ import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 
 @Service
 public interface CompanyInfoService {
@@ -43,5 +44,8 @@ public interface CompanyInfoService {
 	CompanyInfoRes addCompanyInfoManages(CompanyInfoReq companyInfoReq);
 	
 	@Transactional
-	List<?> excelUpload(MultipartFile file,CompanyInfoReq companyInfoReq) throws IOException; 
+	List<?> excelUpload(MultipartFile file,CompanyInfoReq companyInfoReq) throws IOException;
+	
+	@Transactional
+	CompanyInfoRes  getOne(Long id); 
 }

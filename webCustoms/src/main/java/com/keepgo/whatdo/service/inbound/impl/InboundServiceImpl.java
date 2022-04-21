@@ -301,6 +301,7 @@ public class InboundServiceImpl implements InboundService {
 		
 		
 		List<Integer> index = new ArrayList<Integer>();
+		InboundMaster inboundMaster=_inboundMasterRepository.findById(inboundReq.getInboundMasterId()).get();
 		List<InboundRes> result = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId()).stream()
 				.sorted(Comparator.comparing(Inbound::getOrderNo))
 				.map(item->{
@@ -381,7 +382,12 @@ public class InboundServiceImpl implements InboundService {
 
 						if(item.getInboundMaster().getCompanyInfo()!=null) {
 							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+item.getInboundMaster().getCompanyInfo().getCoNum());
-							rt.setManagerNm(item.getInboundMaster().getCompanyInfo().getManager());
+							if(item.getInboundMaster().getManager()!=null) {
+								rt.setManagerNm(item.getInboundMaster().getManager());
+							}else {
+								rt.setManagerNm(item.getInboundMaster().getCompanyInfo().getManager());
+							}
+							
 							rt.setCompanyNm(item.getInboundMaster().getCompanyInfo().getCoNm());
 							
 						}

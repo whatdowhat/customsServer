@@ -69,8 +69,8 @@ public class CommonServiceImpl implements CommonService {
 //		Comparator<Common> byLastName = Comparator.comparing(Common::getUpdateDt);
 		List<?> result = _commonRepository.findAll().stream()
 				
-//				.sorted(byLastName.reversed())
 				.sorted(Comparator.comparing(Common::getUpdateDt).reversed())
+//				.sorted(Comparator.comparing(Common::getId).reversed())
 				.map(item->CommonRes.builder()
 						.id(item.getId())
 						.value(item.getValue())
@@ -275,9 +275,12 @@ public class CommonServiceImpl implements CommonService {
 			}
 		}
 		if(cellIndex == 2) {
-			common.setValue(value);
+			common.setValue3(value);
 		}
 		if(cellIndex == 3) {
+			common.setValue(value);
+		}
+		if(cellIndex == 4) {
 			common.setValue2(value);
 		}
 		

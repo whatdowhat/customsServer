@@ -108,19 +108,15 @@ public class ExcelServiceImpl implements ExcelService {
 			// item add
 			// 문서마다 시작하는 숫자가 고정
 			int startCount = 22;
-			
-			//XSSFRow row = workbook.getSheetAt(0).getRow(startCount);
-//			XSSFRow row = workbook.getSheetAt(0).getRow(startCount);
 			for (int i = 0; i < excelFTARes.getSubItem().size(); i++) {
 
 //				shiftRow(startCount+1,sheet,sheet.getRow(1),"D");
-				shiftRow(startCount, sheet, "D", excelFTARes.getSubItem().get(i), workbook,workbook.getSheetAt(0).getRow(startCount));
-//				shiftRow(startCount + 1, sheet, "BL", excelFTARes.getSubItem().get(i), workbook);
+				shiftRow(startCount, sheet, "D", excelFTARes.getSubItem().get(i), workbook);
+				shiftRow(startCount + 1, sheet, "BL", excelFTARes.getSubItem().get(i), workbook);
 //				startCount+=2;
 //				startCount+=1;
 
 			}
-			
 
 			// data 치환
 			chageData(sheet, excelFTARes, workbook);
@@ -193,13 +189,23 @@ public class ExcelServiceImpl implements ExcelService {
 
 		}
 
-//		deleteList.stream().forEach(t -> {
-//			sheet.shiftRows(t, sheet.getLastRowNum(), -1);
-//		});
-//		deleteList.stream().forEach(t -> {
-//			sheet.shiftRows(t, sheet.getLastRowNum(), -1);
-//		});
+		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+			if (sheet.getMergedRegion(i).getFirstRow() == 22) {
+				sheet.removeMergedRegion(i);
+				sheet.removeMergedRegion(i);
+				sheet.removeMergedRegion(i);
+			}
+		}
+		sheet.shiftRows(23, sheet.getLastRowNum(), -1);
 
+		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+			if (sheet.getMergedRegion(i).getFirstRow() == 22) {
+				sheet.removeMergedRegion(i);
+				sheet.removeMergedRegion(i);
+				sheet.removeMergedRegion(i);
+			}
+		}
+		sheet.shiftRows(23, sheet.getLastRowNum(), -1);
 	}
 
 	public void convertData(XSSFCell cell, String target, ExcelFTARes excelFTARes) {
@@ -279,25 +285,19 @@ public class ExcelServiceImpl implements ExcelService {
 
 	}
 
-	public void shiftRow(int startIndex, XSSFSheet sheet, String type, ExcelFTASubRes item, XSSFWorkbook workbook, XSSFRow row) {
-		sheet.shiftRows(startIndex, sheet.getLastRowNum(), 1, true, true);
-		writeData(startIndex, sheet, type, item, workbook,row);
+	public void shiftRow(int startIndex, XSSFSheet sheet, String type, ExcelFTASubRes item, XSSFWorkbook workbook) {
+		writeData(startIndex, sheet, type, item, workbook);
 	}
 
-	public void writeData(int startIndex, XSSFSheet sheet, String type, ExcelFTASubRes item, XSSFWorkbook workbook,XSSFRow row) {
+	public void writeData(int startIndex, XSSFSheet sheet, String type, ExcelFTASubRes item, XSSFWorkbook workbook) {
 
-//			XSSFRow target = sheet.getRow(startIndex);
-//		XSSFRow target = sheet.createRow(startIndex);
 		if (type.equals("BL")) {
-//			CopyRowBlank(target, sheet.getRow(startIndex + 1), item, workbook, startIndex);
 			copyRowBLforFTA(workbook, sheet, startIndex, startIndex + 2, item);
 		} else {
-//			CopyRowData(target, sheet.getRow(startIndex + 1), item, workbook, startIndex);
-			copyRowforFTA(workbook, sheet, startIndex, startIndex + 2, item,row);
+			copyRowforFTA(workbook, sheet, startIndex, startIndex + 2, item);
 		}
 
 	}
-	
 
 	public void CopyRowBlank(XSSFRow target, XSSFRow origin, ExcelFTASubRes item, XSSFWorkbook workbook,
 			int startIndex) {
@@ -392,14 +392,10 @@ public class ExcelServiceImpl implements ExcelService {
 	}
 
 	private void copyRowforFTA(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
-			ExcelFTASubRes item,XSSFRow row) {
+			ExcelFTASubRes item) {
 		// Get the source / new row
-		
-//		XSSFRow sourceRow = worksheet.getRow(22);
-		XSSFRow sourceRow = row;
-		
 		XSSFRow newRow = worksheet.getRow(destinationRowNum);
-		
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
 
 		// If the row exist in destination, push down all rows by 1 else create a new
 		// row
@@ -458,35 +454,34 @@ public class ExcelServiceImpl implements ExcelService {
 				newCell.setCellFormula(oldCell.getCellFormula());
 				break;
 			case Cell.CELL_TYPE_NUMERIC:
-				
-					if (i == 0) {
-						newCell.setCellValue(item.getOrderNo());
-					} else if (i == 5) {
-						newCell.setCellValue(item.getItemCount());
-					} else {
-						newCell.setCellValue(oldCell.getNumericCellValue());
-					}
-				
+
+				if (i == 0) {
+					newCell.setCellValue(item.getOrderNo());
+				} else if (i == 5) {
+					newCell.setCellValue(item.getItemCount());
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}
 
 				break;
 			case Cell.CELL_TYPE_STRING:
-				
-					if (i == 7) {
-						if (item.getOrderNo() == 1) {
-							newCell.setCellValue(item.getCompanyInvoice());
-						}
-						
-					}else if (i == 1) {
-						newCell.setCellValue(item.getMaking());
-					}else if (i == 2) {
-						newCell.setCellValue(item.getEngNm());
-					}else if (i == 3) {
-						newCell.setCellValue(item.getHsCode());
-					}else if (i == 4) {
-						newCell.setCellValue(item.getData10());
-					}else {
-						newCell.setCellValue(oldCell.getStringCellValue());
+
+				if (i == 7) {
+					if (item.getOrderNo() == 1) {
+						newCell.setCellValue(item.getCompanyInvoice());
 					}
+
+				} else if (i == 1) {
+					newCell.setCellValue(item.getMaking());
+				} else if (i == 2) {
+					newCell.setCellValue(item.getEngNm());
+				} else if (i == 3) {
+					newCell.setCellValue(item.getHsCode());
+				} else if (i == 4) {
+					newCell.setCellValue(item.getData10());
+				} else {
+					newCell.setCellValue(oldCell.getStringCellValue());
+				}
 
 				break;
 			}
@@ -510,6 +505,13 @@ public class ExcelServiceImpl implements ExcelService {
 		XSSFRow newRow = worksheet.getRow(destinationRowNum);
 		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
 
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+//        if (newRow != null) {
+//            worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+//        } else {
+//            newRow = worksheet.createRow(destinationRowNum);
+//        }
 		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
 		newRow = worksheet.createRow(destinationRowNum);
 		// Loop through source columns to add to new row
@@ -560,17 +562,19 @@ public class ExcelServiceImpl implements ExcelService {
 				newCell.setCellFormula(oldCell.getCellFormula());
 				break;
 			case Cell.CELL_TYPE_NUMERIC:
-				newCell.setCellValue(oldCell.getNumericCellValue());
+				if (i == 7) {
+					if (item.getOrderNo() == 1) {
+						newCell.setCellValue(getDateStr(item.getDepartDtStr()));
+//						newCell.setCellValue(item.getDepartDtStr());
+					}
+
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}	
+				
 				break;
 			case Cell.CELL_TYPE_STRING:
-				
-					if (i == 7) {
-						if (item.getOrderNo() == 1) {
-							newCell.setCellValue(getDateStr(item.getDepartDtStr()));
-						}
-				
-				}
-
+				newCell.setCellValue(oldCell.getStringCellValue());
 				break;
 			}
 		}
@@ -586,8 +590,8 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	public ExcelFTARes ftaData(FinalInboundInboundMasterReq req) throws Exception {
 
@@ -658,8 +662,10 @@ public class ExcelServiceImpl implements ExcelService {
 //			ExcelFTASubRes to;to.getItemCount()
 //			Double total = sublist.stream().mapToDouble(ExcelFTASubRes::getItemCount).sum();
 //			item.setTotalCountEng("TOTAL (" + String.valueOf(total.intValue()) + ")");
-			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelFTASubRes::getBoxCount).sum();
-			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+			Double total = sublist.stream().filter(k -> k.getBoxCount() != null)
+					.mapToDouble(ExcelFTASubRes::getBoxCount).sum();
+			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
 			item.setSubItem(sublist);
 			return item;
 		}).get();
@@ -718,7 +724,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 //			File file = new File(path);
 			File file = new File(resource.getURI());
-			;
+			
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
@@ -781,12 +787,6 @@ public class ExcelServiceImpl implements ExcelService {
 					String value = cell.getStringCellValue();
 
 					cell.setCellValue(convertDataForRCEP(value, excelRCEPRes));
-					// template row 삭제 처리
-					if (value.contains("${deleteRow}")) {
-//							sheet.removeRow();
-						cell.setCellValue("");
-						deleteList.add(row.getRowNum());
-					}
 
 					break;
 				case "NUMERIC":
@@ -811,12 +811,21 @@ public class ExcelServiceImpl implements ExcelService {
 
 		}
 
-		deleteList.stream().forEach(t -> {
-			sheet.shiftRows(t, sheet.getLastRowNum(), -1);
-		});
-		deleteList.stream().forEach(t -> {
-			sheet.shiftRows(t, sheet.getLastRowNum(), -1);
-		});
+		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+			if (sheet.getMergedRegion(i).getFirstRow() == 22) {
+				sheet.removeMergedRegion(i);
+				
+			}
+		}
+		sheet.shiftRows(23, sheet.getLastRowNum(), -1);
+
+		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+			if (sheet.getMergedRegion(i).getFirstRow() == 22) {
+				sheet.removeMergedRegion(i);
+				
+			}
+		}
+		sheet.shiftRows(23, sheet.getLastRowNum(), -1);
 
 	}
 
@@ -878,19 +887,17 @@ public class ExcelServiceImpl implements ExcelService {
 
 	public void shiftRowForRCEP(int startIndex, XSSFSheet sheet, String type, ExcelRCEPSubRes item,
 			XSSFWorkbook workbook) {
-		sheet.shiftRows(startIndex, sheet.getLastRowNum(), 1, true, true);
+//		sheet.shiftRows(startIndex, sheet.getLastRowNum(), 1, true, true);
 		writeDataForRCEP(startIndex, sheet, type, item, workbook);
 	}
 
 	public void writeDataForRCEP(int startIndex, XSSFSheet sheet, String type, ExcelRCEPSubRes item,
 			XSSFWorkbook workbook) {
 
-//			XSSFRow target = sheet.getRow(startIndex);
-		XSSFRow target = sheet.createRow(startIndex);
 		if (type.equals("BL")) {
-			CopyRowBlankForRCEP(target, sheet.getRow(startIndex + 1), item, workbook, startIndex);
+			copyRowBLforRCEP(workbook, sheet, startIndex, startIndex + 2, item);
 		} else {
-			CopyRowDataForRCEP(target, sheet.getRow(startIndex + 1), item, workbook, startIndex);
+			copyRowforRCEP(workbook, sheet, startIndex, startIndex + 2, item);
 		}
 
 	}
@@ -984,6 +991,205 @@ public class ExcelServiceImpl implements ExcelService {
 
 	}
 
+	private void copyRowforRCEP(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+			ExcelRCEPSubRes item) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+//        if (newRow != null) {
+//            worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+//        } else {
+//            newRow = worksheet.createRow(destinationRowNum);
+//        }
+		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		newRow = worksheet.createRow(destinationRowNum);
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+//        	XSSFCelle
+
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+
+				if (i == 0) {
+					newCell.setCellValue(item.getOrderNo());
+				} else if (i == 5) {
+					newCell.setCellValue(item.getItemCount());
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}
+
+				break;
+			case Cell.CELL_TYPE_STRING:
+
+				if (i == 7) {
+					if (item.getOrderNo() == 1) {
+						newCell.setCellValue(item.getCompanyInvoice());
+					}
+
+				} else if (i == 1) {
+					newCell.setCellValue(item.getMaking());
+				} else if (i == 2) {
+					newCell.setCellValue(item.getEngNm());
+				} else if (i == 3) {
+					newCell.setCellValue(item.getHsCode());
+				} else if (i == 4) {
+					newCell.setCellValue(item.getData10());
+				} else {
+					newCell.setCellValue(oldCell.getStringCellValue());
+				}
+
+				break;
+			}
+		}
+
+		// If there are are any merged regions in the source row, copy to new row
+		for (int i = 0; i < worksheet.getNumMergedRegions(); i++) {
+			CellRangeAddress cellRangeAddress = worksheet.getMergedRegion(i);
+			if (cellRangeAddress.getFirstRow() == sourceRow.getRowNum()) {
+				CellRangeAddress newCellRangeAddress = new CellRangeAddress(newRow.getRowNum(),
+						(newRow.getRowNum() + (cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow())),
+						cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+				worksheet.addMergedRegion(newCellRangeAddress);
+			}
+		}
+	}
+
+	private void copyRowBLforRCEP(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+			ExcelRCEPSubRes item) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+//        if (newRow != null) {
+//            worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+//        } else {
+//            newRow = worksheet.createRow(destinationRowNum);
+//        }
+		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		newRow = worksheet.createRow(destinationRowNum);
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+//        	XSSFCelle
+
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				if (i == 7) {
+					if (item.getOrderNo() == 1) {
+						newCell.setCellValue(getDateStr(item.getDepartDtStr()));
+//						newCell.setCellValue(item.getDepartDtStr());
+					}
+
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}	
+				
+				break;
+			case Cell.CELL_TYPE_STRING:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			}
+		}
+
+		// If there are are any merged regions in the source row, copy to new row
+		for (int i = 0; i < worksheet.getNumMergedRegions(); i++) {
+			CellRangeAddress cellRangeAddress = worksheet.getMergedRegion(i);
+			if (cellRangeAddress.getFirstRow() == sourceRow.getRowNum()) {
+				CellRangeAddress newCellRangeAddress = new CellRangeAddress(newRow.getRowNum(),
+						(newRow.getRowNum() + (cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow())),
+						cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+				worksheet.addMergedRegion(newCellRangeAddress);
+			}
+		}
+	}
 	@Override
 	public ExcelRCEPRes rcepData(FinalInboundInboundMasterReq req) throws Exception {
 
@@ -1054,8 +1260,10 @@ public class ExcelServiceImpl implements ExcelService {
 //			ExcelFTASubRes to;to.getItemCount()
 //			Double total = sublist.stream().mapToDouble(ExcelRCEPSubRes::getItemCount).sum();
 //			item.setTotalCountEng("TOTAL (" + String.valueOf(total.intValue()) + ")");
-			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelRCEPSubRes::getBoxCount).sum();
-			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+			Double total = sublist.stream().filter(k -> k.getBoxCount() != null)
+					.mapToDouble(ExcelRCEPSubRes::getBoxCount).sum();
+			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
 			item.setSubItem(sublist);
 			return item;
 		}).get();
@@ -1133,12 +1341,7 @@ public class ExcelServiceImpl implements ExcelService {
 					String value = cell.getStringCellValue();
 
 					cell.setCellValue(convertDataForYATAI(value, excelYATAIRes));
-					// template row 삭제 처리
-					if (value.contains("${deleteRow}")) {
-//							sheet.removeRow();
-						cell.setCellValue("");
-						deleteList.add(row.getRowNum());
-					}
+					
 
 					break;
 				case "NUMERIC":
@@ -1162,10 +1365,22 @@ public class ExcelServiceImpl implements ExcelService {
 			});
 
 		}
+		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+			if (sheet.getMergedRegion(i).getFirstRow() == 8) {
+				sheet.removeMergedRegion(i);
+				
+			}
+		}
+		sheet.shiftRows(9, sheet.getLastRowNum(), -1);
 
-		deleteList.stream().forEach(t -> {
-			sheet.shiftRows(t, sheet.getLastRowNum(), -1);
-		});
+		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+			if (sheet.getMergedRegion(i).getFirstRow() == 8) {
+				sheet.removeMergedRegion(i);
+				
+			}
+		}
+		sheet.shiftRows(9, sheet.getLastRowNum(), -1);
+
 
 	}
 
@@ -1200,7 +1415,6 @@ public class ExcelServiceImpl implements ExcelService {
 
 	public void shiftRowForYATAI(int startIndex, XSSFSheet sheet, String type, ExcelYATAISubRes item,
 			XSSFWorkbook workbook) {
-		sheet.shiftRows(startIndex, sheet.getLastRowNum(), 1, true, true);
 		writeDataForYATAI(startIndex, sheet, type, item, workbook);
 	}
 
@@ -1208,11 +1422,11 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFWorkbook workbook) {
 
 //			XSSFRow target = sheet.getRow(startIndex);
-		XSSFRow target = sheet.createRow(startIndex);
+//		XSSFRow target = sheet.createRow(startIndex);
 		if (type.equals("BL")) {
-			CopyRowBlankForYATAI(target, sheet.getRow(startIndex + 1), item, workbook, startIndex);
+			copyRowBLforYATAI(workbook, sheet, startIndex, startIndex + 2, item);
 		} else {
-			CopyRowDataForYATAI(target, sheet.getRow(startIndex + 1), item, workbook, startIndex);
+			copyRowforYATAI(workbook, sheet, startIndex, startIndex + 2, item);
 		}
 
 	}
@@ -1310,6 +1524,192 @@ public class ExcelServiceImpl implements ExcelService {
 
 	}
 
+	private void copyRowforYATAI(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+			ExcelYATAISubRes item) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+		
+		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		newRow = worksheet.createRow(destinationRowNum);
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+//        	XSSFCelle
+
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+
+				if (i == 8) {
+					newCell.setCellValue(item.getItemCount());
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}
+
+				break;
+			case Cell.CELL_TYPE_STRING:
+
+				if (i == 9) {
+					if (item.getOrderNo() == 1) {
+						newCell.setCellValue(item.getCompanyInvoice());
+					}
+
+				}else if (i == 1) {
+					newCell.setCellValue(item.getHsCode());
+				} else if (i == 2) {
+					newCell.setCellValue(item.getMaking());
+				} else if (i == 3) {
+					newCell.setCellValue(item.getEngNm());
+				}  else if (i == 7) {
+					newCell.setCellValue(item.getData08());
+				} else {
+					newCell.setCellValue(oldCell.getStringCellValue());
+				}
+
+				break;
+			}
+		}
+
+		// If there are are any merged regions in the source row, copy to new row
+		for (int i = 0; i < worksheet.getNumMergedRegions(); i++) {
+			CellRangeAddress cellRangeAddress = worksheet.getMergedRegion(i);
+			if (cellRangeAddress.getFirstRow() == sourceRow.getRowNum()) {
+				CellRangeAddress newCellRangeAddress = new CellRangeAddress(newRow.getRowNum(),
+						(newRow.getRowNum() + (cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow())),
+						cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+				worksheet.addMergedRegion(newCellRangeAddress);
+			}
+		}
+	}
+
+	private void copyRowBLforYATAI(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+			ExcelYATAISubRes item) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+	
+		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		newRow = worksheet.createRow(destinationRowNum);
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+//        	XSSFCelle
+
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				if (i == 9) {
+					if (item.getOrderNo() == 1) {
+						newCell.setCellValue(getDateStr(item.getDepartDtStr()));
+//						newCell.setCellValue(item.getDepartDtStr());
+					}
+
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}	
+				
+				break;
+			case Cell.CELL_TYPE_STRING:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			}
+		}
+
+		// If there are are any merged regions in the source row, copy to new row
+		for (int i = 0; i < worksheet.getNumMergedRegions(); i++) {
+			CellRangeAddress cellRangeAddress = worksheet.getMergedRegion(i);
+			if (cellRangeAddress.getFirstRow() == sourceRow.getRowNum()) {
+				CellRangeAddress newCellRangeAddress = new CellRangeAddress(newRow.getRowNum(),
+						(newRow.getRowNum() + (cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow())),
+						cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+				worksheet.addMergedRegion(newCellRangeAddress);
+			}
+		}
+	}
+	
 	@Override
 	public ExcelYATAIRes yataiData(FinalInboundInboundMasterReq req) throws Exception {
 
@@ -1371,11 +1771,13 @@ public class ExcelServiceImpl implements ExcelService {
 //			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
 //			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
 //			item.setTotalBoxCountEng("TOTAL: (" + String.valueOf(total.intValue()) + ")" + " CTNS OF");
-			Double total = sublist.stream().filter(k->k.getBoxCount()!= null).mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
-			item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue())+" "+"("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
-			
+			Double total = sublist.stream().filter(k -> k.getBoxCount() != null)
+					.mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
+			item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
+
 			item.setSubItem(sublist);
-			
+
 			return item;
 		}).get();
 
@@ -1504,7 +1906,7 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 		}
 		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
-		
+
 		int startCount = 59 + (excelInpackRes.getSubItem().size() * 2);
 		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
 			if (sheet.getMergedRegion(i).getFirstRow() == startCount) {
@@ -1513,8 +1915,8 @@ public class ExcelServiceImpl implements ExcelService {
 				sheet.removeMergedRegion(i);
 			}
 		}
-		sheet.shiftRows(startCount+1, sheet.getLastRowNum(), -1);
-		
+		sheet.shiftRows(startCount + 1, sheet.getLastRowNum(), -1);
+
 		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
 			if (sheet.getMergedRegion(i).getFirstRow() == startCount) {
 				sheet.removeMergedRegion(i);
@@ -1522,7 +1924,7 @@ public class ExcelServiceImpl implements ExcelService {
 				sheet.removeMergedRegion(i);
 			}
 		}
-		sheet.shiftRows(startCount+1, sheet.getLastRowNum(), -1);
+		sheet.shiftRows(startCount + 1, sheet.getLastRowNum(), -1);
 
 	}
 
@@ -1735,7 +2137,7 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getItemPrice());
 					} else if (i == 10) {
 						newCell.setCellValue(item.getTotalPrice());
-					}else {
+					} else {
 						newCell.setCellValue(oldCell.getNumericCellValue());
 					}
 				} else if (page.equals("2")) {
@@ -1749,7 +2151,7 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getTotalWeight());
 					} else if (i == 11) {
 						newCell.setCellValue(item.getCbm());
-					}else {
+					} else {
 						newCell.setCellValue(oldCell.getNumericCellValue());
 					}
 				}
@@ -1761,7 +2163,7 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getEngNm());
 					} else if (i == 3) {
 						newCell.setCellValue(item.getJejil());
-					}else {
+					} else {
 						newCell.setCellValue(oldCell.getStringCellValue());
 					}
 				} else if (page.equals("2")) {
@@ -1769,7 +2171,7 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getEngNm());
 					} else if (i == 3) {
 						newCell.setCellValue(item.getJejil());
-					}else {
+					} else {
 						newCell.setCellValue(oldCell.getStringCellValue());
 					}
 				}

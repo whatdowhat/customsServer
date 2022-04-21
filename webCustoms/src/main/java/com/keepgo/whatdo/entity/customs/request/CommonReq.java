@@ -34,13 +34,14 @@ public class CommonReq {
 	
 	@ExcelColumn(headerName="코드이름",order = 2)
 	private String name;
-	
-	@ExcelColumn(headerName="코드값",order = 3)
+	@ExcelColumn(headerName="쉬퍼코드",order = 3)
+	private String value3;
+	@ExcelColumn(headerName="쉬퍼이름",order = 4)
 	private String value;
 	
-	@ExcelColumn(headerName="코드값2",order = 4)
+	@ExcelColumn(headerName="쉬퍼주소",order = 5)
 	private String value2;
-	private String value3;
+	
 	
 	private Boolean isUsing;
 	

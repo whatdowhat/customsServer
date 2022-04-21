@@ -29,6 +29,7 @@ import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.repository.CommonRepository;
@@ -57,7 +58,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
 		List<?> list = _companyInfoRepository.findAll().stream()
 				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
-
+//				.sorted(Comparator.comparing(CompanyInfo::getId).reversed()).map(item -> {
 					CompanyInfoRes dto = CompanyInfoRes.builder()
 
 							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
@@ -304,23 +305,25 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		if (cellIndex == 0) {
 			companyInfo.setId(new Long(value));
 		}
-
 		if (cellIndex == 1) {
-			companyInfo.setCoInvoice(value);
+			companyInfo.setManager(value);
 		}
 		if (cellIndex == 2) {
-			companyInfo.setCoNm(value);
+			companyInfo.setCoInvoice(value);
 		}
 		if (cellIndex == 3) {
-			companyInfo.setCoNmEn(value);
+			companyInfo.setCoNm(value);
 		}
 		if (cellIndex == 4) {
-			companyInfo.setCoNum(value);
+			companyInfo.setCoNmEn(value);
 		}
 		if (cellIndex == 5) {
-			companyInfo.setCoAddress(value);
+			companyInfo.setCoNum(value);
 		}
 		if (cellIndex == 6) {
+			companyInfo.setCoAddress(value);
+		}
+		if (cellIndex == 7) {
 			companyInfo.setConsignee(value);
 		}
 
@@ -358,5 +361,38 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 				}).get();
 		return res;
 	}
+	
+	@Override
+	public CompanyInfoRes getOne(Long id) {
+		CompanyInfo res = _companyInfoRepository.findById(id).get();
+		CompanyInfoRes dto = CompanyInfoRes.builder()
+
+				.id(res.getId())
+				.coAddress(res.getCoAddress())
+				.coNm(res.getCoNm())
+				.coNum(res.getCoNum())
+				.coInvoice(res.getCoInvoice())
+				.updateDt(res.getUpdateDt())
+				.coNmEn(res.getCoNmEn())
+				.isUsing(res.getIsUsing())
+				.createDt(res.getCreateDt())
+				.consignee(res.getConsignee())
+				.manager(res.getManager())
+				.build();
+			if(res.getExports().size()>0) {
+				dto.setExports(res.getExports().stream().map(sub_item->{
+					Map<String, Object> f = new HashMap<>();
+					f.put("comNm", sub_item.getCommon().getNm());
+					f.put("comValue", sub_item.getCommon().getValue());
+					f.put("comValue2", sub_item.getCommon().getValue2());
+					f.put("comValue3", sub_item.getCommon().getValue3());
+					f.put("preperOrder", sub_item.getPreperOrder());
+					f.put("id", sub_item.getCommon().getId());
+					return f;
+				}).collect(Collectors.toList()));
+			}
+		return dto;
+	}
+	
 
 }

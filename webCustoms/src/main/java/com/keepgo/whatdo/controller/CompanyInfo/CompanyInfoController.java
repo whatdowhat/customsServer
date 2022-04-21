@@ -40,8 +40,10 @@ import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReqForExcelDownload;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
+import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.mapper.UserMapper;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
@@ -312,6 +314,11 @@ public class CompanyInfoController {
 		return companyInfoRes;
 	}
 	
-
+	@RequestMapping(value = "/company/getOne", method = {RequestMethod.POST })
+	public CompanyInfoRes getOne(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+		return  _companyInfoService.getOne(companyInfoReq.getId());
+		
+	}
 	
 }

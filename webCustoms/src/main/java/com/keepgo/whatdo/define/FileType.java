@@ -14,7 +14,9 @@ public enum FileType {
 	E(5,"화주서류",4),
 	F(6,"RCEP CO",3),
 	G(7,"아태 CO",4),
-	H(8,"공장 CO",5);
+	H(8,"공장 CO",5),
+	
+	K(10,"도장이미지",10);
 //	I(9,"화주서류",6);
 
 	Integer id;
@@ -42,7 +44,13 @@ public enum FileType {
 		}
 		
 		
-		return l.stream().sorted(Comparator.comparing(FileTypeRes::getSortOrder)).collect(Collectors.toList());
+		return l.stream()
+				//도장이미지는 리스트에서 보이지 않음.
+				.filter(t->{
+					
+					return (t.getId() < 10);
+				})
+				.sorted(Comparator.comparing(FileTypeRes::getSortOrder)).collect(Collectors.toList());
 		
 	}
 

@@ -40,7 +40,7 @@ public class FileUploadReq {
 	private String coNum;
 	private int fileCount;
 	private Long fileType;
-	
+	private Long commonId;
 	
 	
 	

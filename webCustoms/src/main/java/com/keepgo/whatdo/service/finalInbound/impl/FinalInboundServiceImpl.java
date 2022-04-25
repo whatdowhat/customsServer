@@ -269,7 +269,17 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean deleteFinalInboundMasterItems(FinalInboundReq req) {
 		
-		_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), req.getInboundMasterId());
+		List<InboundMasterReq> list = req.getInboundMasterData();
+		for (int i = 0; i < list.size(); i++) {
+
+			
+
+			Long inboundMasterId=list.get(i).getId();
+			_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), inboundMasterId);
+
+		}
+		
+		
 		
 		return true;
 	 
@@ -552,6 +562,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					}
 					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
 						inbound.setBoxCount(new Double(0));
+					}
+					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")) {
+						inbound.setReportPrice(new Double(0));
 					}
 					
 					inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());

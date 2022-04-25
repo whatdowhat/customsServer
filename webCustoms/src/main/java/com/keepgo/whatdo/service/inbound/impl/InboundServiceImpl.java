@@ -695,6 +695,9 @@ public class InboundServiceImpl implements InboundService {
 				if(inboundRes.getBoxCount()==null||inboundRes.getBoxCount().equals("")) {
 					inboundRes.setBoxCount(new Double(0));
 				}
+				if(inboundRes.getReportPrice()==null||inboundRes.getReportPrice().equals("")) {
+					inboundRes.setReportPrice(new Double(0));
+				}
 				list.add(inboundRes);
 			}
 			

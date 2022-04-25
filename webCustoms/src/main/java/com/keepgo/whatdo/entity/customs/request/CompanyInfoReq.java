@@ -60,7 +60,8 @@ public class CompanyInfoReq {
 	
 	
 	List<CompanyInfoReq> companyInfoReqData;
-	List<Common> companyExportData;
-	List<Common> companyManageData;
+	//common -> commonreq로 수정 해야됨.
+	List<CommonReq> companyExportData;
+//	List<Common> companyManageData;
 	
 }

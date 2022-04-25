@@ -47,8 +47,8 @@ public class CommonReq {
 	
 	
 	private Long user;
-	
-	List<Common> commonData;
+	private int preperOrder;
+//	List<Common> commonData;
 	List<CommonReq> commonReqData;
 	
 	private boolean isChecked;

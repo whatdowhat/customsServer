@@ -39,6 +39,7 @@ public class FileUploadRes {
 	private int fileCount;
 	private int fileType;
 	private String fileTypeNm;
+	private Long commonId;
 	
 	
 	

@@ -192,7 +192,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
 		_companyInfoExportRepository.deleteCompanyinfoExport(companyInfo.getId());
 
-		List<Common> list = companyInfoReq.getCompanyExportData();
+		List<CommonReq> list = companyInfoReq.getCompanyExportData();
 
 		for (int i = 0; i < list.size(); i++) {
 
@@ -217,7 +217,8 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
 		CompanyInfo companyInfo = _companyInfoRepository.findById(companyInfoReq.getId())
 				.orElse(CompanyInfo.builder().build());
-		List<Common> list = companyInfoReq.getCompanyManageData();
+//		List<Common> list = companyInfoReq.getCompanyManageData();
+		List<Common> list = new ArrayList<>();
 
 		for (int i = 0; i < list.size(); i++) {
 

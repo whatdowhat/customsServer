@@ -71,7 +71,7 @@ public class FileUpload {
 	@JoinColumn(name = "inboundMasterId")
 	@ExcelColumn(headerName="inboundMasterId",order = 2)
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonBackReference
+//	@JsonBackReference
 	private InboundMaster inboundMaster;
 	
 	@JoinColumn(name = "commonId")

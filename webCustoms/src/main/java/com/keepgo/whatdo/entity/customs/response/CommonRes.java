@@ -33,6 +33,8 @@ public class CommonRes {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
 	
+	private boolean imageYn;
+	private byte[] image;
 	
 }
 

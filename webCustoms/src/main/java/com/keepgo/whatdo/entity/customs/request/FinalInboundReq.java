@@ -65,6 +65,8 @@ public class FinalInboundReq {
 	
 	
 	List<InboundMasterReq> inboundMasterData;
+	List<FinalInboundReq> finalInboundReqData;
+	private List<Long> ids = new ArrayList<>();
 	
 	//조인컬럼 삭제용
 	private Long inboundMasterId;

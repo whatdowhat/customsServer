@@ -178,7 +178,15 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 		return true;
 	}
-	
+	@Override
+	public boolean deleteFinalInbound(FinalInboundReq finalInboundReq) {
+		List<Long> finalInboundList = finalInboundReq.getIds();
+		for (int i = 0; i < finalInboundList.size(); i++) {
+			FinalInbound finalInbound = _finalInboundRepository.findById(finalInboundList.get(i).longValue()).get();
+			_finalInboundRepository.delete(finalInbound);
+		}
+		return true;
+	}
 	@Override
 	public FinalInboundRes addFinalInbound(FinalInboundReq req) throws ParseException {
 //		String depart=req.getDepartDtStr();
@@ -560,9 +568,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					}else {
 						inbound.setCoId(Integer.valueOf(3));
 					}
-					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
-						inbound.setBoxCount(new Double(0));
-					}
+//					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
+//						inbound.setBoxCount(new Double(0));
+//					}
 					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")) {
 						inbound.setReportPrice(new Double(0));
 					}

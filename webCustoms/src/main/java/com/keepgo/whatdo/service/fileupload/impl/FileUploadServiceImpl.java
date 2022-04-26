@@ -404,7 +404,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		//todo 사용자 세션 아이디로 수정해야됨.
 		fileupload.setUser(User.builder().id(new Long(1)).build());
 		
-		fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == Integer.valueOf(fileUploadReq.getPath2())).findFirst().get().getId());
+		fileupload.setFileType(Integer.valueOf(fileUploadReq.getPath2()));
 		
 		fileupload.setFileName1(fileName);
 		fileupload.setRoot(uploadRoot);
@@ -430,7 +430,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 			_fileUploadRepository.save(fileupload);
 		}
 		
-		common.setFileUpload(fileupload);
+		FileUpload uploadFile = _fileUploadRepository.findByCommonId(common.getId());
+		common.setFileUpload(uploadFile);
 		_commonRepository.save(common);
 		
 		
@@ -441,6 +442,85 @@ public class FileUploadServiceImpl implements FileUploadService {
 		return FileUploadRes.builder().commonId(Long.valueOf(fileUploadReq.getCommonId())).build();
 	}
 
+	@Override
+	public FileUploadRes uploadFile4(MultipartFile file, FileUploadReq fileUploadReq) throws IOException {
+		
+		// path1=1, masterid 
+		//path2=298, filetypeid
+		Common common = _commonRepository.findById(Long.valueOf(fileUploadReq.getCommonId())).get();
+		String path = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();		
+		
+		File deleteFile = new File(path);
+	    deleteFile.delete();
+		
+		
+		
+		StringBuilder strPath = new StringBuilder(uploadRoot);
+		//파일생성 폴더 이름은 쉬퍼코드
+		strPath.append(File.separatorChar+common.getValue3());
+		//파일생성 폴더 이름은 value값으로 
+		strPath.append(File.separatorChar+fileUploadReq.getPath2());
+		//stringBuilder.append(File.separatorChar+fileUploadReq.getPath3());
+		//c:/Customs/212351251/A/filename.xml
+//		String path = root+"a"; //폴더 경로
+		File Folder = new File(strPath.toString());
+
+		// 해당 디렉토리가 없을경우 디렉토리를 생성
+		if (!Folder.exists()) {
+			try{
+			    Folder.mkdirs(); //폴더 생성
+//			    System.out.println("폴더가 생성되었습니다.");
+		        } 
+		        catch(Exception e){
+			    e.getStackTrace();
+			}        
+	         }else {
+//			System.out.println("이미 폴더가 생성되어 있습니다.");
+		}
+		
+		String fileName= file.getOriginalFilename();
+		int filesize=(int)file.getSize();
+		File saveFile = new File(strPath.toString(), file.getOriginalFilename());
+		file.transferTo(saveFile);
+		
+		
+
+		
+		FileUpload fileupload = _fileUploadRepository.findById(common.getFileUpload().getId()).get();
+		fileupload.setCommon(common);
+		//todo 사용자 세션 아이디로 수정해야됨.
+		fileupload.setUser(User.builder().id(new Long(1)).build());
+		
+		fileupload.setFileType(Integer.valueOf(fileUploadReq.getPath2()));
+		
+		fileupload.setFileName1(fileName);
+		fileupload.setRoot(uploadRoot);
+		fileupload.setCreateDt(new Date());
+		fileupload.setUpdateDt(new Date());
+		fileupload.setFileSize(filesize);
+		fileupload.setPath1(common.getValue3());
+		fileupload.setPath2(fileUploadReq.getPath2());
+		fileupload.setPath3(fileName);
+//		fileupload.setUploadType(fileUploadReq.getPath2());
+//		fileupload.setUploadTypeNm(common.getValue2());
+		fileupload.setRoot(strPath.toString());
+		fileupload.setIsUsing(true);
+		
+		
+		_fileUploadRepository.save(fileupload);
+		
+		
+		FileUpload uploadFile = _fileUploadRepository.findByCommonId(common.getId());
+		common.setFileUpload(uploadFile);
+		_commonRepository.save(common);
+		
+		
+		
+		
+//		FileUploadRes fileUploadRes = new FileUploadRes();
+//		return fileUploadRes;
+		return FileUploadRes.builder().commonId(Long.valueOf(fileUploadReq.getCommonId())).build();
+	}
 
 
 	

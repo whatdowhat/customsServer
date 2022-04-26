@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundRes;
 
 @Service
 public interface FinalInboundService {
@@ -46,4 +47,7 @@ public interface FinalInboundService {
 	
 	@Transactional
 	boolean excelRead(MultipartFile file,InboundReq inboundReq,String id) throws IOException;
+	
+	@Transactional
+	boolean deleteFinalInbound(FinalInboundReq finalInboundReq);
 }

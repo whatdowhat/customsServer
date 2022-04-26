@@ -37,7 +37,9 @@ public interface FileUploadService {
 	@Transactional
 	FileUploadRes uploadFile2(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;	
 	@Transactional
-	FileUploadRes uploadFile3(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;	
+	FileUploadRes uploadFile3(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;
+	@Transactional
+	FileUploadRes uploadFile4(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;	
 	@Transactional
 //	void downloadFile(FileUploadReq fileUploadReq, HttpServletResponse response,HttpServletRequest request) throws Exception;
 	ResponseEntity<Object> downloadFile(FileUploadReq fileUploadReq, HttpServletResponse response,HttpServletRequest request,String agent) throws Exception;

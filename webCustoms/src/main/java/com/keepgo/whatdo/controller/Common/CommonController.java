@@ -101,6 +101,12 @@ public class CommonController {
 		List<?> list = _commonService.getCommonAll(commonReq);
 		return  list;
 	}
+	@RequestMapping(value = "/common/getCommonOne", method = {RequestMethod.POST })
+	public CommonRes getOne(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
+
+		CommonRes result = _commonService.getCommonOne(commonReq.getId());
+		return result;
+	}
 	@RequestMapping(value = "/common/commonByMaster", method = {RequestMethod.POST })
 	public List<?> commonByMaster(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
 

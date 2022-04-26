@@ -106,6 +106,14 @@ public class FileuploadController {
 		return true;
 	}
 	
+	@RequestMapping(value = "/test/uploadFile4", method = {RequestMethod.POST })
+	public boolean uploadFile4(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
+		Gson gson = new Gson();
+		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);
+		_fileUploadService.uploadFile4(file,frq);
+		return true;
+	}
+	
 
 	
 }

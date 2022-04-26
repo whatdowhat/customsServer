@@ -23,6 +23,8 @@ public interface CommonService {
 	
 	@Transactional
 	List<?> getCommonByMaster(CommonReq commonReq); 
+	@Transactional
+	CommonRes getCommonOne(Long id);
 	
 	@Transactional
 	List<?> getCommonByCompanyInfoExport(CommonReq commonReq);

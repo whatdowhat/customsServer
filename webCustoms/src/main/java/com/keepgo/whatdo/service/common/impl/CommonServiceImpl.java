@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -11,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -21,6 +25,10 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +58,11 @@ public class CommonServiceImpl implements CommonService {
 	
 	@Autowired
 	CommonMapper _commonMapper;
+	@Autowired
+	ResourceLoader resourceLoader;
+	
+	@Value("${fileupload.root}")
+	String uploadRoot;
 
 	@Override
 	public List<?> getMasterAll(CommonMasterReq commonMasterReq) {
@@ -106,6 +119,41 @@ public class CommonServiceImpl implements CommonService {
 						.build())
 		.collect(Collectors.toList());
 		return result;
+	}
+	
+	@Override
+	public CommonRes getCommonOne(Long id) {
+		
+		
+		
+		Common common = _commonRepository.findById(id).get();
+		
+		String dFile = common.getFileUpload().getFileName1(); //이름 받아오면 됨.
+		StringBuilder strPath = new StringBuilder(uploadRoot);
+		strPath.append(File.separatorChar+common.getFileUpload().getPath1());
+		strPath.append(File.separatorChar+common.getFileUpload().getPath2()); //고정 경로인경우 직접 입력, 아닐경우 DB에서 경로 받아오기
+//		String path = strPath.toString()+File.separator+dFile;
+		
+		String path = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
+		CommonRes r = new CommonRes();
+		r.setId(common.getId());
+		r.setImageYn(true);
+		 byte[] arr = null;
+         try {
+//            Resource resource = resourceLoader.getResource(path);
+        	 Path filePath = Paths.get(path);
+        	 Resource resource = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
+            arr = IOUtils.toByteArray(resource.getInputStream());
+         } catch (Exception e) {
+            e.printStackTrace();
+            //System.err.println(e.getMessage());
+            r.setImageYn(false);    
+            
+         }
+         r.setImage(arr);   
+				
+				
+		return r;
 	}
 	
 	@Override

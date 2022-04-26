@@ -20,7 +20,8 @@ public interface FileUploadRepository extends JpaRepository<FileUpload, Long>{
 	List<FileUpload> findByInboundMasterAndFileType(InboundMaster inboundMaster, int fileType);
 	List<FileUpload> findByInboundMasterAndFileTypeAndPath3(InboundMaster inboundMaster, int fileType,String path3);
 	List<FileUpload> findByCommonAndFileTypeAndPath3(Common common, int fileType,String path3);
-	                              
+	public FileUpload findByCommonId(Long id);
+                         
 //	List<FileUpload> findCondition(Specification<FileUpload> condition, InboundMaster inboundMaster);
 	
 }

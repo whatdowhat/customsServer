@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
@@ -85,6 +86,14 @@ public class FinalInboundController {
 		
 		return  _finalInboundService.addFinalInbound(finalInboundReq);
 		
+	}
+	@RequestMapping(value = "/test/deleteFinalInbound", method = {RequestMethod.POST })
+
+	public  boolean deleteInbound(@RequestBody FinalInboundReq finalInboundReq) throws IOException, InterruptedException {
+		
+		
+		return  _finalInboundService.deleteFinalInbound(finalInboundReq);
+
 	}
 	
 	@RequestMapping(value = "/test/finalInboundUpdate", method = {RequestMethod.POST })

@@ -692,9 +692,9 @@ public class InboundServiceImpl implements InboundService {
 			if(inboundRes.getEngNm()==null||inboundRes.getEngNm().equals("")) {
 				
 			}else {
-				if(inboundRes.getBoxCount()==null||inboundRes.getBoxCount().equals("")) {
-					inboundRes.setBoxCount(new Double(0));
-				}
+//				if(inboundRes.getBoxCount()==null||inboundRes.getBoxCount().equals("")) {
+//					inboundRes.setBoxCount(new Double(0));
+//				}
 				if(inboundRes.getReportPrice()==null||inboundRes.getReportPrice().equals("")) {
 					inboundRes.setReportPrice(new Double(0));
 				}
@@ -918,7 +918,7 @@ public class InboundServiceImpl implements InboundService {
 				f.put("orderNo", sub_item.getOrderNo());
 				f.put("korNm", sub_item.getKorNm());
 				f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
-				if(sub_item.getBoxCount() == 0) {
+				if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
 					f.put("boxCount",  "0");
 				}else {
 					f.put("boxCount",  decimalFormat2.format(sub_item.getBoxCount()));	

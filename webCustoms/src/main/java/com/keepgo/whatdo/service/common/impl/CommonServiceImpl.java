@@ -127,30 +127,34 @@ public class CommonServiceImpl implements CommonService {
 		
 		
 		Common common = _commonRepository.findById(id).get();
-		
-		String dFile = common.getFileUpload().getFileName1(); //이름 받아오면 됨.
-		StringBuilder strPath = new StringBuilder(uploadRoot);
-		strPath.append(File.separatorChar+common.getFileUpload().getPath1());
-		strPath.append(File.separatorChar+common.getFileUpload().getPath2()); //고정 경로인경우 직접 입력, 아닐경우 DB에서 경로 받아오기
-//		String path = strPath.toString()+File.separator+dFile;
-		
-		String path = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
 		CommonRes r = new CommonRes();
-		r.setId(common.getId());
-		r.setImageYn(true);
-		 byte[] arr = null;
-         try {
-//            Resource resource = resourceLoader.getResource(path);
-        	 Path filePath = Paths.get(path);
-        	 Resource resource = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
-            arr = IOUtils.toByteArray(resource.getInputStream());
-         } catch (Exception e) {
-            e.printStackTrace();
-            //System.err.println(e.getMessage());
-            r.setImageYn(false);    
-            
-         }
-         r.setImage(arr);   
+		if(common.getFileUpload()==null) {
+			 r.setImageYn(false);  
+		}else {
+			String dFile = common.getFileUpload().getFileName1(); //이름 받아오면 됨.
+			StringBuilder strPath = new StringBuilder(uploadRoot);
+			strPath.append(File.separatorChar+common.getFileUpload().getPath1());
+			strPath.append(File.separatorChar+common.getFileUpload().getPath2()); //고정 경로인경우 직접 입력, 아닐경우 DB에서 경로 받아오기
+//			String path = strPath.toString()+File.separator+dFile;
+			
+			String path = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
+			r.setId(common.getId());
+			r.setImageYn(true);
+			 byte[] arr = null;
+	         try {
+//	            Resource resource = resourceLoader.getResource(path);
+	        	 Path filePath = Paths.get(path);
+	        	 Resource resource = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
+	            arr = IOUtils.toByteArray(resource.getInputStream());
+	         } catch (Exception e) {
+	            e.printStackTrace();
+	            //System.err.println(e.getMessage());
+	            r.setImageYn(false);    
+	            
+	         }
+	         r.setImage(arr);   
+		}
+	
 				
 				
 		return r;

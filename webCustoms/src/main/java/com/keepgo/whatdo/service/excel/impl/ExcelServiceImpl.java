@@ -3,6 +3,9 @@ package com.keepgo.whatdo.service.excel.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -18,25 +21,32 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import com.keepgo.whatdo.define.DocumentType;
+import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.Inbound;
+import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
@@ -55,6 +65,7 @@ import com.keepgo.whatdo.service.excel.ExcelService;
 import com.keepgo.whatdo.service.inbound.InboundService;
 import com.keepgo.whatdo.service.util.EnglishNumberToWords;
 import com.keepgo.whatdo.service.util.UtilService;
+import com.keepgo.whatdo.util.RowCopy;
 
 @Component
 public class ExcelServiceImpl implements ExcelService {
@@ -1820,11 +1831,89 @@ public class ExcelServiceImpl implements ExcelService {
 				shiftRowForInpack(startCount2 + 1, sheet, "BL", excelInpackRes.getSubItem().get(i), workbook, "2");
 
 			}
-
+			
 			// data 치환
 			chageDataforInpack(sheet, excelInpackRes, workbook);
 
-			// item add
+			// 도장이미지 삽입
+			InboundMaster inboundMaster = _inboundMasterRepository.findById(excelInpackRes.getInboundMasterId()).get();
+			Common common = inboundMaster.getComExport();
+			if(common.getFileUpload()==null) {
+				
+			}else {
+				String imagePath = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
+				Path filePath = Paths.get(imagePath);
+				Resource resources = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
+				int indx=0;
+
+			    String fileTale=FilenameUtils.getExtension(common.getFileUpload().getPath3());    
+				 
+				 byte[] inputImage =  IOUtils.toByteArray(resources.getInputStream());
+			     if(fileTale.equals("png")) {
+			    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
+			     }else if(fileTale.equals("bmp")) {
+			    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_BMP);
+			     }else if(fileTale.equals("jpg")) {
+			    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_JPEG);
+			     }
+				 
+			       XSSFDrawing drawing = sheet.createDrawingPatriarch();
+			       XSSFClientAnchor anchor = new XSSFClientAnchor();
+
+			       
+			       drawing.createPicture(anchor, indx);
+			       
+			       sheet.rowIterator().forEachRemaining(row ->{
+			    	   row.cellIterator().forEachRemaining(cell->{
+			    		   
+			    		   try {
+			    			   String value = cell.getStringCellValue();
+			    			   if(value.equals("Signed by") && row.getRowNum() <70 ) {
+			    				   
+			    			       anchor.setCol1(cell.getColumnIndex());
+			    			       anchor.setCol2(cell.getColumnIndex()+5);
+			    			       anchor.setRow1(cell.getRowIndex()-6);
+			    			       anchor.setRow2(cell.getRowIndex());
+			    				   
+			    			   }
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+			    		   
+			    	   });
+			       });
+			       
+//			       inputStream = RowCopy.class.getClassLoader().getResourceAsStream(imagePath);
+			       
+//			       indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
+			       drawing = sheet.createDrawingPatriarch();
+			       XSSFClientAnchor anchor2 = new XSSFClientAnchor();
+
+			       
+			       drawing.createPicture(anchor2, indx);
+			       
+			       sheet.rowIterator().forEachRemaining(row ->{
+			    	   row.cellIterator().forEachRemaining(cell->{
+			    		   
+			    		   try {
+			    			   String value = cell.getStringCellValue();
+			    			   if(value.equals("Signed by") && row.getRowNum() >70) {
+			    				   
+			    				   anchor2.setCol1(cell.getColumnIndex());
+			    				   anchor2.setCol2(cell.getColumnIndex()+5);
+			    				   anchor2.setRow1(cell.getRowIndex()-6);
+			    				   anchor2.setRow2(cell.getRowIndex());
+			    				   
+			    			   }
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+			    		   
+			    	   });
+			       });
+			}
+			
+			
 			String fileName = excelInpackRes.getFileNm() + "_Inpack.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -2292,8 +2381,9 @@ public class ExcelServiceImpl implements ExcelService {
 //			ExcelFTASubRes subRes = ExcelFTASubRes.builder().build();
 
 			String departDt = t.getFinalInbound().getDepartDtStr();
-
+			
 			item.setFileNm(t.getInboundMaster().getBlNo());
+			item.setInboundMasterId(t.getInboundMaster().getId());
 			item.setData01(t.getInboundMaster().getComExport().getValue() + "\n"
 					+ t.getInboundMaster().getComExport().getValue2());
 			item.setData03(t.getInboundMaster().getCompanyInfo().getCoInvoice());
@@ -2334,7 +2424,12 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setItemPrice(origin_inbound_list.get(i).getReportPrice());
 				subRes.setTotalPrice(new Double(String.format("%.2f",
 						origin_inbound_list.get(i).getReportPrice() * origin_inbound_list.get(i).getItemCount())));
-				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+				if(origin_inbound_list.get(i).getBoxCount()==null) {
+					subRes.setBoxCount(new Double(0));
+				}else {
+					subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+				}
+				
 				subRes.setTotalWeight(origin_inbound_list.get(i).getWeight());
 				subRes.setWeight(subRes.getTotalWeight() - subRes.getBoxCount());
 				subRes.setCbm(origin_inbound_list.get(i).getCbm());

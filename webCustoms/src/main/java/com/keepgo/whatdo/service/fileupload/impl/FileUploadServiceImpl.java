@@ -493,7 +493,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 		fileupload.setFileType(Integer.valueOf(fileUploadReq.getPath2()));
 		
-		fileupload.setFileName1(fileName);
+		fileupload.setFileName1(common.getValue3());
 		fileupload.setRoot(uploadRoot);
 		fileupload.setCreateDt(new Date());
 		fileupload.setUpdateDt(new Date());

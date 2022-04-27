@@ -125,35 +125,7 @@ public class ExcelController {
 	public void inpack(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
 			HttpServletResponse response) throws Exception {
 
-////		ExcelYATAIRes s =_excelService.yataiData(req);
-//		ExcelInpackRes s = new ExcelInpackRes();
-//		s.setFileNm("test");
-//		s.setData01("d1");
-//		s.setData03("d3");
-//		s.setData04("d4");
-//		s.setData05("d5");
-//		s.setData06("d6");
-//		s.setData07("d7");
-//		s.setData08("d8");
-//		s.setData09("d9");
-//		
-//		ExcelInpackSubRes sub = new ExcelInpackSubRes();
-//		sub.setHsCode("hs code1");
-//		sub.setEngNm("enNm1");
-//		sub.setItemCount(40d);
-//		sub.setItemPrice(3d);
-//		
-//		
-//		List<ExcelInpackSubRes> subList = new ArrayList<>();
-//		subList.add(sub);
-//		sub = new ExcelInpackSubRes();
-//		sub.setHsCode("hs code1");
-//		sub.setEngNm("enNm1");
-//		sub.setItemCount(40d);
-//		sub.setItemPrice(3d);
-////		subList.add(sub);
-////		subList.add(sub);
-//		s.setSubItem(subList);
+
 		ExcelInpackRes s =_excelService.inpackData(req);
 		
 		_excelService.inpack(s, response);

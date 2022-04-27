@@ -52,6 +52,7 @@ public class ExcelInpackRes {
 //	String data12;
 	
 	String totalCountEng;
+	Long inboundMasterId;
 	
 	//품목 리스트
 	List<ExcelInpackSubRes>  subItem;

@@ -2191,25 +2191,25 @@ public class ExcelServiceImpl implements ExcelService {
 			case Cell.CELL_TYPE_NUMERIC:
 				if (page.equals("1")) {
 					if (i == 6) {
-						newCell.setCellValue(item.getItemCount());
+						newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()));
 					} else if (i == 9) {
-						newCell.setCellValue(item.getItemPrice());
+						newCell.setCellValue((item.getItemPrice() == null ? 0d : item.getItemPrice()));
 					} else if (i == 10) {
-						newCell.setCellValue(item.getTotalPrice());
+						newCell.setCellValue((item.getTotalWeight() == null ? 0 : item.getTotalWeight()));
 					} else {
 						newCell.setCellValue(oldCell.getNumericCellValue());
 					}
 				} else if (page.equals("2")) {
 					if (i == 6) {
-						newCell.setCellValue(item.getItemCount());
+						newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()));
 					} else if (i == 8) {
-						newCell.setCellValue(item.getBoxCount());
+						newCell.setCellValue((item.getBoxCount() == null ? 0d : item.getBoxCount()));
 					} else if (i == 9) {
-						newCell.setCellValue(item.getWeight());
+						newCell.setCellValue( (item.getWeight() == null ? 0d : item.getWeight()));
 					} else if (i == 10) {
-						newCell.setCellValue(item.getTotalWeight());
+						newCell.setCellValue( (item.getTotalWeight() == null ? 0 : item.getTotalWeight()));
 					} else if (i == 11) {
-						newCell.setCellValue(item.getCbm());
+						newCell.setCellValue( (item.getCbm() == null ? 0d : item.getCbm()  ));
 					} else {
 						newCell.setCellValue(oldCell.getNumericCellValue());
 					}

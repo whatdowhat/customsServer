@@ -179,17 +179,17 @@ public class ExcelServiceImpl implements ExcelService {
 
 					break;
 				case "NUMERIC":
-					if (DateUtil.isCellDateFormatted(cell)) {
-						Date date1 = cell.getDateCellValue();
-						cell.setCellValue(date1);
-					} else {
-						double cellValue1 = cell.getNumericCellValue();
-						cell.setCellValue(cellValue1);
-					}
+//					if (DateUtil.isCellDateFormatted(cell)) {
+//						Date date1 = cell.getDateCellValue();
+//						cell.setCellValue(date1);
+//					} else {
+//						double cellValue1 = cell.getNumericCellValue();
+//						cell.setCellValue(cellValue1);
+//					}
 					break;
 				case "FORMULA":
-					String formula1 = cell.getCellFormula();
-					cell.setCellFormula(formula1);
+//					String formula1 = cell.getCellFormula();
+//					cell.setCellFormula(formula1);
 					break;
 
 				default:
@@ -231,16 +231,6 @@ public class ExcelServiceImpl implements ExcelService {
 		} else if (target.contains("${data04_1}")) {
 			String result = "";
 			String[] data04_arr = excelFTARes.getData04().split(",");
-//			try {
-//				
-////				result = data04_arr[0];		
-//				result = getDateStr(data04_arr[0]);
-//				
-//			} catch (Exception e) {
-//				System.err.println("convertData ::excelFTARes.getData04()::"+excelFTARes.getData04());
-//			}
-//			return result;
-
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			try {
 				cell.setCellValue(dateFormat.parse(data04_arr[0]));
@@ -290,8 +280,7 @@ public class ExcelServiceImpl implements ExcelService {
 //			return excelFTARes.getTotalCountEng();
 			cell.setCellValue(excelFTARes.getTotalCountEng());
 		} else {
-//			return target;
-			cell.setCellValue(target);
+			//아무것도 해당되지 않음.
 		}
 
 	}
@@ -575,12 +564,22 @@ public class ExcelServiceImpl implements ExcelService {
 			case Cell.CELL_TYPE_NUMERIC:
 				if (i == 7) {
 					if (item.getOrderNo() == 1) {
-						newCell.setCellValue(getDateStr(item.getDepartDtStr()));
+						
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						
+						try {
+							newCell.setCellValue(dateFormat.parse(item.getDepartDtStr()));
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							newCell.setCellValue("fail");
+							e.printStackTrace();
+						}
+						//newCell.setCellValue(getDateStr(item.getDepartDtStr()));
 //						newCell.setCellValue(item.getDepartDtStr());
 					}
 
 				} else {
-					newCell.setCellValue(oldCell.getNumericCellValue());
+					//newCell.setCellValue(oldCell.getNumericCellValue());
 				}	
 				
 				break;
@@ -849,6 +848,7 @@ public class ExcelServiceImpl implements ExcelService {
 		} else if (target.contains("${data03}")) {
 			return excelRCEPRes.getData03();
 		} else if (target.contains("${data04_1}")) {
+			
 			String result = "";
 			try {
 				String[] data04_arr = excelRCEPRes.getData04().split(",");
@@ -913,44 +913,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 	}
 
-	public void CopyRowBlankForRCEP(XSSFRow target, XSSFRow origin, ExcelRCEPSubRes item, XSSFWorkbook workbook,
-			int startIndex) {
-		List<Integer> count = new ArrayList<Integer>();
-		origin.cellIterator().forEachRemaining(cell -> {
-
-			if (count.size() < 9) {
-
-				target.createCell(cell.getColumnIndex());
-
-				CellStyle newCellStyle = cell.getCellStyle();
-				newCellStyle.cloneStyleFrom(cell.getCellStyle());
-				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
-
-				// 첫번째인경우
-				//
-				if (item.getOrderNo() == 1) {
-//					target.getCell(cell.getColumnIndex()).setCellValue(item.getCompanyInvoice());
-					if (count.size() == 7) {
-						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
-						target.getCell(cell.getColumnIndex()).setCellValue(getDateStr(item.getDepartDtStr()));
-					}
-				} else {
-					if (count.size() == 7) {
-						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
-						target.getCell(cell.getColumnIndex()).setCellValue("");
-					}
-				}
-
-			} else {
-//				CellStyle newCellStyle = cell.getCellStyle();
-//				newCellStyle.cloneStyleFrom(cell.getCellStyle());
-//				cell.setCellValue("t");
-			}
-			count.add(1);
-		});
-
-	}
-
+	
 	public void CopyRowDataForRCEP(XSSFRow target, XSSFRow origin, ExcelRCEPSubRes item, XSSFWorkbook workbook,
 			int startIndex) {
 		List<Integer> count = new ArrayList<Integer>();
@@ -1175,8 +1138,15 @@ public class ExcelServiceImpl implements ExcelService {
 			case Cell.CELL_TYPE_NUMERIC:
 				if (i == 7) {
 					if (item.getOrderNo() == 1) {
-						newCell.setCellValue(getDateStr(item.getDepartDtStr()));
-//						newCell.setCellValue(item.getDepartDtStr());
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						
+						try {
+							newCell.setCellValue(dateFormat.parse(item.getDepartDtStr()));
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							newCell.setCellValue("fail");
+							e.printStackTrace();
+						}
 					}
 
 				} else {
@@ -2431,7 +2401,7 @@ public class ExcelServiceImpl implements ExcelService {
 				}
 				
 				subRes.setTotalWeight(origin_inbound_list.get(i).getWeight());
-				subRes.setWeight(subRes.getTotalWeight() - subRes.getBoxCount());
+				subRes.setWeight((subRes.getTotalWeight()  == null ? 0d : subRes.getTotalWeight()) - (subRes.getBoxCount() == null ? 0d : subRes.getBoxCount()) );
 				subRes.setCbm(origin_inbound_list.get(i).getCbm());
 
 				sublist.add(subRes);

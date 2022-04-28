@@ -54,6 +54,9 @@ public interface InboundService {
 	List<InboundRes> getInboundByInboundMasterId(InboundReq inboundReq);
 	
 	@Transactional
+	List<InboundRes> getInboundByMasterId(Long id);
+	
+	@Transactional
 	InboundRes deleteInbound(InboundReq inboundReq);
 	@Transactional
 	InboundViewRes changeInbound(List<InboundRes> list);

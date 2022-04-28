@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.entity.customs.request;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -135,6 +136,7 @@ public class InboundReq {
 	List<InboundReq> inboundReqData;
 	
 	private Long inboundMasterId;
+	private List<Long> inboundMasterIds = new ArrayList<>();
 	
 	//담당자
 //	@JoinColumn(name = "manageId")

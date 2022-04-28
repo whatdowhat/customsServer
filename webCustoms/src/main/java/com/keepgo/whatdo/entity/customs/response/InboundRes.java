@@ -189,6 +189,7 @@ public class InboundRes {
 	private Double cbmSum;
 	private Double totalPriceSum;
 	
+	
 	private String freight;
 	
 	private int freightCode;

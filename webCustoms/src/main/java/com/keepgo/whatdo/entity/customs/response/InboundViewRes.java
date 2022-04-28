@@ -97,7 +97,15 @@ public class InboundViewRes {
 	private String boxCountSum;
 	private String weightSum;
 	private String cbmSum;
+	private Double itemCountSumD;
+	private Double boxCountSumD;
+	private Double weightSumD;
+	private Double cbmSumD;
 	private String totalPriceSum;	
+	private Double itemCountSumFinal;
+	private Double boxCountSumFinal;
+	private Double cbmSumFinal;
+	private Double weightSumFinal;
 	private String freight;
 	private int freightCode;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

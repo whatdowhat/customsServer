@@ -1,7 +1,9 @@
 package com.keepgo.whatdo.controller.Inbound;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,7 @@ import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
@@ -171,6 +174,43 @@ public class InboundController {
 		InboundViewRes result = _InboundService.changeInbound(result2);
 		return  result;
 	}
+	
+	@RequestMapping(value = "/test/changeInboundList", method = {RequestMethod.POST })
+	public InboundViewListRes changeInboundList(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception{
+		
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		Double itemCountSumFinal = new Double(0);
+		Double boxCountSumFinal = new Double(0);
+		Double cbmSumFinal = new Double(0);
+		Double weightSumFinal = new Double(0);
+		
+		
+		InboundViewListRes finalRes = new InboundViewListRes();
+		
+		List<Long> inboundMasterIdList = inboundReq.getInboundMasterIds();
+		List<InboundViewRes> finalList = new ArrayList<>();
+		
+		for(int i=0; i<inboundMasterIdList.size(); i++) {
+			List<InboundRes> list = _InboundService.getInboundByMasterId(inboundMasterIdList.get(i).longValue());
+			//출력모드
+			List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
+			InboundViewRes result = _InboundService.changeInbound(result2);
+			itemCountSumFinal=itemCountSumFinal+result.getItemCountSumD();
+			boxCountSumFinal=boxCountSumFinal+result.getBoxCountSumD();
+			cbmSumFinal=cbmSumFinal+result.getCbmSumD();
+			weightSumFinal=weightSumFinal+result.getWeightSumD();
+			finalList.add(result);
+		}
+		
+		finalRes.setInbounds(finalList);
+		finalRes.setItemCountSumFinal(decimalFormat2.format(itemCountSumFinal));
+		finalRes.setBoxCountSumFinal(decimalFormat2.format(boxCountSumFinal));
+		finalRes.setCbmSumFinal(decimalFormat.format(cbmSumFinal));
+		finalRes.setWeightSumFinal(decimalFormat2.format(weightSumFinal));
+		return  finalRes;
+	}
+	
 	
 	@RequestMapping(value = "/test/inboundExcelCommit", method = {RequestMethod.POST })
 

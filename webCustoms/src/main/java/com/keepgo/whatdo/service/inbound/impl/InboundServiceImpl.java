@@ -430,7 +430,140 @@ public class InboundServiceImpl implements InboundService {
 		
 		return result;
 	}
+	@Override
+	public List<InboundRes> getInboundByMasterId(Long id)  {
+		
+		
+		List<Integer> index = new ArrayList<Integer>();
+		InboundMaster inboundMaster=_inboundMasterRepository.findById(id).get();
+		List<InboundRes> result = _inboundRepository.findByInboundMasterId(id).stream()
+				.sorted(Comparator.comparing(Inbound::getOrderNo))
+				.map(item->{
+					
+					
+					
+					InboundRes rt = InboundRes.builder()
+				
+						
+						.id(item.getId())
+						.orderNoStr(item.getOrderNoStr())
+						.workDateStr(item.getWorkDateStr())
+						.jejil(item.getJejil())
+						.companyNm(item.getCompanyNm())
+						.marking(item.getMarking())
+						.korNm(item.getKorNm())
+						.itemCount(item.getItemCount())
+						.boxCount(item.getBoxCount())
+						.jejil(item.getJejil())
+						.weight(item.getWeight())
+						.cbm(item.getCbm())
+						.reportPrice(item.getReportPrice())
+						.memo1(item.getMemo1())
+						.itemNo(item.getItemNo())
+						.hsCode(item.getHsCode())
+						.orderNo(item.getOrderNo())
+						.memo2(item.getMemo2())
+						.memo3(item.getMemo3())
+						.totalPrice(item.getTotalPrice())
+						.engNm(item.getEngNm())
+//						.color(item.getColorCode())
+//						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
+//						.colorCode(item.getColor())
+						.inboundMasterId(item.getInboundMaster().getId())
+//						.coId(Long.valueOf(item.getCoId()))
+//						.coCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName())
+						
+						.build();
+						
+					if(item.getWorkDateStr()!=null && !(item.getWorkDateStr().replaceAll(" ", "").equals(""))) {
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						Date d=null;
+						try {
+							d=format.parse(item.getWorkDateStr());
+							String forViewWorkDateStr = DateFormatUtils.format(d, "MM월 dd일");
+							rt.setForViewWorkDateStr(forViewWorkDateStr);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					if(item.getCoId() != null) {
+						rt.setCoId(Long.valueOf(item.getCoId()));
+						for(int i=0; i<CoType.getList().size();i++) {
+							if(CoType.getList().get(i).getId() ==item.getCoId() ) {
+								rt.setCoCode(CoType.getList().get(i).getName());							
+							}
+						}
+//						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+					}
+					if(item.getColor() !=null ) {
+						rt.setColorId(Long.valueOf(item.getColor()));
+						for(int i=0; i<ColorType.getList().size();i++) {
+							if(ColorType.getList().get(i).getId() ==item.getColor() ) {
+								rt.setColorCode(ColorType.getList().get(i).getCode());
+								rt.setColor(ColorType.getList().get(i).getShowName());
+							}
+						}
+//						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+					}
+					if(index.size() == 0) {
+//						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
+//						rt.setFreight(item.getInboundMaster().getFreight());
+						rt.setFreight(FreightType.getList().stream().filter(type->type.getId() ==item.getInboundMaster().getFreight()).findFirst().get().getName());
+						rt.setFreightCode(item.getInboundMaster().getFreight());
+//						rt.setManagerNm("홍길동 과장");
+//						rt.setMasterCompanyNumber("sdfsadfSDF");)
 
+						if(item.getInboundMaster().getCompanyInfo()!=null) {
+							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+item.getInboundMaster().getCompanyInfo().getCoNum());
+							if(item.getInboundMaster().getManager()!=null) {
+								rt.setManagerNm(item.getInboundMaster().getManager());
+							}else {
+								rt.setManagerNm(item.getInboundMaster().getCompanyInfo().getManager());
+							}
+							
+							rt.setCompanyNm(item.getInboundMaster().getCompanyInfo().getCoNm());
+							
+						}
+//						rt.setMasterExport("EXLFLDKE FLAKD .D  VLA ");
+//						rt.setMasterExportAddr("DKEIPQ FPA V Z Z EIWWJF ALDLK BV C ALSLD FKS DLF SLDKF ");
+						if(item.getInboundMaster().getComExport()!=null) {
+							rt.setMasterExport(item.getInboundMaster().getComExport().getValue()+"\n"+item.getInboundMaster().getComExport().getValue2());	
+						}
+						
+						rt.setWorkDate(item.getInboundMaster().getWorkDate());
+//						String forViewWorkDate = DateFormatUtils.format(item.getInboundMaster().getWorkDate(), "MM월 dd일");
+//						rt.setForViewWorkDate(forViewWorkDate);
+						rt.setBlNo(item.getInboundMaster().getBlNo());
+					}
+//					if(index.size() == 1) {
+//						if(item.getInboundMaster().getCompanyInfo()!=null) {
+//							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNum());	
+//						}
+//						if(item.getInboundMaster().getComExport()!=null) {
+//							rt.setMasterExport(item.getInboundMaster().getComExport().getValue2());	
+//						}
+//					}
+					index.add(1);
+
+					
+					
+					return rt;
+						
+				})
+		.collect(Collectors.toList());
+		if(result.size()>0) {
+			result.get(0).setMasterCompanyNumber("123512351");
+
+			result.get(0).setBoxCountSum(result.stream().filter(t->t.getBoxCount()!= null).mapToDouble(t->t.getBoxCount()).sum());
+			result.get(0).setItemCountSum(result.stream().filter(t->t.getItemCount()!= null).mapToDouble(t->t.getItemCount()).sum());
+			result.get(0).setWeightSum(result.stream().filter(t->t.getWeight()!= null).mapToDouble(t->t.getWeight()).sum());
+			result.get(0).setCbmSum(result.stream().filter(t->t.getCbm()!= null).mapToDouble(t->t.getCbm()).sum());
+			result.get(0).setTotalPriceSum(result.stream().filter(t->t.getTotalPrice()!= null).mapToDouble(t->t.getTotalPrice()).sum());
+		}
+		
+		return result;
+	}
 	@Override
 	public InboundRes excelCommitInboundData(InboundReq inboundReq) {
 		int orderNo = 1;
@@ -871,7 +1004,10 @@ public class InboundServiceImpl implements InboundService {
 		
 		
 		InboundViewRes inboundViewRes= new InboundViewRes();
-		
+		inboundViewRes.setItemCountSumD(itemCountSum);
+		inboundViewRes.setBoxCountSumD(boxCountSum);
+		inboundViewRes.setCbmSumD(cbmSum);
+		inboundViewRes.setWeightSumD(weightSum);;
 		inboundViewRes.setItemCountSum(decimalFormat2.format(itemCountSum));
 		inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
 		inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));

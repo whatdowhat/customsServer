@@ -143,4 +143,18 @@ public class FinalInbound {
 	@JoinColumn(name = "id")
 	private User user;
 	// 공통 컬럼.
+	
+	@Column(name = "unbiDefine1")
+	private Integer unbiDefine1; //운비
+	
+	@Column(name = "unbiDefine2")
+	private Integer unbiDefine2; //픽업비
+	
+	@Column(name = "unbiDefine3")
+	private Integer unbiDefine3; //상하차비
+	
+	@Column(name = "unbiDefine4")
+	private Integer unbiDefine4; //기타잡비
+	
+	
 }

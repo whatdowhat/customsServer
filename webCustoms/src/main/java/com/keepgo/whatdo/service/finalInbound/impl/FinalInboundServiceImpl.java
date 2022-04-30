@@ -382,6 +382,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.gwanriYn(r.getGwanriYn())
 				.departDtStr(r.getDepartDtStr())
 				.title(r.getTitle())
+				.unbiDefine1(r.getUnbiDefine1())
+				.unbiDefine2(r.getUnbiDefine2())
+				.unbiDefine3(r.getUnbiDefine3())
+				.unbiDefine4(r.getUnbiDefine4())
 				
 				.containerSizeStr(r.getContainerSizeStr())
 				.weatherCondition(r.getWeatherCondition())

@@ -170,6 +170,11 @@ public class UnbiServiceImpl implements UnbiService {
 	
 		FinalInbound finalInbound = _finalInboundRepository.findById(unbiReq.getFinalInboundId()).get();
 		
+		finalInbound.setUnbiDefine1(unbiReq.getUnbiDefine1());
+		finalInbound.setUnbiDefine2(unbiReq.getUnbiDefine2());
+		finalInbound.setUnbiDefine3(unbiReq.getUnbiDefine3());
+		finalInbound.setUnbiDefine4(unbiReq.getUnbiDefine4());
+		
 		List<UnbiReq> list = unbiReq.getUnbiReqData();
 		for (int i = 0; i < list.size(); i++) {
 
@@ -179,7 +184,7 @@ public class UnbiServiceImpl implements UnbiService {
 			unbi.setOrderNo(list.get(i).getOrderNo());
 			unbi.setNo(0);
 			unbi.setWorkDateStr(list.get(i).getWorkDateStr());
-			unbi.setNoStr(list.get(i).getWorkDateStr());
+			unbi.setNoStr(list.get(i).getNoStr());
 			unbi.setCompanyNm(list.get(i).getCompanyNm());
 			unbi.setMarking(list.get(i).getMarking());
 			unbi.setKorNm(list.get(i).getKorNm());

@@ -1,44 +1,20 @@
 package com.keepgo.whatdo.controller.Common;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.expression.ParseException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,12 +34,9 @@ import com.keepgo.whatdo.define.FreightType;
 import com.keepgo.whatdo.define.FreightTypeRes;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.define.GubunTypeRes;
-import com.keepgo.whatdo.entity.BaseInfo;
-import com.keepgo.whatdo.entity.PageVO;
+import com.keepgo.whatdo.define.UnbiType;
+import com.keepgo.whatdo.define.UnbiTypeRes;
 import com.keepgo.whatdo.entity.customs.Common;
-import com.keepgo.whatdo.entity.customs.CommonMaster;
-import com.keepgo.whatdo.entity.customs.CompanyInfo;
-import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CommonMasterReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReqForExcelDownload;
@@ -72,7 +45,6 @@ import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 import com.keepgo.whatdo.util.CustomExcel;
-import com.keepgo.whatdo.viewEntity.CommonViewResponse;
 
 @RestController
 public class CommonController {
@@ -252,5 +224,12 @@ public class CommonController {
 			throws Exception, NumberFormatException {
 
 		return ColorType.getList();
+	}
+	@RequestMapping(value = "/common/unbiType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<UnbiTypeRes> UnbiType()
+			throws Exception, NumberFormatException {
+
+		return UnbiType.getList();
 	}
 }

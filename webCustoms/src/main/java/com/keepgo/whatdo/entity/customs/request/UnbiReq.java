@@ -43,6 +43,11 @@ public class UnbiReq {
 	private String workDateStr;
 	
 	
+	private Integer unbiDefine1; //운비
+	private Integer unbiDefine2; //픽업비
+	private Integer unbiDefine3; //상하차비
+	private Integer unbiDefine4; //기타잡비
+	
 	private String companyNm;
 	private String marking;
 	private String korNm;

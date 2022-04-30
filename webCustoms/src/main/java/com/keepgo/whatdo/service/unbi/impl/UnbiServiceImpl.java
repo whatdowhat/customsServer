@@ -99,13 +99,14 @@ public class UnbiServiceImpl implements UnbiService {
 		
 		FinalInbound finalInbound = _finalInboundRepository.findById(unbiReq.getFinalInboundId()).get();		
 		List<UnbiRes> result = _unbiRepository.findByFinalInboundId(unbiReq.getFinalInboundId()).stream()
-				.sorted(Comparator.comparing(Unbi::getId))
+				.sorted(Comparator.comparing(Unbi::getOrderNo))
 				.map(item->{
 					
 					
 					UnbiRes rt = UnbiRes.builder()
 				
 						.id(item.getId())
+ 						.orderNo(item.getOrderNo())
 						.no(0)
 						.noStr(item.getNoStr())
 						.workDateStr(item.getWorkDateStr())
@@ -173,9 +174,9 @@ public class UnbiServiceImpl implements UnbiService {
 		for (int i = 0; i < list.size(); i++) {
 
 
-			int index = i;
 
 			Unbi unbi = new Unbi();
+			unbi.setOrderNo(list.get(i).getOrderNo());
 			unbi.setNo(0);
 			unbi.setWorkDateStr(list.get(i).getWorkDateStr());
 			unbi.setNoStr(list.get(i).getWorkDateStr());

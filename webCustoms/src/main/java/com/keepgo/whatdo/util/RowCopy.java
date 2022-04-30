@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -21,58 +23,113 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 
 public class RowCopy {
 	public static void main(String[] args) throws Exception{
-		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
+//		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
+		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
 //		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\co\\FTA.xlsx"));
 		XSSFSheet sheet = workbook.getSheetAt(0);
 //        HSSFSheet sheet = workbook.getSheet("Sheet1");
         
         
-        copyRow(workbook, sheet, 22, 22+2);
-        copyRow(workbook, sheet, 23, 23+2);
+//        copyRow(workbook, sheet, 23, 23+2);
+//        copyRow(workbook, sheet, 24, 24+2);
+		
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+//		sheet.shiftRows(40, 133, 2);
+		
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+		sheet.shiftRows(23, sheet.getLastRowNum()+4, 1);
+//		workbook.setPrintArea(0, "$A$1:$M$10");
+//		workbook.setPrintArea(0, "$A$10:$M$20");
+		
+//		sheet.getPrintSetup().setFitWidth((short)1);
+//		sheet.getPrintSetup().setFitHeight((short)5);
+//		workbook.setPrintArea(0, "$A$1:$M$10");
+//		sheet.setAutobreaks(false);
+//		workbook.setPrintArea(0, null);
+//		
+//		workbook.setPrintArea(0, "$A$72:$M$134");
+//		sheet.getPrintSetup().setScale(new Short("10"));
+//		workbook.setPrintArea(0, 0, 4, 0, 5);
+//		workbook.setPrintArea(0, 20, 20, 0, 20);
 //        copyRow(workbook, sheet, 0, 1);
 //        copyRow(workbook, sheet, 0, 1);
 //        copyRow(workbook, sheet, 0, 1);
         
-        sheet.getMergedRegions().stream()
-        .forEach(item->{
-        	if(item.getNumberOfCells() == 23) {
-        		
-        		sheet.removeMergedRegion(item.getNumberOfCells());
-        	}
-//        	System.out.println("row infor :: "+item.getNumberOfCells());
-        	
-        });
+//        sheet.getMergedRegions().stream()
+//        .forEach(item->{
+//        	if(item.getNumberOfCells() == 23) {
+//        		
+//        		sheet.removeMergedRegion(item.getNumberOfCells());
+//        	}
+////        	System.out.println("row infor :: "+item.getNumberOfCells());
+//        	
+//        });
 //        sheet.getRow(23).forEach(item->{
 //        	System.out.println(item.getStringCellValue());
 //        	
 //        });
-        for(int i=0; i<sheet.getMergedRegions().size();i++) {
-        	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
-        		sheet.removeMergedRegion(i);
-        		sheet.removeMergedRegion(i);
-        		sheet.removeMergedRegion(i);
-        	}
-        }
-       sheet.shiftRows(24, sheet.getLastRowNum(), -1);
-
-       for(int i=0; i<sheet.getMergedRegions().size();i++) {
-       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
-    		sheet.removeMergedRegion(i);
-    		sheet.removeMergedRegion(i);
-    		sheet.removeMergedRegion(i);
-       	}
-       }
-       sheet.shiftRows(24, sheet.getLastRowNum(), -1);
+//        for(int i=0; i<sheet.getMergedRegions().size();i++) {
+//        	if(sheet.getMergedRegion(i).getFirstRow() == 54) {
+//        		sheet.removeMergedRegion(i);
+//        		sheet.removeMergedRegion(i);
+//        		sheet.removeMergedRegion(i);
+//        	}
+//        }
+	       for(int i=0; i<sheet.getMergedRegions().size();i++) {
+	       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
+	       		sheet.removeMergedRegion(i);
+	       		sheet.removeMergedRegion(i);
+	       		sheet.removeMergedRegion(i);
+	       	}
+	       }
+	      sheet.shiftRows(23, sheet.getLastRowNum(), -1);
+	       for(int i=0; i<sheet.getMergedRegions().size();i++) {
+		       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
+		       		sheet.removeMergedRegion(i);
+		       		sheet.removeMergedRegion(i);
+		       		sheet.removeMergedRegion(i);
+		       	}
+		       }
+		      sheet.shiftRows(23, sheet.getLastRowNum(), -1);
+		       for(int i=0; i<sheet.getMergedRegions().size();i++) {
+			       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
+			       		sheet.removeMergedRegion(i);
+			       		sheet.removeMergedRegion(i);
+			       		sheet.removeMergedRegion(i);
+			       	}
+			       }
+			      sheet.shiftRows(23, sheet.getLastRowNum(), -1);
+//
+//       for(int i=0; i<sheet.getMergedRegions().size();i++) {
+//       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
+//    		sheet.removeMergedRegion(i);
+//    		sheet.removeMergedRegion(i);
+//    		sheet.removeMergedRegion(i);
+//       	}
+//       }
+//       sheet.shiftRows(24, sheet.getLastRowNum(), -1);
       
-//       File f = Paths.get("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\a1.png").toFile();
-//       
-//       FileInputStream fileInputStream = new FileInputStream(f);
-//       System.out.println(fileInputStream.available());
-//       
-//       long lengthh = f.length();
-//       byte[] picData = new byte[ (int)f.length()];
+       File f = Paths.get("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\a1.png").toFile();
        
+       FileInputStream fileInputStream = new FileInputStream(f);
+       System.out.println(fileInputStream.available());
+       
+       long lengthh = f.length();
+       byte[] picData = new byte[ (int)f.length()];
      
+   
        InputStream inputStream = RowCopy.class.getClassLoader().getResourceAsStream("static//inpack//CHAOCH.png");
        byte[] inputImage =  IOUtils.toByteArray(inputStream);
        int indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
@@ -80,19 +137,24 @@ public class RowCopy {
        XSSFClientAnchor anchor = new XSSFClientAnchor();
 
        
-       drawing.createPicture(anchor, indx);
-       
+//       drawing.createPicture(anchor, indx);
+       Picture pict = drawing.createPicture(anchor, indx);
+       double scale = 0.4;
        sheet.rowIterator().forEachRemaining(row ->{
     	   row.cellIterator().forEachRemaining(cell->{
     		   
     		   try {
     			   String value = cell.getStringCellValue();
-    			   if(value.equals("Signed by") && row.getRowNum() <70 ) {
+    			   if(value.equals("${image}") && row.getRowNum() <70 ) {
     				   
     			       anchor.setCol1(cell.getColumnIndex());
-    			       anchor.setCol2(cell.getColumnIndex()+5);
-    			       anchor.setRow1(cell.getRowIndex()-6);
-    			       anchor.setRow2(cell.getRowIndex());
+//    			       anchor.setCol2(cell.getColumnIndex()+5);
+    			       anchor.setRow1(cell.getRowIndex());
+//    			       drawing.resi
+    			       pict.resize();
+    			       pict.resize(scale);
+    			       cell.setCellValue("");
+//    			       anchor.setRow2(cell.getRowIndex());
     				   
     			   }
 			} catch (Exception e) {
@@ -107,22 +169,24 @@ public class RowCopy {
        indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
        drawing = sheet.createDrawingPatriarch();
        XSSFClientAnchor anchor2 = new XSSFClientAnchor();
-
        
-       drawing.createPicture(anchor2, indx);
+       Picture pict2 = drawing.createPicture(anchor2, indx);
+//       drawing.createPicture(anchor2, indx);
        
        sheet.rowIterator().forEachRemaining(row ->{
     	   row.cellIterator().forEachRemaining(cell->{
     		   
     		   try {
     			   String value = cell.getStringCellValue();
-    			   if(value.equals("Signed by") && row.getRowNum() >70) {
+    			   if(value.equals("${image}") && row.getRowNum() >70) {
     				   
     				   anchor2.setCol1(cell.getColumnIndex());
-    				   anchor2.setCol2(cell.getColumnIndex()+5);
-    				   anchor2.setRow1(cell.getRowIndex()-8);
-    				   anchor2.setRow2(cell.getRowIndex());
-    				   
+//    				   anchor2.setCol2(cell.getColumnIndex()+5);
+    				   anchor2.setRow1(cell.getRowIndex());
+//    				   anchor2.setRow2(cell.getRowIndex());
+    				   pict2.resize();
+    			       pict2.resize(scale);
+    			       cell.setCellValue("");
     			   }
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -143,11 +207,12 @@ public class RowCopy {
     	XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
 
         // If the row exist in destination, push down all rows by 1 else create a new row
-        if (newRow != null) {
-            worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
-        } else {
-            newRow = worksheet.createRow(destinationRowNum);
-        }
+//        if (newRow != null) {
+//            worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+//        } else {
+//            newRow = worksheet.createRow(destinationRowNum);
+//        }
+        worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
 //        worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
         newRow = worksheet.createRow(destinationRowNum);
         // Loop through source columns to add to new row

@@ -3,6 +3,7 @@ package com.keepgo.whatdo.controller.migration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +19,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
@@ -30,6 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -39,19 +42,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgo.whatdo.define.DocumentType;
+import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
+import com.keepgo.whatdo.entity.customs.FileUpload;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
+import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
+import com.keepgo.whatdo.repository.FileUploadRepository;
 
 @RestController
 public class MigrationController {
@@ -75,8 +82,123 @@ public class MigrationController {
 	@Autowired
 	ResourceLoader resourceLoader;
 	
+	@Value("${fileupload.root}")
+	String uploadRoot;
+	
+	@Autowired
+	FileUploadRepository _fileUploadRepository;
 	static final Logger log = LoggerFactory.getLogger(MigrationController.class);
 
+	
+	@RequestMapping(value = "/migration/common/image", method = { RequestMethod.POST })
+	public boolean commonImageUpload(ExcelFTARes excelFTARes,HttpServletResponse response) throws Exception {
+
+		
+		
+		
+		URL url =  MigrationController.class.getClassLoader().getResource("static/common/image");
+		File file = new File(url.getFile());
+		File[] files = file.listFiles();
+		for(int i=0; i<files.length;i++) {
+//			System.out.println(files[i].getName().split("\\.")[0]);
+			
+			
+			Common common = _commonRepository.findByValue3(files[i].getName().split("\\.")[0]);
+//			String path = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();		
+			
+//			File deleteFile = new File(path);
+//		    deleteFile.delete();
+			
+			
+			
+			StringBuilder strPath = new StringBuilder(uploadRoot);
+			//파일생성 폴더 이름은 쉬퍼코드
+			strPath.append(File.separatorChar+common.getValue3());
+			//파일생성 폴더 이름은 value값으로 
+			strPath.append(File.separatorChar+String.valueOf(FileType.K.getId()) ); //10
+			//stringBuilder.append(File.separatorChar+fileUploadReq.getPath3());
+			//c:/Customs/212351251/A/filename.xml
+//			String path = root+"a"; //폴더 경로
+			
+			File Folder = new File(strPath.toString());
+			
+			
+			// 해당 디렉토리가 없을경우 디렉토리를 생성
+			if (!Folder.exists()) {
+				try{
+				    Folder.mkdirs(); //폴더 생성
+//				    System.out.println("폴더가 생성되었습니다.");
+			        } 
+			        catch(Exception e){
+				    e.getStackTrace();
+				}        
+		         }else {
+//				System.out.println("이미 폴더가 생성되어 있습니다.");
+			}
+			String temRoot = strPath.toString();
+			strPath.append(File.separatorChar+files[i].getName() ); //10
+			Folder = new File(strPath.toString());
+			FileUtils.copyFile(files[i], Folder);
+			
+
+			if(common.getFileUpload() != null) {
+				FileUpload fileupload = _fileUploadRepository.findById(common.getFileUpload().getId()).get();
+				fileupload.setCommon(common);
+				//todo 사용자 세션 아이디로 수정해야됨.
+				fileupload.setUser(User.builder().id(new Long(1)).build());
+				
+				fileupload.setFileType(Integer.valueOf(FileType.K.getId()));
+				
+				fileupload.setFileName1(files[i].getName());
+				fileupload.setRoot(uploadRoot);
+				fileupload.setCreateDt(new Date());
+				fileupload.setUpdateDt(new Date());
+				fileupload.setFileSize(Integer.valueOf((int) files[i].length()));
+				fileupload.setPath1(common.getValue3());
+				fileupload.setPath2(String.valueOf(FileType.K.getId()));
+				fileupload.setPath3(files[i].getName());
+				fileupload.setRoot(temRoot);
+				fileupload.setIsUsing(true);
+				
+				
+				_fileUploadRepository.save(fileupload);
+			}else {
+				FileUpload fileupload = new FileUpload();
+				fileupload.setCommon(common);
+				//todo 사용자 세션 아이디로 수정해야됨.
+				fileupload.setUser(User.builder().id(new Long(1)).build());
+				
+				fileupload.setFileType(Integer.valueOf(FileType.K.getId()));
+				
+				fileupload.setFileName1(files[i].getName());
+				fileupload.setRoot(uploadRoot);
+				fileupload.setCreateDt(new Date());
+				fileupload.setUpdateDt(new Date());
+				fileupload.setFileSize(Integer.valueOf((int) files[i].length()));
+				fileupload.setPath1(common.getValue3());
+				fileupload.setPath2(String.valueOf(FileType.K.getId()));
+				fileupload.setPath3(files[i].getName());
+				fileupload.setRoot(temRoot);
+				fileupload.setIsUsing(true);
+				_fileUploadRepository.save(fileupload);
+			}
+			
+			
+			FileUpload uploadFile = _fileUploadRepository.findByCommonId(common.getId());
+			common.setFileUpload(uploadFile);
+			_commonRepository.save(common);
+			
+			
+			
+		}
+		
+		
+		
+
+		
+		return true;
+	}
+	
 	@RequestMapping(value = "/migration/common/shipper", method = { RequestMethod.POST })
 	public boolean shipper(ExcelFTARes excelFTARes,HttpServletResponse response) throws Exception {
 

@@ -47,6 +47,9 @@ public class Unbi {
 	private Long id;
 	
 	
+	@Column(name = "orderNo")
+	private int orderNo;
+	
 	@Column(name = "no")
 	private int no;
 	

@@ -389,7 +389,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.updateDt(r.getUpdateDt())
 				.build();
 		if(r.getInboundMasters().size()>0){
-			dto.setInboundMasters(r.getInboundMasters().stream().map(sub_item -> {
+			dto.setInboundMasters(r.getInboundMasters().stream()
+					
+					.sorted(Comparator.comparing(FinalInboundInboundMaster::getPreperOrder ))
+					.map(sub_item -> {
 				Map<String, Object> f = new HashMap<>();
 //				f.put("workDate", sub_item.getInboundMaster().getWorkDate());
 				if(sub_item.getInboundMaster().getWorkDate()!= null) {
@@ -489,7 +492,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			
 			finalInboundInboundMaster.setFinalInbound(finalInbound);
 			finalInboundInboundMaster.setInboundMaster(target);
-			finalInboundInboundMaster.setPreperOrder(0);
+			finalInboundInboundMaster.setPreperOrder(j+1);
 			
 
 			_finalInboundInboundMasterRepository.save(finalInboundInboundMaster);

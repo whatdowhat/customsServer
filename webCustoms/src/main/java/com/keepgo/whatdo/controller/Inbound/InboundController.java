@@ -196,10 +196,10 @@ public class InboundController {
 			//출력모드
 			List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
 			InboundViewRes result = _InboundService.changeInbound(result2);
-			itemCountSumFinal=itemCountSumFinal+result.getItemCountSumD();
-			boxCountSumFinal=boxCountSumFinal+result.getBoxCountSumD();
-			cbmSumFinal=cbmSumFinal+result.getCbmSumD();
-			weightSumFinal=weightSumFinal+result.getWeightSumD();
+			itemCountSumFinal=itemCountSumFinal+ (result.getItemCountSumD() == null ? 0d : result.getItemCountSumD());
+			boxCountSumFinal=boxCountSumFinal+ ( result.getBoxCountSumD() == null ? 0d : result.getBoxCountSumD());
+			cbmSumFinal=cbmSumFinal+ (result.getCbmSumD() == null ? 0d : result.getCbmSumD());
+			weightSumFinal=weightSumFinal+ (result.getWeightSumD() == null ? 0d : result.getWeightSumD());
 			finalList.add(result);
 		}
 		

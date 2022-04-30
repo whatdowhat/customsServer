@@ -34,6 +34,7 @@ public class UnbiReq {
 
 	
 	private Long id;
+	private int orderNo;
 	
 	private int no;
 	private String noStr;

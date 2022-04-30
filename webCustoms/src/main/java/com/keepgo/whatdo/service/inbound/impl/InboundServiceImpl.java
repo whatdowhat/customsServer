@@ -995,142 +995,148 @@ public class InboundServiceImpl implements InboundService {
 	public InboundViewRes changeInbound(List<InboundRes> list)  {
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
-		Double itemCountSum=list.get(0).getItemCountSum();
-		Double boxCountSum=list.get(0).getBoxCountSum();
-		Double weightSum=list.get(0).getWeightSum();
-		Double cbmSum = list.get(0).getCbmSum();
-		Double totalPriceSum = list.get(0).getTotalPriceSum();		
-		
-		
-		
 		InboundViewRes inboundViewRes= new InboundViewRes();
-		inboundViewRes.setItemCountSumD(itemCountSum);
-		inboundViewRes.setBoxCountSumD(boxCountSum);
-		inboundViewRes.setCbmSumD(cbmSum);
-		inboundViewRes.setWeightSumD(weightSum);;
-		inboundViewRes.setItemCountSum(decimalFormat2.format(itemCountSum));
-		inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
-		inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
-		inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
-		inboundViewRes.setTotalPriceSum(decimalFormat.format(totalPriceSum));
-		inboundViewRes.setFreight(list.get(0).getFreight());
-		inboundViewRes.setManagerNm(list.get(0).getManagerNm());
-		
-		
-		inboundViewRes.setInbounds(list.stream().map(sub_item -> {
-				Map<String, Object> f = new HashMap<>();
-//				
-				if(sub_item.getForViewWorkDate()!= null) {
-					f.put("forViewWorkDate", sub_item.getForViewWorkDate());
-				}
-				if(sub_item.getForViewWorkDateStr()!= null) {
-					f.put("forViewWorkDateStr", sub_item.getForViewWorkDateStr());
-				}
-				if(sub_item.getOrderNoStr()!= null) {
-					f.put("orderNoStr", sub_item.getOrderNoStr());
-				}
-				if(sub_item.getWorkDateStr()!= null) {
-					f.put("workDateStr", sub_item.getWorkDateStr());
-				}
-				if(sub_item.getCompanyNm()!= null) {
-					f.put("companyNm", sub_item.getCompanyNm());
-				}
-				if( sub_item.getMasterExport()!= null) {
-					f.put("masterExport", sub_item.getMasterExport());
-				}
-				if( sub_item.getMasterExportAddr()!= null) {
-					f.put("masterExportAddr", sub_item.getMasterExportAddr());
-				}
-				if( sub_item.getMasterCompany()!= null) {
-					f.put("masterCompany", sub_item.getMasterCompany());
-				}
-				if( sub_item.getMasterCompanyNumber()!= null) {
-					f.put("masterCompanyNumber", sub_item.getMasterCompanyNumber());
-				}
-				if( sub_item.getBlNo()!= null) {
-					f.put("blNo", sub_item.getBlNo());
-				}
+		if(list.size() > 0) {
+			Double itemCountSum= (list.get(0).getItemCountSum() == null ? 0d :list.get(0).getItemCountSum());
+			Double boxCountSum=(list.get(0).getBoxCountSum());
+			Double weightSum=(list.get(0).getWeightSum() == null ? 0d : list.get(0).getWeightSum());
+			Double cbmSum = (list.get(0).getCbmSum() == null ? 0d : list.get(0).getCbmSum());
+			Double totalPriceSum = (list.get(0).getTotalPriceSum() == null ? 0d :list.get(0).getTotalPriceSum()) ;		
 			
-				f.put("orderNo", sub_item.getOrderNo());
-				f.put("korNm", sub_item.getKorNm());
-				f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
-				if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
-					f.put("boxCount",  "0");
-				}else {
-					f.put("boxCount",  decimalFormat2.format(sub_item.getBoxCount()));	
-				}
+			
+			
+			
+			inboundViewRes.setItemCountSumD(itemCountSum);
+			inboundViewRes.setBoxCountSumD(boxCountSum);
+			inboundViewRes.setCbmSumD(cbmSum);
+			inboundViewRes.setWeightSumD(weightSum);;
+			inboundViewRes.setItemCountSum(decimalFormat2.format(itemCountSum));
+			inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
+			inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
+			inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
+			inboundViewRes.setTotalPriceSum(decimalFormat.format(totalPriceSum));
+			inboundViewRes.setFreight(list.get(0).getFreight());
+			inboundViewRes.setManagerNm(list.get(0).getManagerNm());
+			
+			
+			inboundViewRes.setInbounds(list.stream().map(sub_item -> {
+					Map<String, Object> f = new HashMap<>();
+//					
+					if(sub_item.getForViewWorkDate()!= null) {
+						f.put("forViewWorkDate", sub_item.getForViewWorkDate());
+					}
+					if(sub_item.getForViewWorkDateStr()!= null) {
+						f.put("forViewWorkDateStr", sub_item.getForViewWorkDateStr());
+					}
+					if(sub_item.getOrderNoStr()!= null) {
+						f.put("orderNoStr", sub_item.getOrderNoStr());
+					}
+					if(sub_item.getWorkDateStr()!= null) {
+						f.put("workDateStr", sub_item.getWorkDateStr());
+					}
+					if(sub_item.getCompanyNm()!= null) {
+						f.put("companyNm", sub_item.getCompanyNm());
+					}
+					if( sub_item.getMasterExport()!= null) {
+						f.put("masterExport", sub_item.getMasterExport());
+					}
+					if( sub_item.getMasterExportAddr()!= null) {
+						f.put("masterExportAddr", sub_item.getMasterExportAddr());
+					}
+					if( sub_item.getMasterCompany()!= null) {
+						f.put("masterCompany", sub_item.getMasterCompany());
+					}
+					if( sub_item.getMasterCompanyNumber()!= null) {
+						f.put("masterCompanyNumber", sub_item.getMasterCompanyNumber());
+					}
+					if( sub_item.getBlNo()!= null) {
+						f.put("blNo", sub_item.getBlNo());
+					}
 				
-				if(sub_item.getWeight() == null) {
-					f.put("weight",  "0");
-				}else {
-					f.put("weight", decimalFormat2.format(sub_item.getWeight()));	
-				}
-				
-				if(sub_item.getCbm() == null) {
-					f.put("cbm",  "0");
-				}else {
-					f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
-				}
-				
-				
-				
-				f.put("reportPrice", decimalFormat.format(sub_item.getReportPrice()));
-				f.put("totalPrice", decimalFormat.format(sub_item.getTotalPrice()));
-				if(sub_item.getMemo1()!= null) {
-					f.put("memo1", sub_item.getMemo1());
-				}
-				if(sub_item.getMemo2()!= null) {
-					f.put("memo2", sub_item.getMemo2());
-				}
-				if(sub_item.getMemo3()!= null) {
-					f.put("memo3", sub_item.getMemo3());
-				}
-							
-				f.put("itemNo", sub_item.getItemNo());
-				f.put("hsCode", sub_item.getHsCode());
-				if(sub_item.getCoCode()!= null) {
-					f.put("coCode", sub_item.getCoCode());
-				}
-				if(sub_item.getColorCode()!= null) {
-					f.put("colorCode", sub_item.getColorCode());
-				}
-				if(sub_item.getMarking()!= null) {
-					f.put("marking", sub_item.getMarking());
-				}
-				if(sub_item.getJejil()!= null) {
-					f.put("jejil", sub_item.getJejil());
-				}
-				
-				
-				f.put("engNm", sub_item.getEngNm());
-				
-				f.put("companyNmSpan", sub_item.getCompanyNmSpan());
-				f.put("markingSpan", sub_item.getMarkingSpan());
-				f.put("korNmSpan", sub_item.getKorNmSpan());
-				f.put("itemCountSpan", sub_item.getItemCountSpan());
-				f.put("boxCountSpan", sub_item.getBoxCountSpan());
-				f.put("weightSpan", sub_item.getWeightSpan());
-				f.put("cbmSpan", sub_item.getCbmSpan());
-				f.put("reportPriceSpan", sub_item.getReportPriceSpan());
-				f.put("memo1Span", sub_item.getMemo1Span());
-				f.put("memo2Span", sub_item.getMemo2Span());
-				f.put("memo3Span", sub_item.getMemo3Span());
-				f.put("itemNoSpan", sub_item.getItemNoSpan());
-				f.put("hsCodeSpan", sub_item.getHsCodeSpan());
-				f.put("workDateSpan", sub_item.getWorkDateSpan());
-				f.put("blNoSpan", sub_item.getBlNoSpan());
-				f.put("masterCompanySpan", sub_item.getMasterCompanySpan());
-				f.put("masterExportSpan", sub_item.getMasterExportSpan());
-				f.put("exportNmSpan", sub_item.getExportNmSpan());
-				f.put("coCodeSpan", sub_item.getCoCodeSpan());
-				f.put("coIdSpan", sub_item.getCoIdSpan());
-				f.put("totalPriceSpan", sub_item.getTotalPriceSpan());
-				f.put("engNmSpan", sub_item.getEngNmSpan());
-				f.put("workDateStrSpan", sub_item.getWorkDateStrSpan());
-				f.put("orderNoStrSpan", sub_item.getOrderNoStrSpan());
-				f.put("jejelSpan", sub_item.getJejilSpan());
-				return f;
-			}).collect(Collectors.toList()));
+					f.put("orderNo", sub_item.getOrderNo());
+					f.put("korNm", sub_item.getKorNm());
+					f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
+					if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
+						f.put("boxCount",  "0");
+					}else {
+						f.put("boxCount",  decimalFormat2.format(sub_item.getBoxCount()));	
+					}
+					
+					if(sub_item.getWeight() == null) {
+						f.put("weight",  "0");
+					}else {
+						f.put("weight", decimalFormat2.format(sub_item.getWeight()));	
+					}
+					
+					if(sub_item.getCbm() == null) {
+						f.put("cbm",  "0");
+					}else {
+						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+					}
+					
+					
+					
+					f.put("reportPrice", decimalFormat.format(sub_item.getReportPrice()));
+					f.put("totalPrice", decimalFormat.format(sub_item.getTotalPrice()));
+					if(sub_item.getMemo1()!= null) {
+						f.put("memo1", sub_item.getMemo1());
+					}
+					if(sub_item.getMemo2()!= null) {
+						f.put("memo2", sub_item.getMemo2());
+					}
+					if(sub_item.getMemo3()!= null) {
+						f.put("memo3", sub_item.getMemo3());
+					}
+								
+					f.put("itemNo", sub_item.getItemNo());
+					f.put("hsCode", sub_item.getHsCode());
+					if(sub_item.getCoCode()!= null) {
+						f.put("coCode", sub_item.getCoCode());
+					}
+					if(sub_item.getColorCode()!= null) {
+						f.put("colorCode", sub_item.getColorCode());
+					}
+					if(sub_item.getMarking()!= null) {
+						f.put("marking", sub_item.getMarking());
+					}
+					if(sub_item.getJejil()!= null) {
+						f.put("jejil", sub_item.getJejil());
+					}
+					
+					
+					f.put("engNm", sub_item.getEngNm());
+					
+					f.put("companyNmSpan", sub_item.getCompanyNmSpan());
+					f.put("markingSpan", sub_item.getMarkingSpan());
+					f.put("korNmSpan", sub_item.getKorNmSpan());
+					f.put("itemCountSpan", sub_item.getItemCountSpan());
+					f.put("boxCountSpan", sub_item.getBoxCountSpan());
+					f.put("weightSpan", sub_item.getWeightSpan());
+					f.put("cbmSpan", sub_item.getCbmSpan());
+					f.put("reportPriceSpan", sub_item.getReportPriceSpan());
+					f.put("memo1Span", sub_item.getMemo1Span());
+					f.put("memo2Span", sub_item.getMemo2Span());
+					f.put("memo3Span", sub_item.getMemo3Span());
+					f.put("itemNoSpan", sub_item.getItemNoSpan());
+					f.put("hsCodeSpan", sub_item.getHsCodeSpan());
+					f.put("workDateSpan", sub_item.getWorkDateSpan());
+					f.put("blNoSpan", sub_item.getBlNoSpan());
+					f.put("masterCompanySpan", sub_item.getMasterCompanySpan());
+					f.put("masterExportSpan", sub_item.getMasterExportSpan());
+					f.put("exportNmSpan", sub_item.getExportNmSpan());
+					f.put("coCodeSpan", sub_item.getCoCodeSpan());
+					f.put("coIdSpan", sub_item.getCoIdSpan());
+					f.put("totalPriceSpan", sub_item.getTotalPriceSpan());
+					f.put("engNmSpan", sub_item.getEngNmSpan());
+					f.put("workDateStrSpan", sub_item.getWorkDateStrSpan());
+					f.put("orderNoStrSpan", sub_item.getOrderNoStrSpan());
+					f.put("jejelSpan", sub_item.getJejilSpan());
+					return f;
+				}).collect(Collectors.toList()));
+		}else {
+			
+		}
+
 		
 			
 		 return inboundViewRes;

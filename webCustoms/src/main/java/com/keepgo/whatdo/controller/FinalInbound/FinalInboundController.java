@@ -148,10 +148,6 @@ public class FinalInboundController {
 	@ResponseBody
 	public boolean excelRead(MultipartFile file, String test, HttpServletRequest req)
 			throws Exception, NumberFormatException {
-		System.out.println("here!");
-		System.out.println(file);
-		System.out.println(test);
-		
 
 		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 

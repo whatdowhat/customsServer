@@ -33,7 +33,7 @@ public class UnbiRes {
 
 	
 	private Long id;
-	
+	private int orderNo;
 	private int no;
 	private String noStr;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

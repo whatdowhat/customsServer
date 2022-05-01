@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.controller.FinalInbound;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,23 @@ public class FinalInboundSpecification {
 
 				if (conditino.get(key) == null || conditino.get(key) == "") {
 				} else {
-					predicate.add(builder.like(root.get("incomeDt"),"%" + conditino.get(key) +"%"));
+					
+//					predicate.add(builder.like(root.get("incomeDt"),"%" + conditino.get(key) +"%"));
+					
+					String date[] = ((String) conditino.get(key)).split("-");
+//					String prev = date[1];
+					Integer prev = Integer.valueOf(date[1]) -1;
+					Integer next = Integer.valueOf(date[1]) +1;
+					
+					DecimalFormat format = new DecimalFormat("00");
+//					System.out.println(format.format(prev));
+//					System.out.println(format.format(next));
+//					predicate.add(builder.like(root.get("incomeDt"),"%" + date[0]+"-"+format.format(prev) +"%"));
+//					predicate.add(builder.like(root.get("incomeDt"),"%" + date[0]+"-"+format.format(next) +"%"));
+					builder.or(builder.like(root.get("incomeDt"),"%" + conditino.get(key) +"%"));
+					builder.or(builder.like(root.get("incomeDt"),"%" + date[0]+"-"+format.format(prev) +"%"));
+					builder.or(builder.like(root.get("incomeDt"),"%" + date[0]+"-"+format.format(next) +"%"));
+					
 //					predicate.add(builder.equal(root.get("incomeDt"),conditino.get(key)));
 				}
 

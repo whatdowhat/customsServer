@@ -1780,109 +1780,110 @@ public class ExcelServiceImpl implements ExcelService {
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			workbook.setSheetName(0, excelInpackRes.getFileNm());
-
-			XSSFSheet sheet = workbook.getSheetAt(0);
-
 			Collections.reverse(excelInpackRes.getSubItem());
-			// item add
-			// 문서마다 시작하는 숫자가 고정
-			int startCount = 23;
-			for (int i = 0; i < excelInpackRes.getSubItem().size(); i++) {
-
-				shiftRowForInpack(startCount, sheet, "D", excelInpackRes.getSubItem().get(i), workbook, "1");
-				shiftRowForInpack(startCount + 1, sheet, "BL", excelInpackRes.getSubItem().get(i), workbook, "1");
-
-			}
-
-			int startCount2 = 61 + (excelInpackRes.getSubItem().size() * 2);
-			for (int i = 0; i < excelInpackRes.getSubItem().size(); i++) {
-
-				shiftRowForInpack(startCount2, sheet, "D", excelInpackRes.getSubItem().get(i), workbook, "2");
-				shiftRowForInpack(startCount2 + 1, sheet, "BL", excelInpackRes.getSubItem().get(i), workbook, "2");
-
-			}
+			//시트 수
+			int sheetCn = workbook.getNumberOfSheets();
 			
-			// data 치환
-			chageDataforInpack(sheet, excelInpackRes, workbook);
-
-			// 도장이미지 삽입
-			InboundMaster inboundMaster = _inboundMasterRepository.findById(excelInpackRes.getInboundMasterId()).get();
-			Common common = inboundMaster.getComExport();
-			if(common.getFileUpload()==null) {
+			for(int cn=0; cn<sheetCn; cn++) {
+				String pageNo = "";
+				pageNo= String.valueOf(cn+1);
 				
-			}else {
-				String imagePath = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
-				Path filePath = Paths.get(imagePath);
-				Resource resources = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
-				int indx=0;
+				XSSFSheet sheet = workbook.getSheetAt(cn);
 
-			    String fileTale=FilenameUtils.getExtension(common.getFileUpload().getPath3());    
-				 
-				 byte[] inputImage =  IOUtils.toByteArray(resources.getInputStream());
-			     if(fileTale.equals("png")) {
-			    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
-			     }else if(fileTale.equals("bmp")) {
-			    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_BMP);
-			     }else if(fileTale.equals("jpg")) {
-			    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_JPEG);
-			     }
-				 
-			       XSSFDrawing drawing = sheet.createDrawingPatriarch();
-			       XSSFClientAnchor anchor = new XSSFClientAnchor();
+				
+				// item add
+				// 문서마다 시작하는 숫자가 고정
+				int startCount = 23;
+				for (int i = 0; i < excelInpackRes.getSubItem().size(); i++) {
 
-			       
-			       drawing.createPicture(anchor, indx);
-			       
-			       sheet.rowIterator().forEachRemaining(row ->{
-			    	   row.cellIterator().forEachRemaining(cell->{
-			    		   
-			    		   try {
-			    			   String value = cell.getStringCellValue();
-			    			   if(value.equals("Signed by") && row.getRowNum() <70 ) {
-			    				   
-			    			       anchor.setCol1(cell.getColumnIndex());
-			    			       anchor.setCol2(cell.getColumnIndex()+5);
-			    			       anchor.setRow1(cell.getRowIndex()-6);
-			    			       anchor.setRow2(cell.getRowIndex());
-			    				   
-			    			   }
-						} catch (Exception e) {
-							// TODO: handle exception
-						}
-			    		   
-			    	   });
-			       });
-			       
-//			       inputStream = RowCopy.class.getClassLoader().getResourceAsStream(imagePath);
-			       
-//			       indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
-			       drawing = sheet.createDrawingPatriarch();
-			       XSSFClientAnchor anchor2 = new XSSFClientAnchor();
+					shiftRowForInpack(startCount, sheet, "D", excelInpackRes.getSubItem().get(i), workbook, pageNo);
+					shiftRowForInpack(startCount + 1, sheet, "BL", excelInpackRes.getSubItem().get(i), workbook, pageNo);
 
-			       
-			       drawing.createPicture(anchor2, indx);
-			       
-			       sheet.rowIterator().forEachRemaining(row ->{
-			    	   row.cellIterator().forEachRemaining(cell->{
-			    		   
-			    		   try {
-			    			   String value = cell.getStringCellValue();
-			    			   if(value.equals("Signed by") && row.getRowNum() >70) {
-			    				   
-			    				   anchor2.setCol1(cell.getColumnIndex());
-			    				   anchor2.setCol2(cell.getColumnIndex()+5);
-			    				   anchor2.setRow1(cell.getRowIndex()-6);
-			    				   anchor2.setRow2(cell.getRowIndex());
-			    				   
-			    			   }
-						} catch (Exception e) {
-							// TODO: handle exception
-						}
-			    		   
-			    	   });
-			       });
+				}
+
+				
+				
+				// data 치환
+				chageDataforInpack(sheet, excelInpackRes, workbook);
+
+				// 도장이미지 삽입
+				InboundMaster inboundMaster = _inboundMasterRepository.findById(excelInpackRes.getInboundMasterId()).get();
+				Common common = inboundMaster.getComExport();
+				if(common.getFileUpload()==null) {
+					
+				}else {
+					String imagePath = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
+					Path filePath = Paths.get(imagePath);
+					Resource resources = new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
+					int indx=0;
+
+				    String fileTale=FilenameUtils.getExtension(common.getFileUpload().getPath3());    
+					 
+					 byte[] inputImage =  IOUtils.toByteArray(resources.getInputStream());
+				     if(fileTale.equals("png")) {
+				    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
+				     }else if(fileTale.equals("bmp")) {
+				    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_BMP);
+				     }else if(fileTale.equals("jpg")) {
+				    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_JPEG);
+				     }
+					 
+				       XSSFDrawing drawing = sheet.createDrawingPatriarch();
+				       XSSFClientAnchor anchor = new XSSFClientAnchor();
+
+				       
+				       drawing.createPicture(anchor, indx);
+				       
+				       sheet.rowIterator().forEachRemaining(row ->{
+				    	   row.cellIterator().forEachRemaining(cell->{
+				    		   
+				    		   try {
+				    			   String value = cell.getStringCellValue();
+				    			   if(value.equals("Signed by") && row.getRowNum() <70 ) {
+				    				   
+				    			       anchor.setCol1(cell.getColumnIndex());
+				    			       anchor.setCol2(cell.getColumnIndex()+5);
+				    			       anchor.setRow1(cell.getRowIndex()-6);
+				    			       anchor.setRow2(cell.getRowIndex());
+				    				   
+				    			   }
+							} catch (Exception e) {
+								// TODO: handle exception
+							}
+				    		   
+				    	   });
+				       });
+				       
+				       
+				       drawing = sheet.createDrawingPatriarch();
+				       XSSFClientAnchor anchor2 = new XSSFClientAnchor();
+
+				       
+				       drawing.createPicture(anchor2, indx);
+				       
+				       sheet.rowIterator().forEachRemaining(row ->{
+				    	   row.cellIterator().forEachRemaining(cell->{
+				    		   
+				    		   try {
+				    			   String value = cell.getStringCellValue();
+				    			   if(value.equals("Signed by") && row.getRowNum() >70) {
+				    				   
+				    				   anchor2.setCol1(cell.getColumnIndex());
+				    				   anchor2.setCol2(cell.getColumnIndex()+5);
+				    				   anchor2.setRow1(cell.getRowIndex()-6);
+				    				   anchor2.setRow2(cell.getRowIndex());
+				    				   
+				    			   }
+							} catch (Exception e) {
+								// TODO: handle exception
+							}
+				    		   
+				    	   });
+				       });
+				}
 			}
 			
+			//기존
 			
 			String fileName = excelInpackRes.getFileNm() + "_Inpack.xlsx";
 			response.setContentType("application/download;charset=utf-8");
@@ -1966,24 +1967,7 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
 
-		int startCount = 59 + (excelInpackRes.getSubItem().size() * 2);
-		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
-			if (sheet.getMergedRegion(i).getFirstRow() == startCount) {
-				sheet.removeMergedRegion(i);
-				sheet.removeMergedRegion(i);
-				sheet.removeMergedRegion(i);
-			}
-		}
-		sheet.shiftRows(startCount + 1, sheet.getLastRowNum(), -1);
-
-		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
-			if (sheet.getMergedRegion(i).getFirstRow() == startCount) {
-				sheet.removeMergedRegion(i);
-				sheet.removeMergedRegion(i);
-				sheet.removeMergedRegion(i);
-			}
-		}
-		sheet.shiftRows(startCount + 1, sheet.getLastRowNum(), -1);
+		
 
 	}
 

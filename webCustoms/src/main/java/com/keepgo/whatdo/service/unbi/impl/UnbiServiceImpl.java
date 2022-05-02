@@ -114,25 +114,38 @@ public class UnbiServiceImpl implements UnbiService {
 						.marking(item.getMarking())
 						.korNm(item.getKorNm())
 						.departPort(item.getDepartPort())
-						.unbi(item.getUnbi())
-						.pickupCost(item.getPickupCost())						
-						.sanghachaCost(item.getSanghachaCost())
-						.officeName(item.getOfficeName())
-						.etcCost(item.getEtcCost())
-						.hacksodanCost(item.getHacksodanCost())
-						.coCost(item.getCoCost())
-						.hwajumiUnbi(item.getHwajumiUnbi())
-						.hwajumiPickupCost(item.getHwajumiPickupCost())
-						.containerWorkCost(item.getContainerWorkCost())
-						.containerWorkCost2(item.getContainerWorkCost2())
-						.containerMoveCost(item.getContainerMoveCost())
 						.memo1(item.getMemo1())
 						.memo2(item.getMemo2())
 						.type(item.getType())
+						.officeName(item.getOfficeName())
 						.finalInboundId(item.getFinalInbound().getId())
-//						.totalSum(rt.getCoCost()+rt.getPickupCost()+rt.getSanghachaCost()+rt.getEtcCost()+rt.getHacksodanCost()+rt.getCoCost()+rt.getHwajumiUnbi()+rt.getHwajumiPickupCost()+rt.getContainerMoveCost()+rt.getContainerWorkCost()+rt.getContainerWorkCost2())
 						.build();
-						rt.setTotalSum(rt.getCoCost()+rt.getPickupCost()+rt.getSanghachaCost()+rt.getEtcCost()+rt.getHacksodanCost()+rt.getCoCost()+rt.getHwajumiUnbi()+rt.getHwajumiPickupCost()+rt.getContainerMoveCost()+rt.getContainerWorkCost()+rt.getContainerWorkCost2());
+						rt.setUnbi((item.getUnbi() == null ? "" : String.valueOf(item.getUnbi())));
+						rt.setUnbiD((item.getUnbi() == null ? new Double(0) : item.getUnbi()));	
+						rt.setPickupCost((item.getPickupCost() == null ? "" : String.valueOf(item.getPickupCost())));
+						rt.setPickupCostD((item.getPickupCost() == null ? new Double(0) : item.getPickupCost()));
+						rt.setSanghachaCost((item.getSanghachaCost() == null ? "" : String.valueOf(item.getSanghachaCost())));
+						rt.setSanghachaCostD((item.getSanghachaCost() == null ? new Double(0) : item.getSanghachaCost()));
+						rt.setEtcCost((item.getEtcCost() == null ? "" : String.valueOf(item.getEtcCost())));
+						rt.setEtcCostD((item.getEtcCost() == null ? new Double(0) : item.getEtcCost()));
+						rt.setHacksodanCost((item.getHacksodanCost() == null ? "" : String.valueOf(item.getHacksodanCost())));
+						rt.setHacksodanCostD((item.getHacksodanCost() == null ? new Double(0) : item.getHacksodanCost()));
+						rt.setCoCost((item.getCoCost() == null ? "" : String.valueOf(item.getCoCost())));
+						rt.setCoCostD((item.getCoCost() == null ? new Double(0) : item.getCoCost()));
+						rt.setHwajumiUnbi((item.getHwajumiUnbi() == null ? "" : String.valueOf(item.getHwajumiUnbi())));
+						rt.setHwajumiUnbiD((item.getHwajumiUnbi() == null ? new Double(0) : item.getHwajumiUnbi()));
+						rt.setHwajumiPickupCost((item.getHwajumiPickupCost() == null ? "" : String.valueOf(item.getHwajumiPickupCost())));
+						rt.setHwajumiPickupCostD((item.getHwajumiPickupCost() == null ? new Double(0) : item.getHwajumiPickupCost()));
+						rt.setContainerWorkCost((item.getContainerWorkCost() == null ? "" : String.valueOf(item.getContainerWorkCost())));
+						rt.setContainerWorkCostD((item.getContainerWorkCost() == null ? new Double(0) : item.getContainerWorkCost()));
+						rt.setContainerWorkCost2((item.getContainerWorkCost2() == null ? "" : String.valueOf(item.getContainerWorkCost2())));
+						rt.setContainerWorkCost2D((item.getContainerWorkCost2() == null ? new Double(0) : item.getContainerWorkCost2()));
+						rt.setContainerMoveCost((item.getContainerMoveCost() == null ? "" : String.valueOf(item.getContainerMoveCost())));
+						rt.setContainerMoveCostD((item.getContainerMoveCost() == null ? new Double(0) : item.getContainerMoveCost()));
+						
+					
+						
+						rt.setTotalSum(rt.getUnbiD()+rt.getPickupCostD()+rt.getSanghachaCostD()+rt.getEtcCostD()+rt.getHacksodanCostD()+rt.getCoCostD()+rt.getHwajumiUnbiD()+rt.getHwajumiPickupCostD()+rt.getContainerMoveCostD()+rt.getContainerWorkCostD()+rt.getContainerWorkCost2D());
 					return rt;
 						
 				})
@@ -141,17 +154,17 @@ public class UnbiServiceImpl implements UnbiService {
 			
 		
 		
-			result.get(0).setUnbiSum(result.stream().filter(t->t.getUnbi()!= null).mapToDouble(t->t.getUnbi()).sum());
-			result.get(0).setPickupCostSum(result.stream().filter(t->t.getPickupCost()!= null).mapToDouble(t->t.getPickupCost()).sum());
-			result.get(0).setSanghachaCostSum(result.stream().filter(t->t.getSanghachaCost()!= null).mapToDouble(t->t.getSanghachaCost()).sum());
-			result.get(0).setEtcCostSum(result.stream().filter(t->t.getSanghachaCost()!= null).mapToDouble(t->t.getSanghachaCost()).sum());
-			result.get(0).setHacksodanCostSum(result.stream().filter(t->t.getHacksodanCost()!= null).mapToDouble(t->t.getHacksodanCost()).sum());
-			result.get(0).setCoCostSum(result.stream().filter(t->t.getCoCost()!= null).mapToDouble(t->t.getCoCost()).sum());
-			result.get(0).setHwajumiUnbiSum(result.stream().filter(t->t.getHwajumiUnbi()!= null).mapToDouble(t->t.getHwajumiUnbi()).sum());
-			result.get(0).setHwajumiPickupCostSum(result.stream().filter(t->t.getHwajumiPickupCost()!= null).mapToDouble(t->t.getHwajumiPickupCost()).sum());
-			result.get(0).setContainerWorkCostSum(result.stream().filter(t->t.getContainerWorkCost()!= null).mapToDouble(t->t.getContainerWorkCost()).sum());
-			result.get(0).setContainerWorkCost2Sum(result.stream().filter(t->t.getContainerWorkCost2()!= null).mapToDouble(t->t.getContainerWorkCost2()).sum());
-			result.get(0).setContainerMoveCostSum(result.stream().filter(t->t.getContainerMoveCost()!= null).mapToDouble(t->t.getContainerMoveCost()).sum());
+			result.get(0).setUnbiSum(result.stream().filter(t->t.getUnbiD()!= null).mapToDouble(t->t.getUnbiD()).sum());
+			result.get(0).setPickupCostSum(result.stream().filter(t->t.getPickupCostD()!= null).mapToDouble(t->t.getPickupCostD()).sum());
+			result.get(0).setSanghachaCostSum(result.stream().filter(t->t.getSanghachaCostD()!= null).mapToDouble(t->t.getSanghachaCostD()).sum());
+			result.get(0).setEtcCostSum(result.stream().filter(t->t.getEtcCostD()!= null).mapToDouble(t->t.getEtcCostD()).sum());
+			result.get(0).setHacksodanCostSum(result.stream().filter(t->t.getHacksodanCostD()!= null).mapToDouble(t->t.getHacksodanCostD()).sum());
+			result.get(0).setCoCostSum(result.stream().filter(t->t.getCoCostD()!= null).mapToDouble(t->t.getCoCostD()).sum());
+			result.get(0).setHwajumiUnbiSum(result.stream().filter(t->t.getHwajumiUnbiD()!= null).mapToDouble(t->t.getHwajumiUnbiD()).sum());
+			result.get(0).setHwajumiPickupCostSum(result.stream().filter(t->t.getHwajumiPickupCostD()!= null).mapToDouble(t->t.getHwajumiPickupCostD()).sum());
+			result.get(0).setContainerWorkCostSum(result.stream().filter(t->t.getContainerWorkCostD()!= null).mapToDouble(t->t.getContainerWorkCostD()).sum());
+			result.get(0).setContainerWorkCost2Sum(result.stream().filter(t->t.getContainerWorkCost2D()!= null).mapToDouble(t->t.getContainerWorkCost2D()).sum());
+			result.get(0).setContainerMoveCostSum(result.stream().filter(t->t.getContainerMoveCostD()!= null).mapToDouble(t->t.getContainerMoveCostD()).sum());
 			result.get(0).setTotalSumFinal(result.stream().filter(t->t.getTotalSum()!= null).mapToDouble(t->t.getTotalSum()).sum());
 		
 		return result;
@@ -189,67 +202,68 @@ public class UnbiServiceImpl implements UnbiService {
 			unbi.setMarking(list.get(i).getMarking());
 			unbi.setKorNm(list.get(i).getKorNm());
 			unbi.setDepartPort(list.get(i).getDepartPort());		
+//			unbi.setUnbi(Double.valueOf(list.get(i).getUnbi()));
 			if(list.get(i).getUnbi()==null||list.get(i).getUnbi().equals("")) {
-				unbi.setUnbi(new Double(0));
+				unbi.setUnbi(null);
 			}else {
 				unbi.setUnbi(Double.valueOf(list.get(i).getUnbi()));
 			}
 			if(list.get(i).getPickupCost()==null||list.get(i).getPickupCost().equals("")) {
-				unbi.setPickupCost(new Double(0));
+				unbi.setPickupCost(null);
 			}else {
 				unbi.setPickupCost(Double.valueOf(list.get(i).getPickupCost()));
 			}
 			
 			if(list.get(i).getSanghachaCost()==null||list.get(i).getSanghachaCost().equals("")) {
-				unbi.setSanghachaCost(new Double(0));
+				unbi.setSanghachaCost(null);
 			}else {
 				unbi.setSanghachaCost(Double.valueOf(list.get(i).getSanghachaCost()));
 			}
 			
 			if(list.get(i).getEtcCost()==null||list.get(i).getEtcCost().equals("")) {
-				unbi.setEtcCost(new Double(0));
+				unbi.setEtcCost(null);
 			}else {
 				unbi.setEtcCost(Double.valueOf(list.get(i).getEtcCost()));
 			}
 			
 			if(list.get(i).getHacksodanCost()==null||list.get(i).getHacksodanCost().equals("")) {
-				unbi.setHacksodanCost(new Double(0));
+				unbi.setHacksodanCost(null);
 			}else {
 				unbi.setHacksodanCost(Double.valueOf(list.get(i).getHacksodanCost()));
 			}
 			
 			if(list.get(i).getCoCost()==null||list.get(i).getCoCost().equals("")) {
-				unbi.setCoCost(new Double(0));
+				unbi.setCoCost(null);
 			}else {
 				unbi.setCoCost(Double.valueOf(list.get(i).getCoCost()));
 			}
 			
 			if(list.get(i).getHwajumiUnbi()==null||list.get(i).getHwajumiUnbi().equals("")) {
-				unbi.setHwajumiUnbi(new Double(0));
+				unbi.setHwajumiUnbi(null);
 			}else {
 				unbi.setHwajumiUnbi(Double.valueOf(list.get(i).getHwajumiUnbi()));
 			}
 			
 			if(list.get(i).getHwajumiPickupCost()==null||list.get(i).getHwajumiPickupCost().equals("")) {
-				unbi.setHwajumiPickupCost(new Double(0));
+				unbi.setHwajumiPickupCost(null);
 			}else {
 				unbi.setHwajumiPickupCost(Double.valueOf(list.get(i).getHwajumiPickupCost()));
 			}
 			
 			if(list.get(i).getContainerWorkCost()==null||list.get(i).getContainerWorkCost().equals("")) {
-				unbi.setContainerWorkCost(new Double(0));
+				unbi.setContainerWorkCost(null);
 			}else {
 				unbi.setContainerWorkCost(Double.valueOf(list.get(i).getContainerWorkCost()));
 			}
 			
 			if(list.get(i).getContainerWorkCost2()==null||list.get(i).getContainerWorkCost2().equals("")) {
-				unbi.setContainerWorkCost2(new Double(0));
+				unbi.setContainerWorkCost2(null);
 			}else {
 				unbi.setContainerWorkCost2(Double.valueOf(list.get(i).getContainerWorkCost2()));
 			}
 			
 			if(list.get(i).getContainerMoveCost()==null||list.get(i).getContainerMoveCost().equals("")) {
-				unbi.setContainerMoveCost(new Double(0));
+				unbi.setContainerMoveCost(null);
 			}else {
 				unbi.setContainerMoveCost(Double.valueOf(list.get(i).getContainerMoveCost()));
 			}

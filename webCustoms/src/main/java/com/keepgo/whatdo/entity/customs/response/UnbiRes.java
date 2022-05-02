@@ -45,20 +45,34 @@ public class UnbiRes {
 	private String marking;
 	private String korNm;
 	private String departPort;
-	private Double unbi;
-	private Double pickupCost;
-	private Double sanghachaCost;
 	private String officeName;
-	private Double etcCost;
-	private Double hacksodanCost;
-	private Double coCost;
-	private Double hwajumiUnbi;
-	private Double hwajumiPickupCost;
-	private Double containerWorkCost;
-	private Double containerWorkCost2;
-	private Double containerMoveCost;
 	private String memo1;
 	private String memo2;
+	
+	private String unbi;
+	private String pickupCost;
+	private String sanghachaCost;
+	private String etcCost;
+	private String hacksodanCost;
+	private String coCost;
+	private String hwajumiUnbi;
+	private String hwajumiPickupCost;
+	private String containerWorkCost;
+	private String containerWorkCost2;
+	private String containerMoveCost;
+	
+	private Double unbiD;
+	private Double pickupCostD;
+	private Double sanghachaCostD;
+	private Double etcCostD;
+	private Double hacksodanCostD;
+	private Double coCostD;
+	private Double hwajumiUnbiD;
+	private Double hwajumiPickupCostD;
+	private Double containerWorkCostD;
+	private Double containerWorkCost2D;
+	private Double containerMoveCostD;
+	
 	//합계
 	private Double totalSum;
 	private Double totalSumFinal;

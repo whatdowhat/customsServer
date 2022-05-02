@@ -122,6 +122,44 @@ public class CommonServiceImpl implements CommonService {
 	}
 	
 	@Override
+	public List<?> getDepartPort() {
+		
+		List<?> result = _commonRepository.findByCommonMaster(_commonMasterRepository.findById(Long.valueOf(3)).orElse(CommonMaster.builder().build())).stream()
+				.sorted(Comparator.comparing(Common::getUpdateDt).reversed())
+				.map(item->CommonRes.builder()
+						.id(item.getId())
+						.value(item.getValue())
+						.value2(item.getValue2())
+						.commonMasterId(item.getCommonMaster().getId())
+						.isUsing(item.getIsUsing())
+						.createDt(item.getCreateDt())
+						.updateDt(item.getUpdateDt())
+						.name(item.getNm())
+						.build())
+		.collect(Collectors.toList());
+		return result;
+	}
+	
+	@Override
+	public List<?> getIncomePort() {
+		
+		List<?> result = _commonRepository.findByCommonMaster(_commonMasterRepository.findById(Long.valueOf(4)).orElse(CommonMaster.builder().build())).stream()
+				.sorted(Comparator.comparing(Common::getUpdateDt).reversed())
+				.map(item->CommonRes.builder()
+						.id(item.getId())
+						.value(item.getValue())
+						.value2(item.getValue2())
+						.commonMasterId(item.getCommonMaster().getId())
+						.isUsing(item.getIsUsing())
+						.createDt(item.getCreateDt())
+						.updateDt(item.getUpdateDt())
+						.name(item.getNm())
+						.build())
+		.collect(Collectors.toList());
+		return result;
+	}
+	
+	@Override
 	public CommonRes getCommonOne(Long id) {
 		
 		

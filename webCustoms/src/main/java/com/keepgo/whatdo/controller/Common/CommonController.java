@@ -86,6 +86,20 @@ public class CommonController {
 		return  list;
 	}
 	
+	@RequestMapping(value = "/common/getDepartPort", method = {RequestMethod.POST })
+	public List<?> getDepartPort(HttpServletRequest httpServletRequest) throws Exception {
+
+		List<?> list = _commonService.getDepartPort();
+		return  list;
+	}
+	
+	@RequestMapping(value = "/common/getIncomePort", method = {RequestMethod.POST })
+	public List<?> getIncomePort(HttpServletRequest httpServletRequest) throws Exception {
+
+		List<?> list = _commonService.getDepartPort();
+		return  list;
+	}
+	
 	@RequestMapping(value = "/common/commonByCompanyInfoExport", method = {RequestMethod.POST })
 	public List<?> commonByCompanyInfoExport(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
 

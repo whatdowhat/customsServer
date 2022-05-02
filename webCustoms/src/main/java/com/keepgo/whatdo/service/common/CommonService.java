@@ -43,6 +43,12 @@ public interface CommonService {
 	
 	
 	@Transactional
-	List<?> excelUpload(MultipartFile file,CommonReq commonReq) throws IOException; 
+	List<?> excelUpload(MultipartFile file,CommonReq commonReq) throws IOException;
+	
+	@Transactional
+	List<?> getDepartPort(); 
+	
+	@Transactional
+	List<?> getIncomePort(); 
 	
 }

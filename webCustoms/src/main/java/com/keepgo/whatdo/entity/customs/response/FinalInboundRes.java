@@ -41,6 +41,7 @@ public class FinalInboundRes {
 	private String incomeYearMonth;
 	private String incomeDt;
 	private String departDtStr;
+	private String forViewDepartDateStr;
 	private String finalMasterBl;
 	private String containerNo;
 	private Double containerPrice;

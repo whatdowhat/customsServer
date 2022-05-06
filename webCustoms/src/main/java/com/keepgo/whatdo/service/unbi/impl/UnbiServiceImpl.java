@@ -117,9 +117,11 @@ public class UnbiServiceImpl implements UnbiService {
 						.memo1(item.getMemo1())
 						.memo2(item.getMemo2())
 						.type(item.getType())
-						.officeName(item.getOfficeName())
+						
 						.finalInboundId(item.getFinalInbound().getId())
 						.build();
+						rt.setOfficeName((item.getOfficeName() == null ? "" : String.valueOf(item.getOfficeName())));
+						rt.setOfficeNameD((item.getOfficeName() == null ? new Double(0) : item.getOfficeName()));
 						rt.setUnbi((item.getUnbi() == null ? "" : String.valueOf(item.getUnbi())));
 						rt.setUnbiD((item.getUnbi() == null ? new Double(0) : item.getUnbi()));	
 						rt.setPickupCost((item.getPickupCost() == null ? "" : String.valueOf(item.getPickupCost())));
@@ -142,10 +144,19 @@ public class UnbiServiceImpl implements UnbiService {
 						rt.setContainerWorkCost2D((item.getContainerWorkCost2() == null ? new Double(0) : item.getContainerWorkCost2()));
 						rt.setContainerMoveCost((item.getContainerMoveCost() == null ? "" : String.valueOf(item.getContainerMoveCost())));
 						rt.setContainerMoveCostD((item.getContainerMoveCost() == null ? new Double(0) : item.getContainerMoveCost()));
-						
+						if(item.getColor() !=null ) {
+							
+							for(int i=0; i<ColorType.getList().size();i++) {
+								if(ColorType.getList().get(i).getId() ==item.getColor() ) {
+									rt.setColorCode(ColorType.getList().get(i).getCode());
+									
+								}
+							}
+//							rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+						}
 					
 						
-						rt.setTotalSum(rt.getUnbiD()+rt.getPickupCostD()+rt.getSanghachaCostD()+rt.getEtcCostD()+rt.getHacksodanCostD()+rt.getCoCostD()+rt.getHwajumiUnbiD()+rt.getHwajumiPickupCostD()+rt.getContainerMoveCostD()+rt.getContainerWorkCostD()+rt.getContainerWorkCost2D());
+						rt.setTotalSum(rt.getOfficeNameD()+rt.getUnbiD()+rt.getPickupCostD()+rt.getSanghachaCostD()+rt.getEtcCostD()+rt.getHacksodanCostD()+rt.getCoCostD()+rt.getHwajumiUnbiD()+rt.getHwajumiPickupCostD()+rt.getContainerMoveCostD()+rt.getContainerWorkCostD()+rt.getContainerWorkCost2D());
 					return rt;
 						
 				})
@@ -153,7 +164,7 @@ public class UnbiServiceImpl implements UnbiService {
 			
 			
 		
-		
+			result.get(0).setOfficeNameSum(result.stream().filter(t->t.getOfficeNameD()!= null).mapToDouble(t->t.getOfficeNameD()).sum());
 			result.get(0).setUnbiSum(result.stream().filter(t->t.getUnbiD()!= null).mapToDouble(t->t.getUnbiD()).sum());
 			result.get(0).setPickupCostSum(result.stream().filter(t->t.getPickupCostD()!= null).mapToDouble(t->t.getPickupCostD()).sum());
 			result.get(0).setSanghachaCostSum(result.stream().filter(t->t.getSanghachaCostD()!= null).mapToDouble(t->t.getSanghachaCostD()).sum());
@@ -267,14 +278,33 @@ public class UnbiServiceImpl implements UnbiService {
 			}else {
 				unbi.setContainerMoveCost(Double.valueOf(list.get(i).getContainerMoveCost()));
 			}
+			if(list.get(i).getOfficeName()==null||list.get(i).getOfficeName().equals("")) {
+				unbi.setOfficeName(null);
+			}else {
+				unbi.setOfficeName(Double.valueOf(list.get(i).getOfficeName()));
+			}
 			
 			
 			
-			unbi.setOfficeName(list.get(i).getOfficeName());
+			
 			unbi.setMemo1(list.get(i).getMemo1());
 			unbi.setMemo2(list.get(i).getMemo2());
 			unbi.setType(list.get(i).getType());
+			
 			unbi.setFinalInbound(finalInbound);
+			//색상코드
+			if(list.get(i).getColor()!=null) {
+				for(int j=0; j<ColorType.getList().size();j++) {
+					if(ColorType.getList().get(j).getShowName().equals(list.get(i).getColor())) {
+						unbi.setColor(ColorType.getList().get(j).getId());
+					}else {
+
+					}
+				}
+				
+			}else {
+				unbi.setColor(Integer.valueOf(0));
+			}
 			
 			
 			_unbiRepository.save(unbi);

@@ -45,11 +45,13 @@ public class UnbiRes {
 	private String marking;
 	private String korNm;
 	private String departPort;
-	private String officeName;
+	
 	private String memo1;
 	private String memo2;
+	private String colorCode;
 	
 	private String unbi;
+	private String officeName;
 	private String pickupCost;
 	private String sanghachaCost;
 	private String etcCost;
@@ -62,6 +64,7 @@ public class UnbiRes {
 	private String containerMoveCost;
 	
 	private Double unbiD;
+	private Double officeNameD;
 	private Double pickupCostD;
 	private Double sanghachaCostD;
 	private Double etcCostD;
@@ -87,6 +90,7 @@ public class UnbiRes {
 	private Double containerWorkCostSum;
 	private Double containerWorkCost2Sum;
 	private Double containerMoveCostSum;
+	private Double officeNameSum;
 	private String type;
 	private Long finalInboundId;
 	

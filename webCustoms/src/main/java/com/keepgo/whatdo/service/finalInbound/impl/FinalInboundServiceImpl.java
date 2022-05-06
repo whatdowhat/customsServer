@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -358,6 +359,15 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		FinalInbound r = _finalInboundRepository.findById(id).get();
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		
+		Date d=null;
+		String forViewDepartDateStr="";
+		try {
+			d=format1.parse(r.getDepartDtStr());
+			forViewDepartDateStr = DateFormatUtils.format(d, "MM월 dd일");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		FinalInboundRes dto = 
 				
 				FinalInboundRes.builder()
@@ -381,6 +391,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.departDelayYn(r.getDepartDelayYn())
 				.gwanriYn(r.getGwanriYn())
 				.departDtStr(r.getDepartDtStr())
+				.forViewDepartDateStr(forViewDepartDateStr)
 				.title(r.getTitle())
 				.unbiDefine1(r.getUnbiDefine1())
 				.unbiDefine2(r.getUnbiDefine2())

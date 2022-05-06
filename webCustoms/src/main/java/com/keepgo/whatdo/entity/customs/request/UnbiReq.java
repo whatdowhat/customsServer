@@ -55,7 +55,7 @@ public class UnbiReq {
 	private Double unbi;
 	private Double pickupCost;
 	private Double sanghachaCost;
-	private String officeName;
+	private Double officeName;
 	private Double etcCost;
 	private Double hacksodanCost;
 	private Double coCost;
@@ -66,8 +66,10 @@ public class UnbiReq {
 	private Double containerMoveCost;
 	private String memo1;
 	private String memo2;
+	private String color;
 	//합계
 	private Double totalSum;
+	private Double officeNameSum;
 	private Double unbiSum;
 	private Double pickupCostSum;
 	private Double sanghachaCostSum;

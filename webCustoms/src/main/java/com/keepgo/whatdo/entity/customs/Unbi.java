@@ -85,7 +85,7 @@ public class Unbi {
 	private Double sanghachaCost;
 	//화물회사 사무실
 	@Column(name = "officeName")
-	private String officeName;
+	private Double officeName;
 	//기타잡비
 	@Column(name = "etcCost")
 	private Double etcCost;
@@ -121,6 +121,9 @@ public class Unbi {
 	//구분
 	@Column(name = "type")
 	private String type;
+	//색상코드
+	@Column(name = "color")
+	private Integer color;
 	
 	@JoinColumn(name = "finalInboundId")
 	@ManyToOne(fetch = FetchType.LAZY)

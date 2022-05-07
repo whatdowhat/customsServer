@@ -50,6 +50,9 @@ public class UnbiRes {
 	private String memo2;
 	private String colorCode;
 	
+	//typebTitle(발송업체,마킹,한글품명,출발지) mergecolumn
+	private String typebTitle;
+	
 	private String unbi;
 	private String officeName;
 	private String pickupCost;

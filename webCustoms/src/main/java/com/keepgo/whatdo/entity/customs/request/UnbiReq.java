@@ -48,6 +48,10 @@ public class UnbiReq {
 	private Integer unbiDefine3; //상하차비
 	private Integer unbiDefine4; //기타잡비
 	
+	
+	//typebTitle(발송업체,마킹,한글품명,출발지) mergecolumn
+	private String typebTitle;
+	
 	private String companyNm;
 	private String marking;
 	private String korNm;

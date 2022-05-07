@@ -111,6 +111,11 @@ public class Unbi {
 	@Column(name = "containerMoveCost")
 	private Double containerMoveCost;
 	
+	
+	//typebTitle(발송업체,마킹,한글품명,출발지) mergecolumn
+	@Column(name = "typebTitle")
+	private String typebTitle;
+	
 	//비고1
 	@Column(name = "memo1")
 	private String memo1;

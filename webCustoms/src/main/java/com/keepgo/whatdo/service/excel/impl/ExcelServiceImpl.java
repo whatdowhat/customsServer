@@ -27,6 +27,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -1775,7 +1776,7 @@ public class ExcelServiceImpl implements ExcelService {
 			Resource resource = resourceLoader.getResource(path);
 
 			File file = new File(resource.getURI());
-			;
+			
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
@@ -1833,19 +1834,25 @@ public class ExcelServiceImpl implements ExcelService {
 
 				       
 				       drawing.createPicture(anchor, indx);
+				       Picture pict = drawing.createPicture(anchor, indx);
+				       double scale = 0.4;
 				       
 				       sheet.rowIterator().forEachRemaining(row ->{
 				    	   row.cellIterator().forEachRemaining(cell->{
 				    		   
 				    		   try {
 				    			   String value = cell.getStringCellValue();
-				    			   if(value.equals("Signed by") && row.getRowNum() <70 ) {
+				    			   if(value.equals("${image}")) {
 				    				   
+				    			       
 				    			       anchor.setCol1(cell.getColumnIndex());
-				    			       anchor.setCol2(cell.getColumnIndex()+5);
-				    			       anchor.setRow1(cell.getRowIndex()-6);
-				    			       anchor.setRow2(cell.getRowIndex());
-				    				   
+//				    			       anchor.setCol2(cell.getColumnIndex()+5);
+				    			       anchor.setRow1(cell.getRowIndex());
+//				    			       drawing.resi
+				    			       pict.resize();
+				    			       pict.resize(scale);
+				    			       cell.setCellValue("");
+				    			       
 				    			   }
 							} catch (Exception e) {
 								// TODO: handle exception
@@ -1854,32 +1861,7 @@ public class ExcelServiceImpl implements ExcelService {
 				    	   });
 				       });
 				       
-				       
-				       drawing = sheet.createDrawingPatriarch();
-				       XSSFClientAnchor anchor2 = new XSSFClientAnchor();
 
-				       
-				       drawing.createPicture(anchor2, indx);
-				       
-				       sheet.rowIterator().forEachRemaining(row ->{
-				    	   row.cellIterator().forEachRemaining(cell->{
-				    		   
-				    		   try {
-				    			   String value = cell.getStringCellValue();
-				    			   if(value.equals("Signed by") && row.getRowNum() >70) {
-				    				   
-				    				   anchor2.setCol1(cell.getColumnIndex());
-				    				   anchor2.setCol2(cell.getColumnIndex()+5);
-				    				   anchor2.setRow1(cell.getRowIndex()-6);
-				    				   anchor2.setRow2(cell.getRowIndex());
-				    				   
-				    			   }
-							} catch (Exception e) {
-								// TODO: handle exception
-							}
-				    		   
-				    	   });
-				       });
 				}
 			}
 			

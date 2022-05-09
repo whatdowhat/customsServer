@@ -890,25 +890,25 @@ public class InboundServiceImpl implements InboundService {
 		if (cellIndex == 11) {
 			inboundRes.setMemo2(value);
 		}
+//		if (cellIndex == 12) {
+//			inboundRes.setMemo3(value);
+//		}
 		if (cellIndex == 12) {
-			inboundRes.setMemo3(value);
-		}
-		if (cellIndex == 13) {
 			inboundRes.setItemNo(value);
 		}
-		if (cellIndex == 14) {
+		if (cellIndex == 13) {
 			inboundRes.setJejil(value);
 		}
-		if (cellIndex == 15) {
+		if (cellIndex == 14) {
 			inboundRes.setHsCode(value);
 		}
-		if (cellIndex == 16) {
+		if (cellIndex == 15) {
 			inboundRes.setCoCode(value);
 		}
-		if (cellIndex == 17) {
+		if (cellIndex == 16) {
 				inboundRes.setEngNm(value);	
 		}
-		if (cellIndex == 18) {
+		if (cellIndex == 17) {
 			inboundRes.setColor(value);
 		}
 		

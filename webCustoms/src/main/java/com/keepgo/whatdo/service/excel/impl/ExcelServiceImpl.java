@@ -1854,6 +1854,11 @@ public class ExcelServiceImpl implements ExcelService {
 				    			       cell.setCellValue("");
 				    			       
 				    			   }
+				    			   if(cell.getStringCellValue().contains("${hang}")) {
+				    	    			  row.setHeight(new Short("140"));
+				    	    			  cell.setCellValue("");
+				    	    			  
+				    	    		  }
 							} catch (Exception e) {
 								// TODO: handle exception
 							}
@@ -1901,12 +1906,34 @@ public class ExcelServiceImpl implements ExcelService {
 					String value = cell.getStringCellValue();
 
 					cell.setCellValue(convertDataForInpack(value, excelInpackRes));
-//							//template row 삭제 처리
-//							if(value.contains("${deleteRow}")) {
-////								sheet.removeRow();
-//								cell.setCellValue("");
-//								deleteList.add(row.getRowNum());
-//							}
+					
+					if(value.contains("${data06}") ) {//date format으로 데이터 넣어야함.
+						
+						String data06 = excelInpackRes.getData06();
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						try {
+							cell.setCellValue(dateFormat.parse(data06));
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						
+					}
+					if(value.contains("${data04}") ) {//date format으로 데이터 넣어야함.
+						
+						String data04 = excelInpackRes.getData04();
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						try {
+							cell.setCellValue(dateFormat.parse(data04));
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						
+					}
+						 
 
 					break;
 				case "NUMERIC":
@@ -1949,7 +1976,34 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
 
-		
+		int dataSize = (excelInpackRes.getSubItem().size())*2;
+		int firstRow = (excelInpackRes.getSubItem().size())*2-1;
+//		
+//		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+//			if (sheet.getMergedRegion(i).getFirstRow() == firstRow) {
+//				sheet.removeMergedRegion(i);
+//				sheet.removeMergedRegion(i);
+//				sheet.removeMergedRegion(i);
+//				
+//			}
+//		}
+//		
+//		for (int i = 0; i <dataSize-2; i++) {
+//			sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
+//		}
+		for (int i = 0; i <dataSize-2; i++) {
+	    	   
+	    	   for(int j=0; j<sheet.getMergedRegions().size();j++) {
+	    	       	if(sheet.getMergedRegion(j).getFirstRow() == 23+dataSize) {
+	    	    		sheet.removeMergedRegion(j);
+	    	    		sheet.removeMergedRegion(j);
+	    	    		sheet.removeMergedRegion(j);
+	    	    		
+	    	       	}
+	    	   }
+	    	   
+	    	   sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
+			}
 
 	}
 
@@ -1964,12 +2018,14 @@ public class ExcelServiceImpl implements ExcelService {
 				excelInpackRes.setData03("null");
 			}
 			return excelInpackRes.getData03();
-		} else if (target.contains("${data04}")) {
-			return excelInpackRes.getData04();
-		} else if (target.contains("${data05}")) {
+		} 
+//		else if (target.contains("${data04}")) {
+//			return excelInpackRes.getData04();
+//		} 
+		else if (target.contains("${data05}")) {
 			return excelInpackRes.getData05();
-		} else if (target.contains("${data06}")) {
-			return excelInpackRes.getData06();
+//		} else if (target.contains("${data06}")) {
+//			return excelInpackRes.getData06();
 		} else if (target.contains("${data07}")) {
 			return excelInpackRes.getData07();
 		} else if (target.contains("${data08}")) {

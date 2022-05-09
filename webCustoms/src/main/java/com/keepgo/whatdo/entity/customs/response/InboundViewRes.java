@@ -108,12 +108,17 @@ public class InboundViewRes {
 	private Double weightSumFinal;
 	private String freight;
 	private int freightCode;
+	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date workDate;
 	//발송업체 //0번
 	private String managerNm;
 	
-
+	private String shipper;
+	private String consignee;
+	private String notify;
+	private String blNo;
+	private int no;
 
 	
 	

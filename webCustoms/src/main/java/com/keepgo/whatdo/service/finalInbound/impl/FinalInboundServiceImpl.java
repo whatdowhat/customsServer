@@ -680,25 +680,25 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		if (cellIndex == 11) {
 			inbound.setMemo2(value);
 		}
+//		if (cellIndex == 12) {
+//			inbound.setMemo3(value);
+//		}
 		if (cellIndex == 12) {
-			inbound.setMemo3(value);
-		}
-		if (cellIndex == 13) {
 			inbound.setItemNo(value);
 		}
-		if (cellIndex == 14) {
+		if (cellIndex == 13) {
 			inbound.setJejil(value);
 		}
-		if (cellIndex == 15) {
+		if (cellIndex == 14) {
 			inbound.setHsCode(value);
 		}
-		if (cellIndex == 16) {
+		if (cellIndex == 15) {
 			inbound.setCoCode(value);
 		}
-		if (cellIndex == 17) {
+		if (cellIndex == 16) {
 			inbound.setEngNm(value);	
 		}
-		if (cellIndex == 18) {
+		if (cellIndex == 17) {
 			inbound.setColorName(value);
 			
 		}

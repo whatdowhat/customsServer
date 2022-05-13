@@ -1838,6 +1838,39 @@ public class ExcelServiceImpl implements ExcelService {
 				Common common = inboundMaster.getComExport();
 				if(common.getFileUpload()==null) {
 					
+					sheet.rowIterator().forEachRemaining(row ->{
+						
+						if(row.getRowNum() <=52  && row.getRowNum() >=23 ) {
+		    	    			  row.setHeight(new Short("320"));
+						}
+						if(row.getRowNum() == 54) {
+	    	    			  row.setHeight(new Short("360"));
+						}
+						if(row.getRowNum() <= 66 && row.getRowNum() >= 55) {
+	    	    			  row.setHeight(new Short("280"));
+						}
+				    	   row.cellIterator().forEachRemaining(cell->{
+				    		   
+				    		   try {
+				    			   String value = cell.getStringCellValue();
+				    			   if(value.equals("${image}")) {
+				    				   
+				    			       cell.setCellValue("");
+				    			       
+				    			   }
+				    			   if(cell.getStringCellValue().contains("${hang}")) {
+				    	    			  row.setHeight(new Short("150"));
+				    	    			  cell.setCellValue("");
+				    	    			  
+				    	    		  }
+				    			  
+							} catch (Exception e) {
+								// TODO: handle exception
+							}
+				    		   
+				    	   });
+				       });
+					
 				}else {
 					String imagePath = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();
 					Path filePath = Paths.get(imagePath);
@@ -1861,9 +1894,21 @@ public class ExcelServiceImpl implements ExcelService {
 				       
 				       drawing.createPicture(anchor, indx);
 				       Picture pict = drawing.createPicture(anchor, indx);
-				       double scale = 0.4;
+				       double scale = 0.38;
 				       
 				       sheet.rowIterator().forEachRemaining(row ->{
+				    	   
+				    	   
+							if(row.getRowNum() <=52  && row.getRowNum() >=23 ) {
+		    	    			  row.setHeight(new Short("320"));
+							}
+							if(row.getRowNum() == 54) {
+		    	    			  row.setHeight(new Short("360"));
+							}
+							if(row.getRowNum() <= 66 && row.getRowNum() >= 55) {
+		    	    			  row.setHeight(new Short("280"));
+							}
+				    	   
 				    	   row.cellIterator().forEachRemaining(cell->{
 				    		   
 				    		   try {
@@ -1881,7 +1926,7 @@ public class ExcelServiceImpl implements ExcelService {
 				    			       
 				    			   }
 				    			   if(cell.getStringCellValue().contains("${hang}")) {
-				    	    			  row.setHeight(new Short("140"));
+				    	    			  row.setHeight(new Short("150"));
 				    	    			  cell.setCellValue("");
 				    	    			  
 				    	    		  }

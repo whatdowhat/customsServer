@@ -108,7 +108,6 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							.hangName(item.getHangName())
 							.silNo(item.getSilNo())
 							.cargoName(item.getCargoName())
-							.departPort(item.getDepartPort())
 							.hangCha(item.getHangCha())
 							.containerSizeStr(item.getContainerSizeStr())
 							.weatherCondition(item.getWeatherCondition())
@@ -155,7 +154,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		FinalInbound target = FinalInbound.builder().departDtStr(req.getDepartDtStr())
 				.finalMasterBl(req.getFinalMasterBl()).containerNo(req.getContainerNo())
 				.containerPrice(req.getContainerPrice()).deliveryNm(req.getDeliveryNm()).hangName(req.getHangName())
-				.silNo(req.getSilNo()).cargoName(req.getCargoName()).departPort(req.getDepartPort())
+				.silNo(req.getSilNo()).cargoName(req.getCargoName()).departPort(req.getDepartPortId())
 				.hangCha(req.getHangCha()).containerSizeStr(req.getContainerSizeStr())
 				.weatherCondition(req.getWeatherCondition())
 
@@ -205,6 +204,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.gubun(req.getGubun())
 				.incomeDt(afterFormat.format(tempDate2))
 				.departDtStr(afterFormat.format(tempDate))
+				.incomePort(new Long(1))
+				.departPort(new Long(1))
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
 
@@ -242,8 +243,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		finalInbound.setDepartDtStr(afterFormat.format(tempDate));
 		
 		finalInbound.setCargoName(req.getCargoName());
-		finalInbound.setDepartPort(req.getDepartPort());
-		finalInbound.setIncomePort(req.getIncomePort());
+		finalInbound.setDepartPort(req.getDepartPortId());
+		finalInbound.setIncomePort(req.getIncomePortId());
 		finalInbound.setFinalMasterBl(req.getFinalMasterBl());
 		finalInbound.setContainerNo(req.getContainerNo());
 		finalInbound.setSilNo(req.getSilNo());
@@ -284,6 +285,13 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			
 
 			Long inboundMasterId=list.get(i).getId();
+			InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterId).get();
+			
+			List<Inbound> inboundList = _inboundRepository.findByInboundMasterId(inboundMasterId);
+			for (int j = 0; j < inboundList.size(); j++) {
+				_inboundRepository.delete(inboundList.get(j));
+			}
+			_inboundMasterRepository.delete(inboundMaster);
 			_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), inboundMasterId);
 
 		}
@@ -372,12 +380,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				
 				FinalInboundRes.builder()
 
-
+				
 				.id(r.getId())
 				.incomeDt(r.getIncomeDt())
 				.cargoName(r.getCargoName())
-				.incomePort(r.getIncomePort())
-				.departPort(r.getDepartPort())
 				.finalMasterBl(r.getFinalMasterBl())
 				.gubun(GubunType.getList().stream().filter(type->type.getId() == r.getGubun()).findFirst().get().getName())
 				.gubunCode(r.getGubun())
@@ -403,6 +409,11 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.createDt(r.getCreateDt())
 				.updateDt(r.getUpdateDt())
 				.build();
+		dto.setDepartPort((r.getDepartPort() == null ? "" : _commonRepository.findById(r.getDepartPort()).get().getValue2()));
+		dto.setDepartPortId((r.getDepartPort() == null ? new Long(1) : r.getDepartPort()));
+		dto.setIncomePort((r.getIncomePort() == null ? "" : _commonRepository.findById(r.getIncomePort()).get().getValue2()));
+		dto.setIncomePortId((r.getIncomePort() == null ? new Long(1) : r.getIncomePort()));
+		
 		if(r.getInboundMasters().size()>0){
 			dto.setInboundMasters(r.getInboundMasters().stream()
 					

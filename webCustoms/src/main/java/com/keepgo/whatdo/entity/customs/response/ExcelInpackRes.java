@@ -26,8 +26,8 @@ public class ExcelInpackRes {
 	//1. 쉬퍼(수출자) 이름+주소
 	String data01;
 	//2. 고정
-	@Builder.Default
-	String data02 = "SJ-";
+	
+	String data02;
 	//3. 인보이스번호
 	String data03;
 	//4. CO발급일자
@@ -53,6 +53,9 @@ public class ExcelInpackRes {
 	
 	String totalCountEng;
 	Long inboundMasterId;
+	Boolean coYn;
+	String invoice;
+	String noCoDt;
 	
 	//품목 리스트
 	List<ExcelInpackSubRes>  subItem;

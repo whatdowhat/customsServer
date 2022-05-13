@@ -38,7 +38,7 @@ public class InboundReq {
 //	@Column(name = "id")
 //	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+	private Long containerId;
 	private Long coId;
 	private Long colorId;
 	private String color;

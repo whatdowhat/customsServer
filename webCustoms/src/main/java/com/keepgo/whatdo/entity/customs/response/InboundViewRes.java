@@ -36,7 +36,7 @@ public class InboundViewRes {
 
 	
 //	private Long id;
-//	private Long inboundMasterId;
+	
 //	private Long coId;
 //	private int orderNo;
 //	private String color;
@@ -92,7 +92,7 @@ public class InboundViewRes {
 //	private String marking;
 //	private String blNo;
 	
-	
+	private Long inboundMasterId;
 	private String itemCountSum;
 	private String boxCountSum;
 	private String weightSum;

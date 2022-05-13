@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
+import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
@@ -129,6 +131,24 @@ public class ExcelController {
 		ExcelInpackRes s =_excelService.inpackData(req);
 		
 		_excelService.inpack(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/containerData", method = { RequestMethod.POST })
+	public List<ExcelContainerRes> excelContainerRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.containerData(req);
+	}
+	
+	@RequestMapping(value = "/excel/document/container", method = { RequestMethod.POST })
+	public void container(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+		List<ExcelContainerRes> s =_excelService.containerData(req);
+		
+		
+		_excelService.container(s, response);
 	}
 	
 

@@ -89,11 +89,12 @@ public class FinalInbound {
 
 	// 출항항구
 	@Column(name = "departPort")
-	private String departPort;
+	private Long departPort;
 	
 	// 도착항구
 	@Column(name = "incomePort")
-	private String incomePort;
+	private Long incomePort;
+	
 
 	// 항차
 	@Column(name = "hangCha")

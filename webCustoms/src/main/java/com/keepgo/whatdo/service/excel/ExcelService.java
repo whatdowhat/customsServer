@@ -1,5 +1,7 @@
 package com.keepgo.whatdo.service.excel;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
@@ -7,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
+import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
@@ -39,5 +43,11 @@ public interface ExcelService {
 	
 	@Transactional
 	boolean inpack(ExcelInpackRes excelInpackRes,HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	List<ExcelContainerRes> containerData(FinalInboundReq req) throws Exception;
+	
+	@Transactional
+	boolean container(List<ExcelContainerRes> list,HttpServletResponse response) throws Exception;
 	
 }

@@ -96,7 +96,7 @@ public class CommonController {
 	@RequestMapping(value = "/common/getIncomePort", method = {RequestMethod.POST })
 	public List<?> getIncomePort(HttpServletRequest httpServletRequest) throws Exception {
 
-		List<?> list = _commonService.getDepartPort();
+		List<?> list = _commonService.getIncomePort();
 		return  list;
 	}
 	

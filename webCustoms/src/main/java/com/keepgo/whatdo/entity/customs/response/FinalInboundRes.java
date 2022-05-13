@@ -49,7 +49,7 @@ public class FinalInboundRes {
 	private String hangName;
 	private String silNo;
 	private String cargoName;
-	private String departPort;
+	
 	private String hangCha;
 	private String containerSizeStr;
 	private String weatherCondition;
@@ -61,7 +61,9 @@ public class FinalInboundRes {
 	private int gwanriYn;
 	//도착항구
 	private String incomePort;
-	
+	private Long incomePortId;
+	private String departPort;
+	private Long departPortId;
 	private List<Map<String,Object>> inboundMasters = new ArrayList();
 	
 	

@@ -47,7 +47,6 @@ public class FinalInboundReq {
 	private String hangName;
 	private String silNo;
 	private String cargoName;
-	private String departPort;
 	private String hangCha;
 	private String containerSizeStr;
 	private String weatherCondition;
@@ -61,6 +60,10 @@ public class FinalInboundReq {
 	private int gwanriYn;
 	//도착항구
 	private String incomePort;
+	private Long incomePortId;
+	
+	private String departPort;
+	private Long departPortId;
 	private List<Long> inboundMasters = new ArrayList<>();
 	
 	

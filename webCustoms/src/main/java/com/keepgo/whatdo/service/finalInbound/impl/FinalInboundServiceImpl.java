@@ -600,11 +600,21 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
 //						inbound.setBoxCount(new Double(0));
 //					}
+					
+					
+					
+//					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")) {
+//						inbound.setReportPrice(new Double(0));
+//					}
+//					
+//					inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")) {
-						inbound.setReportPrice(new Double(0));
+						inbound.setReportPrice(null);
+						inbound.setTotalPrice(null);
+					}else {
+						inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					}
 					
-					inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					inbound.setInboundMaster(target);
 					inbound.setOrderNo(orderNo);
 					list.add(inbound);

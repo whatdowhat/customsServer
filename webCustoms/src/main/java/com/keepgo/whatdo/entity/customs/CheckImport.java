@@ -54,12 +54,12 @@ public class CheckImport {
 	@JoinColumn(name = "companyInfoId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
-	private CompanyInfo CompanyInfo;
+	private CompanyInfo companyInfo;
 	
 	@JoinColumn(name = "userId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
-	private User User;
+	private User user;
 	
 	@Column(name = "orderNo")
 	private int orderNo;

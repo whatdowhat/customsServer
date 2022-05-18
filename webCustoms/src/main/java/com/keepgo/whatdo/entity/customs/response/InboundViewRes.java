@@ -35,64 +35,10 @@ import lombok.ToString;
 public class InboundViewRes {
 
 	
-//	private Long id;
-	
-//	private Long coId;
-//	private int orderNo;
-//	private String color;
-//	private Long colorCode;
-//	private String cbmStr;
-//	private String korNm;
-//	//비고1
-//	private String memo1;
-//	private String memo2;
-//	private String memo3;
-//	//품번
-//	private String itemNo;	
-//	//세번
-//	private String hsCode;
-//	//수량
-//	private String itemCount;
-//	//박스수
-//	private String boxCount;
-//	//무게
-//	private String weight;
-//	
-//	private String cbm;
-//	//신고단가
-//	private String reportPrice;
-//	private boolean coYn;
-//	private String coCode;
-//	private String coNm;
-//	
-//	private String totalPrice;
-//	
-//	private String engNm;
-//	
-//	//shipper
-//	private String exportNm;
-//	//manage 이름
-//	private String manageName;
-//	//manage 직급
-//	private String manageLevel;
-//	
-//	
-//	//shipper address
-//	private String exportAddress;
-//	private String businessman;
-	
-	
-//	private String masterCompany;
-//	private String masterCompanyNumber;
-//	private String masterExport;
-//	private String masterExportAddr;
-	//미리보기용 작업일자
-//	private String forViewWorkDate;
-//	private String companyNm;
-//	private String marking;
-//	private String blNo;
+
 	
 	private Long inboundMasterId;
+	private Long companyId;
 	private String itemCountSum;
 	private String boxCountSum;
 	private String weightSum;
@@ -116,11 +62,51 @@ public class InboundViewRes {
 	
 	private String shipper;
 	private String consignee;
+	private String companyNum;
 	private String notify;
 	private String blNo;
 	private int no;
+	private int checkImportYn;
+	private String memo;
 
+	private Long aTypeCount;
+	private Long bTypeCount;
+	private Long cTypeCount;
+	private Long dTypeCount;
+	private Long eTypeCount;
+	private Long fTypeCount;
+	private Long gTypeCount;
+	private Long hTypeCount;
+
+	private String aTypeNm;
+	private String bTypeNm;
+	private String cTypeNm;
+	private String dTypeNm;
+	private String eTypeNm;
+	private String fTypeNm;
+	private String gTypeNm;
+	private String hTypeNm;
 	
+	private String aTypeFileNm;
+	private String bTypeFileNm;
+	private String cTypeFileNm;
+	private String dTypeFileNm;
+	private String eTypeFileNm;
+	private String fTypeFileNm;
+	private String gTypeFileNm;
+	private String hTypeFileNm;
+	
+	
+	
+	private String aTypeInfo;
+	private String bTypeInfo;
+	private String cTypeInfo;
+	private String dTypeInfo;
+	private String eTypeInfo;
+	private String fTypeInfo;
+	private String gTypeInfo;
+	private String hTypeInfo;
+	private String fileTotalInfo;
 	
 
 	private List<Map<String,Object>> inbounds = new ArrayList();

@@ -273,7 +273,7 @@ public class ExcelServiceImpl implements ExcelService {
 //			}
 //			return result;
 			String[] data04_arr = excelFTARes.getData04().split(",");
-			result = data04_arr[2];
+			result = data04_arr[2]+","+data04_arr[3];
 			cell.setCellValue(result);
 		} else if (target.contains("${data04_4}")) {
 			String result = "";
@@ -283,7 +283,7 @@ public class ExcelServiceImpl implements ExcelService {
 				System.err.println("convertData ::excelFTARes.getData04()::" + excelFTARes.getData04());
 			}
 			String[] data04_arr = excelFTARes.getData04().split(",");
-			result = data04_arr[3];
+			result = data04_arr[4]+","+data04_arr[5];
 //			return result;
 			cell.setCellValue(result);
 		} else if (target.contains("${data05}")) {
@@ -628,7 +628,7 @@ public class ExcelServiceImpl implements ExcelService {
 //			ExcelFTASubRes subRes = ExcelFTASubRes.builder().build();
 
 			String departDt = t.getFinalInbound().getDepartDtStr();
-
+			
 			item.setFileNm(t.getInboundMaster().getBlNo());
 			item.setData01(t.getInboundMaster().getComExport().getValue() + "\n"
 					+ t.getInboundMaster().getComExport().getValue2());
@@ -639,9 +639,11 @@ public class ExcelServiceImpl implements ExcelService {
 			data4.append(",");
 			data4.append(t.getFinalInbound().getHangName() + " / " + t.getFinalInbound().getHangCha());
 			data4.append(",");
-			data4.append(t.getFinalInbound().getDepartPort());
+//			data4.append(t.getFinalInbound().getDepartPort());
+			data4.append((t.getFinalInbound().getDepartPort()==null?"" :_commonRepository.findById(t.getFinalInbound().getDepartPort()).get().getValue2()));
 			data4.append(",");
-			data4.append(t.getFinalInbound().getIncomePort());
+//			data4.append(t.getFinalInbound().getIncomePort());
+			data4.append((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
 			item.setData04(data4.toString());
 			item.setData05(item.getData01());
 
@@ -668,7 +670,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 				String yyMMdd = getYYMMDD(departDt);
 				subRes.setOrderNo(i + 1);
-				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd + "B");
+				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd );
 				subRes.setData10(item.getData10());
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
 				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
@@ -885,7 +887,7 @@ public class ExcelServiceImpl implements ExcelService {
 			String result = "";
 			try {
 				String[] data04_arr = excelRCEPRes.getData04().split(",");
-				result = data04_arr[2];
+				result = data04_arr[2]+","+data04_arr[3];
 			} catch (Exception e) {
 				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
 			}
@@ -894,7 +896,7 @@ public class ExcelServiceImpl implements ExcelService {
 			String result = "";
 			try {
 				String[] data04_arr = excelRCEPRes.getData04().split(",");
-				result = data04_arr[3];
+				result = data04_arr[4]+","+data04_arr[5];
 			} catch (Exception e) {
 				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
 			}
@@ -1208,9 +1210,9 @@ public class ExcelServiceImpl implements ExcelService {
 			data4.append(",");
 			data4.append(t.getFinalInbound().getHangName() + " / " + t.getFinalInbound().getHangCha());
 			data4.append(",");
-			data4.append(t.getFinalInbound().getDepartPort());
+			data4.append((t.getFinalInbound().getDepartPort()==null?"" :_commonRepository.findById(t.getFinalInbound().getDepartPort()).get().getValue2()));
 			data4.append(",");
-			data4.append(t.getFinalInbound().getIncomePort());
+			data4.append((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
 			item.setData04(data4.toString());
 			item.setData05(item.getData01());
 
@@ -1237,7 +1239,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 				String yyMMdd = getYYMMDD(departDt);
 				subRes.setOrderNo(i + 1);
-				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd + "B");
+				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd);
 				subRes.setData10(item.getData10());
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
 				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
@@ -1921,7 +1923,7 @@ public class ExcelServiceImpl implements ExcelService {
 				    			       anchor.setRow1(cell.getRowIndex());
 //				    			       drawing.resi
 				    			       pict.resize();
-				    			       pict.resize(scale);
+				    			       pict.resize(scale,0.45);
 				    			       cell.setCellValue("");
 				    			       
 				    			   }
@@ -2087,7 +2089,7 @@ public class ExcelServiceImpl implements ExcelService {
 	    	       	if(sheet.getMergedRegion(j).getFirstRow() == 23+dataSize) {
 	    	    		sheet.removeMergedRegion(j);
 	    	    		sheet.removeMergedRegion(j);
-	    	    		sheet.removeMergedRegion(j);
+//	    	    		sheet.removeMergedRegion(j);
 	    	    		
 	    	       	}
 	    	   }
@@ -2378,17 +2380,21 @@ public class ExcelServiceImpl implements ExcelService {
 			ExcelInpackRes item = ExcelInpackRes.builder().build();
 			List<ExcelInpackSubRes> list = new ArrayList<>();
 
-//			ExcelFTASubRes subRes = ExcelFTASubRes.builder().build();
 
 			String departDt = t.getFinalInbound().getDepartDtStr();
+			StringBuffer sb = new StringBuffer();
+			String companyNum=t.getInboundMaster().getCompanyInfo().getCoNum();
+			sb.append(companyNum);
+			sb.insert(2, "-");
+			sb.insert(6, "-");
 			
 			item.setFileNm(t.getInboundMaster().getBlNo());
 			item.setInboundMasterId(t.getInboundMaster().getId());
 			item.setData01(t.getInboundMaster().getComExport().getValue() + "\n"
 					+ t.getInboundMaster().getComExport().getValue2());
 			item.setData03(t.getInboundMaster().getCompanyInfo().getCoInvoice());
-			item.setData05(t.getInboundMaster().getCompanyInfo().getConsignee() + "\n"
-					+ t.getInboundMaster().getCompanyInfo().getCoNum() + "\n"
+			item.setData05(t.getInboundMaster().getCompanyInfo().getCoNmEn() + "\n"
+					+ sb.toString() + "\n"
 					+ t.getInboundMaster().getCompanyInfo().getCoAddress());
 			item.setData06(departDt);
 			item.setData07(t.getFinalInbound().getHangName() + "/" + t.getFinalInbound().getHangCha());
@@ -2484,7 +2490,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 	@Override
 	public List<ExcelContainerRes> containerData(FinalInboundReq req) throws Exception {
-		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyymmdd");
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
@@ -2498,8 +2504,11 @@ public class ExcelServiceImpl implements ExcelService {
 			List<InboundRes> inboundList = _InboundService.getInboundByMasterId(f.getInboundMaster().getId());
 			List<InboundRes> result2 = _utilService.changeExcelFormatNew(inboundList);
 			InboundViewRes i = _InboundService.changeInbound(result2);
-			
-		
+			StringBuffer sb = new StringBuffer();
+			String companyNum=f.getInboundMaster().getCompanyInfo().getCoNum();
+			sb.append(companyNum);
+			sb.insert(2, "-");
+			sb.insert(6, "-");
 			ExcelContainerRes r = new ExcelContainerRes();
 			Date incomeDt = beforeFormat.parse(f.getFinalInbound().getIncomeDt());
 			Date departDt = beforeFormat.parse(f.getFinalInbound().getDepartDtStr());
@@ -2513,9 +2522,9 @@ public class ExcelServiceImpl implements ExcelService {
 			r.setHshnam(""+f.getInboundMaster().getComExport().getValue());
 			r.setHshadd(""+f.getInboundMaster().getComExport().getValue2());
 			r.setHcncod(""+f.getInboundMaster().getCompanyInfo().getConsignee());
-			r.setHcnnam(""+f.getInboundMaster().getCompanyInfo().getConsignee());
+			r.setHcnnam(""+f.getInboundMaster().getCompanyInfo().getCoNmEn()+"("+sb.toString()+")");
 			r.setHcnadd(""+f.getInboundMaster().getCompanyInfo().getCoAddress());
-			r.setHnfnam("'SAME AS CONSIGNEE");
+			r.setHnfnam("SAME AS CONSIGNEE");
 			r.setHfwnam(""+f.getInboundMaster().getCompanyInfo().getCoNm());
 			r.setHfwadd(""+f.getInboundMaster().getCompanyInfo().getCoNmEn());
 			r.setHplcod((f.getFinalInbound().getDepartPort() == null ? "" : ""+ _commonRepository.findById(f.getFinalInbound().getDepartPort()).get().getValue()));
@@ -2527,7 +2536,7 @@ public class ExcelServiceImpl implements ExcelService {
 			r.setHfncod((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue()));
 			r.setHfnnam((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue2()));
 			r.setHpkqty(""+decimalFormat2.format(i.getBoxCountSumD()));
-			r.setHpkunt("CNT");
+			r.setHpkunt("CTN");
 			r.setHwegwt(""+decimalFormat2.format(i.getWeightSumD()));
 			r.setHwecbm(""+decimalFormat.format(i.getCbmSumD()));
 			if(f.getFinalInbound().getInboundMasters().size()==1) {
@@ -2546,9 +2555,9 @@ public class ExcelServiceImpl implements ExcelService {
 			}else {
 				r.setHfttem("P");
 			}
-			r.setHblsay(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getItemCountSumD().longValue())+" "+"("+String.valueOf(i.getItemCountSumD().intValue())+")"+" "+r.getHpkunt()+" "+"ONLY.");
+			r.setHblsay(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getHpkunt()+" "+"ONLY.");
 			r.setHaccod(f.getInboundMaster().getCompanyInfo().getConsignee());
-			r.setHacnam(f.getInboundMaster().getCompanyInfo().getConsignee());
+			r.setHacnam(f.getInboundMaster().getCompanyInfo().getCoNmEn());
 			r.setMrkmrk(inboundList.get(0).getMarking());
 			List <String> nameList = new ArrayList<>();
 			
@@ -2599,8 +2608,8 @@ public class ExcelServiceImpl implements ExcelService {
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
-			workbook.setSheetName(0, "container");
-			
+			workbook.setSheetName(0, "winsabis");
+			Collections.reverse(list);
 			
 			
 				
@@ -2626,7 +2635,7 @@ public class ExcelServiceImpl implements ExcelService {
 			
 			
 			
-			String fileName =  "container.xlsx";
+			String fileName =  "WIN-SABIS.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
 			workbook.write(response.getOutputStream());

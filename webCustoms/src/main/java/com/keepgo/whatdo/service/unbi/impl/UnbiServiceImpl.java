@@ -146,6 +146,11 @@ public class UnbiServiceImpl implements UnbiService {
 						rt.setContainerMoveCost((item.getContainerMoveCost() == null ? "" : String.valueOf(item.getContainerMoveCost())));
 						rt.setContainerMoveCostD((item.getContainerMoveCost() == null ? new Double(0) : item.getContainerMoveCost()));
 						rt.setTypebTitle((item.getTypebTitle() == null ? "" : item.getTypebTitle()));
+						
+						rt.setUnbiYn((item.getUnbiYn() == null ? "N" : item.getUnbiYn()));
+						rt.setPickupCostYn((item.getPickupCostYn() == null ? "N" : item.getPickupCostYn()));
+						rt.setSanghachaCostYn((item.getSanghachaCostYn() == null ? "N" : item.getSanghachaCostYn()));
+						rt.setOfficeNameYn((item.getOfficeNameYn() == null ? "N" : item.getOfficeNameYn()));
 						if(item.getColor() !=null ) {
 							
 							for(int i=0; i<ColorType.getList().size();i++) {
@@ -309,6 +314,27 @@ public class UnbiServiceImpl implements UnbiService {
 				
 			}else {
 				unbi.setColor(Integer.valueOf(0));
+			}
+			
+			if(list.get(i).getUnbiYn()==null||list.get(i).getUnbiYn().equals("")) {
+				unbi.setUnbiYn("N");
+			}else {
+				unbi.setUnbiYn(list.get(i).getUnbiYn());
+			}
+			if(list.get(i).getPickupCostYn()==null||list.get(i).getPickupCostYn().equals("")) {
+				unbi.setPickupCostYn("N");
+			}else {
+				unbi.setPickupCostYn(list.get(i).getPickupCostYn());
+			}
+			if(list.get(i).getSanghachaCostYn()==null||list.get(i).getSanghachaCostYn().equals("")) {
+				unbi.setSanghachaCostYn("N");
+			}else {
+				unbi.setSanghachaCostYn(list.get(i).getSanghachaCostYn());
+			}
+			if(list.get(i).getOfficeNameYn()==null||list.get(i).getOfficeNameYn().equals("")) {
+				unbi.setOfficeNameYn("N");
+			}else {
+				unbi.setOfficeNameYn(list.get(i).getOfficeNameYn());
 			}
 			
 			

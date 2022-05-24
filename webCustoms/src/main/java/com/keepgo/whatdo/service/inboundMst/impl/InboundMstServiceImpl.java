@@ -224,6 +224,8 @@ public class InboundMstServiceImpl implements InboundMstService {
 		dto.setBlNo(item.getBlNo());
 		dto.setWorkDate(item.getWorkDate());
 		dto.setManager(item.getManager());
+		dto.setCurrencyType(item.getCurrencyType());
+		dto.setPackingType(item.getPackingType());
 		if(item.getFreight() != 0) {
 			dto.setFreight(FreightType.getList().stream().filter(type->type.getId() == item.getFreight()).findFirst().get().getName());
 			dto.setFreightCode(item.getFreight());
@@ -308,8 +310,9 @@ public class InboundMstServiceImpl implements InboundMstService {
 		inboundMaster.setUpdateDt(new Date());
 		inboundMaster.setIsUsing(true);
 		inboundMaster.setFreight(inboundMasterReq.getFreight());
-
-		if (inboundMasterReq.getCompanyInfoId() != null) {
+		inboundMaster.setCurrencyType(inboundMasterReq.getCurrencyType());
+		inboundMaster.setPackingType(inboundMasterReq.getPackingType());
+				if (inboundMasterReq.getCompanyInfoId() != null) {
 			CompanyInfo companyInfo = _companyInfoRepository.findById(inboundMasterReq.getCompanyInfoId())
 					.orElse(CompanyInfo.builder().build());
 			inboundMaster.setCompanyInfo(companyInfo);
@@ -370,7 +373,8 @@ public class InboundMstServiceImpl implements InboundMstService {
 		target.setIsUsing(true);
 		target.setFreight(inboundMasterReq.getFreight());
 		target.setManager(inboundMasterReq.getManager());
-
+		target.setCurrencyType(inboundMasterReq.getCurrencyType());
+		target.setPackingType(inboundMasterReq.getPackingType());
 		//todo 사용자 세션 아이디로 수정해야됨.
 		inboundMaster.setUser(User.builder().id(new Long(1)).build());
 		if(inboundMasterReq.getCompanyInfoId() != null) {

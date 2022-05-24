@@ -51,6 +51,8 @@ public class ExcelFTARes {
 	String data12;
 	
 	String totalCountEng;
+	//포장단위
+	String packingType;
 	
 	//품목 리스트
 	List<ExcelFTASubRes>  subItem;

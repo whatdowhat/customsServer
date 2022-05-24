@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.Inbound;
+import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.FileUploadReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
@@ -38,6 +39,7 @@ import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
+import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
 import com.keepgo.whatdo.service.util.UtilService;
@@ -56,6 +58,9 @@ public class InboundController {
 	
 	@Autowired
 	UtilService _utilService;
+	
+	@Autowired
+	InboundMasterRepository _inboundMasterRepository;
 
 	@RequestMapping(value = "/test/inbound", method = { RequestMethod.POST })
 	public List<InboundRes> shopper(HttpServletRequest httpServletRequest,InboundReq inboundReq){
@@ -192,6 +197,7 @@ public class InboundController {
 		List<InboundViewRes> finalList = new ArrayList<>();
 		
 		for(int i=0; i<inboundMasterIdList.size(); i++) {
+			InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterIdList.get(i).longValue()).get();
 			List<InboundRes> list = _InboundService.getInboundByMasterId(inboundMasterIdList.get(i).longValue());
 			//출력모드
 			List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
@@ -200,6 +206,8 @@ public class InboundController {
 			boxCountSumFinal=boxCountSumFinal+ ( result.getBoxCountSumD() == null ? 0d : result.getBoxCountSumD());
 			cbmSumFinal=cbmSumFinal+ (result.getCbmSumD() == null ? 0d : result.getCbmSumD());
 			weightSumFinal=weightSumFinal+ (result.getWeightSumD() == null ? 0d : result.getWeightSumD());
+			result.setCurrencyType(inboundMaster.getCurrencyType());
+			result.setPackingType(inboundMaster.getPackingType());
 			finalList.add(result);
 		}
 		
@@ -208,6 +216,11 @@ public class InboundController {
 		finalRes.setBoxCountSumFinal(decimalFormat2.format(boxCountSumFinal));
 		finalRes.setCbmSumFinal(decimalFormat.format(cbmSumFinal));
 		finalRes.setWeightSumFinal(decimalFormat2.format(weightSumFinal));
+		if(inboundMasterIdList.size()==0) {
+			finalRes.setPackingType("CTN");
+		}else {
+			finalRes.setPackingType(finalList.get(0).getPackingType());
+		}
 		return  finalRes;
 	}
 	

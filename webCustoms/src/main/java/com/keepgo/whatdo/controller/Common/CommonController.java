@@ -28,12 +28,18 @@ import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.CoTypeRes;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.ColorTypeRes;
+import com.keepgo.whatdo.define.CurrencyType;
+import com.keepgo.whatdo.define.CurrencyTypeRes;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.define.FileTypeRes;
 import com.keepgo.whatdo.define.FreightType;
 import com.keepgo.whatdo.define.FreightTypeRes;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.define.GubunTypeRes;
+import com.keepgo.whatdo.define.PackingType;
+import com.keepgo.whatdo.define.PackingTypeRes;
+import com.keepgo.whatdo.define.AmountType;
+import com.keepgo.whatdo.define.AmountTypeRes;
 import com.keepgo.whatdo.define.UnbiType;
 import com.keepgo.whatdo.define.UnbiTypeRes;
 import com.keepgo.whatdo.entity.customs.Common;
@@ -245,5 +251,29 @@ public class CommonController {
 			throws Exception, NumberFormatException {
 
 		return UnbiType.getList();
+	}
+	
+	@RequestMapping(value = "/common/currencyType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<CurrencyTypeRes> CurrencyType()
+			throws Exception, NumberFormatException {
+
+		return CurrencyType.getList();
+	}
+	
+	@RequestMapping(value = "/common/packingType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<PackingTypeRes> PackingType()
+			throws Exception, NumberFormatException {
+
+		return PackingType.getList();
+	}
+	
+	@RequestMapping(value = "/common/amountType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<AmountTypeRes> AmountType()
+			throws Exception, NumberFormatException {
+
+		return AmountType.getList();
 	}
 }

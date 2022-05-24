@@ -169,4 +169,7 @@ private Double totalCbm;
 private Double finalTotalPrice;
 //미리보기용 작업일자
 private String forViewWorkDate;
+
+private String currencyType;
+private String packingType;
 }

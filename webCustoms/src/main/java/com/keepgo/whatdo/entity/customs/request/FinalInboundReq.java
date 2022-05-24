@@ -43,13 +43,11 @@ public class FinalInboundReq {
 	private String finalMasterBl;
 	private String containerNo;
 	private Double containerPrice;
-	private String deliveryNm;
 	private String hangName;
 	private String silNo;
 	private String cargoName;
 	private String hangCha;
-	private String containerSizeStr;
-	private String weatherCondition;
+	
 	private Date incomeDate;
 	private Date departDate;
 	//중국 상검
@@ -66,6 +64,14 @@ public class FinalInboundReq {
 	private Long departPortId;
 	private List<Long> inboundMasters = new ArrayList<>();
 	
+	
+	private String containerSizeStr;
+	private String containerCost;
+	private String weatherCondition;
+	private String workDepartDt;
+	private Date workDepartDate;
+	private String deliveryNm;
+	private String chulhangPort;
 	
 	List<InboundMasterReq> inboundMasterData;
 	List<FinalInboundReq> finalInboundReqData;

@@ -22,7 +22,8 @@ public class ExcelContainerRes {
 	
 	//excel 파일 이름
 	String fileNm;
-	
+	//박스 포장단위
+	String packingType;
 	String hblnum;
 	@Builder.Default
 	String mblnum="";

@@ -32,5 +32,6 @@ public class ExcelInpackSubRes {
 	private Double totalWeight;
 	private Double cbm;
 	
-	
+	private String currencyType;
+	private String packingType;
 }

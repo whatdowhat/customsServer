@@ -249,10 +249,15 @@ public class FinalInboundController {
 				result.setCheckImportYn(0);
 			}
 			if (inboundMaster.getCompanyInfo() != null) {
+				StringBuffer sb = new StringBuffer();
+				String companyNum=inboundMaster.getCompanyInfo().getCoNum();
+				sb.append(companyNum);
+				sb.insert(2, "-");
+				sb.insert(6, "-");
 				result.setCompanyId(inboundMaster.getCompanyInfo().getId());
 				result.setConsignee(inboundMaster.getCompanyInfo().getCoNm());
-				result.setNotify(inboundMaster.getCompanyInfo().getConsignee());
-				result.setCompanyNum(inboundMaster.getCompanyInfo().getCoNum());
+				result.setNotify("SAME AS CONSIGNEE");
+				result.setCompanyNum(sb.toString());
 			} else {
 				result.setCompanyId(new Long(0));
 				result.setConsignee("");
@@ -368,7 +373,8 @@ public class FinalInboundController {
 			result.setFileTotalInfo(result.getATypeInfo() + "\n" + result.getBTypeInfo() + "\n" + result.getCTypeInfo()
 					+ "\n" + result.getDTypeInfo() + "\n" + result.getETypeInfo() + "\n" + result.getFTypeInfo() + "\n"
 					+ result.getGTypeInfo() + "\n" + result.getHTypeInfo());
-
+			result.setCurrencyType(inboundMaster.getCurrencyType());
+			result.setPackingType(inboundMaster.getPackingType());
 			no = no + 1;
 			finalList.add(result);
 		}

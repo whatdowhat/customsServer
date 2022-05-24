@@ -26,7 +26,8 @@ public class ExcelYATAISubRes {
 	private String engNm;
 	private Double boxCount;
 	private String data08;
-	private Double itemCount;
+	private String itemCount;
+	private String amountType;
 	private String companyInvoice;
 	private String departDtStr;
 	

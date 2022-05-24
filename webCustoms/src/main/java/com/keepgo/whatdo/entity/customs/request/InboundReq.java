@@ -52,6 +52,7 @@ public class InboundReq {
 	private String workDateStr;
 	private String orderNoStr;
 	private String jejil;
+	private String amountType;
 	
 	
 	@Column(name = "companyNm")

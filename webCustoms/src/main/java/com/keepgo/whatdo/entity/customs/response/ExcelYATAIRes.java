@@ -49,6 +49,8 @@ public class ExcelYATAIRes {
 	
 	
 	String totalBoxCountEng;
+	// 포장단위
+	String packingType;
 	
 	
 	//품목 리스트

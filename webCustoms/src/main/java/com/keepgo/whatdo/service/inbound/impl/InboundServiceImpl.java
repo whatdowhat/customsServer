@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.keepgo.whatdo.define.AmountType;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.FileType;
@@ -333,6 +334,7 @@ public class InboundServiceImpl implements InboundService {
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
+						.amountType(item.getAmountType())
 //						.color(item.getColorCode())
 //						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
 //						.colorCode(item.getColor())
@@ -372,6 +374,10 @@ public class InboundServiceImpl implements InboundService {
 							}
 						}
 //						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+					}
+					if(item.getAmountType() !=null ) {
+						rt.setAmountType(item.getAmountType());
+						
 					}
 					if(index.size() == 0) {
 //						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
@@ -576,19 +582,12 @@ public class InboundServiceImpl implements InboundService {
 
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundReq.getInboundMasterId())
 				.orElse(InboundMaster.builder().build());
-//		Common common = _commonRepository.findById(inboundReq.getCoId()).orElse(Common.builder().build());
-//		Common common = _commonRepository.findById(
-//				
-//				(inboundReq.getCoId() !=null ) ? inboundReq.getCoId() : new Long(0) 
-//				
-//				).orElse(null);
+
 		
 		List<InboundReq> list = inboundReq.getInboundReqData();
 		for (int i = 0; i < list.size(); i++) {
 
-//			Common common = _commonRepository.findByValue(
-//					
-//					(list.get(i).getCoCode() !=null ) ? list.get(i).getCoCode() : "" );
+
 
 			int index = i;
 
@@ -622,14 +621,18 @@ public class InboundServiceImpl implements InboundService {
 			}
 
 			inbound.setCoId(list.get(i).getCoId().intValue());
-//			if (list.get(i).getCoCode() != null) {
-//				CoType.getList().stream().filter(co -> co.getName().equals(list.get(index).getCoCode())).findFirst()
-//						.ifPresent(coType -> inbound.setCoId(coType.getId()));
-//
-//			}else {
-//				//공백시 3으로 고정
-//				list.get(i).setCoId(Long.valueOf(3));
-//			}
+			if(list.get(i).getAmountType()!=null) {
+				for(int j=0; j<AmountType.getList().size();j++) {
+					if(AmountType.getList().get(j).getName().equals(list.get(i).getAmountType())) {
+						inbound.setAmountType(AmountType.getList().get(j).getName());
+					}else {
+
+					}
+				}
+				
+			}else {
+				inbound.setAmountType("PCS");
+			}
 
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
@@ -693,6 +696,21 @@ public class InboundServiceImpl implements InboundService {
 			}else {
 				inbound.setColor(Integer.valueOf(0));
 			}
+			
+			if(list.get(i).getAmountType()!=null) {
+				for(int j=0; j<AmountType.getList().size();j++) {
+					if(AmountType.getList().get(j).getName().equals(list.get(i).getAmountType())) {
+						inbound.setAmountType(AmountType.getList().get(j).getName());
+					}else {
+
+					}
+				}
+				
+			}else {
+				inbound.setAmountType("PCS");
+			}
+			
+			
 			
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
@@ -917,6 +935,9 @@ public class InboundServiceImpl implements InboundService {
 		if (cellIndex == 17) {
 			inboundRes.setColor(value);
 		}
+		if(cellIndex == 18) {
+			inboundRes.setAmountType(value);
+		}
 		
 	}
 	
@@ -957,6 +978,19 @@ public class InboundServiceImpl implements InboundService {
 //				Long coId = Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().get();
 //				
 //				item.setCoId(Long.valueOf(CoType.getList().stream().filter(tt->tt.getName().equals(item.getCoCode())).findFirst().ifPresent(t->). );
+			}
+			
+			if(item.getAmountType() == null) {
+				item.setAmountType("PCS");
+			}else {
+				
+				boolean isExist = AmountType.getList().stream().filter(tt->tt.getName().equals(item.getAmountType())).findFirst().isPresent();
+				
+				if(isExist) {
+					item.setAmountType(AmountType.getList().stream().filter(tt->tt.getName().equals(item.getAmountType())).findFirst().get().getName());
+				}else {
+					item.setAmountType("PCS");
+				}
 			}
 					
 			//cbm 문자 곱 * 박스 갯수
@@ -1024,7 +1058,7 @@ public class InboundServiceImpl implements InboundService {
 			if(totalPriceSum==0) {
 				inboundViewRes.setTotalPriceSum(" ");
 			}else {
-				inboundViewRes.setTotalPriceSum(decimalFormat3.format(totalPriceSum));
+				inboundViewRes.setTotalPriceSum(decimalFormat.format(totalPriceSum));
 			}
 			
 			inboundViewRes.setFreight(list.get(0).getFreight());

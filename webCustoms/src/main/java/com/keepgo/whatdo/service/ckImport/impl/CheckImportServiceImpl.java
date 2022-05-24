@@ -133,7 +133,8 @@ public class CheckImportServiceImpl implements CheckImportService {
 		CompanyInfo company = _companyInfoRepository.findById(checkImportReq.getCompanyInfoId()).get();
 		String blNo = im.getBlNo();
 		if(checkImport!=null) {
-			checkImport.setMemo(blNo+" "+checkImportReq.getMemo());
+//			checkImport.setMemo(blNo+" "+checkImportReq.getMemo());
+			checkImport.setMemo(checkImportReq.getMemo());
 			checkImport.setRegDate(new Date());
 			
 			
@@ -147,7 +148,8 @@ public class CheckImportServiceImpl implements CheckImportService {
 			ch.setUser(User.builder().id(new Long(1)).build());
 			ch.setNo(0);
 			ch.setOrderNo(0);	
-			ch.setMemo(blNo+" "+checkImportReq.getMemo());
+//			ch.setMemo(blNo+" "+checkImportReq.getMemo());
+			ch.setMemo(checkImportReq.getMemo());
 			_checkImportRepository.save(ch);
 		}
 		

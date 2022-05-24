@@ -115,6 +115,7 @@ public class InboundRes {
 	private String blNo;
 	
 	private String jejil;
+	private String amountType;
 //	
 //	//담당자
 //	@JoinColumn(name = "manageId")

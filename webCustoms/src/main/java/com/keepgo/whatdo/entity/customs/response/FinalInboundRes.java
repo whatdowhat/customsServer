@@ -45,14 +45,13 @@ public class FinalInboundRes {
 	private String finalMasterBl;
 	private String containerNo;
 	private Double containerPrice;
-	private String deliveryNm;
+	
 	private String hangName;
 	private String silNo;
 	private String cargoName;
 	
 	private String hangCha;
-	private String containerSizeStr;
-	private String weatherCondition;
+	
 	//중국 상검
 	private int chinaSanggumYn;
 	//출항 지연
@@ -71,6 +70,15 @@ public class FinalInboundRes {
 	private Integer unbiDefine2; //픽업비
 	private Integer unbiDefine3; //상하차비
 	private Integer unbiDefine4; //기타잡비
+	
+	
+	private String containerSizeStr;
+	private String containerCost;
+	private String weatherCondition;
+	private String workDepartDt;
+	private String forViewWorkDepartDt;
+	private String deliveryNm;
+	private String chulhangPort;
 	
 	
 	//조인컬럼 삭제용

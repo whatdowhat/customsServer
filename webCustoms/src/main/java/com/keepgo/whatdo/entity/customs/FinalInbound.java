@@ -67,14 +67,7 @@ public class FinalInbound {
 	@Column(name = "containerNo")
 	private String containerNo;
 
-	// container가격
-	@Column(name = "containerPrice")
-	private Double containerPrice;
-
-	// 운송처
-	@Column(name = "deliveryNm")
-	private String deliveryNm;
-
+	
 	// 항명
 	@Column(name = "hangName")
 	private String hangName;
@@ -99,14 +92,11 @@ public class FinalInbound {
 	// 항차
 	@Column(name = "hangCha")
 	private String hangCha;
-
-	// 컨테이너 사이즈
-	@Column(name = "containerSizeStr")
-	private String containerSizeStr;
-
-	// 중국 작업 당시 날씨
-	@Column(name = "weatherCondition")
-	private String weatherCondition;
+	
+	// container가격
+	@Column(name = "containerPrice")
+	private Double containerPrice;
+	
 	
 	//중국 상검
 	@Column(name = "chinaSanggumYn")
@@ -156,6 +146,26 @@ public class FinalInbound {
 	
 	@Column(name = "unbiDefine4")
 	private Integer unbiDefine4; //기타잡비
+	
+	// 컨테이너 사이즈
+	@Column(name = "containerSizeStr")
+	private String containerSizeStr;
+	//컨테이너 비용
+	@Column(name = "containerCost")
+	private String containerCost;
+	// 중국 작업 당시 날씨
+	@Column(name = "weatherCondition")
+	private String weatherCondition;
+	
+	// 작업지 출발일
+	@Column(name = "workDepartDt")
+	private String workDepartDt;
+	// 운송처
+	@Column(name = "deliveryNm")
+	private String deliveryNm;
+	// 출항항구
+	@Column(name = "chulhangPort")
+	private String chulhangPort;
 	
 	
 }

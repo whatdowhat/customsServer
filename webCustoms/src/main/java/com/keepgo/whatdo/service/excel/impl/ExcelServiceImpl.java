@@ -144,6 +144,10 @@ public class ExcelServiceImpl implements ExcelService {
 
 			// data 치환
 			chageData(sheet, excelFTARes, workbook);
+			
+			// 셀병합
+			//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
+			sheet.addMergedRegion(new CellRangeAddress(22,22,7,8));
 
 			// item add
 			String fileName = excelFTARes.getFileNm() + "_FTA.xlsx";
@@ -470,9 +474,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 				if (i == 0) {
 					newCell.setCellValue(item.getOrderNo());
-				} else if (i == 5) {
-					newCell.setCellValue(item.getItemCount());
-				} else {
+				}  else {
 					newCell.setCellValue(oldCell.getNumericCellValue());
 				}
 
@@ -492,7 +494,9 @@ public class ExcelServiceImpl implements ExcelService {
 					newCell.setCellValue(item.getHsCode());
 				} else if (i == 4) {
 					newCell.setCellValue(item.getData10());
-				} else {
+				} else if (i == 5) {
+					newCell.setCellValue(item.getItemCount()+" "+item.getAmountType());
+				}else {
 					newCell.setCellValue(oldCell.getStringCellValue());
 				}
 
@@ -624,6 +628,7 @@ public class ExcelServiceImpl implements ExcelService {
 			List<Inbound> origin_inbound_list = new ArrayList<>();
 			ExcelFTARes item = ExcelFTARes.builder().build();
 			List<ExcelFTASubRes> list = new ArrayList<>();
+			DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 
 //			ExcelFTASubRes subRes = ExcelFTASubRes.builder().build();
 
@@ -646,7 +651,12 @@ public class ExcelServiceImpl implements ExcelService {
 			data4.append((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
 			item.setData04(data4.toString());
 			item.setData05(item.getData01());
-
+			if(t.getInboundMaster().getPackingType()!=null) {
+				item.setPackingType(t.getInboundMaster().getPackingType());
+			}else {
+				item.setPackingType("CTN");
+			}
+			
 //			Inbound blItem;
 //			A(1,"FTA",1),
 //			B(2,"YATAI",2),
@@ -673,12 +683,20 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd );
 				subRes.setData10(item.getData10());
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
-				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
+//				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
+				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));				
 				subRes.setHsCode(origin_inbound_list.get(i).getHsCode());
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
 				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+				if(origin_inbound_list.get(i).getAmountType()!=null) {
+					subRes.setAmountType(origin_inbound_list.get(i).getAmountType());
+				}else {
+					subRes.setAmountType("PCS");
+				}
+				
+				
 				sublist.add(subRes);
 //				index.add(1);
 //				return subRes;
@@ -689,8 +707,18 @@ public class ExcelServiceImpl implements ExcelService {
 //			item.setTotalCountEng("TOTAL (" + String.valueOf(total.intValue()) + ")");
 			Double total = sublist.stream().filter(k -> k.getBoxCount() != null)
 					.mapToDouble(ExcelFTASubRes::getBoxCount).sum();
-			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
-					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
+			
+			if(total==1||total==0) {
+				item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+						+ String.valueOf(total.intValue()) + ")" + " "+item.getPackingType()+"OF");
+			}else {
+				item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+						+ String.valueOf(total.intValue()) + ")" + " "+item.getPackingType()+"S"+" "+"OF");
+			}
+			
+			
+			
+			
 			item.setSubItem(sublist);
 			return item;
 		}).get();
@@ -1046,8 +1074,6 @@ public class ExcelServiceImpl implements ExcelService {
 
 				if (i == 0) {
 					newCell.setCellValue(item.getOrderNo());
-				} else if (i == 5) {
-					newCell.setCellValue(item.getItemCount());
 				} else {
 					newCell.setCellValue(oldCell.getNumericCellValue());
 				}
@@ -1068,6 +1094,8 @@ public class ExcelServiceImpl implements ExcelService {
 					newCell.setCellValue(item.getHsCode());
 				} else if (i == 4) {
 					newCell.setCellValue(item.getData10());
+				}else if (i == 5) {
+					newCell.setCellValue(item.getItemCount()+" "+item.getAmountType());
 				} else {
 					newCell.setCellValue(oldCell.getStringCellValue());
 				}
@@ -1195,6 +1223,7 @@ public class ExcelServiceImpl implements ExcelService {
 			List<Inbound> origin_inbound_list = new ArrayList<>();
 			ExcelRCEPRes item = ExcelRCEPRes.builder().build();
 			List<ExcelRCEPSubRes> list = new ArrayList<>();
+			DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 
 //			ExcelFTASubRes subRes = ExcelFTASubRes.builder().build();
 
@@ -1215,6 +1244,11 @@ public class ExcelServiceImpl implements ExcelService {
 			data4.append((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
 			item.setData04(data4.toString());
 			item.setData05(item.getData01());
+			if(t.getInboundMaster().getPackingType()!=null) {
+				item.setPackingType(t.getInboundMaster().getPackingType());
+			}else {
+				item.setPackingType("CTN");
+			}
 
 //			Inbound blItem;
 //			A(1,"FTA",1),
@@ -1242,12 +1276,17 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd);
 				subRes.setData10(item.getData10());
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
-				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
+				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));
 				subRes.setHsCode(origin_inbound_list.get(i).getHsCode());
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
 				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+				if(origin_inbound_list.get(i).getAmountType()!=null) {
+					subRes.setAmountType(origin_inbound_list.get(i).getAmountType());
+				}else {
+					subRes.setAmountType("PCS");
+				}
 				sublist.add(subRes);
 //				index.add(1);
 //				return subRes;
@@ -1258,8 +1297,14 @@ public class ExcelServiceImpl implements ExcelService {
 //			item.setTotalCountEng("TOTAL (" + String.valueOf(total.intValue()) + ")");
 			Double total = sublist.stream().filter(k -> k.getBoxCount() != null)
 					.mapToDouble(ExcelRCEPSubRes::getBoxCount).sum();
-			item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
-					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
+			if(total==1||total==0) {
+				item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+						+ String.valueOf(total.intValue()) + ")" + " "+item.getPackingType()+"OF");
+			}else {
+				item.setTotalCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+						+ String.valueOf(total.intValue()) + ")" + " "+item.getPackingType()+"S"+" "+"OF");
+			}
+			
 			item.setSubItem(sublist);
 			return item;
 		}).get();
@@ -1577,13 +1622,7 @@ public class ExcelServiceImpl implements ExcelService {
 				newCell.setCellFormula(oldCell.getCellFormula());
 				break;
 			case Cell.CELL_TYPE_NUMERIC:
-
-				if (i == 8) {
-					newCell.setCellValue(item.getItemCount());
-				} else {
-					newCell.setCellValue(oldCell.getNumericCellValue());
-				}
-
+				newCell.setCellValue(oldCell.getNumericCellValue());
 				break;
 			case Cell.CELL_TYPE_STRING:
 
@@ -1600,6 +1639,8 @@ public class ExcelServiceImpl implements ExcelService {
 					newCell.setCellValue(item.getEngNm());
 				}  else if (i == 7) {
 					newCell.setCellValue(item.getData08());
+				}else if (i == 8) {
+					newCell.setCellValue(item.getItemCount()+" "+item.getAmountType());
 				} else {
 					newCell.setCellValue(oldCell.getStringCellValue());
 				}
@@ -1715,6 +1756,7 @@ public class ExcelServiceImpl implements ExcelService {
 			List<Inbound> origin_inbound_list = new ArrayList<>();
 			ExcelYATAIRes item = ExcelYATAIRes.builder().build();
 			List<ExcelYATAISubRes> list = new ArrayList<>();
+			DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 
 //			ExcelFTASubRes subRes = ExcelFTASubRes.builder().build();
 
@@ -1729,6 +1771,11 @@ public class ExcelServiceImpl implements ExcelService {
 //			item.setData04(_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2());
 			item.setData03((t.getFinalInbound().getDepartPort()==null?"" :_commonRepository.findById(t.getFinalInbound().getDepartPort()).get().getValue2()));
 			item.setData04((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
+			if(t.getInboundMaster().getPackingType()!=null) {
+				item.setPackingType(t.getInboundMaster().getPackingType());
+			}else {
+				item.setPackingType("CTN");
+			}
 //			Inbound blItem;
 //			A(1,"FTA",1),
 //			B(2,"YATAI",2),
@@ -1756,12 +1803,15 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
 				subRes.setData08(item.getData08());
-				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
-				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd + "B");
+				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));
+				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd);
 				subRes.setDepartDtStr(departDt);
-				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
 				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
-
+				if(origin_inbound_list.get(i).getAmountType()!=null) {
+					subRes.setAmountType(origin_inbound_list.get(i).getAmountType());
+				}else {
+					subRes.setAmountType("PCS");
+				}
 				sublist.add(subRes);
 
 			}
@@ -1771,8 +1821,15 @@ public class ExcelServiceImpl implements ExcelService {
 //			item.setTotalBoxCountEng("TOTAL: (" + String.valueOf(total.intValue()) + ")" + " CTNS OF");
 			Double total = sublist.stream().filter(k -> k.getBoxCount() != null)
 					.mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
-			item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
-					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
+//			item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+//					+ String.valueOf(total.intValue()) + ")" + " CTNS OF");
+			if(total==1||total==0) {
+				item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+						+ String.valueOf(total.intValue()) + ")" + " "+item.getPackingType()+"OF");
+			}else {
+				item.setTotalBoxCountEng(EnglishNumberToWords.convert(total.longValue()) + " " + "("
+						+ String.valueOf(total.intValue()) + ")" + " "+item.getPackingType()+"S"+" "+"OF");
+			}
 
 			item.setSubItem(sublist);
 
@@ -1800,6 +1857,16 @@ public class ExcelServiceImpl implements ExcelService {
 			Collections.reverse(excelInpackRes.getSubItem());
 			//시트 수
 			int sheetCn = workbook.getNumberOfSheets();
+			
+			
+
+		      
+//		      1234
+//		      $1,234
+//		      ¥1,234
+//		      row.getCell(3).setCellStyle(xcs_dollar);
+//		      row.getCell(2).setCellStyle(xcs_wian);
+			
 			
 			for(int cn=0; cn<sheetCn; cn++) {
 				String pageNo = "";
@@ -1830,11 +1897,12 @@ public class ExcelServiceImpl implements ExcelService {
 					sheet.addMergedRegion(new CellRangeAddress(15,16,0,5));
 					sheet.addMergedRegion(new CellRangeAddress(20,21,10,11));
 					
-				}else if(cn==1) {
+				}
+				else if(cn==1) {
 					sheet.addMergedRegion(new CellRangeAddress(0,2,0,11));
 				}
+//				
 				
-
 				// 도장이미지 삽입
 				InboundMaster inboundMaster = _inboundMasterRepository.findById(excelInpackRes.getInboundMasterId()).get();
 				Common common = inboundMaster.getComExport();
@@ -1882,11 +1950,11 @@ public class ExcelServiceImpl implements ExcelService {
 				    String fileTale=FilenameUtils.getExtension(common.getFileUpload().getPath3());    
 					 
 					 byte[] inputImage =  IOUtils.toByteArray(resources.getInputStream());
-				     if(fileTale.equals("png")) {
+				     if(fileTale.toUpperCase().equals("png".toUpperCase())) {
 				    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
-				     }else if(fileTale.equals("bmp")) {
+				     }else if(fileTale.toUpperCase().equals("bmp".toUpperCase())) {
 				    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_BMP);
-				     }else if(fileTale.equals("jpg")) {
+				     }else if(fileTale.toUpperCase().equals("jpg".toUpperCase())) {
 				    	 indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_JPEG);
 				     }
 					 
@@ -1915,15 +1983,21 @@ public class ExcelServiceImpl implements ExcelService {
 				    		   
 				    		   try {
 				    			   String value = cell.getStringCellValue();
+				    			   
 				    			   if(value.equals("${image}")) {
 				    				   
 				    			       
 				    			       anchor.setCol1(cell.getColumnIndex());
+				    			       anchor.setCol2(cell.getColumnIndex() + 5);
 //				    			       anchor.setCol2(cell.getColumnIndex()+5);
 				    			       anchor.setRow1(cell.getRowIndex());
-//				    			       drawing.resi
-				    			       pict.resize();
-				    			       pict.resize(scale,0.45);
+				    	   			   anchor.setRow2(cell.getRowIndex()+9);
+				    	   			   
+				    			       
+//				    			       pict.resize();
+//				    			       pict.resize(8.16,8.16);
+//				    			       pict.resize(0.37,0.37);
+				    			       
 				    			       cell.setCellValue("");
 				    			       
 				    			   }
@@ -2025,7 +2099,28 @@ public class ExcelServiceImpl implements ExcelService {
 						
 						
 					}
-						 
+					if (value.contains("${currency}")) {// 통화단위
+
+						final String CELLFORMAT_DOLLAR = "_-$* #,##0.000_ ;_-$* -#,##0.000 ;_-$* \"-\"???_ ;_-@_ ";
+						final String CELLFORMAT_WIAN = "_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ ";
+						XSSFCellStyle xcs_wian = workbook.createCellStyle();
+						xcs_wian.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
+
+						XSSFCellStyle xcs_dollar = workbook.createCellStyle();
+						xcs_dollar.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+
+						if (excelInpackRes.getSubItem().size() > 0) {
+							cell.setCellValue("");
+							if (excelInpackRes.getSubItem().get(0).getCurrencyType().equals("$")) {
+//								row.getCell(cell.getColumnIndex() + 1).setCellStyle(xcs_dollar);
+								row.getCell(cell.getColumnIndex() + 1).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+							} else {
+								row.getCell(cell.getColumnIndex() + 1).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
+							}
+						}
+					}
+					
+
 
 					break;
 				case "NUMERIC":
@@ -2129,6 +2224,12 @@ public class ExcelServiceImpl implements ExcelService {
 			return excelInpackRes.getData08();
 		} else if (target.contains("${data09}")) {
 			return excelInpackRes.getData09();
+		}else if (target.contains("${data10}")) {
+			return excelInpackRes.getData10();
+		}else if (target.contains("${data11}")) {
+			return excelInpackRes.getData11();
+		}else if (target.contains("${data12}")) {
+			return excelInpackRes.getData12();
 		} else {
 			return target;
 		}
@@ -2221,13 +2322,34 @@ public class ExcelServiceImpl implements ExcelService {
 				newCell.setCellFormula(oldCell.getCellFormula());
 				break;
 			case Cell.CELL_TYPE_NUMERIC:
+				
+				
+			      final String CELLFORMAT_DOLLAR = "_-$* #,##0.000_ ;_-$* -#,##0.000 ;_-$* \"-\"???_ ;_-@_ ";
+			      final String CELLFORMAT_WIAN = "_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ ";
+			      
+			      XSSFCellStyle xcs_wian = workbook.createCellStyle();
+			      xcs_wian.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
+			      
+			      XSSFCellStyle xcs_dollar = workbook.createCellStyle();
+			      xcs_dollar.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+				
+				
 				if (page.equals("1")) {
 					if (i == 6) {
 						newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()));
 					} else if (i == 9) {
 						newCell.setCellValue((item.getItemPrice() == null ? 0d : item.getItemPrice()));
 					} else if (i == 10) {
-						newCell.setCellValue((item.getTotalWeight() == null ? 0 : item.getTotalWeight()));
+						if(item.getCurrencyType().equals("$")){
+							newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()) * (item.getItemPrice() == null ? 0d : item.getItemPrice()));
+							newCell.getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+//							row.getCell(cell.getColumnIndex() + 1).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+						}else {
+							newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()) * (item.getItemPrice() == null ? 0d : item.getItemPrice()));
+//							newCell.setCellStyle(xcs_wian);
+							newCell.getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
+						}
+						
 					} else {
 						newCell.setCellValue(oldCell.getNumericCellValue());
 					}
@@ -2254,6 +2376,8 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getEngNm());
 					} else if (i == 3) {
 						newCell.setCellValue(item.getJejil());
+					}else if (i == 8) {
+						newCell.setCellValue(item.getCurrencyType());
 					} else {
 						newCell.setCellValue(oldCell.getStringCellValue());
 					}
@@ -2401,10 +2525,23 @@ public class ExcelServiceImpl implements ExcelService {
 		
 			item.setData08((t.getFinalInbound().getDepartPort()==null?"" :_commonRepository.findById(t.getFinalInbound().getDepartPort()).get().getValue2()));
 			item.setData09((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
-
+			if(t.getInboundMaster().getCurrencyType()==null||t.getInboundMaster().getCurrencyType().equals("$")) {
+				item.setData10("Unit Price" + "\n" + "(USD)");
+				item.setData11("Amount" + "\n" + "(USD)");
+			}else {
+				item.setData10("Unit Price" + "\n" + "(CNY)");
+				item.setData11("Amount" + "\n" + "(CNY)");
+			}
+			if(t.getInboundMaster().getPackingType()==null||t.getInboundMaster().getPackingType().equals("CTN")) {
+				item.setData12("CTNS");
+			}else if(t.getInboundMaster().getPackingType().equals("PL")) {
+				item.setData12("PLS");
+			}else if(t.getInboundMaster().getPackingType().equals("GT")) {
+				item.setData12("GTS");
+			}
 			item.setCoYn(false);
 			if(t.getInboundMaster().getCompanyInfo().getCoInvoice()==null) {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 				SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
 				try {
 					Date departDate=dateFormat2.parse(departDt);
@@ -2419,7 +2556,7 @@ public class ExcelServiceImpl implements ExcelService {
 				
 				item.setInvoice("");
 			}else {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 				SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
 				try {
 					Date departDate=dateFormat2.parse(departDt);
@@ -2435,7 +2572,7 @@ public class ExcelServiceImpl implements ExcelService {
 				
 			}
 			Date today = new Date();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 			String todayStr = dateFormat.format(today);
 			item.setNoCoDt("SJ-"+todayStr);			
 			// 병합처리된 marking 데이터 처리를 위한
@@ -2473,7 +2610,17 @@ public class ExcelServiceImpl implements ExcelService {
 				if(origin_inbound_list.get(i).getCoId()!=3) {
 					item.setCoYn(true);
 				}
-
+				if(t.getInboundMaster().getCurrencyType()==null||t.getInboundMaster().getCurrencyType().equals("$")) {
+					subRes.setCurrencyType("$");
+				}else {
+					subRes.setCurrencyType(t.getInboundMaster().getCurrencyType());
+				}
+				if(t.getInboundMaster().getPackingType()==null||t.getInboundMaster().getPackingType().equals("CTN")) {
+					subRes.setPackingType("CTNS");
+				}else {
+					subRes.setPackingType(t.getInboundMaster().getPackingType());
+				}
+				
 				sublist.add(subRes);
 
 			}
@@ -2536,10 +2683,20 @@ public class ExcelServiceImpl implements ExcelService {
 			r.setHfncod((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue()));
 			r.setHfnnam((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue2()));
 			r.setHpkqty(""+decimalFormat2.format(i.getBoxCountSumD()));
-			r.setHpkunt("CTN");
+//			r.setHpkunt("CTN");
+			r.setHpkunt((f.getInboundMaster().getPackingType() == null ? "CTN" : ""+f.getInboundMaster().getPackingType()));
+			if(r.getHpkunt().equals("CTN")) {
+				r.setPackingType("CARTON");
+			}else if(r.getHpkunt().equals("PL")) {
+				r.setPackingType("PALLET");
+			}else if(r.getHpkunt().equals("GT")) {
+				r.setPackingType("OTHER");
+			}
+			
+			
 			r.setHwegwt(""+decimalFormat2.format(i.getWeightSumD()));
 			r.setHwecbm(""+decimalFormat.format(i.getCbmSumD()));
-			if(f.getFinalInbound().getInboundMasters().size()==1) {
+			if(f.getFinalInbound().getGubun()==1) {
 				r.setHfclcl("F");
 			}else {
 				r.setHfclcl("L");
@@ -2555,7 +2712,15 @@ public class ExcelServiceImpl implements ExcelService {
 			}else {
 				r.setHfttem("P");
 			}
-			r.setHblsay(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getHpkunt()+" "+"ONLY.");
+			
+			if(i.getBoxCountSumD().longValue()==0||i.getBoxCountSumD().longValue()==1) {
+				r.setHblsay(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getPackingType()+" "+"ONLY.");
+			}else {
+				r.setHblsay(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getPackingType()+"S"+" "+"ONLY.");
+			}
+			
+			
+			
 			r.setHaccod(f.getInboundMaster().getCompanyInfo().getConsignee());
 			r.setHacnam(f.getInboundMaster().getCompanyInfo().getCoNmEn());
 			r.setMrkmrk(inboundList.get(0).getMarking());

@@ -25,10 +25,10 @@ public class ExcelFTASubRes {
 	private String engNm;
 	private String hsCode;
 	private String data10;
-	private Double itemCount;
+	private String itemCount;
 	private Double boxCount;
 	private String companyInvoice;
-	
+	private String amountType;
 	private String departDtStr;
 	
 	

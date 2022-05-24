@@ -79,6 +79,11 @@ public class UnbiRes {
 	private Double containerWorkCost2D;
 	private Double containerMoveCostD;
 	
+	private String unbiYn;
+	private String pickupCostYn;
+	private String sanghachaCostYn;
+	private String officeNameYn;
+	
 	//합계
 	private Double totalSum;
 	private Double totalSumFinal;

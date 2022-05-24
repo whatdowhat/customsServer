@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.keepgo.whatdo.controller.FinalInbound.FinalInboundSpecification;
+import com.keepgo.whatdo.define.AmountType;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.GubunType;
@@ -196,6 +197,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
+		Date tempDate3 =new Date();
 //		tempDate = beforeFormat.parse(depart);
 //		tempDate2 = beforeFormat.parse(income);
 		
@@ -204,6 +206,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.gubun(req.getGubun())
 				.incomeDt(afterFormat.format(tempDate2))
 				.departDtStr(afterFormat.format(tempDate))
+				.workDepartDt(afterFormat.format(tempDate3))
 				.incomePort(new Long(1))
 				.departPort(new Long(1))
 				// todo 사용자 세션 아이디로 수정해야됨.
@@ -230,9 +233,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean updateFinalInbound(FinalInboundReq req) {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
-		
+		Date tempDate3 = req.getWorkDepartDate();
 		
 		
 		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId())
@@ -254,6 +258,13 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		finalInbound.setChinaSanggumYn(req.getChinaSanggumYn());
 		finalInbound.setDepartDelayYn(req.getDepartDelayYn());
 		finalInbound.setGwanriYn(req.getGwanriYn());;
+		
+		finalInbound.setContainerSizeStr(req.getContainerSizeStr());
+		finalInbound.setContainerCost(req.getContainerCost());
+		finalInbound.setWeatherCondition(req.getWeatherCondition());
+		finalInbound.setWorkDepartDt(afterFormat.format(tempDate3));
+		finalInbound.setDeliveryNm(req.getDeliveryNm());
+		finalInbound.setChulhangPort(req.getChulhangPort());		
 		
 		finalInbound.setIsUsing(true);
 		finalInbound.setUpdateDt(new Date());
@@ -368,10 +379,19 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		
 		Date d=null;
+		Date d2=null;
 		String forViewDepartDateStr="";
+		String workDepartDt="";
 		try {
 			d=format1.parse(r.getDepartDtStr());
 			forViewDepartDateStr = DateFormatUtils.format(d, "MM월 dd일");
+			if(r.getWorkDepartDt()!=null) {
+				d2=format1.parse(r.getWorkDepartDt());
+				workDepartDt=DateFormatUtils.format(d2, "MM월 dd일");
+			}
+			
+			
+			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -390,7 +410,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.containerNo(r.getContainerNo())
 				.containerPrice(r.getContainerPrice())
 				.silNo(r.getSilNo())
-				.deliveryNm(r.getDeliveryNm())
+				
 				.hangName(r.getHangName())
 				.hangCha(r.getHangCha())
 				.chinaSanggumYn(r.getChinaSanggumYn())
@@ -405,7 +425,12 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.unbiDefine4(r.getUnbiDefine4())
 				
 				.containerSizeStr(r.getContainerSizeStr())
+				.containerCost(r.getContainerCost()).containerCost(r.getContainerCost())
 				.weatherCondition(r.getWeatherCondition())
+				.deliveryNm(r.getDeliveryNm())
+				.workDepartDt(r.getWorkDepartDt())
+				.forViewWorkDepartDt(workDepartDt)
+				.chulhangPort(r.getChulhangPort())				
 				.createDt(r.getCreateDt())
 				.updateDt(r.getUpdateDt())
 				.build();
@@ -504,6 +529,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					// todo 사용자 세션 아이디로 수정해야됨.
 					.user(User.builder().id(new Long(1)).build())
 					.freight(1)
+					.currencyType("$")
+					.packingType("CTN")
 			
 					.isUsing(true).createDt(new Date()).updateDt(new Date())
 
@@ -522,7 +549,6 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			
 
 			_finalInboundInboundMasterRepository.save(finalInboundInboundMaster);
-			
 			
 			
 			//시트
@@ -596,6 +622,19 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 						
 					}else {
 						inbound.setCoId(Integer.valueOf(3));
+					}
+					
+					if(inbound.getAmountType()!=null) {
+						for(int k=0; k<AmountType.getList().size();k++) {
+							if(AmountType.getList().get(k).getName().equals(inbound.getAmountType())) {
+								inbound.setAmountType(AmountType.getList().get(k).getName());
+							}else {
+
+							}
+						}
+						
+					}else {
+						inbound.setAmountType("PCS");
 					}
 //					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
 //						inbound.setBoxCount(new Double(0));
@@ -721,7 +760,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		}
 		if (cellIndex == 17) {
 			inbound.setColorName(value);
-			
+		}
+		if(cellIndex == 18) {
+			inbound.setAmountType(value);
 		}
 		
 	}

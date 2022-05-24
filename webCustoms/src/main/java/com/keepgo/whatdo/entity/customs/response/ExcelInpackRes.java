@@ -43,9 +43,12 @@ public class ExcelInpackRes {
 	String data08;
 	//9. 입항 항구
 	String data09;
-//	//10. 고정
-	@Builder.Default
-	String data10 = "WP";
+//	//10. Unit price
+	String data10 ;
+	//11. Amount
+	String data11 ;
+	//12. CTNS
+	String data12;
 //	//11. 수량
 //	Double data11;
 //	//12. 인보이스 번호/신청일

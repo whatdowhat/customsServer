@@ -77,15 +77,23 @@ public class Unbi {
 	//운비
 	@Column(name = "unbi")
 	private Double unbi;
+	@Column(name = "unbiYn")
+	private String unbiYn;
 	//픽업비
 	@Column(name = "pickupCost")
 	private Double pickupCost;
+	@Column(name = "pickupCostYn")
+	private String pickupCostYn;
 	//상하차비
 	@Column(name = "sanghachaCost")
 	private Double sanghachaCost;
+	@Column(name = "sanghachaCostYn")
+	private String sanghachaCostYn;
 	//화물회사 사무실
 	@Column(name = "officeName")
 	private Double officeName;
+	@Column(name = "officeNameYn")
+	private String officeNameYn;
 	//기타잡비
 	@Column(name = "etcCost")
 	private Double etcCost;

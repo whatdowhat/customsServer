@@ -40,6 +40,7 @@ public class InboundViewListRes {
 	private String boxCountSumFinal;
 	private String cbmSumFinal;
 	private String weightSumFinal;
+	private String packingType;
 	
 	
 	private List<InboundViewRes> inbounds = new ArrayList();

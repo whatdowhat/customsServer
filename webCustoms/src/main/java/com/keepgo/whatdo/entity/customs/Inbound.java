@@ -144,6 +144,9 @@ public class Inbound {
 	@Column(name = "jejil")
 	private String jejil;
 	
+	@Column(name = "amountType")
+	private String amountType;
+	
 	
 	@OneToMany
 	@JoinColumn(name = "inboundId")

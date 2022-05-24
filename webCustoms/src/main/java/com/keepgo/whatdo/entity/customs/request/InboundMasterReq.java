@@ -115,6 +115,9 @@ public class InboundMasterReq {
 	
 	private Long userId;
 	
+	private String currencyType;
+	private String packingType;
+	
 	
 	
 }

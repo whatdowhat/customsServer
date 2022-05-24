@@ -68,6 +68,8 @@ public class InboundViewRes {
 	private int no;
 	private int checkImportYn;
 	private String memo;
+	private String currencyType;
+	private String packingType;
 
 	private Long aTypeCount;
 	private Long bTypeCount;

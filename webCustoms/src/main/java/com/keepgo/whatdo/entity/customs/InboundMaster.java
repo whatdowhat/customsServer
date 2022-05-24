@@ -56,6 +56,12 @@ public class InboundMaster {
 		
 	@Column(name = "freight")
 	private int freight;
+	
+	@Column(name = "currencyType")
+	private String currencyType;
+	
+	@Column(name = "packingType")
+	private String packingType;
 
 	
 	@JoinColumn(name = "companyInfoId")

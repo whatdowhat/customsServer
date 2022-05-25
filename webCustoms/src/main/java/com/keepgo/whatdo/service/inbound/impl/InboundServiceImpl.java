@@ -1002,7 +1002,7 @@ public class InboundServiceImpl implements InboundService {
 						.map(t_item -> new Double("0."+t_item))
 						.collect(Collectors.toList());
 //						;
-				System.out.println(t);
+//				System.out.println(t);
 				Double r = t.stream().reduce( (a,b)->a*b).get();
 			
 				item.setCbm(r * item.getBoxCount());

@@ -98,7 +98,7 @@ public class CustomExcel extends AbstractView
 		s = columnHeaderList.stream().sorted(Comparator.comparing(ExcelOrderVO::getOrder));
 		List<ExcelOrderVO> sortedColumList =  s.collect(Collectors.toList());
 		for(int j=0; j<sortedColumList.size();j++){
-				System.out.print(sortedColumList.get(j).getFieldName() +"#");
+//				System.out.print(sortedColumList.get(j).getFieldName() +"#");
 		}
 //		System.out.println("");
 		for(int i=0; i<list.size();i++){

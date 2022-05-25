@@ -106,8 +106,9 @@ public class CheckImportServiceImpl implements CheckImportService {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		InboundMaster im = _inboundMasterRepository.findById(checkImportReq.getInboundMasterId()).get();
+		Long companyId = im.getCompanyInfo().getId();
 		
-		List<CheckImportRes> result = _checkImportRepository.findByCompanyInfoId(im.getCompanyInfo().getId()).stream()
+		List<CheckImportRes> result = _checkImportRepository.findByCompanyInfoId(companyId).stream()
 				.sorted(Comparator.comparing(CheckImport::getRegDate))
 				.map(item->{
 					CheckImportRes rt = CheckImportRes.builder()

@@ -84,21 +84,21 @@ public class FileuploadController {
 	@Autowired
 	FileUploadService _fileUploadService;
 	
-	@RequestMapping(value = "/test/getFile2", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/getFile2", method = {RequestMethod.POST })
 	public List<?> getFile2(HttpServletRequest httpServletRequest, @RequestBody FileUploadReq fileUploadReq ){
 		
 		//masterid,common type
 		return  _fileUploadService.getFileList2(fileUploadReq);
 	}
 	
-	@RequestMapping(value = "/test/uploadFile2", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/uploadFile2", method = {RequestMethod.POST })
 	public boolean uploadFile2(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		Gson gson = new Gson();
 		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);
 		_fileUploadService.uploadFile2(file,frq);
 		return true;
 	}
-	@RequestMapping(value = "/test/uploadFile3", method = {RequestMethod.POST })
+	@RequestMapping(value = "/common/uploadFile3", method = {RequestMethod.POST })
 	public boolean uploadFile3(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		Gson gson = new Gson();
 		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);
@@ -106,7 +106,7 @@ public class FileuploadController {
 		return true;
 	}
 	
-	@RequestMapping(value = "/test/uploadFile4", method = {RequestMethod.POST })
+	@RequestMapping(value = "/common/uploadFile4", method = {RequestMethod.POST })
 	public boolean uploadFile4(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		Gson gson = new Gson();
 		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);

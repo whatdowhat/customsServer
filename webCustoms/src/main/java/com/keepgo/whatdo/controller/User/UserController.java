@@ -109,7 +109,7 @@ public class UserController {
 
 			}
 			
-			String filename = "exceldownload_test";
+			String filename = "userList";
 			model.addAttribute("targetList", result);
 			model.addAttribute("sheetName", "first");
 			model.addAttribute("workBookName", filename);

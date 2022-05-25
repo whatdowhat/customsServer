@@ -87,21 +87,20 @@ public class InboundController {
 	
 	@RequestMapping(value = "/test/uploadFile", method = { RequestMethod.POST })
 	@ResponseBody
-//	public FileUploadRes excelUpload(MultipartFile file, @RequestParam String param1,@RequestParam String param2 , HttpServletRequest req)
 	public FileUploadRes excelUpload(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		
 		Gson gson = new Gson();
 		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);
 		
-		System.out.println("here!");
-		System.out.println(file);
+//		System.out.println("here!");
+//		System.out.println(file);
 		
 		FileUploadRes result = _fileUploadService.uploadFile(file,frq);
 		return result;
 		
 	}
 	
-	@RequestMapping(value = "/test/deleteFile", method = {RequestMethod.POST } ,produces = "application/json; charset=utf8")
+	@RequestMapping(value = "/front/deleteFile", method = {RequestMethod.POST } ,produces = "application/json; charset=utf8")
 
 	public  FileUploadRes deleteFile(@RequestBody FileUploadReq fileUploadReq ) throws IOException, InterruptedException {
 		
@@ -110,7 +109,7 @@ public class InboundController {
 
 	}
 	
-	@RequestMapping(value = "/test/downloadFile", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/downloadFile", method = {RequestMethod.POST })
 	public ResponseEntity<Object> downloadFile(@RequestBody FileUploadReq fileUploadReq,HttpServletResponse response,HttpServletRequest request,@RequestHeader("User-Agent") String agent) throws Exception {
 //		return null;
 		
@@ -161,7 +160,7 @@ public class InboundController {
 
 	}
 	
-	@RequestMapping(value = "/test/inboundByInboundMasterId", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/inboundByInboundMasterId", method = {RequestMethod.POST })
 	public List<InboundRes> inboundByInboundMasterId(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception{
 
 		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(inboundReq);
@@ -170,7 +169,7 @@ public class InboundController {
 		return  result;
 	}
 	
-	@RequestMapping(value = "/test/changeInbound", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/changeInbound", method = {RequestMethod.POST })
 	public InboundViewRes changeInbound(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception{
 
 		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(inboundReq);
@@ -225,7 +224,7 @@ public class InboundController {
 	}
 	
 	
-	@RequestMapping(value = "/test/inboundExcelCommit", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/inboundExcelCommit", method = {RequestMethod.POST })
 
 	public  InboundRes inboundExcelCommit(@RequestBody InboundReq inboundReq) throws IOException, InterruptedException {
 		
@@ -235,7 +234,7 @@ public class InboundController {
 		return result;
 
 	}
-	@RequestMapping(value = "/test/inboundCommit", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/inboundCommit", method = {RequestMethod.POST })
 	public  InboundRes inboundCommit(@RequestBody InboundReq inboundReq) throws IOException, InterruptedException {
 		
 		
@@ -245,7 +244,7 @@ public class InboundController {
 
 	}
 	
-	@RequestMapping(value = "/test/deleteInbound", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/deleteInbound", method = {RequestMethod.POST })
 
 	public  InboundRes deleteInbound(@RequestBody InboundReq inboundReq) throws IOException, InterruptedException {
 		
@@ -255,13 +254,13 @@ public class InboundController {
 	}
 	
 	
-	@RequestMapping(value = "/test/inboundExcelRead", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/inboundExcelRead", method = { RequestMethod.POST })
 	@ResponseBody
 	public List<?> excelRead(MultipartFile file, String test, HttpServletRequest req)
 			throws Exception, NumberFormatException {
-		System.out.println("here!");
-		System.out.println(file);
-		System.out.println(test);
+//		System.out.println("here!");
+//		System.out.println(file);
+//		System.out.println(test);
 		
 
 		String extension = FilenameUtils.getExtension(file.getOriginalFilename());

@@ -58,7 +58,7 @@ public class InboundMstController {
 	@Autowired
 	InboundMstService _inboundMstService;
 	
-	@RequestMapping(value = "/test/create/inboundMst", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/create/inboundMst", method = {RequestMethod.POST })
 	public InboundMasterRes inboundMst(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){
 		
 		return  _inboundMstService.addInboundMaster(inboundMasterReq);
@@ -69,7 +69,7 @@ public class InboundMstController {
 		
 		return  _inboundMstService.createInboundMaster(inboundMasterReq);
 	}
-	@RequestMapping(value = "/test/update/inboundMst", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/update/inboundMst", method = {RequestMethod.POST })
 	public boolean updateInboundMaster(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq)throws ParseException{
 		_inboundMstService.updateInboundMaster(inboundMasterReq);
 		return  true;
@@ -79,7 +79,7 @@ public class InboundMstController {
 		List<?> l = _inboundMstService.getInboundMaster();
 		return  l;
 	}
-	@RequestMapping(value = "/test/get/inboundMaster", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/get/inboundMaster", method = {RequestMethod.POST })
 	public InboundMasterRes getInboundMaster(HttpServletRequest httpServletRequest,@RequestBody InboundMasterReq inboundMasterReq){
 		 
 		return  _inboundMstService.getInboundMaster(inboundMasterReq.getId());
@@ -91,7 +91,7 @@ public class InboundMstController {
 		
 	}
 	
-	@RequestMapping(value = "/test/get/mappingId", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/get/mappingId", method = {RequestMethod.POST })
 	public FinalInboundInboundMasterRes getMappingInfo(HttpServletRequest httpServletRequest,@RequestBody FinalInboundInboundMasterReq req){
 		
 		return  _inboundMstService.getMappingInfo(req);

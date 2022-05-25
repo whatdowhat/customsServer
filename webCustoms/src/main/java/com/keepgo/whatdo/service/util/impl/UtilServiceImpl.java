@@ -547,7 +547,7 @@ public class UtilServiceImpl implements UtilService {
 				item.setWorkDateStrSpan(spanAttr[1][19]);
 			}
 			
-			System.out.println("3");
+//			System.out.println("3");
 
 		}
 

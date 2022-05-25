@@ -32,6 +32,7 @@ import com.keepgo.whatdo.define.AmountType;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.GubunType;
+import com.keepgo.whatdo.entity.customs.CheckImport;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -51,6 +52,7 @@ import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.repository.CheckImportRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
@@ -89,6 +91,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Autowired
 	
 	InboundRepository _inboundRepository;
+	
+	@Autowired
+	CheckImportRepository _checkImportRepository;
 
 	@Override
 	public List<?> getAll(FinalInboundReq req) {
@@ -302,6 +307,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			for (int j = 0; j < inboundList.size(); j++) {
 				_inboundRepository.delete(inboundList.get(j));
 			}
+			CheckImport checkImport = _checkImportRepository.findByInboundMasterId(inboundMasterId);
+			_checkImportRepository.delete(checkImport);
 			_inboundMasterRepository.delete(inboundMaster);
 			_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), inboundMasterId);
 

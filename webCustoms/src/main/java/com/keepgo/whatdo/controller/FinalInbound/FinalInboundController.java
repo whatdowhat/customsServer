@@ -117,7 +117,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/finalInboundAdd", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/finalInboundAdd", method = { RequestMethod.POST })
 	public FinalInboundRes finalInboundAdd(HttpServletRequest httpServletRequest,
 			@RequestBody FinalInboundReq finalInboundReq) throws ParseException {
 
@@ -125,7 +125,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/deleteFinalInbound", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/deleteFinalInbound", method = { RequestMethod.POST })
 
 	public boolean deleteInbound(@RequestBody FinalInboundReq finalInboundReq)
 			throws IOException, InterruptedException {
@@ -142,7 +142,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/finalInbound", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/finalInbound", method = { RequestMethod.POST })
 	public FinalInboundRes finalInbound(HttpServletRequest httpServletRequest,
 			@RequestBody FinalInboundReq finalInboundReq) {
 
@@ -150,7 +150,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/deleteFinalInboundMasterItems", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/deleteFinalInboundMasterItems", method = { RequestMethod.POST })
 	public boolean deleteFinalInboundMasterItems(HttpServletRequest httpServletRequest,
 			@RequestBody FinalInboundReq finalInboundReq) {
 
@@ -176,7 +176,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/getAllCondition", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/getAllCondition", method = { RequestMethod.POST })
 	public List<?> finalInboundAll(HttpServletRequest httpServletRequest,
 			@RequestBody FinalInboundReq finalInboundReq) {
 
@@ -184,7 +184,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/FinalInboundExcelRead", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/FinalInboundExcelRead", method = { RequestMethod.POST })
 	@ResponseBody
 	public boolean excelRead(MultipartFile file, String test, HttpServletRequest req)
 			throws Exception, NumberFormatException {

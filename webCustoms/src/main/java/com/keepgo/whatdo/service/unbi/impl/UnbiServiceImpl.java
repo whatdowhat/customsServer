@@ -94,7 +94,7 @@ public class UnbiServiceImpl implements UnbiService {
 	@Override
 	public List<UnbiRes> getUnbiByMasterId(UnbiReq unbiReq)  {
 		
-		
+		DecimalFormat decimalFormat = new DecimalFormat("#,###");
 		List<Integer> index = new ArrayList<Integer>();
 		
 		FinalInbound finalInbound = _finalInboundRepository.findById(unbiReq.getFinalInboundId()).get();
@@ -121,29 +121,30 @@ public class UnbiServiceImpl implements UnbiService {
 						
 						.finalInboundId(item.getFinalInbound().getId())
 						.build();
-						rt.setOfficeName((item.getOfficeName() == null ? "" : String.valueOf(item.getOfficeName())));
+//						rt.setOfficeName((item.getOfficeName() == null ? "" : String.valueOf(item.getOfficeName())));
+						rt.setOfficeName((item.getOfficeName() == null ? "" : decimalFormat.format(item.getOfficeName())));
 						rt.setOfficeNameD((item.getOfficeName() == null ? new Double(0) : item.getOfficeName()));
-						rt.setUnbi((item.getUnbi() == null ? "" : String.valueOf(item.getUnbi())));
+						rt.setUnbi((item.getUnbi() == null ? "" : decimalFormat.format(item.getUnbi())));
 						rt.setUnbiD((item.getUnbi() == null ? new Double(0) : item.getUnbi()));	
-						rt.setPickupCost((item.getPickupCost() == null ? "" : String.valueOf(item.getPickupCost())));
+						rt.setPickupCost((item.getPickupCost() == null ? "" : decimalFormat.format(item.getPickupCost())));
 						rt.setPickupCostD((item.getPickupCost() == null ? new Double(0) : item.getPickupCost()));
-						rt.setSanghachaCost((item.getSanghachaCost() == null ? "" : String.valueOf(item.getSanghachaCost())));
+						rt.setSanghachaCost((item.getSanghachaCost() == null ? "" : decimalFormat.format(item.getSanghachaCost())));
 						rt.setSanghachaCostD((item.getSanghachaCost() == null ? new Double(0) : item.getSanghachaCost()));
-						rt.setEtcCost((item.getEtcCost() == null ? "" : String.valueOf(item.getEtcCost())));
+						rt.setEtcCost((item.getEtcCost() == null ? "" : decimalFormat.format(item.getEtcCost())));
 						rt.setEtcCostD((item.getEtcCost() == null ? new Double(0) : item.getEtcCost()));
-						rt.setHacksodanCost((item.getHacksodanCost() == null ? "" : String.valueOf(item.getHacksodanCost())));
+						rt.setHacksodanCost((item.getHacksodanCost() == null ? "" : decimalFormat.format(item.getHacksodanCost())));
 						rt.setHacksodanCostD((item.getHacksodanCost() == null ? new Double(0) : item.getHacksodanCost()));
-						rt.setCoCost((item.getCoCost() == null ? "" : String.valueOf(item.getCoCost())));
+						rt.setCoCost((item.getCoCost() == null ? "" : decimalFormat.format(item.getCoCost())));
 						rt.setCoCostD((item.getCoCost() == null ? new Double(0) : item.getCoCost()));
-						rt.setHwajumiUnbi((item.getHwajumiUnbi() == null ? "" : String.valueOf(item.getHwajumiUnbi())));
+						rt.setHwajumiUnbi((item.getHwajumiUnbi() == null ? "" : decimalFormat.format(item.getHwajumiUnbi())));
 						rt.setHwajumiUnbiD((item.getHwajumiUnbi() == null ? new Double(0) : item.getHwajumiUnbi()));
-						rt.setHwajumiPickupCost((item.getHwajumiPickupCost() == null ? "" : String.valueOf(item.getHwajumiPickupCost())));
+						rt.setHwajumiPickupCost((item.getHwajumiPickupCost() == null ? "" : decimalFormat.format(item.getHwajumiPickupCost())));
 						rt.setHwajumiPickupCostD((item.getHwajumiPickupCost() == null ? new Double(0) : item.getHwajumiPickupCost()));
-						rt.setContainerWorkCost((item.getContainerWorkCost() == null ? "" : String.valueOf(item.getContainerWorkCost())));
+						rt.setContainerWorkCost((item.getContainerWorkCost() == null ? "" : decimalFormat.format(item.getContainerWorkCost())));
 						rt.setContainerWorkCostD((item.getContainerWorkCost() == null ? new Double(0) : item.getContainerWorkCost()));
-						rt.setContainerWorkCost2((item.getContainerWorkCost2() == null ? "" : String.valueOf(item.getContainerWorkCost2())));
+						rt.setContainerWorkCost2((item.getContainerWorkCost2() == null ? "" : decimalFormat.format(item.getContainerWorkCost2())));
 						rt.setContainerWorkCost2D((item.getContainerWorkCost2() == null ? new Double(0) : item.getContainerWorkCost2()));
-						rt.setContainerMoveCost((item.getContainerMoveCost() == null ? "" : String.valueOf(item.getContainerMoveCost())));
+						rt.setContainerMoveCost((item.getContainerMoveCost() == null ? "" : decimalFormat.format(item.getContainerMoveCost())));
 						rt.setContainerMoveCostD((item.getContainerMoveCost() == null ? new Double(0) : item.getContainerMoveCost()));
 						rt.setTypebTitle((item.getTypebTitle() == null ? "" : item.getTypebTitle()));
 						

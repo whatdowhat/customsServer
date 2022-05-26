@@ -64,7 +64,7 @@ public class UnbiController {
 	UnbiService _unbiservice;
 
 	
-	@RequestMapping(value = "/test/unbiByFinalInboundId", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/unbiByFinalInboundId", method = {RequestMethod.POST })
 	public List<UnbiRes> unbiByFinalInboundId(HttpServletRequest httpServletRequest,@RequestBody UnbiReq unbiReq) throws Exception{
 
 		List<UnbiRes> list = _unbiservice.getUnbiByMasterId(unbiReq);		
@@ -72,7 +72,7 @@ public class UnbiController {
 		return  list;
 	}
 	
-	@RequestMapping(value = "/test/unbiDataCommit", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/unbiDataCommit", method = {RequestMethod.POST })
 
 	public  boolean unbiDataCommit(@RequestBody UnbiReq unbiReq) throws IOException, InterruptedException {
 		

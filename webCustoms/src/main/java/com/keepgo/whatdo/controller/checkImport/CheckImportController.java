@@ -71,14 +71,14 @@ public class CheckImportController {
 	CheckImportService _checkImportService;
 
 	
-	@RequestMapping(value = "/test/checkImportByCompanyInfoId", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/checkImportByCompanyInfoId", method = {RequestMethod.POST })
 	public List<CheckImportRes> checkImportByCompanyInfoId(HttpServletRequest httpServletRequest,@RequestBody CheckImportReq checkImportReq) throws Exception{
 
 		List<CheckImportRes> list = _checkImportService.getCheckImportByCompanyId(checkImportReq);		
 		
 		return  list;
 	}
-	@RequestMapping(value = "/test/commitCheckImport", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/commitCheckImport", method = { RequestMethod.POST })
 	public boolean commitCheckImport(HttpServletRequest httpServletRequest,
 			@RequestBody CheckImportReq checkImportReq) {
 

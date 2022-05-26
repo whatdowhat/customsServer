@@ -179,7 +179,7 @@ public class InboundController {
 		return  result;
 	}
 	
-	@RequestMapping(value = "/test/changeInboundList", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/changeInboundList", method = {RequestMethod.POST })
 	public InboundViewListRes changeInboundList(HttpServletRequest httpServletRequest,@RequestBody InboundReq inboundReq) throws Exception{
 		
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");

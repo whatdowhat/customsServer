@@ -64,7 +64,7 @@ public class InboundMstController {
 		return  _inboundMstService.addInboundMaster(inboundMasterReq);
 	}
 	
-	@RequestMapping(value = "/test/add/inboundMst", method = {RequestMethod.POST })
+	@RequestMapping(value = "/front/add/inboundMst", method = {RequestMethod.POST })
 	public InboundMasterRes inboundMstadd(HttpServletRequest httpServletRequest, @RequestBody InboundMasterReq inboundMasterReq){
 		
 		return  _inboundMstService.createInboundMaster(inboundMasterReq);

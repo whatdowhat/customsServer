@@ -158,7 +158,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/addFinalInboundMasterItems", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/addFinalInboundMasterItems", method = { RequestMethod.POST })
 
 	public boolean addFinalInboundMasterItems(@RequestBody FinalInboundReq finalInboundReq)
 			throws IOException, InterruptedException {
@@ -167,7 +167,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/addDataFinalInboundMasterItems", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/addDataFinalInboundMasterItems", method = { RequestMethod.POST })
 
 	public boolean addDataFinalInboundMasterItems(@RequestBody FinalInboundReq finalInboundReq)
 			throws IOException, InterruptedException {
@@ -200,7 +200,7 @@ public class FinalInboundController {
 		return _finalInboundService.excelRead(file, null, test);
 	}
 
-	@RequestMapping(value = "/test/changeFinalInboundList", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/changeFinalInboundList", method = { RequestMethod.POST })
 	public FinalInboundViewRes changeFinalInboundList(HttpServletRequest httpServletRequest,
 			@RequestBody InboundReq inboundReq) throws Exception {
 

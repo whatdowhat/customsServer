@@ -160,7 +160,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 		Exception e) {
 			e.printStackTrace();
-			System.err.println(e.getMessage());
+//			System.err.println(e.getMessage());
 		}
 		return true;
 //		return null;
@@ -261,7 +261,7 @@ public class ExcelServiceImpl implements ExcelService {
 			try {
 
 			} catch (Exception e) {
-				System.err.println("convertData ::excelFTARes.getData04()::" + excelFTARes.getData04());
+//				System.err.println("convertData ::excelFTARes.getData04()::" + excelFTARes.getData04());
 			}
 //			return result;
 			String[] data04_arr = excelFTARes.getData04().split(",");
@@ -284,7 +284,7 @@ public class ExcelServiceImpl implements ExcelService {
 			try {
 
 			} catch (Exception e) {
-				System.err.println("convertData ::excelFTARes.getData04()::" + excelFTARes.getData04());
+//				System.err.println("convertData ::excelFTARes.getData04()::" + excelFTARes.getData04());
 			}
 			String[] data04_arr = excelFTARes.getData04().split(",");
 			result = data04_arr[4]+","+data04_arr[5];
@@ -736,8 +736,8 @@ public class ExcelServiceImpl implements ExcelService {
 			target += sources[2];
 
 		} catch (Exception e) {
-			System.err.println(
-					"getYYMMDD() /mentor/src/main/java/com/keepgo/whatdo/service/excel/impl/ExcelServiceImpl.java ");
+//			System.err.println(
+//					"getYYMMDD() /mentor/src/main/java/com/keepgo/whatdo/service/excel/impl/ExcelServiceImpl.java ");
 		}
 		return target;
 
@@ -814,7 +814,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 		Exception e) {
 			e.printStackTrace();
-			System.err.println(e.getMessage());
+//			System.err.println(e.getMessage());
 		}
 		return true;
 //		return null;
@@ -899,7 +899,7 @@ public class ExcelServiceImpl implements ExcelService {
 				result = getDateStr(data04_arr[0]);
 
 			} catch (Exception e) {
-				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
+//				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
 			}
 			return result;
 		} else if (target.contains("${data04_2}")) {
@@ -908,7 +908,7 @@ public class ExcelServiceImpl implements ExcelService {
 				String[] data04_arr = excelRCEPRes.getData04().split(",");
 				result = data04_arr[1];
 			} catch (Exception e) {
-				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
+//				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
 			}
 			return result;
 		} else if (target.contains("${data04_3}")) {
@@ -917,7 +917,7 @@ public class ExcelServiceImpl implements ExcelService {
 				String[] data04_arr = excelRCEPRes.getData04().split(",");
 				result = data04_arr[2]+","+data04_arr[3];
 			} catch (Exception e) {
-				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
+//				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
 			}
 			return result;
 		} else if (target.contains("${data04_4}")) {
@@ -926,7 +926,7 @@ public class ExcelServiceImpl implements ExcelService {
 				String[] data04_arr = excelRCEPRes.getData04().split(",");
 				result = data04_arr[4]+","+data04_arr[5];
 			} catch (Exception e) {
-				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
+//				System.err.println("convertDataForRCEP ::excelRCEPRes.getData04()::" + excelRCEPRes.getData04());
 			}
 			return result;
 		} else if (target.contains("${data05}")) {
@@ -1356,7 +1356,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 		Exception e) {
 			e.printStackTrace();
-			System.err.println(e.getMessage());
+//			System.err.println(e.getMessage());
 		}
 		return true;
 //		return null;
@@ -2029,7 +2029,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 		Exception e) {
 			e.printStackTrace();
-			System.err.println(e.getMessage());
+//			System.err.println(e.getMessage());
 		}
 		return true;
 	}
@@ -2810,7 +2810,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 		Exception e) {
 			e.printStackTrace();
-			System.err.println(e.getMessage());
+//			System.err.println(e.getMessage());
 		}
 		return true;
 	}

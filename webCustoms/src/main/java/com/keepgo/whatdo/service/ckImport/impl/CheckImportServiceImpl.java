@@ -121,7 +121,7 @@ public class CheckImportServiceImpl implements CheckImportService {
 							.id(item.getId())
 							.blNo(item.getInboundMaster().getBlNo())
 							.userNm(item.getUser().getName())
-							.companyNm(item.getCompanyInfo().getCoNmEn())
+							.companyNm(item.getCompanyInfo().getCoNm())
 							.memo(item.getMemo())
 							.incomeDtStr(finalInboundInboundMaster.getFinalInbound().getIncomeDt())
 							.regDtStr(format.format(item.getRegDate()))

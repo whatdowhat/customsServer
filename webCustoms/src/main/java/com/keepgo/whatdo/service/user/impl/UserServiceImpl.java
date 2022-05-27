@@ -22,6 +22,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.keepgo.whatdo.define.GubunType;
+import com.keepgo.whatdo.define.UserType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
@@ -74,8 +76,18 @@ public class UserServiceImpl implements UserService {
 					.id(item.getId()).name(item.getName()).phoneNo(item.getPhoneNo()).password(item.getPassword())
 					.loginId(item.getLoginId()).updateDt(item.getUpdateDt()).regDt(item.getRegDt())
 					.updateId(item.getUpdateId())
+//					.authority(item.getAuthority())
+//					.authority(UserType.getList().stream().filter(type->type.getCode() == item.getAuthority()).findFirst().get().getName())
+					
+					.firstLogin(item.getFirstLogin())
 											
 					.build();
+					for(int i=0; i<UserType.getList().size(); i++) {
+						String code = UserType.getList().get(i).getCode();
+						if(code.equals(item.getAuthority())) {
+							dto.setAuthority(UserType.getList().get(i).getName());
+						}
+					}
 					
 			return dto;
 		}).collect(Collectors.toList());
@@ -101,6 +113,8 @@ public class UserServiceImpl implements UserService {
 		user.setRegDt(new Date());
 		user.setUpdateDt(new Date());
 		user.setUpdateId("admin");
+		user.setFirstLogin("Y");
+		user.setAuthority(userReq.getAuthority());
 		
 		
 		_userRepository.save(user);
@@ -126,6 +140,8 @@ public class UserServiceImpl implements UserService {
 		user.setRegDt(new Date());
 		user.setUpdateDt(new Date());
 		user.setUpdateId("admin");
+		user.setFirstLogin("N");
+		user.setAuthority(userReq.getAuthority());
 		
 		_userRepository.save(user);
 		

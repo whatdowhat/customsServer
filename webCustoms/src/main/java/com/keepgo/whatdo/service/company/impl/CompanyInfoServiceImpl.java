@@ -61,7 +61,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 //				.sorted(Comparator.comparing(CompanyInfo::getId).reversed()).map(item -> {
 					CompanyInfoRes dto = CompanyInfoRes.builder()
 
-							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm()).coNum(item.getCoNum())
+							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm())
 							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
 							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
 							.manager(item.getManager())
@@ -79,6 +79,12 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 //									
 //									.collect(Collectors.toList()))
 							.build();
+					StringBuffer sb = new StringBuffer();
+					String companyNum=item.getCoNum();
+					sb.append(companyNum);
+					sb.insert(2, "-");
+					sb.insert(6, "-");
+					dto.setCoNum(sb.toString());
 
 					return dto;
 				}).collect(Collectors.toList());

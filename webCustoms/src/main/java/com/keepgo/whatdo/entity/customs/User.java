@@ -63,7 +63,11 @@ public class User {
 	@ExcelColumn(headerName="로그인아이디",order = 5)
 	@Column(name = "loginId")
 	private String loginId;
-
 	
+	@Column(name = "firstLogin")
+	private String firstLogin;
+
+	@Column(name = "authority")
+	private String authority;
 	
 }

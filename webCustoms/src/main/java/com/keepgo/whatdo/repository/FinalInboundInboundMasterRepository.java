@@ -22,6 +22,7 @@ public interface FinalInboundInboundMasterRepository extends JpaRepository<Final
 
 	FinalInboundInboundMaster findByFinalInboundIdAndInboundMasterId(Long finalInboundId, Long inboundMasterId);
 	List<FinalInboundInboundMaster> findByFinalInboundId(Long finalInboundId);
+	FinalInboundInboundMaster findByInboundMasterId(Long inboundMasterId);
 	
 	
 	@Transactional

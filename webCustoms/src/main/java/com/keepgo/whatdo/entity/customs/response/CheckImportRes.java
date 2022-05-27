@@ -41,6 +41,8 @@ public class CheckImportRes {
 	private String blNo;
 	private String memo;
 	private String regDtStr;
+	private String userNm;
+	private String incomeDtStr;
 	
 	
 	

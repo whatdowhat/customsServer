@@ -388,7 +388,12 @@ public class InboundServiceImpl implements InboundService {
 //						rt.setMasterCompanyNumber("sdfsadfSDF");)
 
 						if(item.getInboundMaster().getCompanyInfo()!=null) {
-							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+item.getInboundMaster().getCompanyInfo().getCoNum());
+							StringBuffer sb = new StringBuffer();
+							String companyNum=item.getInboundMaster().getCompanyInfo().getCoNum();
+							sb.append(companyNum);
+							sb.insert(2, "-");
+							sb.insert(6, "-");
+							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+sb.toString());
 							if(item.getInboundMaster().getManager()!=null) {
 								rt.setManagerNm(item.getInboundMaster().getManager());
 							}else {
@@ -432,7 +437,16 @@ public class InboundServiceImpl implements InboundService {
 			result.get(0).setItemCountSum(result.stream().filter(t->t.getItemCount()!= null).mapToDouble(t->t.getItemCount()).sum());
 			result.get(0).setWeightSum(result.stream().filter(t->t.getWeight()!= null).mapToDouble(t->t.getWeight()).sum());
 			result.get(0).setCbmSum(result.stream().filter(t->t.getCbm()!= null).mapToDouble(t->t.getCbm()).sum());
-			result.get(0).setTotalPriceSum(result.stream().filter(t->t.getTotalPrice()!= null).mapToDouble(t->t.getTotalPrice()).sum());
+//			result.get(0).setTotalPriceSum(result.stream().filter(t->t.getTotalPrice()!= null).mapToDouble(t->t.getTotalPrice()).sum());
+			Double totalPriceSum = null;
+			for(int i=0; i<result.size(); i++) {
+				if(result.get(i).getTotalPrice()!=null) {
+					if(totalPriceSum == null ) totalPriceSum = new Double(0);
+					totalPriceSum += result.get(i).getTotalPrice();
+				}
+				
+			}
+			result.get(0).setTotalPriceSum(totalPriceSum);
 		}
 		
 		return result;
@@ -522,14 +536,19 @@ public class InboundServiceImpl implements InboundService {
 //						rt.setMasterCompanyNumber("sdfsadfSDF");)
 
 						if(item.getInboundMaster().getCompanyInfo()!=null) {
-							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+item.getInboundMaster().getCompanyInfo().getCoNum());
+							StringBuffer sb = new StringBuffer();
+							String companyNum=item.getInboundMaster().getCompanyInfo().getCoNum();
+							sb.append(companyNum);
+							sb.insert(2, "-");
+							sb.insert(6, "-");
+							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+sb.toString());
 							if(item.getInboundMaster().getManager()!=null) {
 								rt.setManagerNm(item.getInboundMaster().getManager());
 							}else {
 								rt.setManagerNm(item.getInboundMaster().getCompanyInfo().getManager());
 							}
 							
-							rt.setCompanyNm(item.getInboundMaster().getCompanyInfo().getCoNm());
+//							rt.setCompanyNm(item.getInboundMaster().getCompanyInfo().getCoNm());
 							
 						}
 //						rt.setMasterExport("EXLFLDKE FLAKD .D  VLA ");
@@ -566,7 +585,18 @@ public class InboundServiceImpl implements InboundService {
 			result.get(0).setItemCountSum(result.stream().filter(t->t.getItemCount()!= null).mapToDouble(t->t.getItemCount()).sum());
 			result.get(0).setWeightSum(result.stream().filter(t->t.getWeight()!= null).mapToDouble(t->t.getWeight()).sum());
 			result.get(0).setCbmSum(result.stream().filter(t->t.getCbm()!= null).mapToDouble(t->t.getCbm()).sum());
-			result.get(0).setTotalPriceSum(result.stream().filter(t->t.getTotalPrice()!= null).mapToDouble(t->t.getTotalPrice()).sum());
+//			result.get(0).setTotalPriceSum(result.stream().filter(t->t.getTotalPrice()!= null).mapToDouble(t->t.getTotalPrice()).sum());
+			
+			Double totalPriceSum = null;
+			for(int i=0; i<result.size(); i++) {
+				if(result.get(i).getTotalPrice()!=null) {
+					
+					if(totalPriceSum == null ) totalPriceSum = new Double(0);
+					totalPriceSum += result.get(i).getTotalPrice();
+				}
+				
+			}
+			result.get(0).setTotalPriceSum(totalPriceSum);
 		}
 		
 		return result;
@@ -675,7 +705,7 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setBoxCount(list.get(i).getBoxCount());
 			inbound.setWeight(list.get(i).getWeight());
 			inbound.setCbm(list.get(i).getCbm());
-			inbound.setReportPrice((list.get(i).getReportPrice() ==  null ? new Double(0) : list.get(i).getReportPrice()));
+			inbound.setReportPrice((list.get(i).getReportPrice() ==  null ? null : list.get(i).getReportPrice()));
 			inbound.setMemo1(list.get(i).getMemo1());
 			inbound.setItemNo(list.get(i).getItemNo());
 			inbound.setHsCode(list.get(i).getHsCode());
@@ -1042,7 +1072,7 @@ public class InboundServiceImpl implements InboundService {
 			Double boxCountSum=(list.get(0).getBoxCountSum());
 			Double weightSum=(list.get(0).getWeightSum() == null ? 0d : list.get(0).getWeightSum());
 			Double cbmSum = (list.get(0).getCbmSum() == null ? 0d : list.get(0).getCbmSum());
-			Double totalPriceSum = (list.get(0).getTotalPriceSum() == null ? 0d :list.get(0).getTotalPriceSum()) ;		
+			Double totalPriceSum = (list.get(0).getTotalPriceSum() == null ? null :list.get(0).getTotalPriceSum()) ;		
 			
 			
 			
@@ -1051,12 +1081,14 @@ public class InboundServiceImpl implements InboundService {
 			inboundViewRes.setBoxCountSumD(boxCountSum);
 			inboundViewRes.setCbmSumD(cbmSum);
 			inboundViewRes.setWeightSumD(weightSum);;
-			inboundViewRes.setItemCountSum(decimalFormat3.format(itemCountSum));
+			inboundViewRes.setItemCountSum(getStringResult(itemCountSum));
 			inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
 			inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
 			inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
-			if(totalPriceSum==0) {
+			if(totalPriceSum==null) {
 				inboundViewRes.setTotalPriceSum(" ");
+			}else if(totalPriceSum==0) {
+				inboundViewRes.setTotalPriceSum("-");
 			}else {
 				inboundViewRes.setTotalPriceSum(decimalFormat.format(totalPriceSum));
 			}
@@ -1101,7 +1133,11 @@ public class InboundServiceImpl implements InboundService {
 				
 					f.put("orderNo", sub_item.getOrderNo());
 					f.put("korNm", sub_item.getKorNm());
-					f.put("itemCount",  decimalFormat2.format(sub_item.getItemCount()));
+					
+//					f.put("itemCount",  decimalFormat3.format(sub_item.getItemCount()));
+					f.put("itemCount",  getStringResult(sub_item.getItemCount()));
+					
+					
 					if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
 						f.put("boxCount",  "0");
 					}else {
@@ -1128,11 +1164,15 @@ public class InboundServiceImpl implements InboundService {
 					
 					if(sub_item.getReportPrice() == null) {
 						f.put("reportPrice",  " ");
+					}else if(sub_item.getReportPrice() == 0) {
+						f.put("reportPrice", "-");
 					}else {
 						f.put("reportPrice", decimalFormat.format(sub_item.getReportPrice()));
 					}
 					if(sub_item.getTotalPrice() == null) {
 						f.put("totalPrice",  " ");
+					}else if(sub_item.getTotalPrice() == 0) {
+						f.put("totalPrice", "-");
 					}else {
 						f.put("totalPrice", decimalFormat.format(sub_item.getTotalPrice()));
 					}
@@ -1200,6 +1240,46 @@ public class InboundServiceImpl implements InboundService {
 		
 			
 		 return inboundViewRes;
+	}
+	
+	
+	public String getStringResult(Double param) {
+		try {
+			boolean finalCheck = false;
+			String[] arr = String.valueOf(param).split("\\.");
+			char[] texts = arr[1].toCharArray();
+			Boolean checkPoint1[] = new Boolean[texts.length];
+			
+			for(int i = 0; i<texts.length;i++) {
+				System.out.println(texts[i]);
+				if(texts[i] == '0' ) {
+					checkPoint1[i] = true;
+				}else {
+					checkPoint1[i] = false;
+				}
+			}
+			
+			for(int i = 0; i<checkPoint1.length;i++) {
+				if(i == 0 ) {
+					finalCheck = checkPoint1[i];
+					
+				}else {
+					finalCheck = (finalCheck && checkPoint1[i]);
+				}
+			}
+			
+			
+			if(finalCheck) {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###");
+				return decimalFormat.format(Double.parseDouble(arr[0])) ;
+			}else {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+				return decimalFormat.format(param);
+			}
+		}catch (Exception e) {
+			return String.valueOf(param);
+		}
+		
 	}
 
 }

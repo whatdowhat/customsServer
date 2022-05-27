@@ -38,6 +38,7 @@ import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.FileUpload;
 import com.keepgo.whatdo.entity.customs.FinalInbound;
+import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.Unbi;
@@ -61,6 +62,7 @@ import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
+import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
@@ -100,12 +102,16 @@ public class CheckImportServiceImpl implements CheckImportService {
 	@Autowired
 	CheckImportRepository _checkImportRepository;
 	
+	@Autowired
+	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
+	
 	@Override
 	public List<CheckImportRes> getCheckImportByCompanyId(CheckImportReq checkImportReq)  {
 		
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		InboundMaster im = _inboundMasterRepository.findById(checkImportReq.getInboundMasterId()).get();
+		FinalInboundInboundMaster finalInboundInboundMaster = _finalInboundInboundMasterRepository.findByInboundMasterId(im.getId());
 		Long companyId = im.getCompanyInfo().getId();
 		
 		List<CheckImportRes> result = _checkImportRepository.findByCompanyInfoId(companyId).stream()
@@ -114,8 +120,10 @@ public class CheckImportServiceImpl implements CheckImportService {
 					CheckImportRes rt = CheckImportRes.builder()
 							.id(item.getId())
 							.blNo(item.getInboundMaster().getBlNo())
+							.userNm(item.getUser().getName())
 							.companyNm(item.getCompanyInfo().getCoNmEn())
 							.memo(item.getMemo())
+							.incomeDtStr(finalInboundInboundMaster.getFinalInbound().getIncomeDt())
 							.regDtStr(format.format(item.getRegDate()))
 							.build();
 				return rt;

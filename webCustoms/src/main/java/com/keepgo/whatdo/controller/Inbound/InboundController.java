@@ -211,7 +211,7 @@ public class InboundController {
 		}
 		
 		finalRes.setInbounds(finalList);
-		finalRes.setItemCountSumFinal(decimalFormat2.format(itemCountSumFinal));
+		finalRes.setItemCountSumFinal(getStringResult(itemCountSumFinal));
 		finalRes.setBoxCountSumFinal(decimalFormat2.format(boxCountSumFinal));
 		finalRes.setCbmSumFinal(decimalFormat.format(cbmSumFinal));
 		finalRes.setWeightSumFinal(decimalFormat2.format(weightSumFinal));
@@ -277,6 +277,43 @@ public class InboundController {
 		return result;
 	}
 	
-	
+	public String getStringResult(Double param) {
+		try {
+			boolean finalCheck = false;
+			String[] arr = String.valueOf(param).split("\\.");
+			char[] texts = arr[1].toCharArray();
+			Boolean checkPoint1[] = new Boolean[texts.length];
+			
+			for(int i = 0; i<texts.length;i++) {
+				System.out.println(texts[i]);
+				if(texts[i] == '0' ) {
+					checkPoint1[i] = true;
+				}else {
+					checkPoint1[i] = false;
+				}
+			}
+			
+			for(int i = 0; i<checkPoint1.length;i++) {
+				if(i == 0 ) {
+					finalCheck = checkPoint1[i];
+					
+				}else {
+					finalCheck = (finalCheck && checkPoint1[i]);
+				}
+			}
+			
+			
+			if(finalCheck) {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###");
+				return decimalFormat.format(Double.parseDouble(arr[0])) ;
+			}else {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+				return decimalFormat.format(param);
+			}
+		}catch (Exception e) {
+			return String.valueOf(param);
+		}
+		
+	}
 	
 }

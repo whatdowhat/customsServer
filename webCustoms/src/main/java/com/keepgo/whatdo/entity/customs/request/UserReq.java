@@ -40,7 +40,8 @@ public class UserReq {
 	private Date updateDt;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date regDt;
-	
+	private String firstLogin;
+	private String authority;
 	private String updateId;
 	
 

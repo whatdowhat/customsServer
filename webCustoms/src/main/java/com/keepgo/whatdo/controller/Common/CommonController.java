@@ -42,6 +42,8 @@ import com.keepgo.whatdo.define.AmountType;
 import com.keepgo.whatdo.define.AmountTypeRes;
 import com.keepgo.whatdo.define.UnbiType;
 import com.keepgo.whatdo.define.UnbiTypeRes;
+import com.keepgo.whatdo.define.UserType;
+import com.keepgo.whatdo.define.UserTypeRes;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.request.CommonMasterReq;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
@@ -275,5 +277,13 @@ public class CommonController {
 			throws Exception, NumberFormatException {
 
 		return AmountType.getList();
+	}
+	
+	@RequestMapping(value = "/common/userType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<UserTypeRes> UserType()
+			throws Exception, NumberFormatException {
+
+		return UserType.getList();
 	}
 }

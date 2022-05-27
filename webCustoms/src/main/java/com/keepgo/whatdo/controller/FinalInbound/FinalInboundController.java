@@ -291,8 +291,8 @@ public class FinalInboundController {
 						.filter(tt -> tt.getFileType() == FileType.F.getId()).count());
 				result.setGTypeCount(inboundMaster.getFileUploads().stream()
 						.filter(tt -> tt.getFileType() == FileType.G.getId()).count());
-				result.setHTypeCount(inboundMaster.getFileUploads().stream()
-						.filter(tt -> tt.getFileType() == FileType.H.getId()).count());
+//				result.setHTypeCount(inboundMaster.getFileUploads().stream()
+//						.filter(tt -> tt.getFileType() == FileType.H.getId()).count());
 			} else {
 				result.setATypeCount(new Long(0));
 				result.setBTypeCount(new Long(0));
@@ -301,7 +301,8 @@ public class FinalInboundController {
 				result.setETypeCount(new Long(0));
 				result.setFTypeCount(new Long(0));
 				result.setGTypeCount(new Long(0));
-				result.setHTypeCount(new Long(0));
+//				result.setHTypeCount(new Long(0));
+				
 
 			}
 			result.setATypeNm(FileType.A.getName());
@@ -311,7 +312,7 @@ public class FinalInboundController {
 			result.setETypeNm(FileType.E.getName());
 			result.setFTypeNm(FileType.F.getName());
 			result.setGTypeNm(FileType.G.getName());
-			result.setHTypeNm(FileType.H.getName());
+//			result.setHTypeNm(FileType.H.getName());
 
 			if (result.getATypeCount() == 1) {
 				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 1);
@@ -362,13 +363,13 @@ public class FinalInboundController {
 			} else {
 				result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeCount() + "개");
 			}
-			if (result.getHTypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 8);
-				result.setHTypeFileNm(fileList.get(0).getFileName1());
-				result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeFileNm());
-			} else {
-				result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeCount() + "개");
-			}
+//			if (result.getHTypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 8);
+//				result.setHTypeFileNm(fileList.get(0).getFileName1());
+//				result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeFileNm());
+//			} else {
+//				result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeCount() + "개");
+//			}
 
 			result.setFileTotalInfo(result.getATypeInfo() + "\n" + result.getBTypeInfo() + "\n" + result.getCTypeInfo()
 					+ "\n" + result.getDTypeInfo() + "\n" + result.getETypeInfo() + "\n" + result.getFTypeInfo() + "\n"

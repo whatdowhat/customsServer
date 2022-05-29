@@ -17,13 +17,15 @@ import org.springframework.stereotype.Service;
 import com.keepgo.whatdo.entity.Auth;
 import com.keepgo.whatdo.entity.Member;
 import com.keepgo.whatdo.repository.MemberRepository;
+import com.keepgo.whatdo.repository.UserRepository;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
 
 	@Autowired
-	MemberRepository _member;
+	UserRepository _user;
+//	MemberRepository _member;
 	
     @Autowired
     public PasswordEncoder passwordEncoder;
@@ -50,15 +52,15 @@ public class JwtUserDetailsService implements UserDetailsService {
             		grantedAuthorityList);
         } else {
         //not adminiatrator
-        	Member member  = _member.findByMemberId(username);
+        	com.keepgo.whatdo.entity.customs.User member  = _user.findByLoginId(username);
         	
         	
             if(member == null) {
             	throw new UsernameNotFoundException("User not found with username: " + username);	
             }else {
-            		String passwrod  = member.getMemberPassword();
+            		String passwrod  = member.getPassword();
             	   List<GrantedAuthority> grantedAuthorityList = new ArrayList<GrantedAuthority>();
-					grantedAuthorityList.add(new SimpleGrantedAuthority(Auth.LD.toString()));
+					grantedAuthorityList.add(new SimpleGrantedAuthority(member.getAuthority()));
             	   return new User(username, passwrod,
             			
             			   grantedAuthorityList);

@@ -2,11 +2,10 @@ package com.keepgo.whatdo.entity;
 
 public enum Auth {
 
-	LD("리더멘토"),
-    ST("학생"),
-    NLD("멘토"),
-    GOV("기관"),
-    SUPER("웹관리자");
+	SUPER("리더멘토"),
+    ADMIN("학생"),
+    USER("멘토");
+//    SUPER("웹관리자");
     
     public final String label;
 

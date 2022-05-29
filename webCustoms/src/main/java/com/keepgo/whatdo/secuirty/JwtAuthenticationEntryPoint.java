@@ -21,11 +21,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException {
-		System.out.println(request.getRequestURI());
 		String exception = (String) request.getAttribute("exception");
 
-		System.out.println("######################### JwtAuthenticationEntryPoint");
-		System.out.println("######################### JwtAuthenticationEntryPoint : " + exception);
 		if (exception.equals("403_EXPIREDJWT")) {
 			setResponse(response, "403_EXPIREDJWT");
 		}else

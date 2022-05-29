@@ -1,12 +1,16 @@
 package com.keepgo.whatdo.secuirty;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +25,7 @@ public class JwtTokenUtil implements Serializable {
     public static final long EXPIREDTIME = 1000 * 60L * 60L * 1L;// 1시간
 //    public static final long EXPIREDTIME = 1000 * 60L * 1L * 1L;// 1시간
     @Value("${jwt.secret}")
-    private String secret;
+    private String secret = "jwtsecretkey";
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
@@ -51,8 +55,11 @@ public class JwtTokenUtil implements Serializable {
 
     //generate token for user
     public String generateToken(UserDetails userDetails) {
+    	
+    	
+    	List<String> authorites = userDetails.getAuthorities().stream().map(t -> t.getAuthority()).collect(Collectors.toList()); 
         Map<String, Object> claims = new HashMap<>();
-//        claims.put("claims01", "01");
+        claims.put("authorites", authorites);
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
@@ -62,7 +69,6 @@ public class JwtTokenUtil implements Serializable {
 //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
 //   compaction of the JWT to a URL-safe string
     private String doGenerateToken(Map<String, Object> claims, String subject) {
-    	System.out.println("###########secret"+secret);
     	
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
         		 

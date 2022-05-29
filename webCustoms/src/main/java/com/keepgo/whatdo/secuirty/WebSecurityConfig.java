@@ -19,7 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.keepgo.whatdo.secuirty.filter.JwtRequestFilter;
 import com.keepgo.whatdo.secuirty.handler.CustomAccessDeniedHandler;
@@ -28,15 +29,30 @@ import com.keepgo.whatdo.secuirty.handler.CustomAccessDeniedHandler;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	
+	final String SUPER ="SUPER";
+	final String ADMIN ="ADMIN";
+	final String INBOUND ="INBOUND";
+	final String USER ="USER";
+	
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Autowired
 	private UserDetailsService jwtUserDetailsService;
 
+//    @Autowired
+//    private ExceptionHandlerFilter exceptionHandlerFilter;
+	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 
+	
+	@Autowired
+	private CustomAccessDeniedHandler accessDeniedHandler;
+
+    
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		// configure AuthenticationManager so that it knows from where to load
@@ -62,6 +78,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/resources/**").antMatchers(HttpMethod.OPTIONS);
 	}
 
+	
+	
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setExposedHeaders(Arrays.asList("custom-header"));
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT"));
+		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+		configuration.setAllowCredentials(true);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+	 
+	
+	
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// For CORS error
@@ -71,12 +104,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    	corsConfig.setAllowedOrigins(Arrays.asList("*"));
 //    	httpSecurity.authorizeRequests()
 //           .antMatchers("/resources/**").permitAll(); // no effect
-
-		CorsConfiguration corsConfig = new CorsConfiguration().applyPermitDefaultValues();
-		corsConfig.setExposedHeaders(Arrays.asList("custom-header")); // exceldownload 시 file name header
-
+		httpSecurity.cors();
+//		CorsConfiguration corsConfig = new CorsConfiguration().applyPermitDefaultValues();
+//		corsConfig.setExposedHeaders(Arrays.asList("custom-header")); // exceldownload 시 file name header
+//		corsConfig.addAllowedOrigin("*");
+//		corsConfig.addAllowedHeader("*");
+//		corsConfig.addAllowedMethod("*");
+//		corsConfig.setAllowCredentials(true);
+		
 //        httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-		httpSecurity.cors().configurationSource(request -> corsConfig);
+//		httpSecurity.cors().configurationSource(request -> corsConfig);
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
 		// dont authenticate this particular request
@@ -92,26 +129,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
 						"/**/*.css", "/**/*.js","/pub/**")
 				.permitAll()
-//				.antMatchers("/api01").permitAll()
-//				.antMatchers("/api02").permitAll()
-//				.antMatchers("/api03").permitAll()
+				
+				//권한설정 url mapping
+//				.antMatchers("/front/getAllCondition").hasAnyAuthority(SUPER,ADMIN)
+//				.antMatchers("/front/getAllCondition").hasAnyAuthority(ADMIN)
+				//권한설정 url mapping
+				
+				
 				.antMatchers("/excel/**").permitAll()
 				.antMatchers("/migration/**").permitAll()
 				.antMatchers("/company/**").permitAll()
 				.antMatchers("/common/**").permitAll()
 				.antMatchers("/user/**").permitAll()
 				.antMatchers("/inbound/**").permitAll()
+				
 				.antMatchers("/front/**").permitAll()
 				.antMatchers("/front/**/**").permitAll()
 				.antMatchers("/authenticate").permitAll()
+				
 				.antMatchers("/otherEroor").permitAll().antMatchers("/error").permitAll().antMatchers("/index.html")
 				.permitAll()
 //            .authorizeRequests().antMatchers("/authenticate/user").hasAuthority("ADMIN").and().
-
+				
 				// all other requests need to be authenticated
 				.anyRequest().authenticated().and().
-//            anyRequest().authenticated();
-
+				exceptionHandling().accessDeniedHandler(accessDeniedHandler).and().
 				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
 				.accessDeniedHandler(new CustomAccessDeniedHandler()).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -120,6 +162,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //             sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// Add a filter to validate the tokens with every request
+//		JwtRequestFilter jwtRequestFilter = new JwtRequestFilter();
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//		httpSecurity.addFilterBefore(exceptionHandlerFilter, JwtRequestFilter.class);
 	}
 }

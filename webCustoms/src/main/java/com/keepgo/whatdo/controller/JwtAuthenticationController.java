@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,11 +27,14 @@ import com.keepgo.whatdo.entity.ErrorVO;
 import com.keepgo.whatdo.entity.JwtRequest;
 import com.keepgo.whatdo.entity.JwtResponse;
 import com.keepgo.whatdo.entity.Member;
+import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.repository.MemberRepository;
+import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.secuirty.JwtTokenUtil;
 import com.keepgo.whatdo.secuirty.JwtUserDetailsService;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 
 @RestController
 @CrossOrigin
@@ -44,13 +48,16 @@ public class JwtAuthenticationController {
 
 
 	@Autowired
-	MemberRepository _member;
+	UserRepository _user;
 	
     @Autowired
     private JwtUserDetailsService userDetailsService;
     
     @Autowired
     public PasswordEncoder passwordEncoder;
+    
+    @Value("${app.administrator}")
+    private String ADMINISTRATOR;
 
 //    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @RequestMapping(value = "/authenticate", method = {RequestMethod.POST,RequestMethod.GET})
@@ -62,15 +69,27 @@ public class JwtAuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
         String ex =  jwtTokenUtil.getUsernameFromToken(token);
-        Claims clam =  jwtTokenUtil.getAllClaimsFromToken(token);
-        String claim = (String) clam.get("claims01");
+        Claims claims =  jwtTokenUtil.getAllClaimsFromToken(token);
+//        String claim = (String) clam.get("claims01");
 
+        User u = User.builder().build();
+        
+        if(authenticationRequest.getUsername().equals(ADMINISTRATOR)) {
+        	u.setId(0l);
+        	u.setLoginId(ADMINISTRATOR);
+        	u.setName(ADMINISTRATOR);
+        	u.setFirstLogin("N");
+        }else {
+        	 u =_user.findByLoginId(authenticationRequest.getUsername());
+        	
+        }
+        	
         Date nn =  jwtTokenUtil.getExpirationDateFromToken(token);
         System.out.println(ex);
-        System.out.println(claim);
+        System.out.println(claims);
         System.out.println(nn);
         
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new JwtResponse(token,claims,u.getName()));
 //        return ResponseEntity.ok("sdf");
     }
 
@@ -81,16 +100,16 @@ public class JwtAuthenticationController {
     }
     
     
-    @RequestMapping(value = "/authenticate/user", method = {RequestMethod.POST,RequestMethod.GET})
-    public String insertUser() throws Exception {
-        //authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-    	System.out.println("/authenticate/user enter");
-        Member b = Member.builder().memberId("asdf").memberPassword(passwordEncoder.encode("asdf")).build();
-        _member.save(b);
-
-        return "success";
-    }
-    
+//    @RequestMapping(value = "/authenticate/user", method = {RequestMethod.POST,RequestMethod.GET})
+//    public String insertUser() throws Exception {
+//        //authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+//    	System.out.println("/authenticate/user enter");
+//        Member b = Member.builder().memberId("asdf").memberPassword(passwordEncoder.encode("asdf")).build();
+//        _member.save(b);
+//
+//        return "success";
+//    }
+//    
     private void authenticate(String username, String password, HttpServletRequest request) throws Exception {
     	
     	if(username.replaceAll(" ", "").equals("")) {
@@ -105,8 +124,10 @@ public class JwtAuthenticationController {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
         	
-        	request.setAttribute("exception", "403_PASSWORD_INCORRECT");
-            throw new Exception("INVALID_CREDENTIALS", e);
+        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("403_PASSWORD_INCORRECT").errorMessage("403_PASSWORD_INCORRECT").build());
+//            throw new Exception("INVALID_CREDENTIALS", e);
+//            throw new JwtException("403_EXPIREDJWT");
+            throw new Exception("403_PASSWORD_INCORRECT", e);
         }
     }
 }

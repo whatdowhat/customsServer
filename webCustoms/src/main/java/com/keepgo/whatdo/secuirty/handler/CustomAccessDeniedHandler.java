@@ -11,7 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+import com.keepgo.whatdo.entity.ErrorVO;
+import com.keepgo.whatdo.exception.UsernameFromTokenException;
+
+@Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler{
 
 	static final Logger log = LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
@@ -36,35 +42,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler{
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		log.debug("enter ===CustomAccessDeniedHandlerhandleer==============>{}","CustomAccessDeniedHandler");
-		System.out.println("FFFFFFFFFFFFFFF CustomAccessDeniedHandler");
-		log.debug("handle test");
-		String referer = (String)request.getHeader("REFERER");
-		log.debug(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort());
-		log.debug("referer test"+referer);
-		try {
-			referer = referer.replace(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort(), "");	
-		} catch (Exception e) {
-			String errorMessage = "권한이 없는 접근입니다. 관리자에게 문의하세요.";
-			request.setAttribute("errorMessage", errorMessage);
-			RequestDispatcher rd;
-			rd = request.getRequestDispatcher("/");
-			rd.forward(request, response); 
-		}
-		
-		log.debug("referer test"+referer);
-		
-		
-		log.debug(referer);
-		String errorMessage = "권한이 없는 접근입니다. 관리자에게 문의하세요.";
-		request.setAttribute("errorMessage", errorMessage);
-		RequestDispatcher rd;
-		if(referer == null || referer.equals("")) {
-			rd = request.getRequestDispatcher("/");
-		}else {
-			rd = request.getRequestDispatcher(referer);	
-		}
-		rd.forward(request, response); 
+		request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("NO_AUTHORITIES").errorMessage("NO_AUTHORITIES").build());
+		throw new UsernameFromTokenException("Username from token error");
 		
 		
 	}
@@ -74,5 +53,36 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler{
 		
 	}
 
+	
+	private void setResponse(HttpServletResponse response, String errorCode) throws IOException {
+
+		Gson gson = new Gson();
+		if (errorCode.equals("403_EXPIREDJWT")) {
+			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			String resultObj = gson.toJson(
+					ErrorVO.builder().status(200).errorCode(errorCode).errorMessage("JWT Token has expired").build());
+
+			response.getWriter().println(resultObj);
+		}
+
+		if (errorCode.equals("403_PASSWORD_INCORRECT")) {
+			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			String resultObj = gson.toJson(
+					ErrorVO.builder().status(200).errorCode(errorCode).errorMessage("PASSWORD INCORRECT").build());
+			response.getWriter().println(resultObj);
+		}
+		
+		if (errorCode.equals("403_ID_EMPTY")) {
+			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			String resultObj = gson.toJson(
+					ErrorVO.builder().status(200).errorCode(errorCode).errorMessage("ID EMPTY").build());
+			response.getWriter().println(resultObj);
+		}
+
+
+	}
 	
 }

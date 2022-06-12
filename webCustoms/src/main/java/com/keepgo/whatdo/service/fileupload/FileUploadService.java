@@ -29,6 +29,10 @@ public interface FileUploadService {
 	List<?> getFileList2(FileUploadReq fileUploadReq);
 	
 	@Transactional
+	//masterid,common type
+	List<?> getFileList3(FileUploadReq fileUploadReq);
+	
+	@Transactional
 	FileUploadRes deleteFile(FileUploadReq fileUploadReq);
 
 	

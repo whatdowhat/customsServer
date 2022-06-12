@@ -7,14 +7,18 @@ import javax.transaction.Transactional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
+import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 
 @Service
 public interface ExcelService {
@@ -49,5 +53,12 @@ public interface ExcelService {
 	
 	@Transactional
 	boolean container(List<ExcelContainerRes> list,HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	List<ExcelInboundRes> inboundData(InboundReq inboundReq) throws Exception;
+	
+	
+	
+	
 	
 }

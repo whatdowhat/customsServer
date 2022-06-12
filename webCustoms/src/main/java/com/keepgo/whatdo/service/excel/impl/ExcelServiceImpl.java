@@ -59,6 +59,7 @@ import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
@@ -316,97 +317,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 	}
 
-	public void CopyRowBlank(XSSFRow target, XSSFRow origin, ExcelFTASubRes item, XSSFWorkbook workbook,
-			int startIndex) {
-		List<Integer> count = new ArrayList<Integer>();
-		origin.cellIterator().forEachRemaining(cell -> {
-
-			if (count.size() < 9) {
-
-				target.createCell(cell.getColumnIndex());
-
-				CellStyle newCellStyle = cell.getCellStyle();
-				newCellStyle.cloneStyleFrom(cell.getCellStyle());
-				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
-
-				// 첫번째인경우
-				//
-				if (item.getOrderNo() == 1) {
-//					target.getCell(cell.getColumnIndex()).setCellValue(item.getCompanyInvoice());
-					if (count.size() == 7) {
-						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
-						target.getCell(cell.getColumnIndex()).setCellValue(getDateStr(item.getDepartDtStr()));
-//						target.getCell(cell.getColumnIndex()).setCellValue("TAAAA");
-					}
-				} else {
-//					if(count.size() == 7) {
-//						workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
-//						target.getCell(cell.getColumnIndex()).setCellValue("");
-//					}
-				}
-
-			} else {
-//				CellStyle newCellStyle = cell.getCellStyle();
-//				newCellStyle.cloneStyleFrom(cell.getCellStyle());
-//				cell.setCellValue("t");
-			}
-			count.add(1);
-		});
-
-	}
-
-	public void CopyRowData(XSSFRow target, XSSFRow origin, ExcelFTASubRes item, XSSFWorkbook workbook,
-			int startIndex) {
-		List<Integer> count = new ArrayList<Integer>();
-		origin.cellIterator().forEachRemaining(cell -> {
-
-			if (count.size() < 9) {
-				target.createCell(cell.getColumnIndex());
-
-				CellStyle newCellStyle = cell.getCellStyle();
-				newCellStyle.cloneStyleFrom(cell.getCellStyle());
-				target.getCell(cell.getColumnIndex()).setCellStyle(newCellStyle);
-//				target.getCell(cell.getColumnIndex()).setCellValue(cell.getStringCellValue());
-
-				if (count.size() == 0) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getOrderNo());
-				}
-				if (count.size() == 1) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getMaking());
-				}
-				if (count.size() == 2) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getEngNm());
-				}
-				if (count.size() == 3) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getHsCode());
-				}
-				if (count.size() == 4) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getData10());
-				}
-				if (count.size() == 5) {
-					target.getCell(cell.getColumnIndex()).setCellValue(item.getItemCount());
-				}
-				if (count.size() == 6) {
-
-				}
-				if (count.size() == 7) {
-					if (item.getOrderNo() == 1) {
-						if (count.size() == 7) {
-							workbook.getSheetAt(0).addMergedRegion(new CellRangeAddress(startIndex, startIndex, 7, 8));
-							target.getCell(cell.getColumnIndex()).setCellValue(item.getCompanyInvoice());
-						}
-					}
-				}
-
-			} else {
-//				CellStyle newCellStyle = cell.getCellStyle();
-//				newCellStyle.cloneStyleFrom(cell.getCellStyle());
-//				cell.setCellValue("t");
-			}
-			count.add(1);
-		});
-
-	}
+	
 
 	private void copyRowforFTA(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
 			ExcelFTASubRes item) {
@@ -684,7 +595,8 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setData10(item.getData10());
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
 //				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
-				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));				
+//				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));
+				subRes.setItemCount(getStringResult(origin_inbound_list.get(i).getItemCount()));	
 				subRes.setHsCode(origin_inbound_list.get(i).getHsCode());
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
@@ -1276,7 +1188,7 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd);
 				subRes.setData10(item.getData10());
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
-				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));
+				subRes.setItemCount(getStringResult(origin_inbound_list.get(i).getItemCount()));
 				subRes.setHsCode(origin_inbound_list.get(i).getHsCode());
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
@@ -1803,7 +1715,7 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
 				subRes.setData08(item.getData08());
-				subRes.setItemCount(decimalFormat2.format(origin_inbound_list.get(i).getItemCount()));
+				subRes.setItemCount(getStringResult(origin_inbound_list.get(i).getItemCount()));
 				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd);
 				subRes.setDepartDtStr(departDt);
 				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
@@ -1893,15 +1805,15 @@ public class ExcelServiceImpl implements ExcelService {
 				
 				//셀 병합
 				//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
-				if(cn==0) {
-					sheet.addMergedRegion(new CellRangeAddress(15,16,0,5));
-					sheet.addMergedRegion(new CellRangeAddress(20,21,10,11));
-					
-				}
-				else if(cn==1) {
+//				if(cn==0) {
+//					sheet.addMergedRegion(new CellRangeAddress(15,16,0,5));
+//					sheet.addMergedRegion(new CellRangeAddress(20,21,10,11));
+//					
+//				}
+				 if(cn==1) {
 					sheet.addMergedRegion(new CellRangeAddress(0,2,0,11));
 				}
-//				
+			
 				
 				// 도장이미지 삽입
 				InboundMaster inboundMaster = _inboundMasterRepository.findById(excelInpackRes.getInboundMasterId()).get();
@@ -2091,13 +2003,7 @@ public class ExcelServiceImpl implements ExcelService {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
-							
-							
 						}
-						
-						
-						
 					}
 					if (value.contains("${currency}")) {// 통화단위
 
@@ -2119,7 +2025,25 @@ public class ExcelServiceImpl implements ExcelService {
 							}
 						}
 					}
-					
+						if(value.contains("${amountType}") ) {//date format으로 데이터 넣어야함.
+						
+						
+						Integer countPCS=excelInpackRes.getCountPCS();
+						Integer countM=excelInpackRes.getCountM();
+						Integer countKG=excelInpackRes.getCountKG();
+						Integer countYD=excelInpackRes.getCountYD();
+						
+							if(excelInpackRes.getSubItem().size()==countM) {
+								cell.setCellValue("M");
+							}else if(excelInpackRes.getSubItem().size()==countKG) {
+								cell.setCellValue("KG");
+							}else if(excelInpackRes.getSubItem().size()==countYD) {
+								cell.setCellValue("YD");
+							}else {
+								cell.setCellValue("UNIT");
+							}
+						
+					}
 
 
 					break;
@@ -2230,7 +2154,28 @@ public class ExcelServiceImpl implements ExcelService {
 			return excelInpackRes.getData11();
 		}else if (target.contains("${data12}")) {
 			return excelInpackRes.getData12();
-		} else {
+		}
+		
+//		else if(target.contains("${amountType}")) {//date format으로 데이터 넣어야함.
+//			
+//			
+//			Integer countPCS=excelInpackRes.getCountPCS();
+//			Integer countM=excelInpackRes.getCountM();
+//			Integer countKG=excelInpackRes.getCountKG();
+//			Integer countYD=excelInpackRes.getCountYD();
+//			
+//				if(excelInpackRes.getSubItem().size()==countM) {
+//					return "M";
+//				}else if(excelInpackRes.getSubItem().size()==countKG) {
+//					return "KG";
+//				}else if(excelInpackRes.getSubItem().size()==countYD) {
+//					return "YD";
+//				}else {
+//					return "UNIT";
+//				}
+//			
+//		}
+		else {
 			return target;
 		}
 
@@ -2376,6 +2321,13 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getEngNm());
 					} else if (i == 3) {
 						newCell.setCellValue(item.getJejil());
+					}else if (i == 7) {
+						if(item.getAmountType()==null||item.getAmountType().equals("PCS")) {
+							newCell.setCellValue("UNIT");
+						}else {
+							newCell.setCellValue(item.getAmountType());
+						}
+						
 					}else if (i == 8) {
 						newCell.setCellValue(item.getCurrencyType());
 					} else {
@@ -2386,6 +2338,13 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getEngNm());
 					} else if (i == 3) {
 						newCell.setCellValue(item.getJejil());
+					}else if (i == 7) {
+						if(item.getAmountType()==null||item.getAmountType().equals("PCS")) {
+							newCell.setCellValue("UNIT");
+						}else {
+							newCell.setCellValue(item.getAmountType());
+						}
+						
 					} else {
 						newCell.setCellValue(oldCell.getStringCellValue());
 					}
@@ -2498,7 +2457,11 @@ public class ExcelServiceImpl implements ExcelService {
 	public ExcelInpackRes inpackData(FinalInboundInboundMasterReq req) throws Exception {
 
 		ExcelInpackRes result = _FinalInboundInboundMasterRepository.findById(req.getId()).map(t -> {
-
+			Integer countPCS= 0;
+			Integer countM= 0;
+			Integer countKG= 0;
+			Integer countYD= 0;
+			
 			List<InboundRes> inbound_list = new ArrayList<>();
 			List<Inbound> origin_inbound_list = new ArrayList<>();
 			ExcelInpackRes item = ExcelInpackRes.builder().build();
@@ -2509,7 +2472,7 @@ public class ExcelServiceImpl implements ExcelService {
 			StringBuffer sb = new StringBuffer();
 			String companyNum=t.getInboundMaster().getCompanyInfo().getCoNum();
 			sb.append(companyNum);
-			sb.insert(2, "-");
+			sb.insert(3, "-");
 			sb.insert(6, "-");
 			
 			item.setFileNm(t.getInboundMaster().getBlNo());
@@ -2620,6 +2583,16 @@ public class ExcelServiceImpl implements ExcelService {
 				}else {
 					subRes.setPackingType(t.getInboundMaster().getPackingType());
 				}
+				subRes.setAmountType(origin_inbound_list.get(i).getAmountType());
+				if(origin_inbound_list.get(i).getAmountType()==null||origin_inbound_list.get(i).getAmountType().equals("PCS")){
+					countPCS=countPCS+1;
+				}else if(origin_inbound_list.get(i).getAmountType().equals("M")){
+					countM=countM+1;
+				}else if(origin_inbound_list.get(i).getAmountType().equals("YD")){
+					countYD=countYD+1;
+				}else if(origin_inbound_list.get(i).getAmountType().equals("KG")){
+					countKG=countKG+1;
+				}
 				
 				sublist.add(subRes);
 
@@ -2628,6 +2601,10 @@ public class ExcelServiceImpl implements ExcelService {
 //			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
 //			Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
 //			item.setTotalBoxCountEng("TOTAL: ("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+			item.setCountPCS(countPCS);
+			item.setCountM(countM);	
+			item.setCountYD(countYD);
+			item.setCountKG(countKG);
 			item.setSubItem(sublist);
 			return item;
 		}).get();
@@ -2654,9 +2631,10 @@ public class ExcelServiceImpl implements ExcelService {
 			StringBuffer sb = new StringBuffer();
 			String companyNum=f.getInboundMaster().getCompanyInfo().getCoNum();
 			sb.append(companyNum);
-			sb.insert(2, "-");
+			sb.insert(3, "-");
 			sb.insert(6, "-");
-			ExcelContainerRes r = new ExcelContainerRes();
+//			ExcelContainerRes r  = new ExcelContainerRes();
+			ExcelContainerRes r  = ExcelContainerRes.builder().build();
 			Date incomeDt = beforeFormat.parse(f.getFinalInbound().getIncomeDt());
 			Date departDt = beforeFormat.parse(f.getFinalInbound().getDepartDtStr());
 			r.setFileNm(f.getInboundMaster().getBlNo());
@@ -2740,7 +2718,7 @@ public class ExcelServiceImpl implements ExcelService {
 			
 			r.setHecdec(hecdec);
 			r.setHblseq(String.valueOf(no));
-			r.setHblatn("");
+			r.setHblatn(f.getInboundMaster().getUser().getLoginId().toUpperCase());
 			r.setHisdte(afterFormat.format(departDt));
 			r.setCnecid(f.getInboundMaster().getCompanyInfo().getCoNum());
 			if(r.getHnfnam().equals("SAME AS CONSIGNEE")) {
@@ -3082,7 +3060,66 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 		}
 	}
+	
+	@Override
+	public List<ExcelInboundRes> inboundData(InboundReq req) throws Exception {
+		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(req);
+		//출력모드
+		List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
+		
+		List<ExcelInboundRes> result = new ArrayList<>();
+		for(int i=0; i<result2.size(); i++) {
+			ExcelInboundRes item = new ExcelInboundRes();
+			item.setColor(uploadRoot);
+		}
+		
+		return  result;
 
+	}
+	
+
+	
+	public String getStringResult(Double param) {
+		try {
+			boolean finalCheck = false;
+			String[] arr = String.valueOf(param).split("\\.");
+			char[] texts = arr[1].toCharArray();
+			Boolean checkPoint1[] = new Boolean[texts.length];
+			
+			for(int i = 0; i<texts.length;i++) {
+				System.out.println(texts[i]);
+				if(texts[i] == '0' ) {
+					checkPoint1[i] = true;
+				}else {
+					checkPoint1[i] = false;
+				}
+			}
+			
+			for(int i = 0; i<checkPoint1.length;i++) {
+				if(i == 0 ) {
+					finalCheck = checkPoint1[i];
+					
+				}else {
+					finalCheck = (finalCheck && checkPoint1[i]);
+				}
+			}
+			
+			
+			if(finalCheck) {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###");
+				return decimalFormat.format(Double.parseDouble(arr[0])) ;
+			}else {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+				return decimalFormat.format(param);
+			}
+		}catch (Exception e) {
+			return String.valueOf(param);
+		}
+		
+	}
+	
+
+	
 
 	
 

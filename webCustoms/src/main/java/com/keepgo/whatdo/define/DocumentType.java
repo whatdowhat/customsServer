@@ -14,7 +14,7 @@ public enum DocumentType {
 	C(3,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"YATAI.xlsx",3),
 	D(4,"classpath:static"+File.separatorChar+"inpack"+File.separatorChar+"inpack.xlsx",4),
 	E(5,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"WIN-SABIS.xlsx",5),
-	F(6,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),
+	F(6,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"INBOUND.xlsx",6),
 	G(7,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),
 	H(8," ",3);
 	

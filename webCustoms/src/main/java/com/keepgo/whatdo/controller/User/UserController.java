@@ -117,6 +117,17 @@ public class UserController {
 	
 	}
 	
+	@RequestMapping(value = "/user/changePassword", method = {RequestMethod.POST })
+
+	public  UserRes changePassword(@RequestBody UserReq userReq) throws IOException, InterruptedException {
+
+	
+		UserRes result = _userService.changePassword(userReq);
+		return result;
+
+	}
+	
+	
 
 	
 

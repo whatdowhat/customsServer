@@ -111,7 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		corsConfig.addAllowedHeader("*");
 //		corsConfig.addAllowedMethod("*");
 //		corsConfig.setAllowCredentials(true);
-		
+//		
 //        httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 //		httpSecurity.cors().configurationSource(request -> corsConfig);
 		// We don't need CSRF for this example
@@ -136,6 +136,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				//권한설정 url mapping
 				
 				
+				.antMatchers("/index.jsp").permitAll()
+				.antMatchers("/static/index.html").permitAll()
 				.antMatchers("/excel/**").permitAll()
 				.antMatchers("/migration/**").permitAll()
 				.antMatchers("/company/**").permitAll()

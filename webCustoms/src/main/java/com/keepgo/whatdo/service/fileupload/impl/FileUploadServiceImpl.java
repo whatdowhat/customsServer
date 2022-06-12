@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
+import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
@@ -55,6 +57,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 	
 	@Autowired
 	FileUploadRepository _fileUploadRepository;
+	
+	@Autowired
+	FinalInboundRepository _finalInboundRepository;
 
 	@Autowired
 	UtilService _UtilService;
@@ -114,9 +119,63 @@ public class FileUploadServiceImpl implements FileUploadService {
 	//masterid,common type
 	@Override
 	public List<?> getFileList2(FileUploadReq fileUploadReq) {
+		List<?> list = new ArrayList<>();
+		if(fileUploadReq.getFileType() ==  0) {
+			list = _fileUploadRepository
+					.findByInboundMaster(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+			FileUploadRes dto = FileUploadRes.builder()
+
+					
+					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+					.root(item.getRoot())
+					.fileType(item.getFileType())
+					.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//					.fileCount(fileCount)
+											
+					.build();
+					
+			return dto;
+		}).collect(Collectors.toList());
+		}else {
+			list = _fileUploadRepository
+					.findByInboundMasterAndFileType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+			FileUploadRes dto = FileUploadRes.builder()
+
+					
+					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+					.root(item.getRoot())
+					.fileType(item.getFileType())
+					.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//					.fileCount(fileCount)
+											
+					.build();
+					
+			return dto;
+		}).collect(Collectors.toList());
+		}
+		
+		 
+		return list;
+	}
+	
+	@Override
+	public List<?> getFileList3(FileUploadReq fileUploadReq) {
 		
 		List<?> list = _fileUploadRepository
-				.findByInboundMasterAndFileType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(),
+				.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
 						fileUploadReq.getFileType().intValue())
 		 
 		 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
@@ -130,7 +189,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 				.root(item.getRoot())
 				.fileType(item.getFileType())
 				.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
-				.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+				
 //				.fileCount(fileCount)
 										
 				.build();

@@ -41,6 +41,7 @@ public class FileUploadReq {
 	private int fileCount;
 	private Long fileType;
 	private Long commonId;
+	private Long finalInboundId;
 	
 	
 	

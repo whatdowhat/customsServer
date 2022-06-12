@@ -414,49 +414,50 @@ public class UtilServiceImpl implements UtilService {
 //				spanAttr[1][14] = 1;
 //				item.setReportPriceSpan(spanAttr[1][14]);
 //			}
-			if (predict01_for_price(item.getReportPrice()) && lastIndex != i) {
-//				spanAttrStr//값비교 배열
-//				spanAttr//span 배열
-//				spanAttrStr[1][4] = String.valueOf(item.getMemo1());
-
-				//null이 아니거나 0이 아닌 값만 들어온다.
-				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
-					if(spanAttrStr[1][14].equals(String.valueOf(item.getReportPrice()))) {
-						
-						//공백인경우
-						if(item.getReportPrice() == null) {
-							item.setReportPriceSpan(1);
-						}else {
-							spanAttr[1][14] = spanAttr[1][14] + 1;
-							//시작 인덱스 span 값 할당.
-							list.get(spanAttr[0][14]).setReportPriceSpan(spanAttr[1][14]);
-							item.setReportPriceSpan(0);	
-						}
-						
-						
-					}else {
-						//시작인덱스
-						spanAttr[0][14] = i;
-
-						//처음부터 다시.
-						//스판 카운터 1
-						spanAttr[1][14] = 1;
-						item.setReportPriceSpan(spanAttr[1][14]);
-						//현재 값 넣어준다.
-						spanAttrStr[1][14] = String.valueOf(item.getReportPrice());
-					}
-			}else {
-				//시작인덱스
-				spanAttr[0][14] = i;
-
-				//처음부터 다시.
-				//스판 카운터 1
-				spanAttr[1][14] = 1;
-				item.setReportPriceSpan(spanAttr[1][14]);
-				//현재 값 넣어준다.
-				spanAttrStr[1][14] = String.valueOf(item.getReportPrice());
-			}
-			
+			//20220530
+//			if (predict01_for_price(item.getReportPrice()) && lastIndex != i) {
+////				spanAttrStr//값비교 배열
+////				spanAttr//span 배열
+////				spanAttrStr[1][4] = String.valueOf(item.getMemo1());
+//
+//				//null이 아니거나 0이 아닌 값만 들어온다.
+//				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
+//					if(spanAttrStr[1][14].equals(String.valueOf(item.getReportPrice()))) {
+//						
+//						//공백인경우
+//						if(item.getReportPrice() == null) {
+//							item.setReportPriceSpan(1);
+//						}else {
+//							spanAttr[1][14] = spanAttr[1][14] + 1;
+//							//시작 인덱스 span 값 할당.
+//							list.get(spanAttr[0][14]).setReportPriceSpan(spanAttr[1][14]);
+//							item.setReportPriceSpan(0);	
+//						}
+//						
+//						
+//					}else {
+//						//시작인덱스
+//						spanAttr[0][14] = i;
+//
+//						//처음부터 다시.
+//						//스판 카운터 1
+//						spanAttr[1][14] = 1;
+//						item.setReportPriceSpan(spanAttr[1][14]);
+//						//현재 값 넣어준다.
+//						spanAttrStr[1][14] = String.valueOf(item.getReportPrice());
+//					}
+//			}else {
+//				//시작인덱스
+//				spanAttr[0][14] = i;
+//
+//				//처음부터 다시.
+//				//스판 카운터 1
+//				spanAttr[1][14] = 1;
+//				item.setReportPriceSpan(spanAttr[1][14]);
+//				//현재 값 넣어준다.
+//				spanAttrStr[1][14] = String.valueOf(item.getReportPrice());
+//			}
+			//20220530
 			
 			if (predict01_for_memo(item.getItemNo()) && lastIndex != i) {
 					if(spanAttrStr[1][15].equals(String.valueOf(item.getItemNo()))) {
@@ -508,50 +509,50 @@ public class UtilServiceImpl implements UtilService {
 //				spanAttr[1][17] = 1;
 //				item.setTotalPriceSpan(spanAttr[1][17]);
 //			}
-			
-			if (predict01_for_price(item.getTotalPrice()) && lastIndex != i) {
-//				spanAttrStr//값비교 배열
-//				spanAttr//span 배열
-//				spanAttrStr[1][4] = String.valueOf(item.getMemo1());
-
-				//null이 아니거나 0이 아닌 값만 들어온다.
-				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
-					if(spanAttrStr[1][17].equals(String.valueOf(item.getTotalPrice()))) {
-						
-						//공백인경우
-						if(item.getTotalPrice() == null) {
-							item.setTotalPriceSpan(1);
-						}else {
-							spanAttr[1][17] = spanAttr[1][17] + 1;
-							//시작 인덱스 span 값 할당.
-							list.get(spanAttr[0][17]).setTotalPriceSpan(spanAttr[1][17]);
-							item.setTotalPriceSpan(0);	
-						}
-						
-						
-					}else {
-						//시작인덱스
-						spanAttr[0][17] = i;
-
-						//처음부터 다시.
-						//스판 카운터 1
-						spanAttr[1][17] = 1;
-						item.setTotalPriceSpan(spanAttr[1][17]);
-						//현재 값 넣어준다.
-						spanAttrStr[1][17] = String.valueOf(item.getTotalPrice());
-					}
-			}else {
-				//시작인덱스
-				spanAttr[0][17] = i;
-
-				//처음부터 다시.
-				//스판 카운터 1
-				spanAttr[1][17] = 1;
-				item.setTotalPriceSpan(spanAttr[1][17]);
-				//현재 값 넣어준다.
-				spanAttrStr[1][17] = String.valueOf(item.getTotalPrice());
-			}
-			
+			//20220530
+//			if (predict01_for_price(item.getTotalPrice()) && lastIndex != i) {
+////				spanAttrStr//값비교 배열
+////				spanAttr//span 배열
+////				spanAttrStr[1][4] = String.valueOf(item.getMemo1());
+//
+//				//null이 아니거나 0이 아닌 값만 들어온다.
+//				//이전의 값과 동일하니? --> 첫번째 는 "" 이므로 무조건 x
+//					if(spanAttrStr[1][17].equals(String.valueOf(item.getTotalPrice()))) {
+//						
+//						//공백인경우
+//						if(item.getTotalPrice() == null) {
+//							item.setTotalPriceSpan(1);
+//						}else {
+//							spanAttr[1][17] = spanAttr[1][17] + 1;
+//							//시작 인덱스 span 값 할당.
+//							list.get(spanAttr[0][17]).setTotalPriceSpan(spanAttr[1][17]);
+//							item.setTotalPriceSpan(0);	
+//						}
+//						
+//						
+//					}else {
+//						//시작인덱스
+//						spanAttr[0][17] = i;
+//
+//						//처음부터 다시.
+//						//스판 카운터 1
+//						spanAttr[1][17] = 1;
+//						item.setTotalPriceSpan(spanAttr[1][17]);
+//						//현재 값 넣어준다.
+//						spanAttrStr[1][17] = String.valueOf(item.getTotalPrice());
+//					}
+//			}else {
+//				//시작인덱스
+//				spanAttr[0][17] = i;
+//
+//				//처음부터 다시.
+//				//스판 카운터 1
+//				spanAttr[1][17] = 1;
+//				item.setTotalPriceSpan(spanAttr[1][17]);
+//				//현재 값 넣어준다.
+//				spanAttrStr[1][17] = String.valueOf(item.getTotalPrice());
+//			}
+			//20220530
 			
 			if (predict01(item.getOrderNoStr()) && lastIndex != i) {
 				spanAttr[1][18] = spanAttr[1][18] + 1; // [0]:start , [0]:columindex , value :병합 카운터

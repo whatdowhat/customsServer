@@ -61,6 +61,7 @@ import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
+import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
 import com.keepgo.whatdo.service.finalInbound.FinalInboundService;
 
@@ -94,6 +95,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	
 	@Autowired
 	CheckImportRepository _checkImportRepository;
+	
+	@Autowired
+	UserRepository _userRepository;
 
 	@Override
 	public List<?> getAll(FinalInboundReq req) {
@@ -308,7 +312,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				_inboundRepository.delete(inboundList.get(j));
 			}
 			CheckImport checkImport = _checkImportRepository.findByInboundMasterId(inboundMasterId);
-			_checkImportRepository.delete(checkImport);
+			if(checkImport!=null) {
+				_checkImportRepository.delete(checkImport);
+			}
+			
 			_inboundMasterRepository.delete(inboundMaster);
 			_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(req.getId(), inboundMasterId);
 
@@ -507,7 +514,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	}
 	
 	@Override
-	public boolean excelRead(MultipartFile file, InboundReq Req, String id) throws IOException {
+	public boolean excelRead(MultipartFile file, InboundReq Req, String id, String loginId) throws IOException {
 
 		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -538,10 +545,11 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					.freight(1)
 					.currencyType("$")
 					.packingType("CTN")
-			
 					.isUsing(true).createDt(new Date()).updateDt(new Date())
 
 					.build();
+			User user = _userRepository.findByLoginId(loginId);
+			target.setUser(user);
 			target = _inboundMasterRepository.save(target);
 			
 			
@@ -658,6 +666,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 						inbound.setReportPrice(null);
 						inbound.setTotalPrice(null);
 					}else {
+						Double reportPrice = inbound.getReportPrice();
+						Double result =  Math.round(reportPrice*1000)/1000.0;
+						inbound.setReportPrice(result);
 						inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					}
 					

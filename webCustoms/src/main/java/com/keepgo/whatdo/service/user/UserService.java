@@ -28,6 +28,9 @@ public interface UserService {
 	@Transactional
 	UserRes deleteUser(UserReq userReq);
 	
+	@Transactional
+	UserRes changePassword(UserReq userReq);
+	
 	
 
 }

@@ -40,6 +40,7 @@ public class FileUploadRes {
 	private int fileType;
 	private String fileTypeNm;
 	private Long commonId;
+	private Long finalInboundId;
 	
 	
 	

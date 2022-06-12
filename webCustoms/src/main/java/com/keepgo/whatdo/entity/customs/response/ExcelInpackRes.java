@@ -59,7 +59,10 @@ public class ExcelInpackRes {
 	Boolean coYn;
 	String invoice;
 	String noCoDt;
-	
+	Integer countPCS;
+	Integer countM;
+	Integer countKG;
+	Integer countYD;
 	//품목 리스트
 	List<ExcelInpackSubRes>  subItem;
 }

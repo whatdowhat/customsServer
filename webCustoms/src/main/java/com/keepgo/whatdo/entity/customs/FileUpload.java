@@ -80,6 +80,11 @@ public class FileUpload {
 //	@JsonBackReference
 	private Common common;
 	
+	@JoinColumn(name = "finalInboundId")
+	@ManyToOne(fetch = FetchType.LAZY)
+//	@JsonBackReference
+	private FinalInbound finalInbound;
+	
 	//공통 컬럼.
 	@ExcelColumn(headerName="사용여부",order = 4)
 	@Column(name = "isUsing",nullable = false,columnDefinition="tinyint(1) default 1")

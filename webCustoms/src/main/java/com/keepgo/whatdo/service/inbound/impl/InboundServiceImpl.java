@@ -391,7 +391,7 @@ public class InboundServiceImpl implements InboundService {
 							StringBuffer sb = new StringBuffer();
 							String companyNum=item.getInboundMaster().getCompanyInfo().getCoNum();
 							sb.append(companyNum);
-							sb.insert(2, "-");
+							sb.insert(3, "-");
 							sb.insert(6, "-");
 							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+sb.toString());
 							if(item.getInboundMaster().getManager()!=null) {
@@ -487,6 +487,7 @@ public class InboundServiceImpl implements InboundService {
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
+						.amountType(item.getAmountType())
 //						.color(item.getColorCode())
 //						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
 //						.colorCode(item.getColor())
@@ -539,7 +540,7 @@ public class InboundServiceImpl implements InboundService {
 							StringBuffer sb = new StringBuffer();
 							String companyNum=item.getInboundMaster().getCompanyInfo().getCoNum();
 							sb.append(companyNum);
-							sb.insert(2, "-");
+							sb.insert(3, "-");
 							sb.insert(6, "-");
 							rt.setMasterCompany(item.getInboundMaster().getCompanyInfo().getCoNm()+"\n"+sb.toString());
 							if(item.getInboundMaster().getManager()!=null) {
@@ -883,7 +884,7 @@ public class InboundServiceImpl implements InboundService {
 //					inboundRes.setBoxCount(new Double(0));
 //				}
 				if(inboundRes.getReportPrice()==null||inboundRes.getReportPrice().equals("")) {
-					inboundRes.setReportPrice(new Double(0));
+					inboundRes.setReportPrice(null);
 				}
 				list.add(inboundRes);
 			}
@@ -1042,8 +1043,12 @@ public class InboundServiceImpl implements InboundService {
 			//소수 2째자리 
 //			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
 			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
-					
+				item.setReportPrice(null);
+				item.setTotalPrice(null);
 			}else {
+				Double reportPrice = item.getReportPrice();
+				Double result =  Math.round(reportPrice*1000)/1000.0;
+				item.setReportPrice(result);
 				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
 			}
 			
@@ -1154,6 +1159,11 @@ public class InboundServiceImpl implements InboundService {
 						f.put("cbm",  "0");
 					}else {
 						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+					}
+					if(sub_item.getAmountType()==null||sub_item.getAmountType().equals("PCS")) {
+						f.put("amountType",  "");
+					}else {
+						f.put("amountType", sub_item.getAmountType());	
 					}
 					
 					

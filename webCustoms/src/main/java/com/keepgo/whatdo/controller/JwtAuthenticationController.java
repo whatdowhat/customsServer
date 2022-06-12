@@ -89,7 +89,7 @@ public class JwtAuthenticationController {
         System.out.println(claims);
         System.out.println(nn);
         
-        return ResponseEntity.ok(new JwtResponse(token,claims,u.getName()));
+        return ResponseEntity.ok(new JwtResponse(token,claims,u.getName(),u.getFirstLogin()));
 //        return ResponseEntity.ok("sdf");
     }
 

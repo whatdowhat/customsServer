@@ -91,6 +91,13 @@ public class FileuploadController {
 		return  _fileUploadService.getFileList2(fileUploadReq);
 	}
 	
+	@RequestMapping(value = "/front/getFile3", method = {RequestMethod.POST })
+	public List<?> getFile3(HttpServletRequest httpServletRequest, @RequestBody FileUploadReq fileUploadReq ){
+		
+		//masterid,common type
+		return  _fileUploadService.getFileList3(fileUploadReq);
+	}
+	
 	@RequestMapping(value = "/front/uploadFile2", method = {RequestMethod.POST })
 	public boolean uploadFile2(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		Gson gson = new Gson();

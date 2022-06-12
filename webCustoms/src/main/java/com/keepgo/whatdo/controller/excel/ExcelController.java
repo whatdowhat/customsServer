@@ -26,12 +26,15 @@ import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
+import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
+import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 import com.keepgo.whatdo.service.excel.ExcelService;
@@ -151,5 +154,12 @@ public class ExcelController {
 		_excelService.container(s, response);
 	}
 	
+	@RequestMapping(value = "/excel/document/inboundData", method = { RequestMethod.POST })
+	public List<ExcelInboundRes> inboundData(HttpServletRequest httpServletRequest, @RequestBody InboundReq inboundReq,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.inboundData(inboundReq);
+	}
 
 }

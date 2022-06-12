@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,9 @@ import io.jsonwebtoken.JwtException;
 @CrossOrigin
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    @Value("${jwt.secretYn}")
+    private String secretYn;
+    
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
 
@@ -42,76 +46,78 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 //    	chain.doFilter(request, response);
     	
-        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())||request.getMethod().equals(RequestMethod.GET.name())) {
             chain.doFilter(request, response);
         }else {
-        	
-        	final String requestTokenHeader = request.getHeader("Authorization");
+        	if(secretYn.equals("false")) {
+        		//검증 
+            	chain.doFilter(request, response);	
+        	}else {
+        		//운영
+            	
+            	final String requestTokenHeader = request.getHeader("Authorization");
 
-            String username = null;
-            String jwtToken = null;
-            // JWT Token is in the form "Bearer token". Remove Bearer word and get
-            // only the Token
-            if(request.getRequestURI().equals("/authenticate")){
-            	chain.doFilter(request, response);
-            }else {
-                if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-                    
-//                    JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
-                    try {
-                    	jwtToken = requestTokenHeader.substring(7);
-                        username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-                    } catch (IllegalArgumentException e) {
-                    	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
-                    	throw new UsernameFromTokenException("Username from token error");
-                    } catch (ExpiredJwtException e) {
-//                    	
-                    	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("403_EXPIREDJWT").build());
-                    	throw new UsernameFromTokenException("Username from token error");
-                    	
-                    } catch (Exception e) {
-                    	
-                    	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
-                    	throw new UsernameFromTokenException("Username from token error");
-        			}
-                    
-                    
-                    // Once we get the token validate it.
-                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                String username = null;
+                String jwtToken = null;
+                // JWT Token is in the form "Bearer token". Remove Bearer word and get
+                // only the Token
+                if(request.getRequestURI().equals("/authenticate")){
+                	chain.doFilter(request, response);
+                }else {
+                    if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+                        
+                        try {
+                        	jwtToken = requestTokenHeader.substring(7);
+                            username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                        } catch (IllegalArgumentException e) {
+                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
+                        	throw new UsernameFromTokenException("Username from token error");
+                        } catch (ExpiredJwtException e) {
+//                        	
+                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("403_EXPIREDJWT").build());
+                        	throw new UsernameFromTokenException("Username from token error");
+                        	
+                        } catch (Exception e) {
+                        	
+                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
+                        	throw new UsernameFromTokenException("Username from token error");
+            			}
+                        
+                        
+                        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-//                    	JwtUserDetailsService jwtUserDetailsService = new JwtUserDetailsService();
-                        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+                            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
 
-                        // if token is valid configure Spring Security to manually set
-                        // authentication
-                        if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 
-                            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                            usernamePasswordAuthenticationToken
-                                .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                            // After setting the Authentication in the context, we specify
-                            // that the current user is authenticated. So it passes the
-                            // Spring Security Configurations successfully.
-                            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                            chain.doFilter(request, response);
+                                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+                                usernamePasswordAuthenticationToken
+                                    .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                                // After setting the Authentication in the context, we specify
+                                // that the current user is authenticated. So it passes the
+                                // Spring Security Configurations successfully.
+                                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                                chain.doFilter(request, response);
+                            }else {
+                            	System.out.println("token validation not pass!");
+                            }
                         }else {
-                        	System.out.println("token validation not pass!");
+                        //운영 버전
+                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
+                        	throw new UsernameFromTokenException("Username from token error");
                         }
-                    }else {
-                    //운영 버전
-                    	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
-                    	throw new UsernameFromTokenException("Username from token error");
-                    }
-                    
-                    
-                } else {
-                    logger.warn("JWT Token does not begin with Bearer String");
-                    request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("UsernameFromTokenException").errorMessage("Username from token error").build());
-                    throw new UsernameFromTokenException("Username from token error");
-                	
-                }        	
-            }
+                        
+                        
+                    } else {
+                        logger.warn("JWT Token does not begin with Bearer String");
+                        request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("UsernameFromTokenException").errorMessage("Username from token error").build());
+                        throw new UsernameFromTokenException("Username from token error");
+                    	
+                    }        	
+                }
+        	}
+        	
         }
         
 

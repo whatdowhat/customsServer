@@ -186,7 +186,7 @@ public class FinalInboundController {
 
 	@RequestMapping(value = "/front/FinalInboundExcelRead", method = { RequestMethod.POST })
 	@ResponseBody
-	public boolean excelRead(MultipartFile file, String test, HttpServletRequest req)
+	public boolean excelRead(MultipartFile file, String test, String loginId, HttpServletRequest req)
 			throws Exception, NumberFormatException {
 
 		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
@@ -197,7 +197,7 @@ public class FinalInboundController {
 
 		// 출력모드
 //			List<InboundRes> result = _utilService.changeExcelFormatNew(list);
-		return _finalInboundService.excelRead(file, null, test);
+		return _finalInboundService.excelRead(file, null, test,loginId);
 	}
 
 	@RequestMapping(value = "/front/changeFinalInboundList", method = { RequestMethod.POST })
@@ -252,7 +252,7 @@ public class FinalInboundController {
 				StringBuffer sb = new StringBuffer();
 				String companyNum=inboundMaster.getCompanyInfo().getCoNum();
 				sb.append(companyNum);
-				sb.insert(2, "-");
+				sb.insert(3, "-");
 				sb.insert(6, "-");
 				result.setCompanyId(inboundMaster.getCompanyInfo().getId());
 				result.setConsignee(inboundMaster.getCompanyInfo().getCoNm());
@@ -313,63 +313,64 @@ public class FinalInboundController {
 			result.setFTypeNm(FileType.F.getName());
 			result.setGTypeNm(FileType.G.getName());
 //			result.setHTypeNm(FileType.H.getName());
-
-			if (result.getATypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 1);
-				result.setATypeFileNm(fileList.get(0).getFileName1());
-				result.setATypeInfo(result.getATypeNm() + ":" + result.getATypeFileNm());
-			} else {
-				result.setATypeInfo(result.getATypeNm() + ":" + result.getATypeCount() + "개");
-			}
-			if (result.getBTypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 2);
-				result.setBTypeFileNm(fileList.get(0).getFileName1());
-				result.setBTypeInfo(result.getBTypeNm() + ":" + result.getBTypeFileNm());
-			} else {
-				result.setBTypeInfo(result.getBTypeNm() + ":" + result.getBTypeCount() + "개");
-			}
-			if (result.getCTypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 3);
-				result.setCTypeFileNm(fileList.get(0).getFileName1());
-				result.setCTypeInfo(result.getCTypeNm() + ":" + result.getCTypeFileNm());
-			} else {
-				result.setCTypeInfo(result.getCTypeNm() + ":" + result.getCTypeCount() + "개");
-			}
-			if (result.getDTypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 4);
-				result.setDTypeFileNm(fileList.get(0).getFileName1());
-				result.setDTypeInfo(result.getDTypeNm() + ":" + result.getDTypeFileNm());
-			} else {
-				result.setDTypeInfo(result.getDTypeNm() + ":" + result.getDTypeCount() + "개");
-			}
-			if (result.getETypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 5);
-				result.setETypeFileNm(fileList.get(0).getFileName1());
-				result.setETypeInfo(result.getETypeNm() + ":" + result.getETypeFileNm());
-			} else {
-				result.setETypeInfo(result.getETypeNm() + ":" + result.getETypeCount() + "개");
-			}
-			if (result.getFTypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 6);
-				result.setFTypeFileNm(fileList.get(0).getFileName1());
-				result.setFTypeInfo(result.getFTypeNm() + ":" + result.getFTypeFileNm());
-			} else {
-				result.setFTypeInfo(result.getFTypeNm() + ":" + result.getFTypeCount() + "개");
-			}
-			if (result.getGTypeCount() == 1) {
-				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 7);
-				result.setGTypeFileNm(fileList.get(0).getFileName1());
-				result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeFileNm());
-			} else {
-				result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeCount() + "개");
-			}
-//			if (result.getHTypeCount() == 1) {
-//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 8);
-//				result.setHTypeFileNm(fileList.get(0).getFileName1());
-//				result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeFileNm());
+			result.setATypeInfo(result.getATypeNm() + ":" + result.getATypeCount() + "개");
+			result.setBTypeInfo(result.getBTypeNm() + ":" + result.getBTypeCount() + "개");
+			result.setCTypeInfo(result.getCTypeNm() + ":" + result.getCTypeCount() + "개");
+			result.setDTypeInfo(result.getDTypeNm() + ":" + result.getDTypeCount() + "개");
+			result.setETypeInfo(result.getETypeNm() + ":" + result.getETypeCount() + "개");
+			result.setFTypeInfo(result.getFTypeNm() + ":" + result.getFTypeCount() + "개");
+			result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeCount() + "개");
+			
+//			if (result.getATypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 1);
+//				result.setATypeFileNm(fileList.get(0).getFileName1());
+//				result.setATypeInfo(result.getATypeNm() + ":" + result.getATypeFileNm());
 //			} else {
-//				result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeCount() + "개");
+//				result.setATypeInfo(result.getATypeNm() + ":" + result.getATypeCount() + "개");
 //			}
+//			if (result.getBTypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 2);
+//				result.setBTypeFileNm(fileList.get(0).getFileName1());
+//				result.setBTypeInfo(result.getBTypeNm() + ":" + result.getBTypeFileNm());
+//			} else {
+//				result.setBTypeInfo(result.getBTypeNm() + ":" + result.getBTypeCount() + "개");
+//			}
+//			if (result.getCTypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 3);
+//				result.setCTypeFileNm(fileList.get(0).getFileName1());
+//				result.setCTypeInfo(result.getCTypeNm() + ":" + result.getCTypeFileNm());
+//			} else {
+//				result.setCTypeInfo(result.getCTypeNm() + ":" + result.getCTypeCount() + "개");
+//			}
+//			if (result.getDTypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 4);
+//				result.setDTypeFileNm(fileList.get(0).getFileName1());
+//				result.setDTypeInfo(result.getDTypeNm() + ":" + result.getDTypeFileNm());
+//			} else {
+//				result.setDTypeInfo(result.getDTypeNm() + ":" + result.getDTypeCount() + "개");
+//			}
+//			if (result.getETypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 5);
+//				result.setETypeFileNm(fileList.get(0).getFileName1());
+//				result.setETypeInfo(result.getETypeNm() + ":" + result.getETypeFileNm());
+//			} else {
+//				result.setETypeInfo(result.getETypeNm() + ":" + result.getETypeCount() + "개");
+//			}
+//			if (result.getFTypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 6);
+//				result.setFTypeFileNm(fileList.get(0).getFileName1());
+//				result.setFTypeInfo(result.getFTypeNm() + ":" + result.getFTypeFileNm());
+//			} else {
+//				result.setFTypeInfo(result.getFTypeNm() + ":" + result.getFTypeCount() + "개");
+//			}
+//			if (result.getGTypeCount() == 1) {
+//				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 7);
+//				result.setGTypeFileNm(fileList.get(0).getFileName1());
+//				result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeFileNm());
+//			} else {
+//				result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeCount() + "개");
+//			}
+
 
 			result.setFileTotalInfo(result.getATypeInfo() + "\n" + result.getBTypeInfo() + "\n" + result.getCTypeInfo()
 					+ "\n" + result.getDTypeInfo() + "\n" + result.getETypeInfo() + "\n" + result.getFTypeInfo() + "\n"

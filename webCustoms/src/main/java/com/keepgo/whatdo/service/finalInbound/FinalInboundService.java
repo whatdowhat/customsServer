@@ -46,7 +46,7 @@ public interface FinalInboundService {
 	boolean addDataFinalInboundMasterItems(FinalInboundReq finalInboundReq);
 	
 	@Transactional
-	boolean excelRead(MultipartFile file,InboundReq inboundReq,String id) throws IOException;
+	boolean excelRead(MultipartFile file,InboundReq inboundReq,String id, String loginId) throws IOException;
 	
 	@Transactional
 	boolean deleteFinalInbound(FinalInboundReq finalInboundReq);

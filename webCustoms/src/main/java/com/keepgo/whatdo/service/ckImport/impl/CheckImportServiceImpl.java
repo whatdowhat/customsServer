@@ -109,7 +109,7 @@ public class CheckImportServiceImpl implements CheckImportService {
 	public List<CheckImportRes> getCheckImportByCompanyId(CheckImportReq checkImportReq)  {
 		
 		
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
 		InboundMaster im = _inboundMasterRepository.findById(checkImportReq.getInboundMasterId()).get();
 		FinalInboundInboundMaster finalInboundInboundMaster = _finalInboundInboundMasterRepository.findByInboundMasterId(im.getId());
 		Long companyId = im.getCompanyInfo().getId();

@@ -82,7 +82,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 					StringBuffer sb = new StringBuffer();
 					String companyNum=item.getCoNum();
 					sb.append(companyNum);
-					sb.insert(2, "-");
+					sb.insert(3, "-");
 					sb.insert(6, "-");
 					dto.setCoNum(sb.toString());
 

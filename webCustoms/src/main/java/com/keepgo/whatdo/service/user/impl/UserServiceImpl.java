@@ -164,6 +164,31 @@ public class UserServiceImpl implements UserService {
 		return userRes;
 	}
 	
+	@Override
+	public UserRes  changePassword(UserReq userReq) {
+		User user = _userRepository.findByLoginId(userReq.getLoginId());
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		String password = "";
+		password = bCryptPasswordEncoder.encode(userReq.getPassword());
+		
+		
+		
+		
+		user.setPassword(password);
+		user.setLoginId(userReq.getLoginId());
+		
+		user.setUpdateDt(new Date());
+		user.setUpdateId("admin");
+		user.setFirstLogin("N");
+		
+		
+		_userRepository.save(user);
+		
+
+		UserRes userRes = new UserRes();
+		return userRes;
+	}
+	
 
 	
 }

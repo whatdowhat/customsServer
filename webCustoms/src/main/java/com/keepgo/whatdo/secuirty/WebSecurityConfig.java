@@ -74,7 +74,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		// TODO Auto-generated method stub
 		web.ignoring().antMatchers("/resources/**").antMatchers(HttpMethod.OPTIONS);
 	}
 
@@ -134,7 +133,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //				.antMatchers("/front/getAllCondition").hasAnyAuthority(SUPER,ADMIN)
 //				.antMatchers("/front/getAllCondition").hasAnyAuthority(ADMIN)
 				//권한설정 url mapping
-				
 				
 				.antMatchers("/index.jsp").permitAll()
 				.antMatchers("/static/index.html").permitAll()

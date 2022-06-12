@@ -46,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 //    	chain.doFilter(request, response);
     	
-        if (request.getMethod().equals(RequestMethod.OPTIONS.name())||request.getMethod().equals(RequestMethod.GET.name())) {
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
             chain.doFilter(request, response);
         }else {
         	if(secretYn.equals("false")) {

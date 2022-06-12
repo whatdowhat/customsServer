@@ -2,7 +2,7 @@
     pageEncoding="EUC-KR"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%
-    response.sendRedirect("/static/index.html");
+    response.sendRedirect("/index.html");
 %>
 
 

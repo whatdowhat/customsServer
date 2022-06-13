@@ -126,7 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests().antMatchers("/test/**/**").permitAll().and()
 				.authorizeRequests()
 				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
-						"/**/*.css", "/**/*.js","/pub/**")
+						"/static/**", "/**/*.js","/pub/**")
 				.permitAll()
 				
 				//권한설정 url mapping

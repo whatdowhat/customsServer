@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @CrossOrigin
 public class FrontController implements ErrorController {
 
+//	 @RequestMapping(value = "/error")
+//	    public ResponseEntity<Object> handleNoHandlerFoundException(HttpServletResponse response, HttpServletRequest request) {
+//	        return new ResponseEntity<>(request.getAttribute("exception"), HttpStatus.INTERNAL_SERVER_ERROR);
+//	    }
 	 @RequestMapping(value = "/error")
-	    public ResponseEntity<Object> handleNoHandlerFoundException(HttpServletResponse response, HttpServletRequest request) {
-	        return new ResponseEntity<>(request.getAttribute("exception"), HttpStatus.INTERNAL_SERVER_ERROR);
+	    public String  handleNoHandlerFoundException(HttpServletResponse response, HttpServletRequest request) {
+	        return "/index.html";
 	    }
-
 	@Override
 	public String getErrorPath() {
 		return "/error";

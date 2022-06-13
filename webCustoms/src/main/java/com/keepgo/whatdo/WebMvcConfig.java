@@ -34,37 +34,12 @@ public class WebMvcConfig  implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        String os = System.getProperty("os.name").toLowerCase();
-        
-//        if (os.contains("win")) {
-//            registry.addResourceHandler(applicationConfig.getUploadConfig().getUrlPath() + "/**")
-//                    .addResourceLocations("file:///" + applicationConfig.getUploadConfig().getPhysicalPath())
-//                    .setCachePeriod(3600)
-//                    .resourceChain(true)
-//                    .addResolver(new PathResourceResolver());
-//        }
-//        else {
-//            registry.addResourceHandler(applicationConfig.getUploadConfig().getUrlPath() + "/**")
-//                    .addResourceLocations("file:" + applicationConfig.getUploadConfig().getPhysicalPath())
-//                    .setCachePeriod(3600)
-//                    .resourceChain(true)
-//                    .addResolver(new PathResourceResolver());
-//        }
 
     }
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		// TODO Auto-generated method stub
-//		registry.addViewController("/").setViewName("forward:/index.jsp");
-		
-		//html 경로
-//		registry.addViewController("/").setViewName("/templates/helloHtml");
-		
-		//jsp 경로
 		registry.addViewController("/").setViewName("forward:/index.jsp");
-		
-
 	}
 
 	@Override

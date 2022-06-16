@@ -1,32 +1,53 @@
 package com.keepgo.whatdo.util;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileReader;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Picture;
-import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.common.IOUtil;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import com.keepgo.whatdo.entity.customs.Cp;
+import com.keepgo.whatdo.entity.customs.CpHelper;
 
 public class RowCopy {
 	public static void main(String[] args) throws Exception{
-		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack_test.xlsx"));
+		
+		
+		JSONParser parser = new JSONParser();
+
+		try {
+//			FileReader reader = new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx");
+//			
+			FileReader reader = new FileReader("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
+			Object obj = parser.parse(reader);
+			JSONObject jsonObject = (JSONObject) obj;
+			
+			reader.close();
+			
+			System.out.print(jsonObject);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx"));
 //		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
 //		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\co\\FTA.xlsx"));
-		XSSFSheet sheet = workbook.getSheetAt(0);
+		XSSFSheet sheet = workbook.getSheetAt(1);
 //        HSSFSheet sheet = workbook.getSheet("Sheet1");
         
         
@@ -67,161 +88,81 @@ public class RowCopy {
 //        copyRow(workbook, sheet, 0, 1);
 //        copyRow(workbook, sheet, 0, 1);
         
-//        sheet.getMergedRegions().stream()
-//        .forEach(item->{
-//        	if(item.getNumberOfCells() == 23) {
-//        		
-//        		sheet.removeMergedRegion(item.getNumberOfCells());
-//        	}
-////        	System.out.println("row infor :: "+item.getNumberOfCells());
-//        	
-//        });
-//        sheet.getRow(23).forEach(item->{
-//        	System.out.println(item.getStringCellValue());
-//        	
-//        });
-//        for(int i=0; i<sheet.getMergedRegions().size();i++) {
-//        	if(sheet.getMergedRegion(i).getFirstRow() == 54) {
-//        		sheet.removeMergedRegion(i);
-//        		sheet.removeMergedRegion(i);
-//        		sheet.removeMergedRegion(i);
-//        	}
-//        }
-//	       for(int i=0; i<sheet.getMergedRegions().size();i++) {
-//	       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
-//	       		sheet.removeMergedRegion(i);
-//	       		sheet.removeMergedRegion(i);
-//	       		sheet.removeMergedRegion(i);
-//	       	}
-//	       }
-//	      sheet.shiftRows(23, sheet.getLastRowNum(), -1);
-//	       for(int i=0; i<sheet.getMergedRegions().size();i++) {
-//		       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
-//		       		sheet.removeMergedRegion(i);
-//		       		sheet.removeMergedRegion(i);
-//		       		sheet.removeMergedRegion(i);
-//		       	}
-//		       }
-//		      sheet.shiftRows(23, sheet.getLastRowNum(), -1);
-//		       for(int i=0; i<sheet.getMergedRegions().size();i++) {
-//			       	if(sheet.getMergedRegion(i).getFirstRow() == 23) {
-//			       		sheet.removeMergedRegion(i);
-//			       		sheet.removeMergedRegion(i);
-//			       		sheet.removeMergedRegion(i);
-//			       	}
-//			       }
-//			      sheet.shiftRows(23, sheet.getLastRowNum(), -1);
-//
-      
-      
-       for (int i = 0; i <18; i++) {
-    	   
-    	   for(int j=0; j<sheet.getMergedRegions().size();j++) {
-    	       	if(sheet.getMergedRegion(j).getFirstRow() == 43) {
-    	    		sheet.removeMergedRegion(j);
-    	    		sheet.removeMergedRegion(j);
-    	    		sheet.removeMergedRegion(j);
-    	    		
-    	       	}
-    	   }
-    	   
-    	   sheet.shiftRows(44, sheet.getLastRowNum(), -1);
+		
+		
+		List<CpHelper> l = new ArrayList<CpHelper>();
+		List<Integer> indexs = new ArrayList<Integer>();
+		List<CellRangeAddress> merges = sheet.getMergedRegions();
+		System.out.println(merges.size()+"::: merges");
+		for(int i=0; i<merges.size();i++) {
+				CpHelper p = CpHelper.builder()
+						.format(merges.get(i).formatAsString())
+			        	.rowNumber(merges.get(i).getFirstRow())
+			        	.rowStart(merges.get(i).getFirstRow())
+			        	.rowEnd(merges.get(i).getLastRow())
+			        	.columnIndexStart(merges.get(i).getFirstColumn())
+			        	.columnIndexEnd(merges.get(i).getLastColumn())
+			        	
+			        	.build();
+				if(p.getRowNumber()>=6) {
+					l.add(p);
+					indexs.add(p.getRowNumber());
+				}  	
+			
 		}
-      
-//       File f = Paths.get("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\a1.png").toFile();
-//       
-//       FileInputStream fileInputStream = new FileInputStream(f);
-//       System.out.println(fileInputStream.available());
-//       
-//       long lengthh = f.length();
-//       byte[] picData = new byte[ (int)f.length()];
-//     
-//   
-//       InputStream inputStream = RowCopy.class.getClassLoader().getResourceAsStream("static//inpack//CHAOCH.png");
-//       byte[] inputImage =  IOUtils.toByteArray(inputStream);
-//       int indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
-//       XSSFDrawing drawing = sheet.createDrawingPatriarch();
-//       XSSFClientAnchor anchor = new XSSFClientAnchor();
-//
-//       
-////       drawing.createPicture(anchor, indx);
-//       Picture pict = drawing.createPicture(anchor, indx);
-//       double scale = 0.4;
-//       sheet.rowIterator().forEachRemaining(row ->{
-//    	   row.cellIterator().forEachRemaining(cell->{
-//    		   
-//    		   try {
-//    			   String value = cell.getStringCellValue();
-//    			   if(value.equals("${image}") && row.getRowNum() <70 ) {
-//    				   
-//    			       anchor.setCol1(cell.getColumnIndex());
-////    			       anchor.setCol2(cell.getColumnIndex()+5);
-//    			       anchor.setRow1(cell.getRowIndex());
-////    			       drawing.resi
-//    			       pict.resize();
-//    			       pict.resize(scale);
-//    			       cell.setCellValue("");
-////    			       anchor.setRow2(cell.getRowIndex());
-//    				   
-//    			   }
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//			}
-//    		   
-//    	   });
-//       });
-//       
-//       inputStream = RowCopy.class.getClassLoader().getResourceAsStream("static//inpack//YIWU SUNMILE IM.png");
-//       inputImage =  IOUtils.toByteArray(inputStream);
-//       indx =  workbook.addPicture(inputImage, XSSFWorkbook.PICTURE_TYPE_PNG);
-//       drawing = sheet.createDrawingPatriarch();
-//       XSSFClientAnchor anchor2 = new XSSFClientAnchor();
-//       
-//       Picture pict2 = drawing.createPicture(anchor2, indx);
-////       drawing.createPicture(anchor2, indx);
-//       
-		
-		
-		 sheet.rowIterator().forEachRemaining(row ->{
-	    	   row.cellIterator().forEachRemaining(cell->{
-	    	
-	    		   try {
-	    				  if(cell.getStringCellValue().contains("${hang}")) {
-	    	    			  row.setHeight(new Short("140"));
-		  					   cell.setCellValue("");
-	    	    			  
-	    	    		  }
-	    	    		  
-			} catch (Exception e) {
-				// TODO: handle exception
+		l = l.stream().sorted(Comparator.comparing(CpHelper::getRowNumber)).collect(Collectors.toList());
+		System.out.println(indexs);
+		System.out.println(l.size()+" :: size");
+        l.stream().peek(System.out::println).map(t->t).count();
+        List<Cp> cpList = new ArrayList<Cp>();
+		for (Iterator<Row> iterator = sheet.iterator(); iterator.hasNext();) {
+//			System.out.println(iterator.next().getRowNum()+":: rownumber");
+			Row r = iterator.next(); 
+//			System.out.println(r.cellIterator());
+			
+			Cp c =  Cp.builder().build();
+			
+			if(r.getRowNum() >=6) {
+				if(indexs.contains(r.getRowNum())) {
+					c.setRowIndex(r.getRowNum());
+					c.setColumn01(getDataFromCell(r,0));
+					c.setColumn02(getDataFromCell(r,1));
+					c.setColumn03(getDataFromCell(r,2));
+					c.setColumn04(getDataFromCell(r,3));
+					c.setColumn05(getDataFromCell(r,4));
+					c.setColumn06(getDataFromCell(r,5));
+					c.setColumn07(getDataFromCell(r,6));
+					c.setColumn08(getDataFromCell(r,7));
+					cpList.add(c);
+				}else {
+					c.setRowIndex(r.getRowNum());
+					c.setColumn01(getDataFromCell(r,0));
+					c.setColumn02(getDataFromCell(r,1));
+					c.setColumn03(getDataFromCell(r,2));
+					c.setColumn04(getDataFromCell(r,3));
+					c.setColumn05(getDataFromCell(r,4));
+					c.setColumn06(getDataFromCell(r,5));
+					c.setColumn07(getDataFromCell(r,6));
+					c.setColumn08(getDataFromCell(r,7));
+					cpList.add(c);
+				}
 			}
-	    	   });
-		 });
+			
+			
+			
+		}
 		
-//       sheet.rowIterator().forEachRemaining(row ->{
-//    	   row.cellIterator().forEachRemaining(cell->{
-//    		   
-//    		   try {
-//    			   String value = cell.getStringCellValue();
-//    			   if(value.equals("${image}") && row.getRowNum() >70) {
-//    				   
-//    				   anchor2.setCol1(cell.getColumnIndex());
-////    				   anchor2.setCol2(cell.getColumnIndex()+5);
-//    				   anchor2.setRow1(cell.getRowIndex());
-////    				   anchor2.setRow2(cell.getRowIndex());
-//    				   pict2.resize();
-//    			       pict2.resize(scale);
-//    			       cell.setCellValue("");
-//    			   }
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//			}
-//    		   
-//    	   });
-//       });
-//        
+		cpList.forEach(System.out::println);
+         
+		for(int i=0; i<l.size();i++) {
+			cpList = arrageCpList(l.get(i),cpList);
+		}
+		System.out.println("#############complete");
+		cpList.forEach(System.out::println);
+		workbook.cloneSheet(0);
+		
 //        FileOutputStream out = new FileOutputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack_r.xlsx");
-        FileOutputStream out = new FileOutputStream("C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack_rTest.xlsx");
+        FileOutputStream out = new FileOutputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01_R.xlsx");
 //        XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
         
         workbook.write(out);
@@ -313,5 +254,100 @@ public class RowCopy {
         }
         
 //        worksheet.shiftRows(1, worksheet.getLastRowNum(), -1);
+    }
+    
+    public static List<Cp>  arrageCpList(CpHelper cphelper,List<Cp> cpList) {
+    	
+//    	 cphelper.getRowNumber()
+    	 
+    	 for(int i=0; i<cpList.size();i++) {
+    		 int mergeCount = cphelper.getRowEnd() - cphelper.getRowStart() +1;
+    		 if(cphelper.getRowNumber() == cpList.get(i).getRowIndex()) {
+    			 
+    			 switch (cphelper.getColumnIndexStart()) {
+				case 0:
+					cpList.get(i).setColumn01Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn01Span(0);
+					}
+					break;
+				case 1:
+					cpList.get(i).setColumn02Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0)  cpList.get(i+j).setColumn02Span(0);
+					}
+					break;
+				case 2:
+					cpList.get(i).setColumn03Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn03Span(0);
+					}
+					break;
+				case 3:
+					cpList.get(i).setColumn04Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn04Span(0);
+					}
+					break;
+				case 4:
+					cpList.get(i).setColumn05Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn05Span(0);
+					}
+					break;
+				case 5:
+					cpList.get(i).setColumn06Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn06Span(0);
+					}
+					break;
+				case 6:
+					cpList.get(i).setColumn07Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn07Span(0);
+					}
+					break;
+				case 7:
+					cpList.get(i).setColumn08Span(mergeCount);
+					for(int j=0; j<mergeCount; j++) {
+						if(j!=0) cpList.get(i+j).setColumn08Span(0);
+					}
+					break;
+					
+				default:
+					break;
+				}
+    			 
+    		 }
+    	 }
+    	
+    	return cpList;
+    }
+    
+    public static String getDataFromCell(Row row,int index) {
+    	
+    	String result = "";
+    	Cell cell = row.getCell(index);
+		if(cell!= null) {
+			switch (cell.getCellTypeEnum().name()) {
+
+			case "STRING":
+				String string1 = cell.getStringCellValue();
+				result = string1;
+				
+				break;
+			case "NUMERIC":
+				cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				String numberToString = cell.getStringCellValue();
+				result = numberToString;
+				break;
+			case "FORMULA":
+				System.out.println("FORMULA!!!");
+				break;
+			default:
+				break;
+			}
+		}
+    	return result;
     }
 }

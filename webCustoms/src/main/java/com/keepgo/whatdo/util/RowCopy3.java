@@ -45,7 +45,7 @@ public class RowCopy3 {
 //			FileReader reader = new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx");
 //			
 			FileReader reader = new FileReader(
-					"C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
+					"C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
 			Object obj = parser.parse(reader);
 
 			JSONArray arr = (JSONArray) obj;
@@ -72,7 +72,7 @@ public class RowCopy3 {
 //			System.out.println();
 		}
 		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(
-				"C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\bldownloadformat.xlsx"));
+				"C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\bldownloadformat.xlsx"));
 
 		XSSFSheet sheet = workbook.getSheetAt(0);
 		XSSFSheet sheet2 = workbook.getSheetAt(1);
@@ -82,7 +82,7 @@ public class RowCopy3 {
 //		copyRowOtherSheet(workbook, sheet, 3,sheet2, 1);
 
 		FileOutputStream out = new FileOutputStream(
-				"C:\\Users\\rheng\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\bldownloadformat_R.xlsx");
+				"C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\bldownloadformat_R.xlsx");
 		workbook.removeSheetAt(1);
 		workbook.write(out);
 		out.close();
@@ -383,6 +383,17 @@ public class RowCopy3 {
 				break;
 			}
 		}
+//		
+        // If there are are any merged regions in the source row, copy to new row
+        for (int i = 0; i < worksheet2.getMergedRegions().size(); i++) {
+            CellRangeAddress cellRangeAddress = worksheet2.getMergedRegion(i);
+                CellRangeAddress newCellRangeAddress = new CellRangeAddress(
+                		destinationRowNum,destinationRowNum,
+                        cellRangeAddress.getFirstColumn(),
+                        cellRangeAddress.getLastColumn());
+                worksheet.addMergedRegion(newCellRangeAddress);
+        }
+		
 	}
 
 }

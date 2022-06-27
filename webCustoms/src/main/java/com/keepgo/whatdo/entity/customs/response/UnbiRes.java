@@ -83,7 +83,8 @@ public class UnbiRes {
 	private String pickupCostYn;
 	private String sanghachaCostYn;
 	private String officeNameYn;
-	
+	private String hacksodanCostYn;
+	private String coCostYn;
 	//합계
 	private Double totalSum;
 	private Double totalSumFinal;

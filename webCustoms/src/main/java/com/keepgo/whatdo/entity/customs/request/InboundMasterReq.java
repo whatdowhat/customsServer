@@ -26,6 +26,7 @@ public class InboundMasterReq {
 //	@Builder.Default
 	private Long id; 
 	
+	private Integer no;
 	@Column(name = "blNo")
 	private String blNo;
 	private int freight;

@@ -100,9 +100,13 @@ public class Unbi {
 	//핵소단신고비
 	@Column(name = "hacksodanCost")
 	private Double hacksodanCost;
+	@Column(name = "hacksodanCostYn")
+	private String hacksodanCostYn;
 	//co발급비
 	@Column(name = "coCost")
 	private Double coCost;
+	@Column(name = "coCostYn")
+	private String coCostYn;
 	//화주미청구 운비
 	@Column(name = "hwajumiUnbi")
 	private Double hwajumiUnbi;

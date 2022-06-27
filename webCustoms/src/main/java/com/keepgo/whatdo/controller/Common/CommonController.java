@@ -40,6 +40,8 @@ import com.keepgo.whatdo.define.PackingType;
 import com.keepgo.whatdo.define.PackingTypeRes;
 import com.keepgo.whatdo.define.AmountType;
 import com.keepgo.whatdo.define.AmountTypeRes;
+import com.keepgo.whatdo.define.BackgroundColorType;
+import com.keepgo.whatdo.define.BackgroundColorTypeRes;
 import com.keepgo.whatdo.define.UnbiType;
 import com.keepgo.whatdo.define.UnbiTypeRes;
 import com.keepgo.whatdo.define.UserType;
@@ -246,6 +248,13 @@ public class CommonController {
 			throws Exception, NumberFormatException {
 
 		return ColorType.getList();
+	}
+	@RequestMapping(value = "/common/backgroundColorType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<BackgroundColorTypeRes> backgroundColorType()
+			throws Exception, NumberFormatException {
+
+		return BackgroundColorType.getList();
 	}
 	@RequestMapping(value = "/common/unbiType", method = { RequestMethod.POST })
 	@ResponseBody

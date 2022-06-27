@@ -12,7 +12,8 @@ public enum CoType {
 	B(2,"YATAI",2),
 	C(3," ",5),
 	D(4,"RCEP",3),
-	E(5,"공장CO",4);
+	E(5,"공장CO",4),
+	F(6, "안받음",0);
 //	E(5,"YATAI",4);
 	
 	Integer id;

@@ -25,18 +25,31 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -49,6 +62,7 @@ import org.springframework.stereotype.Component;
 
 import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.Common;
+import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
@@ -56,6 +70,9 @@ import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
+import com.keepgo.whatdo.entity.customs.response.ExcelCOSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
@@ -70,6 +87,7 @@ import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
+import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.service.excel.ExcelService;
@@ -92,6 +110,9 @@ public class ExcelServiceImpl implements ExcelService {
 
 	@Autowired
 	FinalInboundInboundMasterRepository _FinalInboundInboundMasterRepository;
+	
+	@Autowired
+	FinalInboundRepository _finalInboundRepository;
 
 	@Autowired
 	UtilService _utilService;
@@ -2558,9 +2579,19 @@ public class ExcelServiceImpl implements ExcelService {
 				subRes.setJejil(origin_inbound_list.get(i).getJejil());
 				subRes.setHsCode(origin_inbound_list.get(i).getHsCode());
 				subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
-				subRes.setItemPrice(origin_inbound_list.get(i).getReportPrice());
-				subRes.setTotalPrice(new Double(String.format("%.2f",
-						origin_inbound_list.get(i).getReportPrice() * origin_inbound_list.get(i).getItemCount())));
+				if(origin_inbound_list.get(i).getReportPrice()==null||origin_inbound_list.get(i).getReportPrice()==0) {
+					
+					subRes.setItemPrice(new Double(0));
+				}else {
+					subRes.setItemPrice(origin_inbound_list.get(i).getReportPrice());
+				}
+				if(origin_inbound_list.get(i).getReportPrice()==null||origin_inbound_list.get(i).getReportPrice()==0) {
+					subRes.setTotalPrice(new Double(0));
+				}else {
+					subRes.setTotalPrice(new Double(String.format("%.2f",
+							origin_inbound_list.get(i).getReportPrice() * origin_inbound_list.get(i).getItemCount())));
+				}
+				
 				if(origin_inbound_list.get(i).getBoxCount()==null) {
 					subRes.setBoxCount(new Double(0));
 				}else {
@@ -3062,24 +3093,1018 @@ public class ExcelServiceImpl implements ExcelService {
 	}
 	
 	@Override
-	public List<ExcelInboundRes> inboundData(InboundReq req) throws Exception {
+	public List<InboundRes> inboundData(InboundReq req) throws Exception {
 		List<InboundRes> list = _InboundService.getInboundByInboundMasterId(req);
 		//출력모드
-		List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
-		
-		List<ExcelInboundRes> result = new ArrayList<>();
-		for(int i=0; i<result2.size(); i++) {
-			ExcelInboundRes item = new ExcelInboundRes();
-			item.setColor(uploadRoot);
-		}
+		List<InboundRes> result = _utilService.changeExcelFormatNew(list);
 		
 		return  result;
 
 	}
 	
+	@Override
+	public boolean inbound(List<InboundRes> list, HttpServletResponse response) throws Exception {
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 6).findFirst().get().getName();
+
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, "INBOUND");
+//			Collections.reverse(list);
+			
+			
+				
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet2 = workbook.getSheetAt(1);
+			step01ForInbound(list, sheet, workbook);
+			copyRowOtherSheetForInbound(workbook, sheet, list.size()+1,sheet2, 0);	
+			step02ForInbound(list, sheet, workbook);
+			
+			String fileName =  "INBOUND.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.removeSheetAt(1);
+			//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
+			sheet.addMergedRegion(new CellRangeAddress(list.size()+1,list.size()+1,0,4));
+			sheet.addMergedRegion(new CellRangeAddress(list.size()+1,list.size()+1,18,19));
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	private void step01ForInbound(List<InboundRes> resource, XSSFSheet sheet, XSSFWorkbook workbook) {
+
+		Font font = workbook.createFont();
+		font.setColor(IndexedColors.RED.getIndex());
+		
+		XSSFCellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFont(font);
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);;
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+	   
+		
+		// item 채우기
+		for (int i = 0; i < resource.size(); i++) {
+
+			if ((i + 1) == resource.size()) {
+
+			} else {
+				
+				copyRowForInbound(workbook, sheet, i + 1, i + 2);
+			}
+
+
+			XSSFRow row = sheet.getRow(i + 1);
+			XSSFCellStyle orderNoFont  = workbook.createCellStyle();
+			XSSFCellStyle allCellStyle = workbook.createCellStyle();
+			XSSFCellStyle cbmCellStyle = workbook.createCellStyle();
+			XSSFDataFormat format = workbook.createDataFormat();
+			cbmCellStyle.setDataFormat(format.getFormat("0.000_"));
+			Font allFont = workbook.createFont();
+			
+//			orderNoFont.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
+			orderNoFont.setFillForegroundColor(new XSSFColor(new java.awt.Color(255, 255, 204)));
+			orderNoFont.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			orderNoFont.setAlignment(HorizontalAlignment.CENTER);
+			orderNoFont.setVerticalAlignment(VerticalAlignment.CENTER);
+			orderNoFont.setBorderBottom(BorderStyle.DOTTED);
+			orderNoFont.setFont(allFont);
+			
+			
+			
+			
+			if(resource.get(i).getColorId()==0) {
+				allFont.setColor(IndexedColors.BLACK.getIndex());
+			}else if(resource.get(i).getColorId()==1){
+				allFont.setColor(IndexedColors.BLUE.getIndex());
+			}else if(resource.get(i).getColorId()==2){
+				allFont.setColor(IndexedColors.RED.getIndex());
+			}else if(resource.get(i).getColorId()==3){
+				allFont.setColor(IndexedColors.GREEN.getIndex());
+			}else if(resource.get(i).getColorId()==4){
+				allFont.setColor(IndexedColors.PINK.getIndex());
+			}else if(resource.get(i).getColorId()==5){
+				allFont.setColor(IndexedColors.ORANGE.getIndex());
+			}else if(resource.get(i).getColorId()==6){
+				allFont.setColor(IndexedColors.VIOLET.getIndex());
+			}
+			allCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+			allCellStyle.setBorderBottom(BorderStyle.NONE);
+			allCellStyle.setFont(allFont);
+			row.getCell(0).setCellValue(resource.get(i).getOrderNo());
+			row.getCell(0).setCellStyle(orderNoFont);
+			row.getCell(1).setCellValue(resource.get(i).getWorkDateStr());
+			row.getCell(1).setCellStyle(allCellStyle);
+			row.getCell(2).setCellValue(resource.get(i).getCompanyNm());
+			row.getCell(2).setCellStyle(allCellStyle);
+			row.getCell(3).setCellValue(resource.get(i).getMarking());
+			row.getCell(3).setCellStyle(allCellStyle);
+			row.getCell(4).setCellValue(resource.get(i).getKorNm());
+			row.getCell(4).setCellStyle(allCellStyle);
+			row.getCell(5).setCellValue(resource.get(i).getItemCount());
+			row.getCell(5).setCellStyle(allCellStyle);
+			if (resource.get(i).getBoxCount() == null) {
+//    			row.getCell(6).setCellValue("");
+				row.getCell(6).setCellStyle(allCellStyle);
+			} else {
+				row.getCell(6).setCellValue(resource.get(i).getBoxCount());
+				row.getCell(6).setCellStyle(allCellStyle);
+			}
+
+			row.getCell(7).setCellValue(resource.get(i).getWeight());
+			row.getCell(7).setCellStyle(allCellStyle);
+			row.getCell(8).setCellValue(resource.get(i).getCbm());
+			row.getCell(8).setCellStyle(allCellStyle);
+			row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("0.000_ "));
+			if (resource.get(i).getReportPrice() == null) {
+//    			row.getCell(9).setCellValue("");
+			} else {
+				row.getCell(9).setCellValue(resource.get(i).getReportPrice());
+			}
+			row.getCell(10).setCellValue(resource.get(i).getMemo1());
+			row.getCell(11).setCellValue(resource.get(i).getMemo2());
+			row.getCell(12).setCellValue(resource.get(i).getItemNo());
+			row.getCell(13).setCellValue(resource.get(i).getJejil());
+			row.getCell(14).setCellValue(resource.get(i).getHsCode());
+			row.getCell(15).setCellValue(resource.get(i).getCoCode());
+			row.getCell(15).setCellStyle(cellStyle);
+//    		for(int j=0; j<CoType.getList().size();j++) {
+//				if(CoType.getList().get(j).getId() ==resource.get(i).getCoId() ) {
+//					row.getCell(15).setCellValue(CoType.getList().get(j).getName());							
+//				}
+//			}
+			if (resource.get(i).getTotalPrice() == null) {
+				row.getCell(16).setCellValue("");
+			} else {
+				row.getCell(16).setCellValue(resource.get(i).getTotalPrice());
+			}
+
+			row.getCell(17).setCellValue(resource.get(i).getEngNm());
+//			row.getCell(18).setCellValue(im.getCompanyInfo().getCoNm());
+			row.getCell(18).setCellValue(resource.get(i).getMasterCompany());
+//			row.getCell(19).setCellValue(im.getBlNo());
+			if (resource.get(i).getBlNo() == null || resource.get(i).getBlNo() == "") {
+//				row.getCell(19).setCellValue("");	
+			} else {
+				row.getCell(19).setCellValue(resource.get(i).getBlNo());
+//				row.getCell(19).setCellValue("");	
+			}
+
+		}
+		// merge 규칙
+		for (int i = 0; i < resource.size(); i++) {
+
+			XSSFRow row = sheet.getRow(i + 1);
+			if (resource.get(i).getOrderNoStrSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress(1, 4, 0, 1)); // 열시작, 열종료, 행시작, 행종료 (자바배열과 같이 0부터 시작)
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getOrderNoStrSpan()), 0, 0));
+			}
+			if (resource.get(i).getWorkDateStrSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getWorkDateStrSpan()), 1, 1));
+			}
+			if (resource.get(i).getCompanyNmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getCompanyNmSpan()), 2, 2));
+			}
+			if (resource.get(i).getMarkingSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getMarkingSpan()), 3, 3));
+			}
+			if (resource.get(i).getKorNmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getKorNmSpan()), 4, 4));
+			}
+			if (resource.get(i).getItemCountSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getItemCountSpan()), 5, 5));
+			}
+			if (resource.get(i).getBoxCountSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getBoxCountSpan()), 6, 6));
+			}
+			if (resource.get(i).getWeightSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getWeightSpan()), 7, 7));
+			}
+			if (resource.get(i).getCbmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getCbmSpan()), 8, 8));
+			}
+			if (resource.get(i).getReportPriceSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getReportPriceSpan()), 9, 9));
+			}
+			if (resource.get(i).getMemo1Span() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getMemo1Span()), 10, 10));
+			}
+			if (resource.get(i).getMemo2Span() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getMemo2Span()), 11, 11));
+			}
+			if (resource.get(i).getItemNoSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getItemNoSpan()), 12, 12));
+			}
+			if (resource.get(i).getJejilSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getJejilSpan()), 13, 13));
+			}
+			if (resource.get(i).getHsCodeSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getHsCodeSpan()), 14, 14));
+			}
+			if (resource.get(i).getCoIdSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getCoIdSpan()), 15, 15));
+			}
+			if (resource.get(i).getTotalPriceSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getTotalPriceSpan()), 16, 16));
+			}
+			if (resource.get(i).getEngNmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getEngNmSpan()), 17, 17));
+			}
+			if (resource.get(i).getMasterCompanySpan() > 1) {
+				sheet.addMergedRegion(
+						new CellRangeAddress((i + 1), (i + resource.get(i).getMasterCompanySpan()), 18, 18));
+			}
+			if (resource.get(i).getBlNoSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((i + 1), (i + resource.get(i).getBlNoSpan()), 19, 19));
+			}
+		}
+
+	}
+	
+
+	private void step02ForInbound(List<InboundRes> resource, XSSFSheet sheet, XSSFWorkbook workbook) {
+
+
+		// item 채우기
+//		for (int i = 0; i < resource.size(); i++) {
+
+//			if ((i + 1) == resource.size()) {
+//
+//			} else {
+//				
+//				copyRowForInbound(workbook, sheet, i + 1, i + 2);
+//			}
+
+
+			XSSFRow row = sheet.getRow(resource.size() + 1);
+			
+			row.getCell(5).setCellValue(resource.get(0).getItemCountSum());
+			if (resource.get(0).getBoxCountSum() == null) {
+			} else {
+				row.getCell(6).setCellValue(resource.get(0).getBoxCountSum());
+			}
+
+			row.getCell(7).setCellValue(resource.get(0).getWeightSum());
+			row.getCell(8).setCellValue(resource.get(0).getCbmSum());
+			
+
+			if (resource.get(0).getTotalPriceSum() == null) {
+				row.getCell(16).setCellValue("");
+			} else {
+				row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+			}
+
+			
+		
+			
+
+//		}
+
+
+	}
+	private void copyRowForInbound(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+		if (newRow != null) {
+			worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		} else {
+			newRow = worksheet.createRow(destinationRowNum);
+		}
+
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				newCell.setCellValue(oldCell.getNumericCellValue());
+				break;
+			case Cell.CELL_TYPE_STRING:
+				newCell.setCellValue(oldCell.getRichStringCellValue());
+				break;
+			}
+		}
+	}
+	
+	 private void copyRowOtherSheetForInbound(XSSFWorkbook workbook, XSSFSheet worksheet,int destinationRowNum, XSSFSheet worksheet2,int sourceRowNum) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet2.getRow(sourceRowNum);
+
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+		if (newRow != null) {
+			worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		} else {
+			newRow = worksheet.createRow(destinationRowNum);
+		}
+
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				newCell.setCellValue(oldCell.getNumericCellValue());
+				break;
+			case Cell.CELL_TYPE_STRING:
+				newCell.setCellValue(oldCell.getRichStringCellValue());
+				break;
+			}
+		}
+	}
+	
+	
+	
+	@Override
+	public List<ExcelCLPRes> clpData(FinalInboundReq req) throws Exception {
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		
+		
+		List<ExcelCLPRes> result = new ArrayList<>();
+		List<InboundMasterReq> list = req.getInboundMasterData();
+		for (int k = 0; k < list.size(); k++) {
+			FinalInboundInboundMaster f=_FinalInboundInboundMasterRepository.findByFinalInboundIdAndInboundMasterId(req.getId(), list.get(k).getId());
+			
+			List<InboundRes> inboundList = _InboundService.getInboundByMasterId(f.getInboundMaster().getId());
+			List<InboundRes> result2 = _utilService.changeExcelFormatNew(inboundList);
+			InboundViewRes i = _InboundService.changeInbound(result2);
+//			StringBuffer sb = new StringBuffer();
+//			String companyNum=f.getInboundMaster().getCompanyInfo().getCoNum();
+//			sb.append(companyNum);
+//			sb.insert(3, "-");
+//			sb.insert(6, "-");
+			
+			for(int l=0; l<inboundList.size(); l++) {
+				ExcelCLPRes r  = ExcelCLPRes.builder().build();
+				r.setNo(list.get(k).getNo());
+				r.setIncomeDt(f.getFinalInbound().getIncomeDt());
+				r.setChulhangPort(f.getFinalInbound().getChulhangPort());
+				r.setContainerNo(f.getFinalInbound().getContainerNo());
+				r.setSilNo(f.getFinalInbound().getSilNo());
+				r.setCompanyNm(f.getInboundMaster().getCompanyInfo().getCoNm());
+				r.setBlNo(f.getInboundMaster().getBlNo());
+				r.setMarking(inboundList.get(l).getMarking());
+				r.setBoxCount(inboundList.get(l).getBoxCount());
+				r.setCbm(inboundList.get(l).getCbm());
+				r.setEngNm(inboundList.get(l).getEngNm());
+				r.setMemo1(inboundList.get(l).getMemo1());
+				result.add(r);
+				}
+			
+			
+			
+			
+			
+			
+		}
+		
+		
+		
+		return result;
+	}
+	
+	
+	@Override
+	public boolean clp(List<ExcelCLPRes> list, HttpServletResponse response) throws Exception {
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 7).findFirst().get().getName();
+
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, "CLP");
+			Collections.reverse(list);
+			
+			
+				
+				XSSFSheet sheet = workbook.getSheetAt(0);
+
+				
+				// item add
+				// 문서마다 시작하는 숫자가 고정
+				int startCount = 6;
+				for (int i = 0; i < list.size(); i++) {
+					shiftRowForCLP(startCount, sheet, "D", list.get(i), workbook);
+				}
+				
+				chageDataforCLP(sheet, list.get(0), workbook);
+
+				for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+					if (sheet.getMergedRegion(i).getFirstRow() == startCount+list.size()) {
+						sheet.removeMergedRegion(i);
+						sheet.removeMergedRegion(i);
+						sheet.removeMergedRegion(i);
+					}
+				}
+				sheet.shiftRows(startCount+list.size()+1, sheet.getLastRowNum(), -1);
+			
+			
+			
+			
+			String fileName =  "CLP.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	
+	
+	public void shiftRowForCLP(int startIndex, XSSFSheet sheet, String type, ExcelCLPRes item,
+			XSSFWorkbook workbook) {
+		writeDataForCLP(startIndex, sheet, type, item, workbook);
+	}
+
+	public void writeDataForCLP(int startIndex, XSSFSheet sheet, String type, ExcelCLPRes item,
+			XSSFWorkbook workbook) {
+
+		 
+		copyRowForCLP(workbook, sheet, startIndex, startIndex, item);
+		
+
+	}
 
 	
+
+	
+
+	private void copyRowForCLP(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+			ExcelCLPRes item) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+
+		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		newRow = worksheet.createRow(destinationRowNum);
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+//        	XSSFCelle
+
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				if (i == 0) {
+					
+					newCell.setCellValue((item.getNo() == null ? 0d : item.getNo()));
+				} else if (i == 4) {
+					newCell.setCellValue((item.getBoxCount() == null ? 0d : item.getBoxCount()));
+				}else if (i == 5) {
+					newCell.setCellValue((item.getCbm() == null ? 0d : item.getCbm()));
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}
+				
+				break;
+			case Cell.CELL_TYPE_STRING:
+				
+					if (i == 1) {
+						newCell.setCellValue(item.getCompanyNm());
+					} else if (i == 2) {
+						newCell.setCellValue(item.getBlNo());
+					}else if (i == 3) {
+						newCell.setCellValue(item.getMarking());
+					}else if (i == 6) {
+						XSSFRichTextString richString = new XSSFRichTextString( item.getEngNm());
+						
+						newCell.setCellValue(richString);
+//						newCell.setCellValue(item.getEngNm());
+					}else if (i == 7) {
+						newCell.setCellValue(item.getMemo1());
+					} else {
+						newCell.setCellValue(oldCell.getStringCellValue());
+					}
+				
+
+//                    newCell.setCellValue(oldCell.getRichStringCellValue());
+//                    newCell.setCellValue(item.get);
+				break;
+			}
+		}
+
+		// If there are are any merged regions in the source row, copy to new row
+		for (int i = 0; i < worksheet.getNumMergedRegions(); i++) {
+			CellRangeAddress cellRangeAddress = worksheet.getMergedRegion(i);
+			if (cellRangeAddress.getFirstRow() == sourceRow.getRowNum()) {
+				CellRangeAddress newCellRangeAddress = new CellRangeAddress(newRow.getRowNum(),
+						(newRow.getRowNum() + (cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow())),
+						cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+				worksheet.addMergedRegion(newCellRangeAddress);
+			}
+		}
+	}
+	
+	public void chageDataforCLP(XSSFSheet sheet, ExcelCLPRes excelCLPRes, XSSFWorkbook workbook) {
+		int startRowNum = 0;
+		int rowIndex = 0;
+		int columnIndex = 0;
+		int rowCount = sheet.getLastRowNum();
+		List<Integer> deleteList = new ArrayList<Integer>();
+
+		for (int i = 0; i < rowCount; i++) {
+			XSSFRow row = sheet.getRow(i);
+
+//				if(row != null) {
+			if (row == null)
+				break;
+			row.cellIterator().forEachRemaining(cell -> {
+				switch (cell.getCellTypeEnum().name()) {
+				case "STRING":
+					String value = cell.getStringCellValue();
+
+					cell.setCellValue(convertDataForCLP(value, excelCLPRes));
+					
+					if(value.contains("${incomeDt}") ) {//date format으로 데이터 넣어야함.
+						
+						String incomeDt = excelCLPRes.getIncomeDt();
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						try {
+							cell.setCellValue(dateFormat.parse(incomeDt));
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						
+					}
+
+
+
+					break;
+				case "NUMERIC":
+					if (DateUtil.isCellDateFormatted(cell)) {
+						Date date1 = cell.getDateCellValue();
+						cell.setCellValue(date1);
+					} else {
+						double cellValue1 = cell.getNumericCellValue();
+						cell.setCellValue(cellValue1);
+					}
+					break;
+				case "FORMULA":
+					String formula1 = cell.getCellFormula();
+					cell.setCellFormula(formula1);
+					break;
+
+				default:
+					break;
+				}
+
+			});
+
+		}
+
+//		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+//			if (sheet.getMergedRegion(i).getFirstRow() == 23) {
+//				sheet.removeMergedRegion(i);
+//				sheet.removeMergedRegion(i);
+//				sheet.removeMergedRegion(i);
+//			}
+//		}
+//		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
+//
+//		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+//			if (sheet.getMergedRegion(i).getFirstRow() == 23) {
+//				sheet.removeMergedRegion(i);
+//				sheet.removeMergedRegion(i);
+//				sheet.removeMergedRegion(i);
+//			}
+//		}
+//		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
+//
+//		int dataSize = (excelCLPRes.getSubItem().size())*2;
+//		int firstRow = (excelCLPRes.getSubItem().size())*2-1;
+//
+//		for (int i = 0; i <dataSize-2; i++) {
+//	    	   
+//	    	   for(int j=0; j<sheet.getMergedRegions().size();j++) {
+//	    	       	if(sheet.getMergedRegion(j).getFirstRow() == 23+dataSize) {
+//	    	    		sheet.removeMergedRegion(j);
+//	    	    		sheet.removeMergedRegion(j);
+//	    	    		
+//	    	       	}
+//	    	   }
+//	    	   
+//	    	   sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
+//			}
+
+	}
+
+	public String convertDataForCLP(String target, ExcelCLPRes excelCLPRes) {
+
+		if (target.contains("${container}")) {
+			return excelCLPRes.getContainer();
+		} else if (target.contains("${chulhangPort}")) {
+			return excelCLPRes.getChulhangPort();
+
+		} else if (target.contains("${containerNo}")) {
+			return excelCLPRes.getContainerNo();
+		} else if (target.contains("${silNo}")) {
+			return excelCLPRes.getSilNo();
+		} 
+		
+
+		else {
+			return target;
+		}
+
+	}
+	
+	@Override
+	public List<ExcelInpackRes> userInpackData(FinalInboundInboundMasterReq req) throws Exception {
+		List<ExcelInpackRes> finalResult = new ArrayList<>();
+		
+		List<FinalInbound> finalInboundList = _finalInboundRepository.findByIncomeDt(req.getIncomeDt());
+		List<InboundMaster> inboundMasterList =  new ArrayList<>();
+		List<FinalInboundInboundMaster> fiiList =  new ArrayList<>();
+		for(int i=0; i<finalInboundList.size(); i++) {
+			List<FinalInboundInboundMaster> r = new ArrayList<>();
+			r = _FinalInboundInboundMasterRepository.findByFinalInboundId(finalInboundList.get(i).getId());
+			for(int k=0; k<r.size(); k++) {
+				if(r.get(k).getInboundMaster().getManager().equals(req.getManager())) {
+					fiiList.add(r.get(k));
+				}
+			}
+		
+		}
+		for (int j =0; j<fiiList.size(); j++) {
+			ExcelInpackRes result = _FinalInboundInboundMasterRepository.findById(fiiList.get(j).getId()).map(t -> {
+				Integer countPCS= 0;
+				Integer countM= 0;
+				Integer countKG= 0;
+				Integer countYD= 0;
+				
+				List<InboundRes> inbound_list = new ArrayList<>();
+				List<Inbound> origin_inbound_list = new ArrayList<>();
+				ExcelInpackRes item = ExcelInpackRes.builder().build();
+				List<ExcelInpackSubRes> list = new ArrayList<>();
+
+
+				String departDt = t.getFinalInbound().getDepartDtStr();
+				StringBuffer sb = new StringBuffer();
+				String companyNum=t.getInboundMaster().getCompanyInfo().getCoNum();
+				sb.append(companyNum);
+				sb.insert(3, "-");
+				sb.insert(6, "-");
+				
+				item.setFileNm(t.getInboundMaster().getBlNo());
+				item.setInboundMasterId(t.getInboundMaster().getId());
+				item.setData01(t.getInboundMaster().getComExport().getValue() + "\n"
+						+ t.getInboundMaster().getComExport().getValue2());
+				item.setData03(t.getInboundMaster().getCompanyInfo().getCoInvoice());
+				item.setData05(t.getInboundMaster().getCompanyInfo().getCoNmEn() + "\n"
+						+ sb.toString() + "\n"
+						+ t.getInboundMaster().getCompanyInfo().getCoAddress());
+				item.setData06(departDt);
+				item.setData07(t.getFinalInbound().getHangName() + "/" + t.getFinalInbound().getHangCha());
+			
+				item.setData08((t.getFinalInbound().getDepartPort()==null?"" :_commonRepository.findById(t.getFinalInbound().getDepartPort()).get().getValue2()));
+				item.setData09((t.getFinalInbound().getIncomePort()==null?"" :_commonRepository.findById(t.getFinalInbound().getIncomePort()).get().getValue2()));
+				if(t.getInboundMaster().getCurrencyType()==null||t.getInboundMaster().getCurrencyType().equals("$")) {
+					item.setData10("Unit Price" + "\n" + "(USD)");
+					item.setData11("Amount" + "\n" + "(USD)");
+				}else {
+					item.setData10("Unit Price" + "\n" + "(CNY)");
+					item.setData11("Amount" + "\n" + "(CNY)");
+				}
+				if(t.getInboundMaster().getPackingType()==null||t.getInboundMaster().getPackingType().equals("CTN")) {
+					item.setData12("CTNS");
+				}else if(t.getInboundMaster().getPackingType().equals("PL")) {
+					item.setData12("PLS");
+				}else if(t.getInboundMaster().getPackingType().equals("GT")) {
+					item.setData12("GTS");
+				}
+				item.setCoYn(false);
+				if(t.getInboundMaster().getCompanyInfo().getCoInvoice()==null) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+					SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						Date departDate=dateFormat2.parse(departDt);
+						String departDateStr = dateFormat.format(departDate);
+						String data=""+departDateStr;
+						item.setInvoice(data);
+						
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					item.setInvoice("");
+				}else {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+					SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						Date departDate=dateFormat2.parse(departDt);
+						String departDateStr = dateFormat.format(departDate);
+						String data=t.getInboundMaster().getCompanyInfo().getCoInvoice()+departDateStr;
+						item.setInvoice(data);
+						
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					
+				}
+				Date today = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+				String todayStr = dateFormat.format(today);
+				item.setNoCoDt("SJ-"+todayStr);			
+				// 병합처리된 marking 데이터 처리를 위한
+				inbound_list = _InboundService.getInboundByInboundMasterId(
+						InboundReq.builder().inboundMasterId(t.getInboundMaster().getId()).build());
+				inbound_list = _utilService.changeExcelFormatNew(inbound_list);
+//				Map<Long, String> markingInfo = new HashMap<>();
+//				markingInfo = _utilService.getMakingForYATAI(inbound_list);
+
+				origin_inbound_list = t.getInboundMaster().getInbounds().stream()
+						.sorted(Comparator.comparing(Inbound::getOrderNo)).collect(Collectors.toList());
+
+				List<ExcelInpackSubRes> sublist = new ArrayList<>();
+				for (int i = 0; i < origin_inbound_list.size(); i++) {
+					ExcelInpackSubRes subRes = ExcelInpackSubRes.builder().build();
+
+					String yyMMdd = getYYMMDD(departDt);
+					subRes.setOrderNo(i + 1);
+					subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
+					subRes.setJejil(origin_inbound_list.get(i).getJejil());
+					subRes.setHsCode(origin_inbound_list.get(i).getHsCode());
+					subRes.setItemCount(origin_inbound_list.get(i).getItemCount());
+					if(origin_inbound_list.get(i).getReportPrice()==null||origin_inbound_list.get(i).getReportPrice()==0) {
+						
+						subRes.setItemPrice(new Double(0));
+					}else {
+						subRes.setItemPrice(origin_inbound_list.get(i).getReportPrice());
+					}
+					if(origin_inbound_list.get(i).getReportPrice()==null||origin_inbound_list.get(i).getReportPrice()==0) {
+						subRes.setTotalPrice(new Double(0));
+					}else {
+						subRes.setTotalPrice(new Double(String.format("%.2f",
+								origin_inbound_list.get(i).getReportPrice() * origin_inbound_list.get(i).getItemCount())));
+					}
+					
+					if(origin_inbound_list.get(i).getBoxCount()==null) {
+						subRes.setBoxCount(new Double(0));
+					}else {
+						subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+					}
+					
+					subRes.setTotalWeight(origin_inbound_list.get(i).getWeight());
+					subRes.setWeight((subRes.getTotalWeight()  == null ? 0d : subRes.getTotalWeight()) - (subRes.getBoxCount() == null ? 0d : subRes.getBoxCount()) );
+					subRes.setCbm(origin_inbound_list.get(i).getCbm());
+					if(origin_inbound_list.get(i).getCoId()!=3) {
+						item.setCoYn(true);
+					}
+					if(t.getInboundMaster().getCurrencyType()==null||t.getInboundMaster().getCurrencyType().equals("$")) {
+						subRes.setCurrencyType("$");
+					}else {
+						subRes.setCurrencyType(t.getInboundMaster().getCurrencyType());
+					}
+					if(t.getInboundMaster().getPackingType()==null||t.getInboundMaster().getPackingType().equals("CTN")) {
+						subRes.setPackingType("CTNS");
+					}else {
+						subRes.setPackingType(t.getInboundMaster().getPackingType());
+					}
+					subRes.setAmountType(origin_inbound_list.get(i).getAmountType());
+					if(origin_inbound_list.get(i).getAmountType()==null||origin_inbound_list.get(i).getAmountType().equals("PCS")){
+						countPCS=countPCS+1;
+					}else if(origin_inbound_list.get(i).getAmountType().equals("M")){
+						countM=countM+1;
+					}else if(origin_inbound_list.get(i).getAmountType().equals("YD")){
+						countYD=countYD+1;
+					}else if(origin_inbound_list.get(i).getAmountType().equals("KG")){
+						countKG=countKG+1;
+					}
+					
+					sublist.add(subRes);
+
+				}
+
+//				Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getBoxCount).sum();
+//				Double total = sublist.stream().mapToDouble(ExcelYATAISubRes::getItemCount).sum();
+//				item.setTotalBoxCountEng("TOTAL: ("+String.valueOf(total.intValue())+")"+" CTNS OF"); 
+				item.setCountPCS(countPCS);
+				item.setCountM(countM);	
+				item.setCountYD(countYD);
+				item.setCountKG(countKG);
+				item.setSubItem(sublist);
+				return item;
+			}).get();
+			finalResult.add(result);		
+		}
+		
+		
+		
+		return finalResult;		
+	}
+	
+	@Override
+	public List<ExcelCORes> cOData(FinalInboundInboundMasterReq req) throws Exception {
+		List<ExcelCORes> finalResult = new ArrayList<>();
+		
+		List<FinalInbound> finalInboundList = _finalInboundRepository.findByIncomeDt(req.getIncomeDt());
+		List<Inbound> item = new ArrayList<>();
+		List<FinalInboundInboundMaster> fiiList =  new ArrayList<>();
+		for(int i=0; i<finalInboundList.size(); i++) {
+			List<FinalInboundInboundMaster> r = new ArrayList<>();
+			r = _FinalInboundInboundMasterRepository.findByFinalInboundId(finalInboundList.get(i).getId());
+			for(int k=0; k<r.size(); k++) {
+					fiiList.add(r.get(k));
+				
+			}
+		
+		}
+
+		for (int j =0; j<fiiList.size(); j++) {
+			List<Inbound> origin_inbound_list = new ArrayList<>();
+			origin_inbound_list=fiiList.get(j).getInboundMaster().getInbounds();		
+			for(int l=0; l<origin_inbound_list.size(); l++) {
+				item.add(origin_inbound_list.get(l));			
+				}
+		
+		}
+		for(int m=0; m<item.size(); m++) {
+			ExcelCORes result = new ExcelCORes();
+			
+			result.setBlNo(item.get(m).getInboundMaster().getBlNo());
+			result.setKorNm(item.get(m).getKorNm());
+			if(item.get(m).getCoId()==1) {
+				result.setType("FTA");				
+			}else if(item.get(m).getCoId()==2) {
+				result.setType("YATAI");	
+			}else if(item.get(m).getCoId()==3) {
+				result.setType(" ");	
+			}else if(item.get(m).getCoId()==4) {
+				result.setType("RCEP");	
+			}else if(item.get(m).getCoId()==5) {
+				result.setType("공장");	
+			}
+			
+			
+			
+			finalResult.add(result);
+			}
+		
+		
+		
+		
+		return finalResult;		
+	}
 	public String getStringResult(Double param) {
+		
 		try {
 			boolean finalCheck = false;
 			String[] arr = String.valueOf(param).split("\\.");
@@ -3117,6 +4142,8 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 		
 	}
+
+	
 	
 
 	

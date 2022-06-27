@@ -14,7 +14,7 @@ public enum ColorType {
 	D(4,"PINK","#FF00FF","PK",4),
 	E(5,"ORANGE","#E26B0A","O",5),
 	F(6,"PURPLE","#9900FF","PP",6),
-	G(0,"BLACK","#333","",7);
+	G(0,"BLACK","#333","",0);
 	
 	public Integer id;
 	public String name;

@@ -16,6 +16,7 @@ import com.keepgo.whatdo.entity.customs.Common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,11 +41,13 @@ public class InboundRes {
 	private String color;
 	private String colorCode;
 	private Long colorId;
+	private String backgroundColor;
+	private String backgroundColorCode;
+	private Long backgroundColorId;
 	private String masterCompany;
 	private String masterCompanyNumber;
 	private String masterExport;
 	private String masterExportAddr;
-	
 	private String cbmStr;
 	
 	
@@ -64,10 +67,40 @@ public class InboundRes {
 	//발송업체 //0번
 	private String managerNm;
 	private String companyNm;
-	
-	private String marking;
 	private String korNm;
-
+	private String marking;
+	@Builder.Default
+	private String companyNmYn="";
+	@Builder.Default
+	private String markingYn="";
+	@Builder.Default
+	private String workDateStrYn="";
+	@Builder.Default
+	private String korNmYn="";
+	@Builder.Default
+	private String itemCountYn="";
+	@Builder.Default
+	private String boxCountYn="";
+	@Builder.Default
+	private String weightYn="";
+	@Builder.Default
+	private String cbmYn="";
+	@Builder.Default
+	private String reportPriceYn="";
+	@Builder.Default
+	private String memo1Yn="";
+	@Builder.Default
+	private String memo2Yn="";
+	@Builder.Default
+	private String itemNoYn="";
+	@Builder.Default
+	private String jejilYn="";
+	@Builder.Default
+	private String hsCodeYn="";
+	@Builder.Default
+	private String totalPriceYn=""; 
+	@Builder.Default
+	private String engNmYn="";
 	//수량
 	private Double itemCount;
 	//박스수

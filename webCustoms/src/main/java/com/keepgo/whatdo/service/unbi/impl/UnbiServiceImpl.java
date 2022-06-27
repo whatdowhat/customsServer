@@ -152,6 +152,8 @@ public class UnbiServiceImpl implements UnbiService {
 						rt.setPickupCostYn((item.getPickupCostYn() == null ? "N" : item.getPickupCostYn()));
 						rt.setSanghachaCostYn((item.getSanghachaCostYn() == null ? "N" : item.getSanghachaCostYn()));
 						rt.setOfficeNameYn((item.getOfficeNameYn() == null ? "N" : item.getOfficeNameYn()));
+						rt.setHacksodanCostYn((item.getHacksodanCostYn() == null ? "N" : item.getHacksodanCostYn()));
+						rt.setCoCostYn((item.getCoCostYn() == null ? "N" : item.getCoCostYn()));					
 						if(item.getColor() !=null ) {
 							
 							for(int i=0; i<ColorType.getList().size();i++) {
@@ -336,6 +338,16 @@ public class UnbiServiceImpl implements UnbiService {
 				unbi.setOfficeNameYn("N");
 			}else {
 				unbi.setOfficeNameYn(list.get(i).getOfficeNameYn());
+			}
+			if(list.get(i).getHacksodanCostYn()==null||list.get(i).getHacksodanCostYn().equals("")) {
+				unbi.setHacksodanCostYn("N");
+			}else {
+				unbi.setHacksodanCostYn(list.get(i).getHacksodanCostYn());
+			}
+			if(list.get(i).getCoCostYn()==null||list.get(i).getCoCostYn().equals("")) {
+				unbi.setCoCostYn("N");
+			}else {
+				unbi.setCoCostYn(list.get(i).getCoCostYn());
 			}
 			
 			

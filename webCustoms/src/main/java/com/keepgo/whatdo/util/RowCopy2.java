@@ -38,7 +38,7 @@ public class RowCopy2 {
 		try {
 //			FileReader reader = new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx");
 //			
-			FileReader reader = new FileReader("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
+			FileReader reader = new FileReader("C:\\Users\\rhengh\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
 			Object obj = parser.parse(reader);
 			
 			JSONArray arr = (JSONArray) obj;

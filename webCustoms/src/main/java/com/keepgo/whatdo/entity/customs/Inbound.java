@@ -61,8 +61,13 @@ public class Inbound {
 	
 	@Column(name = "color")
 	private Integer color;
+	@Column(name = "backgroundColor")
+	private Integer backgroundColor;
+	
 	@Transient
 	private String colorName;
+	@Transient
+	private String backgroundColorName;
 	@JoinColumn(name = "inboundMasterId")
 	@ExcelColumn(headerName="inboundMasterId",order = 2)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -78,7 +83,6 @@ public class Inbound {
 	
 	@Column(name = "companyNm")
 	private String companyNm;
-	
 	
 	@Column(name = "marking")
 	private String marking;
@@ -122,6 +126,22 @@ public class Inbound {
 	
 	@Column(name = "coId")
 	private Integer coId;
+	private String companyNmYn;
+	private String markingYn;
+	private String workDateStrYn;
+	private String korNmYn;
+	private String itemCountYn;
+	private String boxCountYn;
+	private String weightYn;
+	private String cbmYn;
+	private String reportPriceYn;
+	private String memo1Yn;
+	private String memo2Yn;
+	private String itemNoYn;
+	private String jejilYn;
+	private String hsCodeYn;
+	private String totalPriceYn; 
+	private String engNmYn;
 	
 	@Transient
 //	@Column(name = "coYn")

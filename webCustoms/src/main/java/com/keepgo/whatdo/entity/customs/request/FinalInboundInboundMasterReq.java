@@ -26,4 +26,6 @@ public class FinalInboundInboundMasterReq {
 	private Long inboundMasterId;
 	private List<Long> ids = new ArrayList<>();
 	private int preperOrder;
+	private String incomeDt;
+	private String manager;
 }

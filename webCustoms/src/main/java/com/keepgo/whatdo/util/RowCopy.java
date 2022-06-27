@@ -34,7 +34,7 @@ public class RowCopy {
 		try {
 //			FileReader reader = new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx");
 //			
-			FileReader reader = new FileReader("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
+			FileReader reader = new FileReader("C:\\Users\\rhengh01\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\sample01.json");
 			Object obj = parser.parse(reader);
 			JSONObject jsonObject = (JSONObject) obj;
 			
@@ -44,7 +44,7 @@ public class RowCopy {
 		}catch (Exception e) {
 			// TODO: handle exception
 		}
-		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx"));
+		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\rhengh01\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\target01.xlsx"));
 //		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\inpack\\inpack.xlsx"));
 //		XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream("C:\\Users\\whatdo\\git\\customsServer\\webCustoms\\src\\main\\resources\\static\\co\\FTA.xlsx"));
 		XSSFSheet sheet = workbook.getSheetAt(1);

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.keepgo.whatdo.define.AmountType;
+import com.keepgo.whatdo.define.BackgroundColorType;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.FileType;
@@ -335,6 +336,27 @@ public class InboundServiceImpl implements InboundService {
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
 						.amountType(item.getAmountType())
+						
+						
+						.companyNmYn(item.getCompanyNmYn())
+						.markingYn(item.getMarkingYn())
+						.workDateStrYn(item.getWorkDateStrYn())
+						.korNmYn(item.getKorNmYn())
+						.itemCountYn(item.getItemCountYn())
+						.boxCountYn(item.getBoxCountYn())
+						.weightYn(item.getWeightYn())
+						.cbmYn(item.getCbmYn())
+						.reportPriceYn(item.getReportPriceYn())
+						.memo1Yn(item.getMemo1Yn())
+						.memo2Yn(item.getMemo2Yn())
+						.itemNoYn(item.getItemNoYn())
+						.jejilYn(item.getJejilYn())
+						.hsCodeYn(item.getHsCodeYn())
+						.totalPriceYn(item.getTotalPriceYn())
+						.engNmYn(item.getEngNmYn())
+
+//						.companyNmYn(item.)
+//						.markingYn(item.getMarkingYn()))
 //						.color(item.getColorCode())
 //						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
 //						.colorCode(item.getColor())
@@ -373,7 +395,15 @@ public class InboundServiceImpl implements InboundService {
 								rt.setColor(ColorType.getList().get(i).getShowName());
 							}
 						}
-//						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+					}
+					if(item.getBackgroundColor() !=null ) {
+						rt.setBackgroundColorId(Long.valueOf(item.getBackgroundColor()));
+						for(int i=0; i<BackgroundColorType.getList().size();i++) {
+							if(BackgroundColorType.getList().get(i).getId() ==item.getBackgroundColor() ) {
+								rt.setBackgroundColorCode(BackgroundColorType.getList().get(i).getCode());
+								rt.setBackgroundColor(BackgroundColorType.getList().get(i).getShowName());
+							}
+						}
 					}
 					if(item.getAmountType() !=null ) {
 						rt.setAmountType(item.getAmountType());
@@ -488,6 +518,24 @@ public class InboundServiceImpl implements InboundService {
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
 						.amountType(item.getAmountType())
+						
+						.companyNmYn(item.getCompanyNmYn())
+						.markingYn(item.getMarkingYn())
+						.workDateStrYn(item.getWorkDateStrYn())
+						.korNmYn(item.getKorNmYn())
+						.itemCountYn(item.getItemCountYn())
+						.boxCountYn(item.getBoxCountYn())
+						.weightYn(item.getWeightYn())
+						.cbmYn(item.getCbmYn())
+						.reportPriceYn(item.getReportPriceYn())
+						.memo1Yn(item.getMemo1Yn())
+						.memo2Yn(item.getMemo2Yn())
+						.itemNoYn(item.getItemNoYn())
+						.jejilYn(item.getJejilYn())
+						.hsCodeYn(item.getHsCodeYn())
+						.totalPriceYn(item.getTotalPriceYn())
+						.engNmYn(item.getEngNmYn())
+
 //						.color(item.getColorCode())
 //						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
 //						.colorCode(item.getColor())
@@ -527,6 +575,15 @@ public class InboundServiceImpl implements InboundService {
 							}
 						}
 //						rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+					}
+					if(item.getBackgroundColor() !=null ) {
+						rt.setBackgroundColorId(Long.valueOf(item.getBackgroundColor()));
+						for(int i=0; i<BackgroundColorType.getList().size();i++) {
+							if(BackgroundColorType.getList().get(i).getId() ==item.getBackgroundColor() ) {
+								rt.setBackgroundColorCode(BackgroundColorType.getList().get(i).getCode());
+								rt.setBackgroundColor(BackgroundColorType.getList().get(i).getShowName());
+							}
+						}
 					}
 					if(index.size() == 0) {
 //						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
@@ -701,6 +758,26 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setJejil(list.get(i).getJejil());
 			inbound.setCompanyNm(list.get(i).getCompanyNm());
 			inbound.setMarking(list.get(i).getMarking());
+			
+			//color
+			inbound.setCompanyNmYn(list.get(i).getCompanyNmYn());
+			inbound.setMarkingYn(list.get(i).getMarkingYn());
+			inbound.setWorkDateStrYn(list.get(i).getWorkDateStrYn());
+			inbound.setKorNmYn(list.get(i).getKorNmYn());
+			inbound.setItemCountYn(list.get(i).getItemCountYn());
+			inbound.setBoxCountYn(list.get(i).getBoxCountYn());
+			inbound.setWeightYn(list.get(i).getWeightYn());
+			inbound.setCbmYn(list.get(i).getCbmYn());
+			inbound.setReportPriceYn(list.get(i).getReportPriceYn());
+			inbound.setMemo1Yn(list.get(i).getMemo1Yn());
+			inbound.setMemo2Yn(list.get(i).getMemo2Yn());
+			inbound.setItemNoYn(list.get(i).getItemNoYn());
+			inbound.setJejilYn(list.get(i).getJejilYn());
+			inbound.setHsCodeYn(list.get(i).getHsCodeYn());
+			inbound.setTotalPriceYn(list.get(i).getTotalPriceYn());
+			inbound.setEngNmYn(list.get(i).getEngNmYn());
+			//color
+			
 			inbound.setKorNm(list.get(i).getKorNm());
 			inbound.setItemCount( (list.get(i).getItemCount() ==  null ? new Double(0) : list.get(i).getItemCount()));
 			inbound.setBoxCount(list.get(i).getBoxCount());
@@ -726,6 +803,18 @@ public class InboundServiceImpl implements InboundService {
 				
 			}else {
 				inbound.setColor(Integer.valueOf(0));
+			}
+			if(list.get(i).getBackgroundColor()!=null) {
+				for(int j=0; j<BackgroundColorType.getList().size();j++) {
+					if(BackgroundColorType.getList().get(j).getShowName().equals(list.get(i).getBackgroundColor())) {
+						inbound.setBackgroundColor(BackgroundColorType.getList().get(j).getId());
+					}else {
+
+					}
+				}
+				
+			}else {
+				inbound.setBackgroundColor(Integer.valueOf(0));
 			}
 			
 			if(list.get(i).getAmountType()!=null) {
@@ -1206,6 +1295,9 @@ public class InboundServiceImpl implements InboundService {
 					if(sub_item.getColorCode()!= null) {
 						f.put("colorCode", sub_item.getColorCode());
 					}
+					if(sub_item.getBackgroundColorCode()!= null) {
+						f.put("backgroundColorCode", sub_item.getBackgroundColorCode());
+					}
 					if(sub_item.getMarking()!= null) {
 						f.put("marking", sub_item.getMarking());
 					}
@@ -1241,6 +1333,88 @@ public class InboundServiceImpl implements InboundService {
 					f.put("workDateStrSpan", sub_item.getWorkDateStrSpan());
 					f.put("orderNoStrSpan", sub_item.getOrderNoStrSpan());
 					f.put("jejelSpan", sub_item.getJejilSpan());
+					if(sub_item.getCompanyNmYn()==null||sub_item.getCompanyNmYn().equals("")) {
+						f.put("companyNmYn", "");
+					}else {
+						f.put("companyNmYn", sub_item.getCompanyNmYn());
+					}
+					if(sub_item.getMarkingYn()==null||sub_item.getMarkingYn().equals("")) {
+						f.put("markingYn", "");
+					}else {
+						f.put("markingYn", sub_item.getMarkingYn());
+					}
+					if(sub_item.getWorkDateStrYn()==null||sub_item.getWorkDateStrYn().equals("")) {
+						f.put("workDateStrYn", "");
+					}else {
+						f.put("workDateStrYn", sub_item.getWorkDateStrYn());
+					}
+					if(sub_item.getKorNmYn()==null||sub_item.getKorNmYn().equals("")) {
+						f.put("korNmYn", "");
+					}else {
+						f.put("korNmYn", sub_item.getKorNmYn());
+					}
+					if(sub_item.getItemCountYn()==null||sub_item.getItemCountYn().equals("")) {
+						f.put("itemCountYn", "");
+					}else {
+						f.put("itemCountYn", sub_item.getItemCountYn());
+					}
+					if(sub_item.getBoxCountYn()==null||sub_item.getBoxCountYn().equals("")) {
+						f.put("boxCountYn", "");
+					}else {
+						f.put("boxCountYn", sub_item.getBoxCountYn());
+					}
+					if(sub_item.getWeightYn()==null||sub_item.getWeightYn().equals("")) {
+						f.put("weightYn", "");
+					}else {
+						f.put("weightYn", sub_item.getWeightYn());
+					}
+					if(sub_item.getCbmYn()==null||sub_item.getCbmYn().equals("")) {
+						f.put("cbmYn", "");
+					}else {
+						f.put("cbmYn", sub_item.getCbmYn());
+					}
+					if(sub_item.getReportPriceYn()==null||sub_item.getReportPriceYn().equals("")) {
+						f.put("reportPriceYn", "");
+					}else {
+						f.put("reportPriceYn", sub_item.getReportPriceYn());
+					}
+					if(sub_item.getMemo1Yn()==null||sub_item.getMemo1Yn().equals("")) {
+						f.put("memo1Yn", "");
+					}else {
+						f.put("memo1Yn", sub_item.getMemo1Yn());
+					}
+					if(sub_item.getMemo2Yn()==null||sub_item.getMemo2Yn().equals("")) {
+						f.put("memo2Yn", "");
+					}else {
+						f.put("memo2Yn", sub_item.getMemo2Yn());
+					}
+					if(sub_item.getItemNoYn()==null||sub_item.getItemNoYn().equals("")) {
+						f.put("itemNoYn", "");
+					}else {
+						f.put("itemNoYn", sub_item.getItemNoYn());
+					}
+					if(sub_item.getJejilYn()==null||sub_item.getJejilYn().equals("")) {
+						f.put("jejilYn", "");
+					}else {
+						f.put("jejilYn", sub_item.getJejilYn());
+					}
+					if(sub_item.getHsCodeYn()==null||sub_item.getHsCodeYn().equals("")) {
+						f.put("hsCodeYn", "");
+					}else {
+						f.put("hsCodeYn", sub_item.getHsCodeYn());
+					}
+					if(sub_item.getTotalPriceYn()==null||sub_item.getTotalPriceYn().equals("")) {
+						f.put("totalPriceYn", "");
+					}else {
+						f.put("totalPriceYn", sub_item.getTotalPriceYn());
+					}
+					if(sub_item.getEngNmYn()==null||sub_item.getEngNmYn().equals("")) {
+						f.put("engNmYn", "");
+					}else {
+						f.put("engNmYn", sub_item.getEngNmYn());
+					}
+					
+					
 					return f;
 				}).collect(Collectors.toList()));
 		}else {

@@ -13,7 +13,7 @@ public interface FinalInboundRepository extends JpaRepository<FinalInbound, Long
 
 	
 	FinalInbound findByTitle(String title);
-	
+	List<FinalInbound> findByIncomeDt(String IncomeDt);
 //	List<CommonMaster> findAll(Specification<CommonMaster> condition);
 	List<FinalInbound> findAll(Specification<FinalInbound> condition);
 }

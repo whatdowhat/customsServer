@@ -23,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keepgo.whatdo.define.DocumentType;
+import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
@@ -34,10 +37,14 @@ import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
+import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
+import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 import com.keepgo.whatdo.service.excel.ExcelService;
+import com.keepgo.whatdo.service.inbound.InboundService;
+import com.keepgo.whatdo.service.util.UtilService;
 
 @RestController
 public class ExcelController {
@@ -49,9 +56,15 @@ public class ExcelController {
 
 	@Autowired
 	CommonMasterRepository _commonMasterRepository;
-
+	@Autowired
+	InboundMasterRepository _inboundMasterRepository;
 	@Autowired
 	ExcelService _excelService;
+	@Autowired
+	UtilService _utilService;
+	
+	@Autowired
+	InboundService _InboundService;
 
 	@Autowired
 	ResourceLoader resourceLoader;
@@ -155,11 +168,57 @@ public class ExcelController {
 	}
 	
 	@RequestMapping(value = "/excel/document/inboundData", method = { RequestMethod.POST })
-	public List<ExcelInboundRes> inboundData(HttpServletRequest httpServletRequest, @RequestBody InboundReq inboundReq,
+	public List<InboundRes> inboundData(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
 			HttpServletResponse response) throws Exception {
 
 
-		return _excelService.inboundData(inboundReq);
+		
+		//출력모드
+		List<InboundRes> result =_excelService.inboundData(req);
+		return  result;
+	}
+	
+	@RequestMapping(value = "/excel/document/inbound", method = { RequestMethod.POST })
+	public void clp(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
+			HttpServletResponse response) throws Exception {
+
+		List<InboundRes> s =_excelService.inboundData(req);
+		
+		
+		_excelService.inbound(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/clpData", method = { RequestMethod.POST })
+	public List<ExcelCLPRes> excelCLPRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.clpData(req);
+	}
+	@RequestMapping(value = "/excel/document/clp", method = { RequestMethod.POST })
+	public void clp(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+		List<ExcelCLPRes> s =_excelService.clpData(req);
+		
+		
+		_excelService.clp(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/userInpackData", method = { RequestMethod.POST })
+	public List<ExcelInpackRes> excelUserInpackRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.userInpackData(req);
+	}
+	
+	@RequestMapping(value = "/excel/document/cOData", method = { RequestMethod.POST })
+	public List<ExcelCORes> excelCORes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.cOData(req);
 	}
 
 }

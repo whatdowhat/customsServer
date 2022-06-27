@@ -15,7 +15,7 @@ public enum DocumentType {
 	D(4,"classpath:static"+File.separatorChar+"inpack"+File.separatorChar+"inpack.xlsx",4),
 	E(5,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"WIN-SABIS.xlsx",5),
 	F(6,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"INBOUND.xlsx",6),
-	G(7,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"FTA.xlsx",1),
+	G(7,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"CLP.xlsx",8),
 	H(8," ",3);
 	
 	Integer id;

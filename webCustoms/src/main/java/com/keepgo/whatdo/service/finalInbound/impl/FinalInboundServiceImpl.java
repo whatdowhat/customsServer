@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 import com.keepgo.whatdo.controller.FinalInbound.FinalInboundSpecification;
 import com.keepgo.whatdo.define.AmountType;
+import com.keepgo.whatdo.define.BackgroundColorType;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.GubunType;
@@ -626,6 +627,22 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					}else {
 						inbound.setColor(Integer.valueOf(0));
 					}
+					
+					if(inbound.getBackgroundColorName()!=null) {
+						for(int k=0; k<BackgroundColorType.getList().size();k++) {
+							if(BackgroundColorType.getList().get(k).getShowName().equals(inbound.getBackgroundColorName())) {
+								inbound.setBackgroundColor(BackgroundColorType.getList().get(k).getId());
+							}else {
+
+							}
+						}
+						
+					}else {
+						inbound.setBackgroundColor(Integer.valueOf(0));
+					}
+					
+					
+					
 					if(inbound.getCoCode()!=null) {
 						for(int k=0; k<CoType.getList().size();k++) {
 							if(CoType.getList().get(k).getName().equals(inbound.getCoCode())) {
@@ -635,6 +652,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							}
 						}
 						
+					}else if(inbound.getCoCode()==null||inbound.getCoCode().equals("")) {
+						inbound.setCoId(Integer.valueOf(3));
 					}else {
 						inbound.setCoId(Integer.valueOf(3));
 					}
@@ -648,6 +667,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							}
 						}
 						
+					}else if(inbound.getAmountType()==null||inbound.getAmountType().equals("")){
+						inbound.setAmountType("PCS");
 					}else {
 						inbound.setAmountType("PCS");
 					}

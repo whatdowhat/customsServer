@@ -43,6 +43,9 @@ public class InboundReq {
 	private Long colorId;
 	private String color;
 	private String colorCode;
+	private Long backgroundColorId;
+	private String backgroundColor;
+	private String backgroundColorCode;
 	@Column(name = "orderNo")
 	private int orderNo;
 	
@@ -57,11 +60,26 @@ public class InboundReq {
 	
 	@Column(name = "companyNm")
 	private String companyNm;
-	
-	
-	
 	@Column(name = "marking")
 	private String marking;
+	
+	private String companyNmYn="";
+	private String markingYn="";
+	
+	private String workDateStrYn="";
+	private String korNmYn="";
+	private String itemCountYn="";
+	private String boxCountYn="";
+	private String weightYn="";
+	private String cbmYn="";
+	private String reportPriceYn="";
+	private String memo1Yn="";
+	private String memo2Yn="";
+	private String itemNoYn="";
+	private String jejilYn="";
+	private String hsCodeYn="";
+	private String totalPriceYn=""; 
+	private String engNmYn="";
 	
 	
 	

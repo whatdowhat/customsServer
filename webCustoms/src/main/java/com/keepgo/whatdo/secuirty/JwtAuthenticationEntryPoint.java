@@ -21,51 +21,34 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException {
-		String exception = (String) request.getAttribute("exception");
-
-		if (exception.equals("403_EXPIREDJWT")) {
-			setResponse(response, "403_EXPIREDJWT");
-		}else
-		if (exception.equals("403_PASSWORD_INCORRECT")) {
-			setResponse(response, "403_PASSWORD_INCORRECT");
-		}else
-		if (exception.equals("403_ID_EMPTY")) {
-			setResponse(response, "403_ID_EMPTY");
-		}else {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");	
-		}
+		ErrorVO exErrorVO = (ErrorVO)request.getAttribute("exception");
+//		String exception = (String) request.getAttribute("exception");
+		setResponse(response, exErrorVO);
 		
 	}
 
 	/**
 	 * 한글 출력을 위해 getWriter() 사용
 	 */
-	private void setResponse(HttpServletResponse response, String errorCode) throws IOException {
+	private void setResponse(HttpServletResponse response, ErrorVO exErrorVO) throws IOException {
 
 		Gson gson = new Gson();
-		if (errorCode.equals("403_EXPIREDJWT")) {
+		if (exErrorVO.getErrorCode().equals("403_EXPIREDJWT")) {
 			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			String resultObj = gson.toJson(
-					ErrorVO.builder().status(200).errorCode(errorCode).errorMessage("JWT Token has expired").build());
-
-			response.getWriter().println(resultObj);
+			response.getWriter().println(gson.toJson(exErrorVO));
 		}
 
-		if (errorCode.equals("403_PASSWORD_INCORRECT")) {
+		if (exErrorVO.getErrorCode().equals("403_PASSWORD_INCORRECT")) {
 			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			String resultObj = gson.toJson(
-					ErrorVO.builder().status(200).errorCode(errorCode).errorMessage("PASSWORD INCORRECT").build());
-			response.getWriter().println(resultObj);
+			response.getWriter().println(gson.toJson(exErrorVO));
 		}
 		
-		if (errorCode.equals("403_ID_EMPTY")) {
+		if (exErrorVO.getErrorCode().equals("403_ID_EMPTY")) {
 			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			String resultObj = gson.toJson(
-					ErrorVO.builder().status(200).errorCode(errorCode).errorMessage("ID EMPTY").build());
-			response.getWriter().println(resultObj);
+			response.getWriter().println(gson.toJson(exErrorVO));
 		}
 
 

@@ -5093,14 +5093,14 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
 //						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
-						shiftRowforPreview(0, sheet, 5);
-						for(int j=0; j<5;j++) {
+						shiftRowforPreview(0, sheet, 6);
+						for(int j=0; j<6;j++) {
 							copyRowOtherSheetForPreview(workbook, sheet, j,sheet8, j);	
 						}
 						step06ForPreview(container, sheet, workbook,1);
 						step07ForPreview(container, sheet, workbook,2);
 						step08ForPreview(container, sheet, workbook,3);
-						
+						step09ForPreview(container, sheet, workbook,4);
 						startRow=startRow+list.size();	
 						
 				 }else if(i==list2.size()-1) {
@@ -5144,13 +5144,15 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
 						startRow=startRow+list.size();	
-						shiftRowforPreview(0, sheet, 5);
-						for(int j=0; j<5;j++) {
+						shiftRowforPreview(0, sheet, 6);
+						for(int j=0; j<6;j++) {
 							copyRowOtherSheetForPreview(workbook, sheet, j,sheet8, j);	
 						}
 						step06ForPreview(container, sheet, workbook,1);
 						step07ForPreview(container, sheet, workbook,2);
 						step08ForPreview(container, sheet, workbook,3);
+						step09ForPreview(container, sheet, workbook,4);
+						sheet.addMergedRegion(new CellRangeAddress(1,4,16,19));
 
 						
 				 }else if(i==0) {
@@ -5913,9 +5915,9 @@ public class ExcelServiceImpl implements ExcelService {
 		XSSFRow row = sheet.getRow(startRow);
 		
 		row.getCell(3).setCellValue(resource.getForViewWorkDepartDt());
-		row.getCell(9).setCellValue(resource.getFinalMasterBl());
-		row.getCell(14).setCellValue(resource.getContainerNo());
-		row.getCell(17).setCellValue(resource.getContainerSizeStr());
+		row.getCell(8).setCellValue(resource.getFinalMasterBl());
+		row.getCell(13).setCellValue(resource.getContainerNo());
+		row.getCell(16).setCellValue(resource.getMemo());
 
 }
 	private void step07ForPreview(FinalInboundRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
@@ -5924,9 +5926,9 @@ public class ExcelServiceImpl implements ExcelService {
 		XSSFRow row = sheet.getRow(startRow);
 		
 		row.getCell(3).setCellValue(resource.getDeliveryNm());
-		row.getCell(9).setCellValue(resource.getHangName());
-		row.getCell(14).setCellValue(resource.getSilNo());
-		row.getCell(17).setCellValue(resource.getContainerCost());
+		row.getCell(8).setCellValue(resource.getHangName());
+		row.getCell(13).setCellValue(resource.getSilNo());
+		
 
 }
 	private void step08ForPreview(FinalInboundRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
@@ -5935,9 +5937,19 @@ public class ExcelServiceImpl implements ExcelService {
 		XSSFRow row = sheet.getRow(startRow);
 		
 		row.getCell(3).setCellValue(resource.getChulhangPort());
-		row.getCell(9).setCellValue(resource.getHangCha());
-		row.getCell(14).setCellValue(resource.getCargoName());
-		row.getCell(17).setCellValue(resource.getWeatherCondition());
+		row.getCell(8).setCellValue(resource.getHangCha());
+		row.getCell(13).setCellValue(resource.getContainerSizeStr());
+		
+		
+
+}
+	private void step09ForPreview(FinalInboundRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+		XSSFRow row = sheet.getRow(startRow);
+		row.getCell(3).setCellValue(resource.getCargoName());
+		row.getCell(8).setCellValue(resource.getWeatherCondition());
+		row.getCell(13).setCellValue(resource.getContainerCost());
 
 }
 	

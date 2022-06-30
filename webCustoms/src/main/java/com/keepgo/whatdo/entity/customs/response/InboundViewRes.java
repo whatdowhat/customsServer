@@ -112,6 +112,7 @@ public class InboundViewRes {
 	
 
 	private List<Map<String,Object>> inbounds = new ArrayList();
+	private List<InboundRes> inboundsForPreview = new ArrayList();
 	//발송업체
 	@Builder.Default
 	private int companyNmSpan =1;

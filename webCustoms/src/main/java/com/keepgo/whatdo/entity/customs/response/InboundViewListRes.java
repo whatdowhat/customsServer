@@ -45,6 +45,6 @@ public class InboundViewListRes {
 	
 	private List<InboundViewRes> inbounds = new ArrayList();
 	
-	
+	private List<InboundRes> inboundsForPreview = new ArrayList();
 	
 }

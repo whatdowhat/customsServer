@@ -109,7 +109,7 @@ public class FinalInboundController {
 	@Autowired
 	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
 
-	@RequestMapping(value = "/test/finalInboundCreate", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/finalInboundCreate", method = { RequestMethod.POST })
 	public boolean finalInboundCreate(HttpServletRequest httpServletRequest,
 			@RequestBody FinalInboundReq finalInboundReq) {
 
@@ -134,7 +134,7 @@ public class FinalInboundController {
 
 	}
 
-	@RequestMapping(value = "/test/finalInboundUpdate", method = { RequestMethod.POST })
+	@RequestMapping(value = "/front/finalInboundUpdate", method = { RequestMethod.POST })
 	public boolean finalInboundUpdate(HttpServletRequest httpServletRequest,
 			@RequestBody FinalInboundReq finalInboundReq) {
 

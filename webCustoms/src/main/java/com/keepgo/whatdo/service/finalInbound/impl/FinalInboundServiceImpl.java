@@ -167,7 +167,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.containerPrice(req.getContainerPrice()).deliveryNm(req.getDeliveryNm()).hangName(req.getHangName())
 				.silNo(req.getSilNo()).cargoName(req.getCargoName()).departPort(req.getDepartPortId())
 				.hangCha(req.getHangCha()).containerSizeStr(req.getContainerSizeStr())
-				.weatherCondition(req.getWeatherCondition())
+				.weatherCondition(req.getWeatherCondition()).memo(req.getMemo())
 
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
@@ -275,7 +275,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		finalInbound.setWorkDepartDt(afterFormat.format(tempDate3));
 		finalInbound.setDeliveryNm(req.getDeliveryNm());
 		finalInbound.setChulhangPort(req.getChulhangPort());		
-		
+		finalInbound.setMemo(req.getMemo());		
 		finalInbound.setIsUsing(true);
 		finalInbound.setUpdateDt(new Date());
 		finalInbound.setCreateDt(new Date());
@@ -453,7 +453,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		dto.setDepartPortId((r.getDepartPort() == null ? new Long(1) : r.getDepartPort()));
 		dto.setIncomePort((r.getIncomePort() == null ? "" : _commonRepository.findById(r.getIncomePort()).get().getValue2()));
 		dto.setIncomePortId((r.getIncomePort() == null ? new Long(1) : r.getIncomePort()));
-		
+		dto.setMemo((r.getMemo() == null ? "" : r.getMemo()));
 		if(r.getInboundMasters().size()>0){
 			dto.setInboundMasters(r.getInboundMasters().stream()
 					

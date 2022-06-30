@@ -49,6 +49,7 @@ public class UnbiRes {
 	private String memo1;
 	private String memo2;
 	private String colorCode;
+	private Long colorId;
 	
 	//typebTitle(발송업체,마킹,한글품명,출발지) mergecolumn
 	private String typebTitle;

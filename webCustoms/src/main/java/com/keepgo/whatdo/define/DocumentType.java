@@ -16,8 +16,8 @@ public enum DocumentType {
 	E(5,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"WIN-SABIS.xlsx",5),
 	F(6,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"INBOUND.xlsx",6),
 	G(7,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"CLP.xlsx",8),
-	H(8," ",3);
-	
+	H(8," ",3),
+	I(9,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"PREVIEW.xlsx",9);
 	Integer id;
 	String name;
 	Integer order;

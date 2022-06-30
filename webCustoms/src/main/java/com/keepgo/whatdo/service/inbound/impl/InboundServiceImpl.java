@@ -336,24 +336,24 @@ public class InboundServiceImpl implements InboundService {
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
 						.amountType(item.getAmountType())
+						.currencyType(inboundMaster.getCurrencyType())
 						
-						
-						.companyNmYn(item.getCompanyNmYn())
-						.markingYn(item.getMarkingYn())
-						.workDateStrYn(item.getWorkDateStrYn())
-						.korNmYn(item.getKorNmYn())
-						.itemCountYn(item.getItemCountYn())
-						.boxCountYn(item.getBoxCountYn())
-						.weightYn(item.getWeightYn())
-						.cbmYn(item.getCbmYn())
-						.reportPriceYn(item.getReportPriceYn())
-						.memo1Yn(item.getMemo1Yn())
-						.memo2Yn(item.getMemo2Yn())
-						.itemNoYn(item.getItemNoYn())
-						.jejilYn(item.getJejilYn())
-						.hsCodeYn(item.getHsCodeYn())
-						.totalPriceYn(item.getTotalPriceYn())
-						.engNmYn(item.getEngNmYn())
+						.companyNmYn(item.getCompanyNmYn()==null ? "" : item.getCompanyNmYn())
+						.markingYn(item.getMarkingYn()==null ? "" : item.getMarkingYn())
+						.workDateStrYn(item.getWorkDateStrYn()==null ? "" : item.getWorkDateStrYn())
+						.korNmYn(item.getKorNmYn()==null ? "" : item.getKorNmYn())
+						.itemCountYn(item.getItemCountYn()==null ? "" : item.getItemCountYn())
+						.boxCountYn(item.getBoxCountYn()==null ? "" : item.getBoxCountYn())
+						.weightYn(item.getWeightYn()==null ? "" : item.getWeightYn())
+						.cbmYn(item.getCbmYn()==null ? "" : item.getCbmYn())
+						.reportPriceYn(item.getReportPriceYn()==null ? "" : item.getReportPriceYn())
+						.memo1Yn(item.getMemo1Yn()==null ? "" : item.getMemo1Yn())
+						.memo2Yn(item.getMemo2Yn()==null ? "" : item.getMemo2Yn())
+						.itemNoYn(item.getItemNoYn()==null ? "" : item.getItemNoYn())
+						.jejilYn(item.getJejilYn()==null ? "" : item.getJejilYn())
+						.hsCodeYn(item.getHsCodeYn()==null ? "" : item.getHsCodeYn())
+						.totalPriceYn(item.getTotalPriceYn()==null ? "" : item.getTotalPriceYn())
+						.engNmYn(item.getEngNmYn()==null ? "" : item.getEngNmYn())
 
 //						.companyNmYn(item.)
 //						.markingYn(item.getMarkingYn()))
@@ -506,6 +506,8 @@ public class InboundServiceImpl implements InboundService {
 						.itemCount(item.getItemCount())
 						.boxCount(item.getBoxCount())
 						.jejil(item.getJejil())
+//						.weight(item.getWeight() == null ? 0 : item.getWeight())
+//						.cbm(item.getCbm() == null ? 0 : item.getCbm())
 						.weight(item.getWeight())
 						.cbm(item.getCbm())
 						.reportPrice(item.getReportPrice())
@@ -518,23 +520,23 @@ public class InboundServiceImpl implements InboundService {
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
 						.amountType(item.getAmountType())
-						
-						.companyNmYn(item.getCompanyNmYn())
-						.markingYn(item.getMarkingYn())
-						.workDateStrYn(item.getWorkDateStrYn())
-						.korNmYn(item.getKorNmYn())
-						.itemCountYn(item.getItemCountYn())
-						.boxCountYn(item.getBoxCountYn())
-						.weightYn(item.getWeightYn())
-						.cbmYn(item.getCbmYn())
-						.reportPriceYn(item.getReportPriceYn())
-						.memo1Yn(item.getMemo1Yn())
-						.memo2Yn(item.getMemo2Yn())
-						.itemNoYn(item.getItemNoYn())
-						.jejilYn(item.getJejilYn())
-						.hsCodeYn(item.getHsCodeYn())
-						.totalPriceYn(item.getTotalPriceYn())
-						.engNmYn(item.getEngNmYn())
+						.currencyType(inboundMaster.getCurrencyType())
+						.companyNmYn(item.getCompanyNmYn()==null ? "" : item.getCompanyNmYn())
+						.markingYn(item.getMarkingYn()==null ? "" : item.getMarkingYn())
+						.workDateStrYn(item.getWorkDateStrYn()==null ? "" : item.getWorkDateStrYn())
+						.korNmYn(item.getKorNmYn()==null ? "" : item.getKorNmYn())
+						.itemCountYn(item.getItemCountYn()==null ? "" : item.getItemCountYn())
+						.boxCountYn(item.getBoxCountYn()==null ? "" : item.getBoxCountYn())
+						.weightYn(item.getWeightYn()==null ? "" : item.getWeightYn())
+						.cbmYn(item.getCbmYn()==null ? "" : item.getCbmYn())
+						.reportPriceYn(item.getReportPriceYn()==null ? "" : item.getReportPriceYn())
+						.memo1Yn(item.getMemo1Yn()==null ? "" : item.getMemo1Yn())
+						.memo2Yn(item.getMemo2Yn()==null ? "" : item.getMemo2Yn())
+						.itemNoYn(item.getItemNoYn()==null ? "" : item.getItemNoYn())
+						.jejilYn(item.getJejilYn()==null ? "" : item.getJejilYn())
+						.hsCodeYn(item.getHsCodeYn()==null ? "" : item.getHsCodeYn())
+						.totalPriceYn(item.getTotalPriceYn()==null ? "" : item.getTotalPriceYn())
+						.engNmYn(item.getEngNmYn()==null ? "" : item.getEngNmYn())
 
 //						.color(item.getColorCode())
 //						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
@@ -584,6 +586,8 @@ public class InboundServiceImpl implements InboundService {
 								rt.setBackgroundColor(BackgroundColorType.getList().get(i).getShowName());
 							}
 						}
+					}else {
+						rt.setBackgroundColorId(new Long(0));
 					}
 					if(index.size() == 0) {
 //						rt.setMasterCompany("ARPWU B A C ZZZZ EW KALD FLWEF");
@@ -1425,8 +1429,52 @@ public class InboundServiceImpl implements InboundService {
 			
 		 return inboundViewRes;
 	}
-	
-	
+	@Override
+	public InboundViewRes changeInbound2(List<InboundRes> list)  {
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		DecimalFormat decimalFormat3 = new DecimalFormat("#,##0.00");
+		InboundViewRes inboundViewRes= new InboundViewRes();
+		if(list.size() > 0) {
+			Double itemCountSum= (list.get(0).getItemCountSum() == null ? 0d :list.get(0).getItemCountSum());
+			Double boxCountSum=(list.get(0).getBoxCountSum());
+			Double weightSum=(list.get(0).getWeightSum() == null ? 0d : list.get(0).getWeightSum());
+			Double cbmSum = (list.get(0).getCbmSum() == null ? 0d : list.get(0).getCbmSum());
+			Double totalPriceSum = (list.get(0).getTotalPriceSum() == null ? null :list.get(0).getTotalPriceSum()) ;		
+			
+			
+			
+			
+			inboundViewRes.setItemCountSumD(itemCountSum);
+			inboundViewRes.setBoxCountSumD(boxCountSum);
+			inboundViewRes.setCbmSumD(cbmSum);
+			inboundViewRes.setWeightSumD(weightSum);;
+			inboundViewRes.setItemCountSum(getStringResult(itemCountSum));
+			inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
+			inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
+			inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
+			if(totalPriceSum==null) {
+				inboundViewRes.setTotalPriceSum(" ");
+			}else if(totalPriceSum==0) {
+				inboundViewRes.setTotalPriceSum("-");
+			}else {
+				inboundViewRes.setTotalPriceSum(decimalFormat.format(totalPriceSum));
+			}
+			
+			inboundViewRes.setFreight(list.get(0).getFreight());
+			inboundViewRes.setManagerNm(list.get(0).getManagerNm());
+			inboundViewRes.setInboundsForPreview(list);
+			
+		}
+
+		else {
+			
+		}
+
+		
+			
+		 return inboundViewRes;
+	}	
 	public String getStringResult(Double param) {
 		try {
 			boolean finalCheck = false;

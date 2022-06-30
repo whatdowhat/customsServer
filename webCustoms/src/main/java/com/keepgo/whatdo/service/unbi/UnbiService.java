@@ -28,6 +28,8 @@ public interface UnbiService {
 	
 	@Transactional
 	List<UnbiRes> getUnbiByMasterId(UnbiReq unbiReq);
+	@Transactional
+	List<UnbiRes> getUnbiByMasterIdForPreView(InboundReq inboundReq);
 	
 	@Transactional
 	boolean commitUnbiData(UnbiReq unbiReq);

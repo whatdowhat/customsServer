@@ -89,6 +89,11 @@ public class CompanyInfo {
 	@Column(name = "forwarding")
 	private String forwarding;
 	
+	
+	@Builder.Default
+	@Column(name = "corpType")
+	private Integer corpType = 1;
+	
 	@Transient
 	private String managerLevel;
 	@Transient

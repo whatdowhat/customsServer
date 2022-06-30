@@ -49,7 +49,7 @@ public class InboundRes {
 	private String masterExport;
 	private String masterExportAddr;
 	private String cbmStr;
-	
+	private String currencyType;
 	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date workDate;

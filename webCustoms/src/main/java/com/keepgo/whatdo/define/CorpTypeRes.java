@@ -1,9 +1,5 @@
 package com.keepgo.whatdo.define;
 
-import java.util.Date;
-
-import com.keepgo.whatdo.viewEntity.CommonMasterViewResponse;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,15 +15,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BackgroundColorTypeRes {
+public class CorpTypeRes {
 
 	private int id;
-	private String name;
 	private String code;
-	private String showName;
-	private int r;
-	private int g;
-	private int b;
-	private int sortOrder;
+	private String name;
+	private int order;
 	
 }

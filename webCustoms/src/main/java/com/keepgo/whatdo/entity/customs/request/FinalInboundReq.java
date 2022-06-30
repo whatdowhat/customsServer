@@ -47,6 +47,7 @@ public class FinalInboundReq {
 	private String silNo;
 	private String cargoName;
 	private String hangCha;
+	private String memo;
 	
 	private Date incomeDate;
 	private Date departDate;

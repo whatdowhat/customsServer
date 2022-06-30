@@ -37,13 +37,18 @@ import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
+import com.keepgo.whatdo.entity.customs.response.UnbiRes;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 import com.keepgo.whatdo.service.excel.ExcelService;
+import com.keepgo.whatdo.service.finalInbound.FinalInboundService;
 import com.keepgo.whatdo.service.inbound.InboundService;
+import com.keepgo.whatdo.service.unbi.UnbiService;
 import com.keepgo.whatdo.service.util.UtilService;
 
 @RestController
@@ -68,6 +73,10 @@ public class ExcelController {
 
 	@Autowired
 	ResourceLoader resourceLoader;
+	@Autowired
+	UnbiService _unbiservice;
+	@Autowired
+	FinalInboundService _finalInboundService;
 
 	@RequestMapping(value = "/excel/document/ftaData", method = { RequestMethod.POST })
 	public ExcelFTARes ExcelFTARes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
@@ -220,5 +229,37 @@ public class ExcelController {
 
 		return _excelService.cOData(req);
 	}
+	
+	@RequestMapping(value = "/excel/document/previewData", method = { RequestMethod.POST })
+	public InboundViewListRes inboundViewListResInboundViewListRes(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.previewData(req);
+	}
+	
+	@RequestMapping(value = "/excel/document/preview", method = { RequestMethod.POST })
+	public void preview(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		InboundViewListRes s =_excelService.previewData(req);
+		List<UnbiRes> list = _unbiservice.getUnbiByMasterIdForPreView(req);
+
+		_excelService.preview(s, list,response);
+	}
+	
+	@RequestMapping(value = "/excel/document/previewContainer", method = { RequestMethod.POST })
+	public void previewContainer(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		InboundViewListRes s =_excelService.previewData(req);
+		List<UnbiRes> list = _unbiservice.getUnbiByMasterIdForPreView(req);
+		FinalInboundRes container = _finalInboundService.getOne(req.getFinalInboundId());
+
+		_excelService.previewContainer(s, list,container,response);
+	}
+	
 
 }

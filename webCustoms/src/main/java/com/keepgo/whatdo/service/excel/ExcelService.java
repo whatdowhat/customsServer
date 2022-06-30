@@ -21,8 +21,11 @@ import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
+import com.keepgo.whatdo.entity.customs.response.UnbiRes;
 
 @Service
 public interface ExcelService {
@@ -62,6 +65,8 @@ public interface ExcelService {
 	List<InboundRes> inboundData(InboundReq inboundReq) throws Exception;
 	@Transactional
 	boolean inbound(List<InboundRes> list, HttpServletResponse response) throws Exception;
+	@Transactional
+	boolean inbounds(InboundViewListRes listRes, HttpServletResponse response) throws Exception;
 	
 	@Transactional
 	List<ExcelCLPRes> clpData(FinalInboundReq req) throws Exception;
@@ -74,4 +79,12 @@ public interface ExcelService {
 	
 	@Transactional
 	List<ExcelCORes> cOData(FinalInboundInboundMasterReq req) throws Exception;
+	
+	@Transactional
+	InboundViewListRes previewData(InboundReq inboundReq) throws Exception;
+	
+	@Transactional
+	boolean preview(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,HttpServletResponse response) throws Exception;
+	@Transactional
+	boolean previewContainer(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,FinalInboundRes container,HttpServletResponse response) throws Exception;
 }

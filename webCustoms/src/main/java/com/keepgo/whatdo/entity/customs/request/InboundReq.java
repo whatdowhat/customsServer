@@ -155,6 +155,7 @@ public class InboundReq {
 	List<InboundReq> inboundReqData;
 	
 	private Long inboundMasterId;
+	private Long finalInboundId;
 	private List<Long> inboundMasterIds = new ArrayList<>();
 	
 	//담당자

@@ -192,7 +192,109 @@ public class UnbiServiceImpl implements UnbiService {
 		
 		return result;
 	}
-	
+	@Override
+	public List<UnbiRes> getUnbiByMasterIdForPreView(InboundReq inboundReq)  {
+		
+		DecimalFormat decimalFormat = new DecimalFormat("#,###");
+		List<Integer> index = new ArrayList<Integer>();
+		
+		FinalInbound finalInbound = _finalInboundRepository.findById(inboundReq.getFinalInboundId()).get();
+//		List<UnbiRes> _unbiRepository.findByFinalInboundId
+		List<UnbiRes> result = _unbiRepository.findByFinalInboundId(inboundReq.getFinalInboundId()).stream()
+				.sorted(Comparator.comparing(Unbi::getOrderNo))
+				.map(item->{
+					
+					
+					UnbiRes rt = UnbiRes.builder()
+				
+						.id(item.getId())
+ 						.orderNo(item.getOrderNo())
+						.no(0)
+						.noStr(item.getNoStr())
+						.workDateStr(item.getWorkDateStr())
+						.companyNm(item.getCompanyNm())
+						.marking(item.getMarking())
+						.korNm(item.getKorNm())
+						.departPort(item.getDepartPort())
+						.memo1(item.getMemo1() == null ? "" : item.getMemo1())
+						.memo2(item.getMemo2() == null ? "" : item.getMemo2())
+						.type(item.getType())
+						
+						.finalInboundId(item.getFinalInbound().getId())
+						.build();
+//						rt.setOfficeName((item.getOfficeName() == null ? "" : String.valueOf(item.getOfficeName())));
+						rt.setOfficeName((item.getOfficeName() == null ? "" : decimalFormat.format(item.getOfficeName())));
+						rt.setOfficeNameD((item.getOfficeName() == null ? new Double(0) : item.getOfficeName()));
+						rt.setUnbi((item.getUnbi() == null ? "" : decimalFormat.format(item.getUnbi())));
+						rt.setUnbiD((item.getUnbi() == null ? new Double(0) : item.getUnbi()));	
+						rt.setPickupCost((item.getPickupCost() == null ? "" : decimalFormat.format(item.getPickupCost())));
+						rt.setPickupCostD((item.getPickupCost() == null ? new Double(0) : item.getPickupCost()));
+						rt.setSanghachaCost((item.getSanghachaCost() == null ? "" : decimalFormat.format(item.getSanghachaCost())));
+						rt.setSanghachaCostD((item.getSanghachaCost() == null ? new Double(0) : item.getSanghachaCost()));
+						rt.setEtcCost((item.getEtcCost() == null ? "" : decimalFormat.format(item.getEtcCost())));
+						rt.setEtcCostD((item.getEtcCost() == null ? new Double(0) : item.getEtcCost()));
+						rt.setHacksodanCost((item.getHacksodanCost() == null ? "" : decimalFormat.format(item.getHacksodanCost())));
+						rt.setHacksodanCostD((item.getHacksodanCost() == null ? new Double(0) : item.getHacksodanCost()));
+						rt.setCoCost((item.getCoCost() == null ? "" : decimalFormat.format(item.getCoCost())));
+						rt.setCoCostD((item.getCoCost() == null ? new Double(0) : item.getCoCost()));
+						rt.setHwajumiUnbi((item.getHwajumiUnbi() == null ? "" : decimalFormat.format(item.getHwajumiUnbi())));
+						rt.setHwajumiUnbiD((item.getHwajumiUnbi() == null ? new Double(0) : item.getHwajumiUnbi()));
+						rt.setHwajumiPickupCost((item.getHwajumiPickupCost() == null ? "" : decimalFormat.format(item.getHwajumiPickupCost())));
+						rt.setHwajumiPickupCostD((item.getHwajumiPickupCost() == null ? new Double(0) : item.getHwajumiPickupCost()));
+						rt.setContainerWorkCost((item.getContainerWorkCost() == null ? "" : decimalFormat.format(item.getContainerWorkCost())));
+						rt.setContainerWorkCostD((item.getContainerWorkCost() == null ? new Double(0) : item.getContainerWorkCost()));
+						rt.setContainerWorkCost2((item.getContainerWorkCost2() == null ? "" : decimalFormat.format(item.getContainerWorkCost2())));
+						rt.setContainerWorkCost2D((item.getContainerWorkCost2() == null ? new Double(0) : item.getContainerWorkCost2()));
+						rt.setContainerMoveCost((item.getContainerMoveCost() == null ? "" : decimalFormat.format(item.getContainerMoveCost())));
+						rt.setContainerMoveCostD((item.getContainerMoveCost() == null ? new Double(0) : item.getContainerMoveCost()));
+						rt.setTypebTitle((item.getTypebTitle() == null ? "" : item.getTypebTitle()));
+						
+						rt.setUnbiYn((item.getUnbiYn() == null ? "N" : item.getUnbiYn()));
+						rt.setPickupCostYn((item.getPickupCostYn() == null ? "N" : item.getPickupCostYn()));
+						rt.setSanghachaCostYn((item.getSanghachaCostYn() == null ? "N" : item.getSanghachaCostYn()));
+						rt.setOfficeNameYn((item.getOfficeNameYn() == null ? "N" : item.getOfficeNameYn()));
+						rt.setHacksodanCostYn((item.getHacksodanCostYn() == null ? "N" : item.getHacksodanCostYn()));
+						rt.setCoCostYn((item.getCoCostYn() == null ? "N" : item.getCoCostYn()));					
+						if(item.getColor() !=null ) {
+							
+							for(int i=0; i<ColorType.getList().size();i++) {
+								if(ColorType.getList().get(i).getId() ==item.getColor() ) {
+									rt.setColorId(Long.valueOf(item.getColor()));
+									
+									rt.setColorCode(ColorType.getList().get(i).getCode());
+									
+								}
+							}
+//							rt.setCoCode(CoType.getList().stream().filter(t->t.getId() == item.getCoId()).findFirst().get().getName());)
+						}
+					
+						
+						rt.setTotalSum(rt.getOfficeNameD()+rt.getUnbiD()+rt.getPickupCostD()+rt.getSanghachaCostD()+rt.getEtcCostD()+rt.getHacksodanCostD()+rt.getCoCostD()+rt.getHwajumiUnbiD()+rt.getHwajumiPickupCostD()+rt.getContainerMoveCostD()+rt.getContainerWorkCostD()+rt.getContainerWorkCost2D());
+					return rt;
+						
+				})
+		.collect(Collectors.toList());
+			
+			if(result.size()>0) { //운비가 등록된 경우에만 total sum 셋팅.
+				result.get(0).setOfficeNameSum(result.stream().filter(t->t.getOfficeNameD()!= null).mapToDouble(t->t.getOfficeNameD()).sum());
+				result.get(0).setUnbiSum(result.stream().filter(t->t.getUnbiD()!= null).mapToDouble(t->t.getUnbiD()).sum());
+				result.get(0).setPickupCostSum(result.stream().filter(t->t.getPickupCostD()!= null).mapToDouble(t->t.getPickupCostD()).sum());
+				result.get(0).setSanghachaCostSum(result.stream().filter(t->t.getSanghachaCostD()!= null).mapToDouble(t->t.getSanghachaCostD()).sum());
+				result.get(0).setEtcCostSum(result.stream().filter(t->t.getEtcCostD()!= null).mapToDouble(t->t.getEtcCostD()).sum());
+				result.get(0).setHacksodanCostSum(result.stream().filter(t->t.getHacksodanCostD()!= null).mapToDouble(t->t.getHacksodanCostD()).sum());
+				result.get(0).setCoCostSum(result.stream().filter(t->t.getCoCostD()!= null).mapToDouble(t->t.getCoCostD()).sum());
+				result.get(0).setHwajumiUnbiSum(result.stream().filter(t->t.getHwajumiUnbiD()!= null).mapToDouble(t->t.getHwajumiUnbiD()).sum());
+				result.get(0).setHwajumiPickupCostSum(result.stream().filter(t->t.getHwajumiPickupCostD()!= null).mapToDouble(t->t.getHwajumiPickupCostD()).sum());
+				result.get(0).setContainerWorkCostSum(result.stream().filter(t->t.getContainerWorkCostD()!= null).mapToDouble(t->t.getContainerWorkCostD()).sum());
+				result.get(0).setContainerWorkCost2Sum(result.stream().filter(t->t.getContainerWorkCost2D()!= null).mapToDouble(t->t.getContainerWorkCost2D()).sum());
+				result.get(0).setContainerMoveCostSum(result.stream().filter(t->t.getContainerMoveCostD()!= null).mapToDouble(t->t.getContainerMoveCostD()).sum());
+				result.get(0).setTotalSumFinal(result.stream().filter(t->t.getTotalSum()!= null).mapToDouble(t->t.getTotalSum()).sum());	
+			}
+		
+			
+		
+		return result;
+	}
 	@Override
 	public boolean commitUnbiData(UnbiReq unbiReq) {
 		

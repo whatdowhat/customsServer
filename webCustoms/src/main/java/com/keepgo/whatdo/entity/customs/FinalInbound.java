@@ -167,5 +167,6 @@ public class FinalInbound {
 	@Column(name = "chulhangPort")
 	private String chulhangPort;
 	
-	
+	@Column(name = "memo")
+	private String memo;
 }

@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -47,7 +48,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -60,6 +60,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+import com.keepgo.whatdo.define.BackgroundColorType;
 import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.FinalInbound;
@@ -83,8 +85,11 @@ import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAISubRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
+import com.keepgo.whatdo.entity.customs.response.UnbiRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
@@ -3131,8 +3136,8 @@ public class ExcelServiceImpl implements ExcelService {
 			response.setHeader("custom-header", fileName);
 			workbook.removeSheetAt(1);
 			//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
-			sheet.addMergedRegion(new CellRangeAddress(list.size()+1,list.size()+1,0,4));
-			sheet.addMergedRegion(new CellRangeAddress(list.size()+1,list.size()+1,18,19));
+//			sheet.addMergedRegion(new CellRangeAddress(list.size()+1,list.size()+1,0,4));
+//			sheet.addMergedRegion(new CellRangeAddress(list.size()+1,list.size()+1,18,19));
 			workbook.write(response.getOutputStream());
 			workbook.close();
 
@@ -3169,9 +3174,22 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFRow row = sheet.getRow(i + 1);
 			XSSFCellStyle orderNoFont  = workbook.createCellStyle();
 			XSSFCellStyle allCellStyle = workbook.createCellStyle();
+			XSSFCellStyle workDateStrCellStyle = workbook.createCellStyle();
+			XSSFCellStyle companyNmCellStyle = workbook.createCellStyle();
+			XSSFCellStyle markingCellStyle = workbook.createCellStyle();
+			XSSFCellStyle korNmCellStyle = workbook.createCellStyle();
+			XSSFCellStyle itemCountCellStyle = workbook.createCellStyle();
+			XSSFCellStyle boxCountCellStyle = workbook.createCellStyle();
+			XSSFCellStyle weightCellStyle = workbook.createCellStyle();
 			XSSFCellStyle cbmCellStyle = workbook.createCellStyle();
-			XSSFDataFormat format = workbook.createDataFormat();
-			cbmCellStyle.setDataFormat(format.getFormat("0.000_"));
+			XSSFCellStyle reportPriceCellStyle = workbook.createCellStyle();
+			XSSFCellStyle memo1CellStyle = workbook.createCellStyle();
+			XSSFCellStyle memo2CellStyle = workbook.createCellStyle();
+			XSSFCellStyle itemNoCellStyle = workbook.createCellStyle();
+			XSSFCellStyle jejilCellStyle = workbook.createCellStyle();
+			XSSFCellStyle hsCodeCellStyle = workbook.createCellStyle();
+			XSSFCellStyle totalPriceCellStyle = workbook.createCellStyle();
+			XSSFCellStyle engNmCellStyle = workbook.createCellStyle();
 			Font allFont = workbook.createFont();
 			
 //			orderNoFont.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
@@ -3181,9 +3199,6 @@ public class ExcelServiceImpl implements ExcelService {
 			orderNoFont.setVerticalAlignment(VerticalAlignment.CENTER);
 			orderNoFont.setBorderBottom(BorderStyle.DOTTED);
 			orderNoFont.setFont(allFont);
-			
-			
-			
 			
 			if(resource.get(i).getColorId()==0) {
 				allFont.setColor(IndexedColors.BLACK.getIndex());
@@ -3203,64 +3218,488 @@ public class ExcelServiceImpl implements ExcelService {
 			allCellStyle.setAlignment(HorizontalAlignment.CENTER);
 			allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			allCellStyle.setBorderBottom(BorderStyle.NONE);
+		
 			allCellStyle.setFont(allFont);
-			row.getCell(0).setCellValue(resource.get(i).getOrderNo());
+			if(resource.get(i).getWorkDateStrYn().equals("Y")){
+				workDateStrCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				workDateStrCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				workDateStrCellStyle.setBorderBottom(BorderStyle.NONE);
+				workDateStrCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				workDateStrCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				workDateStrCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getWorkDateStrYn()==null||resource.get(i).getWorkDateStrYn().equals("")){
+				workDateStrCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				workDateStrCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				workDateStrCellStyle.setBorderBottom(BorderStyle.NONE);
+				workDateStrCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				workDateStrCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				workDateStrCellStyle.setFont(allFont);
+			}
+			
+			if(resource.get(i).getCompanyNmYn().equals("Y")){
+				companyNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				companyNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				companyNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				companyNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				companyNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				companyNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getCompanyNmYn()==null||resource.get(i).getCompanyNmYn().equals("")){
+				companyNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				companyNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				companyNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				companyNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				companyNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				companyNmCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getMarkingYn().equals("Y")){
+				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				markingCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				markingCellStyle.setBorderBottom(BorderStyle.NONE);
+				markingCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				markingCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				markingCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getMarkingYn()==null||resource.get(i).getMarkingYn().equals("")){
+				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				markingCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				markingCellStyle.setBorderBottom(BorderStyle.NONE);
+				markingCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				markingCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				markingCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getKorNmYn().equals("Y")){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getKorNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getKorNmYn()==null||resource.get(i).getKorNmYn().equals("")){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getItemCountYn().equals("Y")){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getItemCountYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getItemCountYn()==null||resource.get(i).getItemCountYn().equals("")){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getBoxCountYn().equals("Y")){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBoxCountYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBoxCountYn()==null||resource.get(i).getBoxCountYn().equals("")){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getWeightYn().equals("Y")){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getWeightYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getWeightYn()==null||resource.get(i).getWeightYn().equals("")){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getCbmYn().equals("Y")){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getCbmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getCbmYn()==null||resource.get(i).getCbmYn().equals("")){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getReportPriceYn().equals("Y")){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getReportPriceYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getReportPriceYn()==null||resource.get(i).getReportPriceYn().equals("")){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getMemo1Yn().equals("Y")){
+				memo1CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo1CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo1CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo1CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				memo1CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo1CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo1CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo1CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getMemo2Yn().equals("Y")){
+				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo2CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo2CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo2CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo2CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo2CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo2CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getItemNoYn().equals("Y")){
+				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemNoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemNoCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemNoCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemNoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemNoCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemNoCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getJejilYn().equals("Y")){
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getJejilYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getHsCodeYn().equals("Y")){
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getHsCodeYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getTotalPriceYn().equals("Y")){
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getTotalPriceYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getEngNmYn().equals("Y")){
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getEngNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			row.getCell(0).setCellValue(resource.get(i).getOrderNoStr());
 			row.getCell(0).setCellStyle(orderNoFont);
 			row.getCell(1).setCellValue(resource.get(i).getWorkDateStr());
-			row.getCell(1).setCellStyle(allCellStyle);
+			row.getCell(1).setCellStyle(workDateStrCellStyle);
 			row.getCell(2).setCellValue(resource.get(i).getCompanyNm());
-			row.getCell(2).setCellStyle(allCellStyle);
+			row.getCell(2).setCellStyle(companyNmCellStyle);
 			row.getCell(3).setCellValue(resource.get(i).getMarking());
-			row.getCell(3).setCellStyle(allCellStyle);
+			row.getCell(3).setCellStyle(markingCellStyle);
 			row.getCell(4).setCellValue(resource.get(i).getKorNm());
-			row.getCell(4).setCellStyle(allCellStyle);
-			row.getCell(5).setCellValue(resource.get(i).getItemCount());
-			row.getCell(5).setCellStyle(allCellStyle);
+			row.getCell(4).setCellStyle(korNmCellStyle);
+			if(resource.get(i).getAmountType().equals("PCS")) {
+				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount()));
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+			}else {
+				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount())+" "+resource.get(i).getAmountType());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+			}
+			
+			
+			
+			
 			if (resource.get(i).getBoxCount() == null) {
-//    			row.getCell(6).setCellValue("");
-				row.getCell(6).setCellStyle(allCellStyle);
+				row.getCell(6).setCellStyle(boxCountCellStyle);
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			} else {
 				row.getCell(6).setCellValue(resource.get(i).getBoxCount());
-				row.getCell(6).setCellStyle(allCellStyle);
+				row.getCell(6).setCellStyle(boxCountCellStyle);
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			}
 
-			row.getCell(7).setCellValue(resource.get(i).getWeight());
-			row.getCell(7).setCellStyle(allCellStyle);
-			row.getCell(8).setCellValue(resource.get(i).getCbm());
-			row.getCell(8).setCellStyle(allCellStyle);
+			row.getCell(7).setCellValue(resource.get(i).getWeight() == null ? 0 :resource.get(i).getWeight());
+			row.getCell(7).setCellStyle(weightCellStyle);
+			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			row.getCell(8).setCellValue(resource.get(i).getCbm() == null ? 0 :resource.get(i).getCbm());
+			row.getCell(8).setCellStyle(cbmCellStyle);
 			row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("0.000_ "));
+			
+						
+			
 			if (resource.get(i).getReportPrice() == null) {
-//    			row.getCell(9).setCellValue("");
 			} else {
-				row.getCell(9).setCellValue(resource.get(i).getReportPrice());
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(9).setCellValue(resource.get(i).getReportPrice());
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+				}else {
+					row.getCell(9).setCellValue(resource.get(i).getReportPrice());
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+					row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
+				
 			}
 			row.getCell(10).setCellValue(resource.get(i).getMemo1());
+			row.getCell(10).setCellStyle(memo1CellStyle);
 			row.getCell(11).setCellValue(resource.get(i).getMemo2());
+			row.getCell(11).setCellStyle(memo2CellStyle);
 			row.getCell(12).setCellValue(resource.get(i).getItemNo());
+			row.getCell(12).setCellStyle(itemNoCellStyle);
 			row.getCell(13).setCellValue(resource.get(i).getJejil());
+			row.getCell(13).setCellStyle(jejilCellStyle);
 			row.getCell(14).setCellValue(resource.get(i).getHsCode());
+			row.getCell(14).setCellStyle(hsCodeCellStyle);
 			row.getCell(15).setCellValue(resource.get(i).getCoCode());
 			row.getCell(15).setCellStyle(cellStyle);
-//    		for(int j=0; j<CoType.getList().size();j++) {
-//				if(CoType.getList().get(j).getId() ==resource.get(i).getCoId() ) {
-//					row.getCell(15).setCellValue(CoType.getList().get(j).getName());							
-//				}
-//			}
 			if (resource.get(i).getTotalPrice() == null) {
 				row.getCell(16).setCellValue("");
+				row.getCell(16).setCellStyle(totalPriceCellStyle);
+				
 			} else {
-				row.getCell(16).setCellValue(resource.get(i).getTotalPrice());
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(16).setCellValue(resource.get(i).getTotalPrice());
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+				}else {
+					row.getCell(16).setCellValue(resource.get(i).getTotalPrice());
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
+				
 			}
 
 			row.getCell(17).setCellValue(resource.get(i).getEngNm());
-//			row.getCell(18).setCellValue(im.getCompanyInfo().getCoNm());
+			row.getCell(17).setCellStyle(engNmCellStyle);
 			row.getCell(18).setCellValue(resource.get(i).getMasterCompany());
-//			row.getCell(19).setCellValue(im.getBlNo());
 			if (resource.get(i).getBlNo() == null || resource.get(i).getBlNo() == "") {
-//				row.getCell(19).setCellValue("");	
 			} else {
 				row.getCell(19).setCellValue(resource.get(i).getBlNo());
-//				row.getCell(19).setCellValue("");	
 			}
 
 		}
@@ -3364,16 +3803,90 @@ public class ExcelServiceImpl implements ExcelService {
 			if (resource.get(0).getTotalPriceSum() == null) {
 				row.getCell(16).setCellValue("");
 			} else {
-				row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+//				row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+				if(resource.get(0).getCurrencyType().equals("$")){
+					row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+				}else {
+					row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
 			}
 
-			
-		
+			row.getCell(17).setCellValue(resource.get(0).getFreight());
+			row.getCell(18).setCellValue("담당자"+" "+":"+" "+resource.get(0).getManagerNm());
 			
 
 //		}
 
 
+	}
+	
+	private void copyRowForInbounds(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum) {
+		// Get the source / new row
+				XSSFRow newRow = worksheet.getRow(destinationRowNum);
+				XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+				// If the row exist in destination, push down all rows by 1 else create a new
+				// row
+				if (newRow != null) {
+					worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+				} else {
+					newRow = worksheet.createRow(destinationRowNum);
+				}
+
+				// Loop through source columns to add to new row
+				for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+					// Grab a copy of the old/new cell
+					XSSFCell oldCell = sourceRow.getCell(i);
+					XSSFCell newCell = newRow.createCell(i);
+
+					// If the old cell is null jump to next cell
+					if (oldCell == null) {
+						newCell = null;
+						continue;
+					}
+
+					// Copy style from old cell and apply to new cell
+					XSSFCellStyle newCellStyle = workbook.createCellStyle();
+					newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+					;
+					newCell.setCellStyle(newCellStyle);
+
+					// If there is a cell comment, copy
+					if (oldCell.getCellComment() != null) {
+						newCell.setCellComment(oldCell.getCellComment());
+					}
+
+					// If there is a cell hyperlink, copy
+					if (oldCell.getHyperlink() != null) {
+						newCell.setHyperlink(oldCell.getHyperlink());
+					}
+
+					// Set the cell data type
+					newCell.setCellType(oldCell.getCellType());
+
+					// Set the cell data value
+					switch (oldCell.getCellType()) {
+					case Cell.CELL_TYPE_BLANK:
+						newCell.setCellValue(oldCell.getStringCellValue());
+						break;
+					case Cell.CELL_TYPE_BOOLEAN:
+						newCell.setCellValue(oldCell.getBooleanCellValue());
+						break;
+					case Cell.CELL_TYPE_ERROR:
+						newCell.setCellErrorValue(oldCell.getErrorCellValue());
+						break;
+					case Cell.CELL_TYPE_FORMULA:
+						newCell.setCellFormula(oldCell.getCellFormula());
+						break;
+					case Cell.CELL_TYPE_NUMERIC:
+						newCell.setCellValue(oldCell.getNumericCellValue());
+						break;
+					case Cell.CELL_TYPE_STRING:
+						newCell.setCellValue(oldCell.getRichStringCellValue());
+						break;
+					}
+				}
 	}
 	private void copyRowForInbound(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum) {
 		// Get the source / new row
@@ -3443,6 +3956,157 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 	}
 	
+	 private void copyRowOtherSheetForInbounds(XSSFWorkbook workbook, XSSFSheet worksheet,int destinationRowNum, XSSFSheet worksheet2,int sourceRowNum) {
+		// Get the source / new row
+			XSSFRow newRow = worksheet.getRow(destinationRowNum);
+			XSSFRow sourceRow = worksheet2.getRow(sourceRowNum);
+
+			if (newRow != null) {
+				worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+			} else {
+				newRow = worksheet.createRow(destinationRowNum);
+			}
+
+			// Loop through source columns to add to new row
+			for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+				// Grab a copy of the old/new cell
+				XSSFCell oldCell = sourceRow.getCell(i);
+				XSSFCell newCell = newRow.createCell(i);
+
+				// If the old cell is null jump to next cell
+				if (oldCell == null) {
+					newCell = null;
+					continue;
+				}
+
+				// Copy style from old cell and apply to new cell
+				XSSFCellStyle newCellStyle = workbook.createCellStyle();
+				newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+				;
+				newCell.setCellStyle(newCellStyle);
+
+				// If there is a cell comment, copy
+				if (oldCell.getCellComment() != null) {
+					newCell.setCellComment(oldCell.getCellComment());
+				}
+
+				// If there is a cell hyperlink, copy
+				if (oldCell.getHyperlink() != null) {
+					newCell.setHyperlink(oldCell.getHyperlink());
+				}
+
+				// Set the cell data type
+				newCell.setCellType(oldCell.getCellType());
+
+				// Set the cell data value
+				switch (oldCell.getCellType()) {
+				case Cell.CELL_TYPE_BLANK:
+					newCell.setCellValue(oldCell.getStringCellValue());
+					break;
+				case Cell.CELL_TYPE_BOOLEAN:
+					newCell.setCellValue(oldCell.getBooleanCellValue());
+					break;
+				case Cell.CELL_TYPE_ERROR:
+					newCell.setCellErrorValue(oldCell.getErrorCellValue());
+					break;
+				case Cell.CELL_TYPE_FORMULA:
+					newCell.setCellFormula(oldCell.getCellFormula());
+					break;
+				case Cell.CELL_TYPE_NUMERIC:
+					newCell.setCellValue(oldCell.getNumericCellValue());
+					break;
+				case Cell.CELL_TYPE_STRING:
+					newCell.setCellValue(oldCell.getRichStringCellValue());
+					break;
+				}
+			}
+			
+			for (int i = 0; i < worksheet2.getMergedRegions().size(); i++) {
+		           CellRangeAddress cellRangeAddress = worksheet2.getMergedRegion(i);
+		               CellRangeAddress newCellRangeAddress = new CellRangeAddress(
+		               		destinationRowNum,destinationRowNum,
+		                       cellRangeAddress.getFirstColumn(),
+		                       cellRangeAddress.getLastColumn());
+		               worksheet.addMergedRegion(newCellRangeAddress);
+		       }
+	}
+	
+	 private void copyRowOtherSheetForInbounds2(XSSFWorkbook workbook, XSSFSheet worksheet,int destinationRowNum, XSSFSheet worksheet2,int sourceRowNum) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum+1);
+		XSSFRow sourceRow = worksheet2.getRow(sourceRowNum);
+		
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+		if (newRow != null) {
+			worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		} else {
+			newRow = worksheet.createRow(destinationRowNum-1);
+		}
+
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				newCell.setCellValue(oldCell.getNumericCellValue());
+				break;
+			case Cell.CELL_TYPE_STRING:
+				newCell.setCellValue(oldCell.getRichStringCellValue());
+				break;
+			}
+		}
+		for (int i = 0; i < worksheet2.getMergedRegions().size(); i++) {
+           CellRangeAddress cellRangeAddress = worksheet2.getMergedRegion(i);
+               CellRangeAddress newCellRangeAddress = new CellRangeAddress(
+               		destinationRowNum,destinationRowNum,
+                       cellRangeAddress.getFirstColumn(),
+                       cellRangeAddress.getLastColumn());
+               worksheet.addMergedRegion(newCellRangeAddress);
+       }
+		
+	}
 	 private void copyRowOtherSheetForInbound(XSSFWorkbook workbook, XSSFSheet worksheet,int destinationRowNum, XSSFSheet worksheet2,int sourceRowNum) {
 		// Get the source / new row
 		XSSFRow newRow = worksheet.getRow(destinationRowNum);
@@ -3509,6 +4173,15 @@ public class ExcelServiceImpl implements ExcelService {
 				break;
 			}
 		}
+		for (int i = 0; i < worksheet2.getMergedRegions().size(); i++) {
+            CellRangeAddress cellRangeAddress = worksheet2.getMergedRegion(i);
+                CellRangeAddress newCellRangeAddress = new CellRangeAddress(
+                		destinationRowNum,destinationRowNum,
+                        cellRangeAddress.getFirstColumn(),
+                        cellRangeAddress.getLastColumn());
+                worksheet.addMergedRegion(newCellRangeAddress);
+        }
+		
 	}
 	
 	
@@ -4103,6 +4776,13 @@ public class ExcelServiceImpl implements ExcelService {
 		
 		return finalResult;		
 	}
+	
+	
+	
+	
+	
+	
+	
 	public String getStringResult(Double param) {
 		
 		try {
@@ -4141,6 +4821,1455 @@ public class ExcelServiceImpl implements ExcelService {
 			return String.valueOf(param);
 		}
 		
+	}
+
+	@Override
+	public InboundViewListRes previewData(InboundReq inboundReq) throws Exception {
+		// TODO Auto-generated method stub
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		Double itemCountSumFinal = new Double(0);
+		Double boxCountSumFinal = new Double(0);
+		Double cbmSumFinal = new Double(0);
+		Double weightSumFinal = new Double(0);
+		
+		
+		InboundViewListRes finalRes = new InboundViewListRes();
+		
+		List<Long> inboundMasterIdList = inboundReq.getInboundMasterIds();
+		List<InboundViewRes> finalList = new ArrayList<>();
+		
+		for(int i=0; i<inboundMasterIdList.size(); i++) {
+			InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterIdList.get(i).longValue()).get();
+			List<InboundRes> list = _InboundService.getInboundByMasterId(inboundMasterIdList.get(i).longValue());
+			//출력모드
+			List<InboundRes> result2 = _utilService.changeExcelFormatNew(list);
+			InboundViewRes result = _InboundService.changeInbound2(result2);
+			itemCountSumFinal=itemCountSumFinal+ (result.getItemCountSumD() == null ? 0d : result.getItemCountSumD());
+			boxCountSumFinal=boxCountSumFinal+ ( result.getBoxCountSumD() == null ? 0d : result.getBoxCountSumD());
+			cbmSumFinal=cbmSumFinal+ (result.getCbmSumD() == null ? 0d : result.getCbmSumD());
+			weightSumFinal=weightSumFinal+ (result.getWeightSumD() == null ? 0d : result.getWeightSumD());
+			result.setCurrencyType(inboundMaster.getCurrencyType());
+			result.setPackingType(inboundMaster.getPackingType());
+			finalList.add(result);
+		}
+		
+		finalRes.setInbounds(finalList);
+		finalRes.setItemCountSumFinal(getStringResult(itemCountSumFinal));
+		finalRes.setBoxCountSumFinal(decimalFormat2.format(boxCountSumFinal));
+		finalRes.setCbmSumFinal(decimalFormat.format(cbmSumFinal));
+		finalRes.setWeightSumFinal(decimalFormat2.format(weightSumFinal));
+		if(inboundMasterIdList.size()==0) {
+			finalRes.setPackingType("CTN");
+		}else {
+			finalRes.setPackingType(finalList.get(0).getPackingType());
+		}
+		return  finalRes;
+	}
+
+	@Override
+	public boolean preview(InboundViewListRes inboundViewListRes, List<UnbiRes> unbiList,HttpServletResponse response) throws Exception {
+		
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 9).findFirst().get().getName();
+
+		
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, "PREVIEW");
+				
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet2 = workbook.getSheetAt(1);
+			XSSFSheet sheet3 = workbook.getSheetAt(2);
+			XSSFSheet sheet4 = workbook.getSheetAt(4);
+			XSSFSheet sheet6 = workbook.getSheetAt(6);
+			XSSFSheet sheet7 = workbook.getSheetAt(7);
+			
+			int startRow = 1;
+			List<InboundViewRes> list2 = inboundViewListRes.getInbounds();
+//			for(int i=0; i<1; i++) {
+			for(int i=0; i<list2.size(); i++) {
+				 List<InboundRes> list = list2.get(i).getInboundsForPreview();
+
+				 
+				 if(i==0 && list2.size()==1) {
+					 
+						step01ForPreview(list, sheet, workbook,startRow);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+1,sheet3, 0);	
+						step03ForPreview(inboundViewListRes, sheet, workbook,list.size()+startRow+1);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+2,sheet7, 0);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+3,sheet7, 1);	
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+4,sheet7, 2);	
+						step04ForPreview(unbiList, sheet, workbook,list.size()+startRow+5);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+5+unbiList.size(),sheet6, 0);	
+						step05ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+2,6,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+2,12,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+2,14,16));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,18,19));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+3,6,10));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,0,0));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,1,1));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,2,2));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,3,3));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,4,4));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,5,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,17,17));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,11,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,12,12));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,13,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,14,14));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,15,15));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,16,16));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
+//						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
+//						shiftRowforPreview(0, sheet, 5);
+						
+						startRow=startRow+list.size();	
+						
+				 }else if(i==list2.size()-1) {
+					 
+						step01ForPreview(list, sheet, workbook,startRow+i);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+1,sheet3, 0);	
+						step03ForPreview(inboundViewListRes, sheet, workbook,list.size()+startRow+i+1);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+2,sheet7, 0);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+3,sheet7, 1);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+4,sheet7, 2);
+						step04ForPreview(unbiList, sheet, workbook,list.size()+startRow+i+5);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+5+unbiList.size(),sheet6, 0);
+						step05ForPreview(unbiList, sheet, workbook,list.size()+startRow+i+5+unbiList.size());
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,6,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,12,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,14,16));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,18,19));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+3,6,10));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,0,0));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,1,1));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,2,2));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,3,3));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,4,4));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,5,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,17,17));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,11,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,12,12));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,13,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,14,14));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,15,15));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,16,16));
+						
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
+						startRow=startRow+list.size();	
+//						shiftRowforPreview(0, sheet, 5);
+						
+				 }else if(i==0) {
+					 
+						step01ForPreview(list, sheet, workbook,startRow);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow);
+						startRow=startRow+list.size();	
+						
+				 }else {
+					 	step01ForPreview(list, sheet, workbook,startRow+i);	
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
+						startRow=startRow+list.size();	
+				 }
+						
+				
+			}
+			
+			String fileName =  "PREVIEW.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.removeSheetAt(1);
+			workbook.removeSheetAt(2);
+//			workbook.removeSheetAt(3);
+			
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+
+		return true;
+	}
+	@Override
+	public boolean previewContainer(InboundViewListRes inboundViewListRes, List<UnbiRes> unbiList,FinalInboundRes container,HttpServletResponse response) throws Exception {
+		
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 9).findFirst().get().getName();
+
+		
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, "CONTAINER");
+				
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet2 = workbook.getSheetAt(1);
+			XSSFSheet sheet3 = workbook.getSheetAt(2);
+			XSSFSheet sheet4 = workbook.getSheetAt(4);
+			XSSFSheet sheet6 = workbook.getSheetAt(6);
+			XSSFSheet sheet7 = workbook.getSheetAt(7);
+			XSSFSheet sheet8 = workbook.getSheetAt(8);
+			int startRow = 1;
+			List<InboundViewRes> list2 = inboundViewListRes.getInbounds();
+//			for(int i=0; i<1; i++) {
+			for(int i=0; i<list2.size(); i++) {
+				 List<InboundRes> list = list2.get(i).getInboundsForPreview();
+
+				 
+				 if(i==0 && list2.size()==1) {
+					 
+						step01ForPreview(list, sheet, workbook,startRow);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+1,sheet3, 0);	
+						step03ForPreview(inboundViewListRes, sheet, workbook,list.size()+startRow+1);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+2,sheet7, 0);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+3,sheet7, 1);	
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+4,sheet7, 2);	
+						step04ForPreview(unbiList, sheet, workbook,list.size()+startRow+5);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+5+unbiList.size(),sheet6, 0);	
+						step05ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+2,6,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+2,12,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+2,14,16));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,18,19));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+3,6,10));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,0,0));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,1,1));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,2,2));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,3,3));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,4,4));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,5,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+2,list.size()+startRow+4,17,17));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,11,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,12,12));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,13,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,14,14));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,15,15));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,16,16));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
+//						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
+						shiftRowforPreview(0, sheet, 5);
+						for(int j=0; j<5;j++) {
+							copyRowOtherSheetForPreview(workbook, sheet, j,sheet8, j);	
+						}
+						step06ForPreview(container, sheet, workbook,1);
+						step07ForPreview(container, sheet, workbook,2);
+						step08ForPreview(container, sheet, workbook,3);
+						
+						startRow=startRow+list.size();	
+						
+				 }else if(i==list2.size()-1) {
+					 
+						step01ForPreview(list, sheet, workbook,startRow+i);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+1,sheet3, 0);	
+						step03ForPreview(inboundViewListRes, sheet, workbook,list.size()+startRow+i+1);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+2,sheet7, 0);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+3,sheet7, 1);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+4,sheet7, 2);
+						step04ForPreview(unbiList, sheet, workbook,list.size()+startRow+i+5);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+5+unbiList.size(),sheet6, 0);
+						step05ForPreview(unbiList, sheet, workbook,list.size()+startRow+i+5+unbiList.size());
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,6,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,12,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,14,16));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,18,19));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+3,6,10));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,0,0));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,1,1));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,2,2));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,3,3));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,4,4));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,5,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,17,17));
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,11,11));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,12,12));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,13,13));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,14,14));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,15,15));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,16,16));
+						
+						
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
+						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
+						startRow=startRow+list.size();	
+						shiftRowforPreview(0, sheet, 5);
+						for(int j=0; j<5;j++) {
+							copyRowOtherSheetForPreview(workbook, sheet, j,sheet8, j);	
+						}
+						step06ForPreview(container, sheet, workbook,1);
+						step07ForPreview(container, sheet, workbook,2);
+						step08ForPreview(container, sheet, workbook,3);
+
+						
+				 }else if(i==0) {
+					 
+						step01ForPreview(list, sheet, workbook,startRow);
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow);
+						startRow=startRow+list.size();	
+						
+				 }else {
+					 	step01ForPreview(list, sheet, workbook,startRow+i);	
+						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
+						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
+						startRow=startRow+list.size();	
+				 }
+						
+				
+			}
+			
+			String fileName =  "CONTAINER.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.removeSheetAt(1);
+			workbook.removeSheetAt(2);
+//			workbook.removeSheetAt(3);
+			
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+
+		return true;
+	}
+	private void step01ForPreview(List<InboundRes> resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+		
+		Font font = workbook.createFont();
+		font.setColor(IndexedColors.RED.getIndex());
+		
+		XSSFCellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFont(font);
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		XSSFSheet sheet3 = workbook.getSheetAt(3);
+		// item 채우기
+		for (int i = 0; i < resource.size(); i++) {
+
+			copyRowOtherSheetForInbounds(workbook, sheet, startRow+i ,sheet3, 0);
+						
+
+			XSSFRow row = sheet.getRow(startRow+i);
+			XSSFCellStyle orderNoFont  = workbook.createCellStyle();
+			XSSFCellStyle allCellStyle = workbook.createCellStyle();
+			
+			XSSFCellStyle workDateStrCellStyle = workbook.createCellStyle();
+			XSSFCellStyle companyNmCellStyle = workbook.createCellStyle();
+			XSSFCellStyle markingCellStyle = workbook.createCellStyle();
+			XSSFCellStyle korNmCellStyle = workbook.createCellStyle();
+			XSSFCellStyle itemCountCellStyle = workbook.createCellStyle();
+			XSSFCellStyle boxCountCellStyle = workbook.createCellStyle();
+			XSSFCellStyle weightCellStyle = workbook.createCellStyle();
+			XSSFCellStyle cbmCellStyle = workbook.createCellStyle();
+			XSSFCellStyle reportPriceCellStyle = workbook.createCellStyle();
+			XSSFCellStyle memo1CellStyle = workbook.createCellStyle();
+			XSSFCellStyle memo2CellStyle = workbook.createCellStyle();
+			XSSFCellStyle itemNoCellStyle = workbook.createCellStyle();
+			XSSFCellStyle jejilCellStyle = workbook.createCellStyle();
+			XSSFCellStyle hsCodeCellStyle = workbook.createCellStyle();
+			XSSFCellStyle totalPriceCellStyle = workbook.createCellStyle();
+			XSSFCellStyle engNmCellStyle = workbook.createCellStyle();
+			
+			Font allFont = workbook.createFont();
+			
+//			orderNoFont.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
+			orderNoFont.setFillForegroundColor(new XSSFColor(new java.awt.Color(255, 255, 204)));
+			orderNoFont.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			orderNoFont.setAlignment(HorizontalAlignment.CENTER);
+			orderNoFont.setVerticalAlignment(VerticalAlignment.CENTER);
+			orderNoFont.setBorderBottom(BorderStyle.DOTTED);
+			orderNoFont.setFont(allFont);
+			
+			if(resource.get(i).getColorId()==0) {
+				allFont.setColor(IndexedColors.BLACK.getIndex());
+			}else if(resource.get(i).getColorId()==1){
+				allFont.setColor(IndexedColors.BLUE.getIndex());
+			}else if(resource.get(i).getColorId()==2){
+				allFont.setColor(IndexedColors.RED.getIndex());
+			}else if(resource.get(i).getColorId()==3){
+				allFont.setColor(IndexedColors.GREEN.getIndex());
+			}else if(resource.get(i).getColorId()==4){
+				allFont.setColor(IndexedColors.PINK.getIndex());
+			}else if(resource.get(i).getColorId()==5){
+				allFont.setColor(IndexedColors.ORANGE.getIndex());
+			}else if(resource.get(i).getColorId()==6){
+				allFont.setColor(IndexedColors.VIOLET.getIndex());
+			}
+			allCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+			allCellStyle.setBorderBottom(BorderStyle.NONE);
+		
+			allCellStyle.setFont(allFont);
+			
+			if(resource.get(i).getWorkDateStrYn().equals("Y")){
+				workDateStrCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				workDateStrCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				workDateStrCellStyle.setBorderBottom(BorderStyle.NONE);
+				workDateStrCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				workDateStrCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				workDateStrCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getWorkDateStrYn()==null||resource.get(i).getWorkDateStrYn().equals("")){
+				workDateStrCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				workDateStrCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				workDateStrCellStyle.setBorderBottom(BorderStyle.NONE);
+				workDateStrCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				workDateStrCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				workDateStrCellStyle.setFont(allFont);
+			}
+			
+			if(resource.get(i).getCompanyNmYn().equals("Y")){
+				companyNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				companyNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				companyNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				companyNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				companyNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				companyNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getCompanyNmYn()==null||resource.get(i).getCompanyNmYn().equals("")){
+				companyNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				companyNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				companyNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				companyNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				companyNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				companyNmCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getMarkingYn().equals("Y")){
+				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				markingCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				markingCellStyle.setBorderBottom(BorderStyle.NONE);
+				markingCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				markingCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				markingCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getMarkingYn()==null||resource.get(i).getMarkingYn().equals("")){
+				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				markingCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				markingCellStyle.setBorderBottom(BorderStyle.NONE);
+				markingCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				markingCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				markingCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getKorNmYn().equals("Y")){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getKorNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getKorNmYn()==null||resource.get(i).getKorNmYn().equals("")){
+				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				korNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				korNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				korNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				korNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				korNmCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getItemCountYn().equals("Y")){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getItemCountYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getItemCountYn()==null||resource.get(i).getItemCountYn().equals("")){
+				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				itemCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				itemCountCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getBoxCountYn().equals("Y")){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBoxCountYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBoxCountYn()==null||resource.get(i).getBoxCountYn().equals("")){
+				boxCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				boxCountCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				boxCountCellStyle.setBorderBottom(BorderStyle.NONE);
+				boxCountCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				boxCountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				boxCountCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getWeightYn().equals("Y")){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getWeightYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getWeightYn()==null||resource.get(i).getWeightYn().equals("")){
+				weightCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				weightCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				weightCellStyle.setBorderBottom(BorderStyle.NONE);
+				weightCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				weightCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				weightCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getCbmYn().equals("Y")){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getCbmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getCbmYn()==null||resource.get(i).getCbmYn().equals("")){
+				cbmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				cbmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				cbmCellStyle.setBorderBottom(BorderStyle.NONE);
+				cbmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				cbmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				cbmCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getReportPriceYn().equals("Y")){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getReportPriceYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+				
+			}else if(resource.get(i).getReportPriceYn()==null||resource.get(i).getReportPriceYn().equals("")){
+				reportPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				reportPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				reportPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				reportPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				reportPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//				reportPriceCellStyle.setFont(allFont);
+			}
+			if(resource.get(i).getMemo1Yn().equals("Y")){
+				memo1CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo1CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo1CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo1CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				memo1CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo1CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo1CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo1CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getMemo2Yn().equals("Y")){
+				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo2CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo2CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo2CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
+				memo2CellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				memo2CellStyle.setBorderBottom(BorderStyle.NONE);
+				memo2CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getItemNoYn().equals("Y")){
+				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemNoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemNoCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemNoCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				itemNoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				itemNoCellStyle.setBorderBottom(BorderStyle.NONE);
+				itemNoCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getJejilYn().equals("Y")){
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getJejilYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				jejilCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				jejilCellStyle.setBorderBottom(BorderStyle.NONE);
+				jejilCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getHsCodeYn().equals("Y")){
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getHsCodeYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				hsCodeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				hsCodeCellStyle.setBorderBottom(BorderStyle.NONE);
+				hsCodeCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				hsCodeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getTotalPriceYn().equals("Y")){
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getTotalPriceYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				totalPriceCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				totalPriceCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				totalPriceCellStyle.setBorderBottom(BorderStyle.NONE);
+				totalPriceCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				totalPriceCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			if(resource.get(i).getEngNmYn().equals("Y")){
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getEngNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.D.r, BackgroundColorType.D.g, BackgroundColorType.D.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else if(resource.get(i).getBackgroundColorId()==1){
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.B.r, BackgroundColorType.B.g, BackgroundColorType.B.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+			}else {
+				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				engNmCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				engNmCellStyle.setBorderBottom(BorderStyle.NONE);
+				engNmCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
+				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			}
+			row.getCell(0).setCellValue(resource.get(i).getOrderNoStr());
+			row.getCell(0).setCellStyle(orderNoFont);
+			row.getCell(1).setCellValue(resource.get(i).getWorkDateStr());
+			row.getCell(1).setCellStyle(workDateStrCellStyle);
+			row.getCell(2).setCellValue(resource.get(i).getCompanyNm());
+			row.getCell(2).setCellStyle(companyNmCellStyle);
+			row.getCell(3).setCellValue(resource.get(i).getMarking());
+			row.getCell(3).setCellStyle(markingCellStyle);
+			row.getCell(4).setCellValue(resource.get(i).getKorNm());
+			row.getCell(4).setCellStyle(korNmCellStyle);
+			if(resource.get(i).getAmountType().equals("PCS")) {
+				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount()));
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+			}else {
+				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount())+" "+resource.get(i).getAmountType());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+			}
+			
+			
+			
+			
+			if (resource.get(i).getBoxCount() == null) {
+				row.getCell(6).setCellStyle(boxCountCellStyle);
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			} else {
+				row.getCell(6).setCellValue(resource.get(i).getBoxCount());
+				row.getCell(6).setCellStyle(boxCountCellStyle);
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			}
+
+			row.getCell(7).setCellValue(resource.get(i).getWeight() == null ? 0 :resource.get(i).getWeight());
+			row.getCell(7).setCellStyle(weightCellStyle);
+			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			row.getCell(8).setCellValue(resource.get(i).getCbm() == null ? 0 :resource.get(i).getCbm());
+			row.getCell(8).setCellStyle(cbmCellStyle);
+			row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("0.000_ "));
+			
+						
+			
+			if (resource.get(i).getReportPrice() == null) {
+			} else {
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(9).setCellValue(resource.get(i).getReportPrice());
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+				}else {
+					row.getCell(9).setCellValue(resource.get(i).getReportPrice());
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+					row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
+				
+			}
+			row.getCell(10).setCellValue(resource.get(i).getMemo1());
+			row.getCell(10).setCellStyle(memo1CellStyle);
+			row.getCell(11).setCellValue(resource.get(i).getMemo2());
+			row.getCell(11).setCellStyle(memo2CellStyle);
+			row.getCell(12).setCellValue(resource.get(i).getItemNo());
+			row.getCell(12).setCellStyle(itemNoCellStyle);
+			row.getCell(13).setCellValue(resource.get(i).getJejil());
+			row.getCell(13).setCellStyle(jejilCellStyle);
+			row.getCell(14).setCellValue(resource.get(i).getHsCode());
+			row.getCell(14).setCellStyle(hsCodeCellStyle);
+			row.getCell(15).setCellValue(resource.get(i).getCoCode());
+			row.getCell(15).setCellStyle(cellStyle);
+			if (resource.get(i).getTotalPrice() == null) {
+				row.getCell(16).setCellValue("");
+				row.getCell(16).setCellStyle(totalPriceCellStyle);
+				
+			} else {
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(16).setCellValue(resource.get(i).getTotalPrice());
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+				}else {
+					row.getCell(16).setCellValue(resource.get(i).getTotalPrice());
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
+				
+			}
+
+			row.getCell(17).setCellValue(resource.get(i).getEngNm());
+			row.getCell(17).setCellStyle(engNmCellStyle);
+			row.getCell(18).setCellValue(resource.get(i).getMasterCompany());
+			if (resource.get(i).getBlNo() == null || resource.get(i).getBlNo() == "") {
+			} else {
+				row.getCell(19).setCellValue(resource.get(i).getBlNo());
+			}
+
+		}
+		// merge 규칙
+		for (int i = 0; i < resource.size(); i++) {
+
+			XSSFRow row = sheet.getRow(startRow+i);
+			if (resource.get(i).getOrderNoStrSpan() > 1) {
+//				sheet.addMergedRegion(new CellRangeAddress(1, 4, 0, 1)); // 열시작, 열종료, 행시작, 행종료 (자바배열과 같이 0부터 시작)
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getOrderNoStrSpan()-1), 0, 0));
+			}
+			if (resource.get(i).getWorkDateStrSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getWorkDateStrSpan()-1), 1, 1));
+			}
+			if (resource.get(i).getCompanyNmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getCompanyNmSpan()-1), 2, 2));
+			}
+			if (resource.get(i).getMarkingSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getMarkingSpan()-1), 3, 3));
+			}
+			if (resource.get(i).getKorNmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getKorNmSpan()-1), 4, 4));
+			}
+			if (resource.get(i).getItemCountSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getItemCountSpan()-1), 5, 5));
+			}
+			if (resource.get(i).getBoxCountSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getBoxCountSpan()-1), 6, 6));
+			}
+			if (resource.get(i).getWeightSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getWeightSpan()-1), 7, 7));
+			}
+			if (resource.get(i).getCbmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getCbmSpan()-1), 8, 8));
+			}
+			if (resource.get(i).getReportPriceSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getReportPriceSpan()-1), 9, 9));
+			}
+			if (resource.get(i).getMemo1Span() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getMemo1Span()-1), 10, 10));
+			}
+			if (resource.get(i).getMemo2Span() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getMemo2Span()-1), 11, 11));
+			}
+			if (resource.get(i).getItemNoSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getItemNoSpan()-1), 12, 12));
+			}
+			if (resource.get(i).getJejilSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getJejilSpan()-1), 13, 13));
+			}
+			if (resource.get(i).getHsCodeSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getHsCodeSpan()-1), 14, 14));
+			}
+			if (resource.get(i).getCoIdSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getCoIdSpan()-1), 15, 15));
+			}
+			if (resource.get(i).getTotalPriceSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getTotalPriceSpan()-1), 16, 16));
+			}
+			if (resource.get(i).getEngNmSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getEngNmSpan()-1), 17, 17));
+			}
+			if (resource.get(i).getMasterCompanySpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getMasterCompanySpan()-1), 18, 18));
+			}
+			if (resource.get(i).getBlNoSpan() > 1) {
+				sheet.addMergedRegion(new CellRangeAddress((startRow+i), (startRow+i + resource.get(i).getBlNoSpan()-1), 19, 19));
+			}
+		}
+	}
+	
+
+
+	private void step02ForPreview(List<InboundRes> resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+		// item 채우기
+//		for (int i = 0; i < resource.size(); i++) {
+
+//			if ((i + 1) == resource.size()) {
+//
+//			} else {
+//				
+//				copyRowForInbound(workbook, sheet, i + 1, i + 2);
+//			}
+
+
+//			XSSFRow row = sheet.getRow(resource.size() + 1);
+			XSSFRow row = sheet.getRow(startRow);
+			
+			row.getCell(5).setCellValue(resource.get(0).getItemCountSum());
+			if (resource.get(0).getBoxCountSum() == null) {
+			} else {
+				row.getCell(6).setCellValue(resource.get(0).getBoxCountSum());
+			}
+
+			row.getCell(7).setCellValue(resource.get(0).getWeightSum());
+			row.getCell(8).setCellValue(resource.get(0).getCbmSum());
+			
+
+			if (resource.get(0).getTotalPriceSum() == null) {
+				row.getCell(16).setCellValue("");
+			} else {
+//				row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+				if(resource.get(0).getCurrencyType().equals("$")){
+					row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+				}else {
+					row.getCell(16).setCellValue(resource.get(0).getTotalPriceSum());
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.000_ ;_ [$¥-ii-CN]* -#,##0.000_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
+			}
+
+			row.getCell(17).setCellValue(resource.get(0).getFreight());
+			row.getCell(18).setCellValue("담당자"+" "+":"+" "+resource.get(0).getManagerNm());
+			
+
+//		}
+
+
+	}
+	private void step03ForPreview(InboundViewListRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+		// item 채우기
+//		for (int i = 0; i < resource.size(); i++) {
+
+//			if ((i + 1) == resource.size()) {
+//
+//			} else {
+//				
+//				copyRowForInbound(workbook, sheet, i + 1, i + 2);
+//			}
+
+
+//			XSSFRow row = sheet.getRow(resource.size() + 1);
+			XSSFRow row = sheet.getRow(startRow);
+			
+			row.getCell(5).setCellValue(resource.getItemCountSumFinal());
+			if (resource.getBoxCountSumFinal() == null) {
+			} else {
+				row.getCell(6).setCellValue(resource.getBoxCountSumFinal()+" "+resource.getPackingType());
+			}
+
+			row.getCell(7).setCellValue(resource.getWeightSumFinal()+" "+"KG");
+			row.getCell(8).setCellValue(resource.getCbmSumFinal()+" "+"CBM");
+			
+
+	}
+	private void step05ForPreview(List<UnbiRes> resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+			XSSFRow row = sheet.getRow(startRow);
+			
+			row.getCell(6).setCellValue(resource.get(0).getUnbiSum());
+			row.getCell(7).setCellValue(resource.get(0).getPickupCostSum());
+			row.getCell(8).setCellValue(resource.get(0).getSanghachaCostSum());
+			row.getCell(9).setCellValue(resource.get(0).getOfficeNameSum());
+			row.getCell(10).setCellValue(resource.get(0).getHacksodanCostSum());
+			row.getCell(11).setCellValue(resource.get(0).getCoCostSum());
+			row.getCell(12).setCellValue(resource.get(0).getHwajumiUnbiSum());
+			row.getCell(13).setCellValue(resource.get(0).getHwajumiPickupCostSum());
+			row.getCell(14).setCellValue(resource.get(0).getContainerWorkCostSum());
+			row.getCell(15).setCellValue(resource.get(0).getContainerWorkCost2Sum());
+			row.getCell(16).setCellValue(resource.get(0).getContainerMoveCostSum());
+			row.getCell(17).setCellValue(resource.get(0).getTotalSumFinal());
+
+
+	}
+	private void step06ForPreview(FinalInboundRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+		XSSFRow row = sheet.getRow(startRow);
+		
+		row.getCell(3).setCellValue(resource.getForViewWorkDepartDt());
+		row.getCell(9).setCellValue(resource.getFinalMasterBl());
+		row.getCell(14).setCellValue(resource.getContainerNo());
+		row.getCell(17).setCellValue(resource.getContainerSizeStr());
+
+}
+	private void step07ForPreview(FinalInboundRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+		XSSFRow row = sheet.getRow(startRow);
+		
+		row.getCell(3).setCellValue(resource.getDeliveryNm());
+		row.getCell(9).setCellValue(resource.getHangName());
+		row.getCell(14).setCellValue(resource.getSilNo());
+		row.getCell(17).setCellValue(resource.getContainerCost());
+
+}
+	private void step08ForPreview(FinalInboundRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+
+		XSSFRow row = sheet.getRow(startRow);
+		
+		row.getCell(3).setCellValue(resource.getChulhangPort());
+		row.getCell(9).setCellValue(resource.getHangCha());
+		row.getCell(14).setCellValue(resource.getCargoName());
+		row.getCell(17).setCellValue(resource.getWeatherCondition());
+
+}
+	
+	 private void copyRowOtherSheetForPreview(XSSFWorkbook workbook, XSSFSheet worksheet,int destinationRowNum, XSSFSheet worksheet2,int sourceRowNum) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet2.getRow(sourceRowNum);
+
+		// If the row exist in destination, push down all rows by 1 else create a new
+		// row
+		if (newRow != null) {
+			worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		} else {
+			newRow = worksheet.createRow(destinationRowNum);
+		}
+
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			;
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				newCell.setCellValue(oldCell.getNumericCellValue());
+				break;
+			case Cell.CELL_TYPE_STRING:
+				newCell.setCellValue(oldCell.getRichStringCellValue());
+				break;
+			}
+		}
+		for (int i = 0; i < worksheet2.getMergedRegions().size(); i++) {
+			CellRangeAddress cellRangeAddress = worksheet2.getMergedRegion(i);
+			 if(sourceRowNum == cellRangeAddress.getFirstRow()) {
+			
+                CellRangeAddress newCellRangeAddress = new CellRangeAddress(
+                		destinationRowNum,destinationRowNum,
+                        cellRangeAddress.getFirstColumn(),
+                        cellRangeAddress.getLastColumn());
+                worksheet.addMergedRegion(newCellRangeAddress);
+			 }
+        }
+		
+	}
+	
+	 private void step04ForPreview(List<UnbiRes> resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
+
+			
+			Font font = workbook.createFont();
+			font.setColor(IndexedColors.RED.getIndex());
+			
+			XSSFCellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setFont(font);
+			cellStyle.setAlignment(HorizontalAlignment.CENTER);
+			cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+			XSSFSheet sheet4 = workbook.getSheetAt(4);
+//			copyRowOtherSheetForInbounds(workbook, sheet, startRow ,sheet4, 0);
+//			copyRowOtherSheetForInbounds(workbook, sheet, startRow ,sheet4, 1);
+//			copyRowOtherSheetForInbounds(workbook, sheet, startRow ,sheet4, 2);
+			XSSFSheet sheet5 = workbook.getSheetAt(5);
+			// item 채우기
+			for (int i = 0; i < resource.size(); i++) {
+
+				copyRowOtherSheetForInbounds(workbook, sheet, startRow+i ,sheet5, 0);
+							
+
+				XSSFRow row = sheet.getRow(startRow+i);
+				XSSFCellStyle orderNoFont  = workbook.createCellStyle();
+				XSSFCellStyle allCellStyle = workbook.createCellStyle();
+				
+				XSSFCellStyle unbiCellStyle = workbook.createCellStyle();
+				XSSFCellStyle pickupCostCellStyle = workbook.createCellStyle();
+				XSSFCellStyle sanghachaCostCellStyle = workbook.createCellStyle();
+				XSSFCellStyle officeNameCellStyle = workbook.createCellStyle();
+				XSSFCellStyle hacksodanCostCellStyle = workbook.createCellStyle();
+				XSSFCellStyle coCostCellStyle = workbook.createCellStyle();
+				
+				if(resource.get(i).getUnbiYn().equals("Y")){
+					unbiCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					unbiCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					unbiCellStyle.setBorderBottom(BorderStyle.NONE);
+					unbiCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
+					unbiCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					
+				}else {
+					unbiCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					unbiCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					unbiCellStyle.setBorderBottom(BorderStyle.NONE);
+					unbiCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					unbiCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				}
+				if(resource.get(i).getPickupCostYn().equals("Y")){
+					pickupCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					pickupCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					pickupCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					pickupCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
+					pickupCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					
+				}else {
+					pickupCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					pickupCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					pickupCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					pickupCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					pickupCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				}
+				if(resource.get(i).getSanghachaCostYn().equals("Y")){
+					sanghachaCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					sanghachaCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					sanghachaCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					sanghachaCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
+					sanghachaCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					
+				}else {
+					sanghachaCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					sanghachaCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					sanghachaCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					sanghachaCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					sanghachaCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				}
+				if(resource.get(i).getOfficeNameYn().equals("Y")){
+					officeNameCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					officeNameCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					officeNameCellStyle.setBorderBottom(BorderStyle.NONE);
+					officeNameCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
+					officeNameCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					
+				}else {
+					officeNameCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					officeNameCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					officeNameCellStyle.setBorderBottom(BorderStyle.NONE);
+					officeNameCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					officeNameCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				}
+				if(resource.get(i).getHacksodanCostYn().equals("Y")){
+					hacksodanCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					hacksodanCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					hacksodanCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					hacksodanCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
+					hacksodanCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					
+				}else {
+					hacksodanCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					hacksodanCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					hacksodanCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					hacksodanCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					hacksodanCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				}
+				if(resource.get(i).getCoCostYn().equals("Y")){
+					coCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					coCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					coCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					coCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
+					coCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					
+				}else {
+					coCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					coCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					coCostCellStyle.setBorderBottom(BorderStyle.NONE);
+					coCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					coCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				}
+				
+				
+				
+				
+				Font allFont = workbook.createFont();
+				
+				orderNoFont.setFillForegroundColor(new XSSFColor(new java.awt.Color(255, 255, 204)));
+				orderNoFont.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				orderNoFont.setAlignment(HorizontalAlignment.CENTER);
+				orderNoFont.setVerticalAlignment(VerticalAlignment.CENTER);
+				orderNoFont.setBorderBottom(BorderStyle.DOTTED);
+				orderNoFont.setFont(allFont);
+				
+				if(resource.get(i).getType().equals("A")) {
+					if(resource.get(i).getColorId()==0) {
+						allFont.setColor(IndexedColors.BLACK.getIndex());
+					}else if(resource.get(i).getColorId()==1){
+						allFont.setColor(IndexedColors.BLUE.getIndex());
+					}else if(resource.get(i).getColorId()==2){
+						allFont.setColor(IndexedColors.RED.getIndex());
+					}else if(resource.get(i).getColorId()==3){
+						allFont.setColor(IndexedColors.GREEN.getIndex());
+					}else if(resource.get(i).getColorId()==4){
+						allFont.setColor(IndexedColors.PINK.getIndex());
+					}else if(resource.get(i).getColorId()==5){
+						allFont.setColor(IndexedColors.ORANGE.getIndex());
+					}else if(resource.get(i).getColorId()==6){
+						allFont.setColor(IndexedColors.VIOLET.getIndex());
+					}
+					allCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					allCellStyle.setBorderBottom(BorderStyle.NONE);
+				
+					allCellStyle.setFont(allFont);
+					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":resource.get(i).getNoStr()));
+					row.getCell(0).setCellStyle(orderNoFont);
+					row.getCell(1).setCellValue((resource.get(i).getWorkDateStr()==null?"":resource.get(i).getWorkDateStr()));
+					row.getCell(1).setCellStyle(allCellStyle);
+					row.getCell(2).setCellValue(resource.get(i).getCompanyNm());
+					row.getCell(2).setCellStyle(allCellStyle);
+					row.getCell(3).setCellValue(resource.get(i).getMarking());
+					row.getCell(3).setCellStyle(allCellStyle);
+					row.getCell(4).setCellValue(resource.get(i).getKorNm());
+					row.getCell(4).setCellStyle(allCellStyle);
+					row.getCell(5).setCellValue(resource.get(i).getDepartPort());
+					row.getCell(5).setCellStyle(allCellStyle);
+					
+					row.getCell(6).setCellValue(resource.get(i).getUnbi());
+					row.getCell(6).setCellStyle(unbiCellStyle);
+					row.getCell(7).setCellValue(resource.get(i).getPickupCost());
+					row.getCell(7).setCellStyle(pickupCostCellStyle);
+					row.getCell(8).setCellValue(resource.get(i).getSanghachaCost());
+					row.getCell(8).setCellStyle(sanghachaCostCellStyle);
+					row.getCell(9).setCellValue(resource.get(i).getOfficeName());
+					row.getCell(9).setCellStyle(officeNameCellStyle);
+					row.getCell(10).setCellValue(resource.get(i).getHacksodanCost());
+					row.getCell(10).setCellStyle(hacksodanCostCellStyle);
+					row.getCell(11).setCellValue(resource.get(i).getCoCost());
+					row.getCell(11).setCellStyle(coCostCellStyle);
+					
+					row.getCell(12).setCellValue(resource.get(i).getHwajumiUnbi());
+					row.getCell(13).setCellValue(resource.get(i).getHwajumiPickupCost());
+					row.getCell(14).setCellValue(resource.get(i).getContainerWorkCost());
+					row.getCell(15).setCellValue(resource.get(i).getContainerWorkCost2());
+					row.getCell(16).setCellValue(resource.get(i).getContainerMoveCost());
+					row.getCell(17).setCellValue(resource.get(i).getTotalSum());
+					row.getCell(18).setCellValue(resource.get(i).getMemo1());
+					row.getCell(19).setCellValue(resource.get(i).getMemo2());
+				}else {
+					if(resource.get(i).getColorId()==0) {
+						allFont.setColor(IndexedColors.BLACK.getIndex());
+					}else if(resource.get(i).getColorId()==1){
+						allFont.setColor(IndexedColors.BLUE.getIndex());
+					}else if(resource.get(i).getColorId()==2){
+						allFont.setColor(IndexedColors.RED.getIndex());
+					}else if(resource.get(i).getColorId()==3){
+						allFont.setColor(IndexedColors.GREEN.getIndex());
+					}else if(resource.get(i).getColorId()==4){
+						allFont.setColor(IndexedColors.PINK.getIndex());
+					}else if(resource.get(i).getColorId()==5){
+						allFont.setColor(IndexedColors.ORANGE.getIndex());
+					}else if(resource.get(i).getColorId()==6){
+						allFont.setColor(IndexedColors.VIOLET.getIndex());
+					}
+					allCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+					allCellStyle.setBorderBottom(BorderStyle.NONE);
+				
+					allCellStyle.setFont(allFont);
+					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":resource.get(i).getNoStr()));
+					row.getCell(0).setCellStyle(orderNoFont);
+					row.getCell(1).setCellValue((resource.get(i).getWorkDateStr()==null?"":resource.get(i).getWorkDateStr()));
+					row.getCell(1).setCellStyle(allCellStyle);
+					row.getCell(2).setCellValue(resource.get(i).getTypebTitle());
+					row.getCell(2).setCellStyle(allCellStyle);
+					row.getCell(3).setCellValue("");
+					row.getCell(4).setCellValue("");
+					row.getCell(5).setCellValue("");
+					row.getCell(6).setCellValue(resource.get(i).getUnbi());
+					row.getCell(6).setCellStyle(unbiCellStyle);
+					row.getCell(7).setCellValue(resource.get(i).getPickupCost());
+					row.getCell(7).setCellStyle(pickupCostCellStyle);
+					row.getCell(8).setCellValue(resource.get(i).getSanghachaCost());
+					row.getCell(8).setCellStyle(sanghachaCostCellStyle);
+					row.getCell(9).setCellValue(resource.get(i).getOfficeName());
+					row.getCell(9).setCellStyle(officeNameCellStyle);
+					row.getCell(10).setCellValue(resource.get(i).getHacksodanCost());
+					row.getCell(10).setCellStyle(hacksodanCostCellStyle);
+					row.getCell(11).setCellValue(resource.get(i).getCoCost());
+					row.getCell(11).setCellStyle(coCostCellStyle);
+					row.getCell(12).setCellValue(resource.get(i).getHwajumiUnbi());
+					row.getCell(13).setCellValue(resource.get(i).getHwajumiPickupCost());
+					row.getCell(14).setCellValue(resource.get(i).getContainerWorkCost());
+					row.getCell(15).setCellValue(resource.get(i).getContainerWorkCost2());
+					row.getCell(16).setCellValue(resource.get(i).getContainerMoveCost());
+					row.getCell(17).setCellValue(resource.get(i).getTotalSum());
+					row.getCell(18).setCellValue(resource.get(i).getMemo1());
+					row.getCell(19).setCellValue(resource.get(i).getMemo2());
+				}
+				
+				
+
+
+			}
+
+		}
+	 private void shiftRowforPreview(int destinationRowNum, XSSFSheet sheet, int makeRowNum) {
+		 sheet.shiftRows(destinationRowNum, sheet.getLastRowNum(), makeRowNum);
+		}
+	@Override
+	public boolean inbounds(InboundViewListRes listRes, HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

@@ -60,4 +60,6 @@ public interface InboundService {
 	InboundRes deleteInbound(InboundReq inboundReq);
 	@Transactional
 	InboundViewRes changeInbound(List<InboundRes> list);
+	@Transactional
+	InboundViewRes changeInbound2(List<InboundRes> list);
 }

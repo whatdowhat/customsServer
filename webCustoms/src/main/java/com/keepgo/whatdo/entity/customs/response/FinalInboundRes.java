@@ -51,7 +51,7 @@ public class FinalInboundRes {
 	private String cargoName;
 	
 	private String hangCha;
-	
+	private String memo;
 	//중국 상검
 	private int chinaSanggumYn;
 	//출항 지연

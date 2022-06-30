@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.keepgo.whatdo.define.CorpType;
 import com.keepgo.whatdo.define.DocumentType;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.entity.customs.Common;
@@ -89,6 +92,440 @@ public class MigrationController {
 	FileUploadRepository _fileUploadRepository;
 	static final Logger log = LoggerFactory.getLogger(MigrationController.class);
 
+	
+	@RequestMapping(value = "/migration/common/shipperCleanAdd", method = { RequestMethod.POST,RequestMethod.GET })
+	public String shipperCleanAdd(ExcelFTARes excelFTARes,HttpServletResponse response) throws Exception {
+
+		//삭제
+		_commonRepository.deleteByMasterId(new Long(2));
+		AtomicInteger atomicInteger01 = new AtomicInteger(0);
+		AtomicInteger atomicInteger02 = new AtomicInteger(0);
+		//insert
+		String path = DocumentType.J.name;
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+			File file = new File(resource.getURI());
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			XSSFSheet sheet = workbook.getSheetAt(1);
+			sheet.rowIterator().forEachRemaining(row->{
+				if(row.getRowNum() == 0) return;
+				Common common = Common.builder()
+						.nm("쉬퍼")
+						.commonMaster(_CommonMasterRepository.findById(new Long(2)).get())
+						
+						.createDt(new Date())
+						.updateDt(new Date())
+						.isUsing(true)
+						.user(new Long(1))
+						.build();
+				try {
+					common.setValue(row.getCell(2).getStringCellValue());	
+				} catch (Exception e) {
+					common.setValue(String.valueOf(row.getCell(2).getNumericCellValue()));
+				}
+				try {
+					common.setValue2(row.getCell(3).getStringCellValue());
+				} catch (Exception e) {
+					common.setValue2(String.valueOf(row.getCell(3).getNumericCellValue()));
+				}
+				try {
+					common.setValue3(row.getCell(4).getStringCellValue());
+				} catch (Exception e) {
+					common.setValue3(String.valueOf(row.getCell(4).getNumericCellValue()));
+				}
+				
+				
+				
+				_commonRepository.save(common);
+				atomicInteger01.getAndIncrement();
+			});
+
+			workbook.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error!";
+//			System.err.println(e.getMessage());
+		}
+		
+		
+		//image mapping
+		_fileUploadRepository.deleteByFileType(FileType.K.getId());
+		URL url =  MigrationController.class.getClassLoader().getResource("static/common/image");
+		File file = new File(url.getFile());
+		File[] files = file.listFiles();
+		for(int i=0; i<files.length;i++) {
+//			System.out.println(files[i].getName().split("\\.")[0]);
+			
+			
+			int size_ = 0;
+			String dd = files[i].getName().split("\\.")[0];
+//			String imge = dd.split("image")[1];
+//			size_ = dd.split("\\").length;
+//			System.out.println(dd);
+//			System.out.println(imge);
+//			System.out.println(imge.substring(1, imge.length()));
+			
+			Common common = _commonRepository.findByValue3(dd);
+//			String path = common.getFileUpload().getRoot()+File.separatorChar+common.getFileUpload().getPath3();		
+			
+//			File deleteFile = new File(path);
+//		    deleteFile.delete();
+			
+			
+			
+			StringBuilder strPath = new StringBuilder(uploadRoot);
+			//파일생성 폴더 이름은 쉬퍼코드
+			strPath.append(File.separatorChar+common.getValue3());
+			//파일생성 폴더 이름은 value값으로 
+			strPath.append(File.separatorChar+String.valueOf(FileType.K.getId()) ); //10
+			//stringBuilder.append(File.separatorChar+fileUploadReq.getPath3());
+			//c:/Customs/212351251/A/filename.xml
+//			String path = root+"a"; //폴더 경로
+			
+			File Folder = new File(strPath.toString());
+			
+			
+			// 해당 디렉토리가 없을경우 디렉토리를 생성
+			if (!Folder.exists()) {
+				try{
+				    Folder.mkdirs(); //폴더 생성
+//				    System.out.println("폴더가 생성되었습니다.");
+			        } 
+			        catch(Exception e){
+				    e.getStackTrace();
+				}        
+		         }else {
+//				System.out.println("이미 폴더가 생성되어 있습니다.");
+			}
+			String temRoot = strPath.toString();
+			strPath.append(File.separatorChar+files[i].getName() ); //10
+			Folder = new File(strPath.toString());
+			FileUtils.copyFile(files[i], Folder);
+			
+			
+			if(common.getFileUpload() != null) {
+				FileUpload fileupload = _fileUploadRepository.findById(common.getFileUpload().getId()).get();
+				fileupload.setCommon(common);
+				//todo 사용자 세션 아이디로 수정해야됨.
+				fileupload.setUser(User.builder().id(new Long(1)).build());
+				
+				fileupload.setFileType(Integer.valueOf(FileType.K.getId()));
+				
+				fileupload.setFileName1(files[i].getName());
+				fileupload.setRoot(uploadRoot);
+				fileupload.setCreateDt(new Date());
+				fileupload.setUpdateDt(new Date());
+				fileupload.setFileSize(Integer.valueOf((int) files[i].length()));
+				fileupload.setPath1(common.getValue3());
+				fileupload.setPath2(String.valueOf(FileType.K.getId()));
+				fileupload.setPath3(files[i].getName());
+				fileupload.setRoot(temRoot);
+				fileupload.setIsUsing(true);
+				
+				
+				_fileUploadRepository.save(fileupload);
+				atomicInteger02.getAndIncrement();
+			}else {
+				FileUpload fileupload = new FileUpload();
+				fileupload.setCommon(common);
+				//todo 사용자 세션 아이디로 수정해야됨.
+				fileupload.setUser(User.builder().id(new Long(1)).build());
+				
+				fileupload.setFileType(Integer.valueOf(FileType.K.getId()));
+				
+				fileupload.setFileName1(files[i].getName());
+				fileupload.setRoot(uploadRoot);
+				fileupload.setCreateDt(new Date());
+				fileupload.setUpdateDt(new Date());
+				fileupload.setFileSize(Integer.valueOf((int) files[i].length()));
+				fileupload.setPath1(common.getValue3());
+				fileupload.setPath2(String.valueOf(FileType.K.getId()));
+				fileupload.setPath3(files[i].getName());
+				fileupload.setRoot(temRoot);
+				fileupload.setIsUsing(true);
+				_fileUploadRepository.save(fileupload);
+			}
+			
+			
+			FileUpload uploadFile = _fileUploadRepository.findByCommonId(common.getId());
+			common.setFileUpload(uploadFile);
+			_commonRepository.save(common);
+			atomicInteger02.getAndIncrement();
+			
+			
+		}
+		//mapping
+		
+		//전체 가져오기 by masterId
+		List<Common> l = _commonRepository.findByCommonMaster(_CommonMasterRepository.findById(new Long(2)).get());
+		
+		
+		String result = "쉬퍼 등록수 : "+atomicInteger01.get() + "/ 이미지 업로드 수 :"+atomicInteger02.get();
+		
+		return result;
+	}
+	
+	@RequestMapping(value = "/migration/companyCleanInsert", method = { RequestMethod.POST,RequestMethod.GET })
+	public String companyCleanInsert(ExcelFTARes excelFTARes,HttpServletResponse response) throws Exception {
+
+		_companyInfoRepository.deleteByCorpType(CorpType.A.id);
+		_companyInfoRepository.deleteByCorpType(CorpType.B.id);
+		AtomicInteger atomicInteger01 = new AtomicInteger(0);
+		AtomicInteger atomicInteger02 = new AtomicInteger(0);
+		//insert
+		String path = DocumentType.K.name;
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+			File file = new File(resource.getURI());
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			XSSFSheet sheet0 = workbook.getSheetAt(0);
+			XSSFSheet sheet1 = workbook.getSheetAt(1);
+			XSSFSheet sheet2 = workbook.getSheetAt(2);
+			XSSFSheet sheet3 = workbook.getSheetAt(3);
+			XSSFSheet sheet4 = workbook.getSheetAt(4);
+			XSSFSheet sheet5 = workbook.getSheetAt(5);
+			
+			process01(sheet0,atomicInteger01,atomicInteger02,CorpType.B);
+			process01(sheet1,atomicInteger01,atomicInteger02,CorpType.A);
+			process01(sheet3,atomicInteger01,atomicInteger02,CorpType.B);
+			process01(sheet4,atomicInteger01,atomicInteger02,CorpType.A);
+			_CompanyInfoExportRepository.deleteAll();
+			process02(sheet2,atomicInteger01,atomicInteger02,CorpType.A);
+			process02(sheet2,atomicInteger01,atomicInteger02,CorpType.B);
+			process02(sheet5,atomicInteger01,atomicInteger02,CorpType.A);
+			process02(sheet5,atomicInteger01,atomicInteger02,CorpType.B);
+			
+			
+
+			workbook.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error!";
+//			System.err.println(e.getMessage());
+		}
+		
+		String result = "쉬퍼 등록수 : "+atomicInteger01.get() + "/ 이미지 업로드 수 :"+atomicInteger02.get();
+		
+		return result;
+	}
+	
+	public void process01(XSSFSheet sheet,AtomicInteger atomicInteger01,AtomicInteger atomicInteger02,CorpType corpType) {
+		
+		sheet.rowIterator().forEachRemaining(row->{
+			if(row.getRowNum() == 0) return;
+			if(row.getRowNum() == 1) return;
+			//없는 경우 RETURN 
+			
+			CompanyInfo companyInfo = CompanyInfo.builder().build();
+			companyInfo.setIsUsing(true);
+			companyInfo.setCreateDt(new Date());
+			companyInfo.setUpdateDt(new Date());
+			row.cellIterator().forEachRemaining(cell -> {
+				if(cell.getColumnIndex()==1 && cell.getStringCellValue().equals("") ) return;	
+
+				
+				switch (cell.getCellTypeEnum().name()) {
+				case "STRING":
+					String string1 = cell.getStringCellValue();
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+
+					if(cell.getColumnIndex()==1) {
+						//상호(한글)
+						companyInfo.setCoNm(string1);	
+					}
+					if(cell.getColumnIndex()==2) {
+						//상호(영문)
+						companyInfo.setCoNmEn(string1);
+					}
+					if(cell.getColumnIndex()==3) {
+						companyInfo.setConsignee(string1);	
+					}
+					if(cell.getColumnIndex()==4) {
+						companyInfo.setCoNum(string1);	
+					}
+					if(cell.getColumnIndex()==5) {
+						companyInfo.setCoAddress(string1);	
+					}
+					if(cell.getColumnIndex()==6) {
+						companyInfo.setManager(string1);	
+					}
+					if(cell.getColumnIndex()==7) {
+						companyInfo.setCoInvoice(string1);	
+					}
+					companyInfo.setCorpType(corpType.id);
+//					
+					break;
+				case "NUMERIC":
+					cell.setCellType( HSSFCell.CELL_TYPE_STRING );
+					String numberToString = cell.getStringCellValue();
+							
+					if(cell.getColumnIndex()==1) {
+						//상호(한글)
+						companyInfo.setCoNm(numberToString );	
+					}
+					if(cell.getColumnIndex()==2) {
+						//상호(영문)
+						companyInfo.setCoNmEn(numberToString );
+					}
+					if(cell.getColumnIndex()==3) {
+						companyInfo.setConsignee(numberToString );	
+					}
+					if(cell.getColumnIndex()==4) {
+						companyInfo.setCoNum(numberToString );	
+					}
+					if(cell.getColumnIndex()==5) {
+						companyInfo.setCoAddress(numberToString );	
+					}
+					if(cell.getColumnIndex()==6) {
+						companyInfo.setManager(numberToString);	
+					}
+					if(cell.getColumnIndex()==7) {
+						companyInfo.setCoInvoice(numberToString );	
+					}
+					companyInfo.setCorpType(corpType.id);
+					break;
+				case "FORMULA":
+					System.out.println("CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+					String formula1 = cell.getCellFormula();
+					cell.setCellFormula(formula1);
+					break;
+
+				default:
+					break;
+				}
+				
+				
+			});
+			
+			_companyInfoRepository.save(companyInfo);
+			
+		});
+	}
+	
+	
+	public void process02(XSSFSheet sheet,AtomicInteger atomicInteger01,AtomicInteger atomicInteger02,CorpType corpType) {
+		
+		sheet.rowIterator().forEachRemaining(row->{
+			if(row.getRowNum() == 0) return;
+			if(row.getRowNum() == 1) return;
+			//없는 경우 RETURN 
+			
+			CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
+			String coNum = "";
+			try {
+				coNum = row.getCell(3).getStringCellValue();	
+			}catch (Exception e) {
+				row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
+				coNum = String.valueOf(row.getCell(3).getStringCellValue());		 
+			}
+			CompanyInfo company = null;
+			Common common = null;
+			
+			company = _companyInfoRepository.findByCoNumCorpType(coNum,corpType.id);
+			String shiperCode = "";
+			if(row.getCell(4) != null) {
+					
+				try {
+					shiperCode = row.getCell(4).getStringCellValue();	
+				}catch (Exception e) {
+					row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
+					shiperCode = String.valueOf(row.getCell(4).getStringCellValue());
+				}
+				if(shiperCode != null && !shiperCode.equals("")) {
+					common = _commonRepository.findByValue3(shiperCode);
+					if(common != null & company != null) {
+						companyInfoExport.setCommon(common);
+						companyInfoExport.setCompanInfoy(company);
+						companyInfoExport.setPreperOrder(1);
+						_CompanyInfoExportRepository.save(companyInfoExport);
+					}
+				}
+			}
+			if(row.getCell(5) != null) {
+					
+				try {
+					shiperCode = row.getCell(5).getStringCellValue();	
+				}catch (Exception e) {
+					row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
+					shiperCode = String.valueOf(row.getCell(5).getStringCellValue());
+				}
+				if(shiperCode != null && !shiperCode.equals("")) {
+					common = _commonRepository.findByValue3(shiperCode);
+					if(common != null & company != null) {
+						companyInfoExport.setCommon(common);
+						companyInfoExport.setCompanInfoy(company);
+						companyInfoExport.setPreperOrder(2);
+						_CompanyInfoExportRepository.save(companyInfoExport);
+					}
+				}
+			}
+			if(row.getCell(6) != null) {
+				
+				try {
+					shiperCode = row.getCell(6).getStringCellValue();		
+				}catch (Exception e) {
+					row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
+					shiperCode = String.valueOf(row.getCell(6).getStringCellValue());
+				}
+				if(shiperCode != null && !shiperCode.equals("")) {
+					common = _commonRepository.findByValue3(shiperCode);
+					if(common != null & company != null) {
+						companyInfoExport.setCommon(common);
+						companyInfoExport.setCompanInfoy(company);
+						companyInfoExport.setPreperOrder(3);
+						_CompanyInfoExportRepository.save(companyInfoExport);
+					}
+				}
+			}
+			if(row.getCell(7) != null) {
+				
+				try {
+					shiperCode = row.getCell(7).getStringCellValue();		
+				}catch (Exception e) {
+					row.getCell(7).setCellType(Cell.CELL_TYPE_STRING);
+					shiperCode = String.valueOf(row.getCell(7).getStringCellValue());
+				}
+				if(shiperCode != null && !shiperCode.equals("")) {
+					common = _commonRepository.findByValue3(shiperCode);
+					if(common != null & company != null) {
+						companyInfoExport.setCommon(common);
+						companyInfoExport.setCompanInfoy(company);
+						companyInfoExport.setPreperOrder(4);
+						_CompanyInfoExportRepository.save(companyInfoExport);
+					}
+				}
+			}
+			if(row.getCell(8) != null) {
+					
+				try {
+					shiperCode = row.getCell(8).getStringCellValue();
+				}catch (Exception e) {
+					row.getCell(8).setCellType(Cell.CELL_TYPE_STRING);
+					shiperCode = String.valueOf(row.getCell(8).getStringCellValue());
+				}
+				if(shiperCode != null && !shiperCode.equals("")) {
+					common = _commonRepository.findByValue3(shiperCode);
+					if(common != null & company != null) {
+						companyInfoExport.setCommon(common);
+						companyInfoExport.setCompanInfoy(company);
+						companyInfoExport.setPreperOrder(5);
+						_CompanyInfoExportRepository.save(companyInfoExport);
+					}
+				}
+			}
+			
+		});
+		
+	}
+	
 	
 	@RequestMapping(value = "/migration/common/image", method = { RequestMethod.POST })
 	public boolean commonImageUpload(ExcelFTARes excelFTARes,HttpServletResponse response) throws Exception {

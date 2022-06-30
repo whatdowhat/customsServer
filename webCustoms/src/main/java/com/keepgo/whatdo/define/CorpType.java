@@ -13,9 +13,9 @@ public enum CorpType {
 	
 	
 	
-	Integer id;
-	String code;
-	String name; ;
+	public Integer id;
+	public String code;
+	public String name; ;
 	Integer order;
 	
 	private CorpType(Integer id, String code, String name, Integer order) {

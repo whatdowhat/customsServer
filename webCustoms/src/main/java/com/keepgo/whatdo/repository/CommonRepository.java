@@ -6,9 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
@@ -101,5 +103,15 @@ public interface CommonRepository extends JpaRepository<Common, Long>{
 			)
 //	List<Common> checkedCompanyinfoManage(@Param("companInfoyId")Long companyInfoId);
 	List<Common> checkedCompanyinfoManage(@Param("companInfoyId")Long companyInfoId);
-	
+	@Transactional
+	@Modifying
+	@Query(
+			value =
+			""
+			+"	delete from web_common wc	"
+			+"	where 1=1                   "
+			+"	and wc.commonMasterId = :commonMasterId         "
+			,nativeQuery = true
+			)
+	int deleteByMasterId(@Param("commonMasterId")Long commonMasterId);
 }

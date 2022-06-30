@@ -17,10 +17,12 @@ public enum DocumentType {
 	F(6,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"INBOUND.xlsx",6),
 	G(7,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"CLP.xlsx",8),
 	H(8," ",3),
-	I(9,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"PREVIEW.xlsx",9);
-	Integer id;
-	String name;
-	Integer order;
+	I(9,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"PREVIEW.xlsx",9),
+	J(10,"classpath:static"+File.separatorChar+"migration"+File.separatorChar+"COMMON.xlsx",8),
+	K(11,"classpath:static"+File.separatorChar+"migration"+File.separatorChar+"PARTNER.xlsx",9);
+	public Integer id;
+	public String name;
+	public Integer order;
 	private DocumentType(Integer id, String name, Integer order) {
 		this.id = id;
 		this.name = name;

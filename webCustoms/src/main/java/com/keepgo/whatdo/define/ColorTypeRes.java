@@ -27,4 +27,5 @@ public class ColorTypeRes {
 	private String showName;
 	private int sortOrder;
 	
+	
 }

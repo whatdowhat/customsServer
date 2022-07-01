@@ -169,4 +169,7 @@ public class FinalInbound {
 	
 	@Column(name = "memo")
 	private String memo;
+	
+	@Column(name = "corpId")
+	private Integer corpId;
 }

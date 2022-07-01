@@ -55,5 +55,5 @@ public class CompanyInfoRes {
 	private Date updateDt;
 	private User user;
 	//공통 컬럼.
-	
+	private Integer corpId;
 }

@@ -91,6 +91,45 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
 		return list;
 	}
+	
+	@Override
+	public List<?> getCompanyByCorpType(CompanyInfoReq req) {
+
+		List<?> list = _companyInfoRepository.findByCorpType(req.getCorpId()).stream()
+				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
+//				.sorted(Comparator.comparing(CompanyInfo::getId).reversed()).map(item -> {
+					CompanyInfoRes dto = CompanyInfoRes.builder()
+
+							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm())
+							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
+							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
+							.manager(item.getManager()).corpId(item.getCorpType())
+							
+//							.exports(item.getExports().stream().map(sub_item -> {
+//								Map<String, Object> f = new HashMap<>();
+//								f.put("comNm", sub_item.getCommon().getNm());
+//								f.put("comValue", sub_item.getCommon().getValue());
+//								f.put("comValue2", sub_item.getCommon().getValue2());
+//								f.put("preperOrder", sub_item.getPreperOrder());
+//								f.put("id", sub_item.getCommon().getId());
+//
+//								return f;
+//							})
+//									
+//									.collect(Collectors.toList()))
+							.build();
+					StringBuffer sb = new StringBuffer();
+					String companyNum=item.getCoNum();
+					sb.append(companyNum);
+					sb.insert(3, "-");
+					sb.insert(6, "-");
+					dto.setCoNum(sb.toString());
+
+					return dto;
+				}).collect(Collectors.toList());
+
+		return list;
+	}
 
 	@Override
 	public boolean removeCompanyInfo(CompanyInfoReq req) {

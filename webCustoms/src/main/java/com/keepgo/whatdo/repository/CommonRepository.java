@@ -108,9 +108,9 @@ public interface CommonRepository extends JpaRepository<Common, Long>{
 	@Query(
 			value =
 			""
-			+"	delete from web_common wc	"
+			+"	delete from web_common	"
 			+"	where 1=1                   "
-			+"	and wc.commonMasterId = :commonMasterId         "
+			+"	and commonMasterId = :commonMasterId         "
 			,nativeQuery = true
 			)
 	int deleteByMasterId(@Param("commonMasterId")Long commonMasterId);

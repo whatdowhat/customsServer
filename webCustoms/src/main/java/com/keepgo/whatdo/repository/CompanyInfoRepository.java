@@ -24,6 +24,8 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	
 	CompanyInfo findByCoNm(String coNm);
 	
+	List<CompanyInfo> findByCorpType(Integer corpType);
+	
 //	CompanyInfo findByCompanyInfo(CompanyInfo companyInfo);
 	
 	@Transactional
@@ -31,7 +33,7 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	@Query(
 			value =
 			""
-			+"	delete from web_companyinfo	"
+			+"	delete from web_companyInfo	"
 			+"	where 1=1                   "
 			+"	and corpType = :corpType         "
 			,nativeQuery = true
@@ -43,7 +45,7 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	@Query(
 			value =
 			""
-			+" select * from web_companyinfo      "
+			+" select * from web_companyInfo      "
 			+" where 1=1                          "
 			+" and coNum = :coNum           "
 			+" and corpType = :corpType   "               

@@ -53,7 +53,7 @@ public class CompanyInfoReq {
 	private Date updateDt;
 	private User user;
 	
-	
+	private Integer corpId;
 	
 
 	private List<Long> ids = new ArrayList<>();

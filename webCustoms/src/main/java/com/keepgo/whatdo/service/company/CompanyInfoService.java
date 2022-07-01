@@ -20,6 +20,8 @@ public interface CompanyInfoService {
 
 	@Transactional
 	List<?> getAll(CompanyInfoReq companyInfoReq); 
+	@Transactional
+	List<?> getCompanyByCorpType(CompanyInfoReq companyInfoReq); 
 
 	@Transactional
 	CompanyInfoRes getCompanyInfoExports(CompanyInfoReq companyInfoReq); 

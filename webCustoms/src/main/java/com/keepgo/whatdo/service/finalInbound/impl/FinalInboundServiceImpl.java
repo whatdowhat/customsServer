@@ -214,6 +214,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		FinalInbound target = FinalInbound.builder()
 				.title(req.getTitle())
 				.gubun(req.getGubun())
+				.corpId((req.getCorpId()==null||req.getCorpId()==0 ? 1 : req.getCorpId() ))
 				.incomeDt(afterFormat.format(tempDate2))
 				.departDtStr(afterFormat.format(tempDate))
 				.workDepartDt(afterFormat.format(tempDate3))
@@ -448,6 +449,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.chulhangPort(r.getChulhangPort())				
 				.createDt(r.getCreateDt())
 				.updateDt(r.getUpdateDt())
+				.corpId(r.getCorpId())
 				.build();
 		dto.setDepartPort((r.getDepartPort() == null ? "" : _commonRepository.findById(r.getDepartPort()).get().getValue2()));
 		dto.setDepartPortId((r.getDepartPort() == null ? new Long(1) : r.getDepartPort()));

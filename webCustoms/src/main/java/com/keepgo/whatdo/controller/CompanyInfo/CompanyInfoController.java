@@ -120,6 +120,14 @@ public class CompanyInfoController {
 
 		
 	}
+	@RequestMapping(value = "/company/companyInfoByCorpId", method = {RequestMethod.POST })
+	public List<?> getCompanyInfoByCorpId(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+
+		return  _companyInfoService.getCompanyByCorpType(companyInfoReq);
+
+		
+	}
 	
 	@RequestMapping(value = "/company/companyInfoExports", method = {RequestMethod.POST })
 	public CompanyInfoRes getCompanyInfoExports(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){

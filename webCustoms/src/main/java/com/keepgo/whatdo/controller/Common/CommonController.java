@@ -28,6 +28,8 @@ import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.CoTypeRes;
 import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.ColorTypeRes;
+import com.keepgo.whatdo.define.CorpType;
+import com.keepgo.whatdo.define.CorpTypeRes;
 import com.keepgo.whatdo.define.CurrencyType;
 import com.keepgo.whatdo.define.CurrencyTypeRes;
 import com.keepgo.whatdo.define.FileType;
@@ -294,5 +296,12 @@ public class CommonController {
 			throws Exception, NumberFormatException {
 
 		return UserType.getList();
+	}
+	@RequestMapping(value = "/common/corpType", method = { RequestMethod.POST })
+	@ResponseBody
+	public List<CorpTypeRes> CorpType()
+			throws Exception, NumberFormatException {
+
+		return CorpType.getList();
 	}
 }

@@ -551,8 +551,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					.isUsing(true).createDt(new Date()).updateDt(new Date())
 
 					.build();
-			User user = _userRepository.findByLoginId(loginId);
-			target.setUser(user);
+//			User user = _userRepository.findByLoginId(loginId);
+//			target.setUser(user);
 			target = _inboundMasterRepository.save(target);
 			
 			
@@ -631,14 +631,14 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					}
 					
 					if(inbound.getBackgroundColorName()!=null) {
-						for(int k=0; k<BackgroundColorType.getList().size();k++) {
-							if(BackgroundColorType.getList().get(k).getShowName().equals(inbound.getBackgroundColorName())) {
-								inbound.setBackgroundColor(BackgroundColorType.getList().get(k).getId());
-							}else {
-
-							}
-						}
-						
+//						for(int k=0; k<BackgroundColorType.getList().size();k++) {
+//							if(BackgroundColorType.getList().get(k).getShowName().equals(inbound.getBackgroundColorName())) {
+//								inbound.setBackgroundColor(BackgroundColorType.getList().get(k).getId());
+//							}else {
+//
+//							}
+//						}
+						inbound.setBackgroundColor(Integer.valueOf(1));
 					}else {
 						inbound.setBackgroundColor(Integer.valueOf(0));
 					}
@@ -804,6 +804,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		}
 		if(cellIndex == 18) {
 			inbound.setAmountType(value);
+		}
+		if(cellIndex == 19) {
+			inbound.setBackgroundColorName(value);
 		}
 		
 	}

@@ -3160,7 +3160,7 @@ public class ExcelServiceImpl implements ExcelService {
 		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 		cellStyle.setBorderBottom(BorderStyle.THIN);
 		cellStyle.setBorderRight(BorderStyle.THIN);
-		cellStyle.setBorderTop(BorderStyle.DASHED);		
+		cellStyle.setBorderTop(BorderStyle.HAIR);		
 		// item 채우기
 		for (int i = 0; i < resource.size(); i++) {
 
@@ -3173,6 +3173,11 @@ public class ExcelServiceImpl implements ExcelService {
 
 
 			XSSFRow row = sheet.getRow(i + 1);
+//			if(resource.size()==1) {
+//				row.setHeight((short)2000);
+//			}else {
+//				row.setHeight((short)500);
+//			}
 			XSSFCellStyle orderNoFont  = workbook.createCellStyle();
 			XSSFCellStyle allCellStyle = workbook.createCellStyle();
 			XSSFCellStyle workDateStrCellStyle = workbook.createCellStyle();
@@ -3200,6 +3205,7 @@ public class ExcelServiceImpl implements ExcelService {
 			orderNoFont.setVerticalAlignment(VerticalAlignment.CENTER);
 			orderNoFont.setBorderBottom(BorderStyle.THIN);
 			orderNoFont.setBorderRight(BorderStyle.THIN);
+				
 			orderNoFont.setFont(allFont);
 			
 			if(resource.get(i).getColorId()==0) {
@@ -3253,6 +3259,8 @@ public class ExcelServiceImpl implements ExcelService {
 				companyNmCellStyle.setFont(allFont);
 				companyNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				companyNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				companyNmCellStyle.setWrapText(true);
+				
 				
 			}else if(resource.get(i).getCompanyNmYn()==null||resource.get(i).getCompanyNmYn().equals("")){
 				companyNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3263,6 +3271,7 @@ public class ExcelServiceImpl implements ExcelService {
 				companyNmCellStyle.setFont(allFont);
 				companyNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				companyNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				companyNmCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getMarkingYn().equals("Y")){
 				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3273,6 +3282,7 @@ public class ExcelServiceImpl implements ExcelService {
 				markingCellStyle.setFont(allFont);
 				markingCellStyle.setBorderBottom(BorderStyle.THIN);
 				markingCellStyle.setBorderRight(BorderStyle.THIN); 
+				markingCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getMarkingYn()==null||resource.get(i).getMarkingYn().equals("")){
 				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3283,6 +3293,7 @@ public class ExcelServiceImpl implements ExcelService {
 				markingCellStyle.setFont(allFont);
 				markingCellStyle.setBorderBottom(BorderStyle.THIN);
 				markingCellStyle.setBorderRight(BorderStyle.THIN); 
+				markingCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getKorNmYn().equals("Y")){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3293,6 +3304,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getKorNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3303,6 +3315,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getBackgroundColorId()==1){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3313,6 +3326,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getKorNmYn()==null||resource.get(i).getKorNmYn().equals("")){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3323,6 +3337,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getItemCountYn().equals("Y")){
 				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3532,6 +3547,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo1CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo1CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo1CellStyle.setWrapText(true);
 				
 			}else {
 				memo1CellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3541,6 +3557,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo1CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo1CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo1CellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getMemo2Yn().equals("Y")){
 				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3550,6 +3567,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo2CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo2CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo2CellStyle.setWrapText(true);
 				
 			}else {
 				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3559,6 +3577,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo2CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo2CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo2CellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getItemNoYn().equals("Y")){
 				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3568,6 +3587,7 @@ public class ExcelServiceImpl implements ExcelService {
 				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				itemNoCellStyle.setBorderBottom(BorderStyle.THIN);
 				itemNoCellStyle.setBorderRight(BorderStyle.THIN); 
+				itemNoCellStyle.setWrapText(true);
 				
 			}else {
 				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3577,6 +3597,7 @@ public class ExcelServiceImpl implements ExcelService {
 				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				itemNoCellStyle.setBorderBottom(BorderStyle.THIN);
 				itemNoCellStyle.setBorderRight(BorderStyle.THIN); 
+				itemNoCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getJejilYn().equals("Y")){
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3586,6 +3607,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getJejilYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3595,6 +3617,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getBackgroundColorId()==1){
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3604,6 +3627,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 				
 			}else {
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3613,6 +3637,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getHsCodeYn().equals("Y")){
 				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3694,6 +3719,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getEngNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
 				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3703,6 +3729,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getBackgroundColorId()==1){
 				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3712,6 +3739,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 				
 			}else {
 				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -3721,7 +3749,9 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 			}
+			
 			row.getCell(0).setCellValue(resource.get(i).getOrderNoStr());
 			row.getCell(0).setCellStyle(orderNoFont);
 			row.getCell(1).setCellValue(resource.get(i).getWorkDateStr());
@@ -5313,7 +5343,7 @@ public class ExcelServiceImpl implements ExcelService {
 		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 		cellStyle.setBorderBottom(BorderStyle.THIN);
 		cellStyle.setBorderRight(BorderStyle.THIN);
-		cellStyle.setBorderTop(BorderStyle.DASHED);		
+		cellStyle.setBorderTop(BorderStyle.HAIR);		
 		XSSFSheet sheet3 = workbook.getSheetAt(3);
 		// item 채우기
 		for (int i = 0; i < resource.size(); i++) {
@@ -5322,6 +5352,11 @@ public class ExcelServiceImpl implements ExcelService {
 						
 
 			XSSFRow row = sheet.getRow(startRow+i);
+			if(resource.size()==1) {
+			row.setHeight((short)2000);
+		}else {
+			row.setHeight((short)500);
+		}
 			XSSFCellStyle orderNoFont  = workbook.createCellStyle();
 			XSSFCellStyle allCellStyle = workbook.createCellStyle();
 			
@@ -5405,6 +5440,7 @@ public class ExcelServiceImpl implements ExcelService {
 				companyNmCellStyle.setFont(allFont);
 				companyNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				companyNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				companyNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getCompanyNmYn()==null||resource.get(i).getCompanyNmYn().equals("")){
 				companyNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5415,6 +5451,7 @@ public class ExcelServiceImpl implements ExcelService {
 				companyNmCellStyle.setFont(allFont);
 				companyNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				companyNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				companyNmCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getMarkingYn().equals("Y")){
 				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5425,6 +5462,7 @@ public class ExcelServiceImpl implements ExcelService {
 				markingCellStyle.setFont(allFont);
 				markingCellStyle.setBorderBottom(BorderStyle.THIN);
 				markingCellStyle.setBorderRight(BorderStyle.THIN); 
+				markingCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getMarkingYn()==null||resource.get(i).getMarkingYn().equals("")){
 				markingCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5435,6 +5473,7 @@ public class ExcelServiceImpl implements ExcelService {
 				markingCellStyle.setFont(allFont);
 				markingCellStyle.setBorderBottom(BorderStyle.THIN);
 				markingCellStyle.setBorderRight(BorderStyle.THIN); 
+				markingCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getKorNmYn().equals("Y")){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5445,6 +5484,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getKorNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5455,6 +5495,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getBackgroundColorId()==1){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5465,6 +5506,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getKorNmYn()==null||resource.get(i).getKorNmYn().equals("")){
 				korNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5475,6 +5517,7 @@ public class ExcelServiceImpl implements ExcelService {
 				korNmCellStyle.setFont(allFont);
 				korNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				korNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				korNmCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getItemCountYn().equals("Y")){
 				itemCountCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5684,6 +5727,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo1CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo1CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo1CellStyle.setWrapText(true);
 				
 			}else {
 				memo1CellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5692,7 +5736,8 @@ public class ExcelServiceImpl implements ExcelService {
 				memo1CellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(BackgroundColorType.A.r, BackgroundColorType.A.g, BackgroundColorType.A.b)));
 				memo1CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo1CellStyle.setBorderBottom(BorderStyle.THIN);
-				memo1CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo1CellStyle.setBorderRight(BorderStyle.THIN);
+				memo1CellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getMemo2Yn().equals("Y")){
 				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5702,7 +5747,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo2CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo2CellStyle.setBorderRight(BorderStyle.THIN); 
-				
+				memo2CellStyle.setWrapText(true);
 				
 			}else {
 				memo2CellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5712,6 +5757,7 @@ public class ExcelServiceImpl implements ExcelService {
 				memo2CellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				memo2CellStyle.setBorderBottom(BorderStyle.THIN);
 				memo2CellStyle.setBorderRight(BorderStyle.THIN); 
+				memo2CellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getItemNoYn().equals("Y")){
 				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5721,7 +5767,7 @@ public class ExcelServiceImpl implements ExcelService {
 				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				itemNoCellStyle.setBorderBottom(BorderStyle.THIN);
 				itemNoCellStyle.setBorderRight(BorderStyle.THIN); 
-				
+				itemNoCellStyle.setWrapText(true);
 			}else {
 				itemNoCellStyle.setAlignment(HorizontalAlignment.CENTER);
 				itemNoCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -5730,6 +5776,7 @@ public class ExcelServiceImpl implements ExcelService {
 				itemNoCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				itemNoCellStyle.setBorderBottom(BorderStyle.THIN);
 				itemNoCellStyle.setBorderRight(BorderStyle.THIN); 
+				itemNoCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getJejilYn().equals("Y")){
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5739,6 +5786,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getJejilYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5748,6 +5796,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getBackgroundColorId()==1){
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5757,6 +5806,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 				
 			}else {
 				jejilCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5766,6 +5816,7 @@ public class ExcelServiceImpl implements ExcelService {
 				jejilCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				jejilCellStyle.setBorderBottom(BorderStyle.THIN);
 				jejilCellStyle.setBorderRight(BorderStyle.THIN); 
+				jejilCellStyle.setWrapText(true);
 			}
 			if(resource.get(i).getHsCodeYn().equals("Y")){
 				hsCodeCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5847,6 +5898,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getEngNmYn().equals("Y")&&resource.get(i).getBackgroundColorId()==1){
 				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5856,6 +5908,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 				
 			}else if(resource.get(i).getBackgroundColorId()==1){
 				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5865,6 +5918,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 				
 			}else {
 				engNmCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5874,6 +5928,7 @@ public class ExcelServiceImpl implements ExcelService {
 				engNmCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				engNmCellStyle.setBorderBottom(BorderStyle.THIN);
 				engNmCellStyle.setBorderRight(BorderStyle.THIN); 
+				engNmCellStyle.setWrapText(true);
 			}
 			row.getCell(0).setCellValue(resource.get(i).getOrderNoStr());
 			row.getCell(0).setCellStyle(orderNoFont);
@@ -6267,7 +6322,7 @@ public class ExcelServiceImpl implements ExcelService {
 			cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			cellStyle.setBorderBottom(BorderStyle.THIN);
 			cellStyle.setBorderRight(BorderStyle.THIN);
-			cellStyle.setBorderTop(BorderStyle.DASHED);	
+			cellStyle.setBorderTop(BorderStyle.HAIR);	
 			XSSFSheet sheet4 = workbook.getSheetAt(4);
 //			copyRowOtherSheetForInbounds(workbook, sheet, startRow ,sheet4, 0);
 //			copyRowOtherSheetForInbounds(workbook, sheet, startRow ,sheet4, 1);
@@ -6296,8 +6351,8 @@ public class ExcelServiceImpl implements ExcelService {
 					unbiCellStyle.setBorderBottom(BorderStyle.NONE);
 					unbiCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
 					unbiCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					unbiCellStyle.setBorderBottom(BorderStyle.THIN);
-					unbiCellStyle.setBorderRight(BorderStyle.THIN); 
+					unbiCellStyle.setBorderBottom(BorderStyle.HAIR);
+					unbiCellStyle.setBorderRight(BorderStyle.HAIR); 
 					
 				}else {
 					unbiCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6305,8 +6360,8 @@ public class ExcelServiceImpl implements ExcelService {
 					unbiCellStyle.setBorderBottom(BorderStyle.NONE);
 					unbiCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 					unbiCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					unbiCellStyle.setBorderBottom(BorderStyle.THIN);
-					unbiCellStyle.setBorderRight(BorderStyle.THIN); 
+					unbiCellStyle.setBorderBottom(BorderStyle.HAIR);
+					unbiCellStyle.setBorderRight(BorderStyle.HAIR); 
 				}
 				if(resource.get(i).getPickupCostYn().equals("Y")){
 					pickupCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6314,8 +6369,8 @@ public class ExcelServiceImpl implements ExcelService {
 					pickupCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					pickupCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
 					pickupCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					pickupCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					pickupCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					pickupCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					pickupCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 					
 				}else {
 					pickupCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6323,8 +6378,8 @@ public class ExcelServiceImpl implements ExcelService {
 					pickupCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					pickupCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 					pickupCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					pickupCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					pickupCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					pickupCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					pickupCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 				}
 				if(resource.get(i).getSanghachaCostYn().equals("Y")){
 					sanghachaCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6332,8 +6387,8 @@ public class ExcelServiceImpl implements ExcelService {
 					sanghachaCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					sanghachaCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
 					sanghachaCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					sanghachaCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					sanghachaCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					sanghachaCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					sanghachaCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 					
 				}else {
 					sanghachaCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6341,8 +6396,8 @@ public class ExcelServiceImpl implements ExcelService {
 					sanghachaCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					sanghachaCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 					sanghachaCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					sanghachaCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					sanghachaCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					sanghachaCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					sanghachaCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 				}
 				if(resource.get(i).getOfficeNameYn().equals("Y")){
 					officeNameCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6350,8 +6405,8 @@ public class ExcelServiceImpl implements ExcelService {
 					officeNameCellStyle.setBorderBottom(BorderStyle.NONE);
 					officeNameCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
 					officeNameCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					officeNameCellStyle.setBorderBottom(BorderStyle.THIN);
-					officeNameCellStyle.setBorderRight(BorderStyle.THIN); 
+					officeNameCellStyle.setBorderBottom(BorderStyle.HAIR);
+					officeNameCellStyle.setBorderRight(BorderStyle.HAIR); 
 					
 				}else {
 					officeNameCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6359,8 +6414,8 @@ public class ExcelServiceImpl implements ExcelService {
 					officeNameCellStyle.setBorderBottom(BorderStyle.NONE);
 					officeNameCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 					officeNameCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					officeNameCellStyle.setBorderBottom(BorderStyle.THIN);
-					officeNameCellStyle.setBorderRight(BorderStyle.THIN); 
+					officeNameCellStyle.setBorderBottom(BorderStyle.HAIR);
+					officeNameCellStyle.setBorderRight(BorderStyle.HAIR); 
 				}
 				if(resource.get(i).getHacksodanCostYn().equals("Y")){
 					hacksodanCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6368,8 +6423,8 @@ public class ExcelServiceImpl implements ExcelService {
 					hacksodanCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					hacksodanCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
 					hacksodanCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					hacksodanCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					hacksodanCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					hacksodanCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					hacksodanCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 					
 				}else {
 					hacksodanCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6377,8 +6432,8 @@ public class ExcelServiceImpl implements ExcelService {
 					hacksodanCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					hacksodanCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 					hacksodanCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					hacksodanCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					hacksodanCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					hacksodanCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					hacksodanCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 				}
 				if(resource.get(i).getCoCostYn().equals("Y")){
 					coCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6386,8 +6441,8 @@ public class ExcelServiceImpl implements ExcelService {
 					coCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					coCostCellStyle.setFillForegroundColor(new XSSFColor(new java.awt.Color(42, 177, 245)));
 					coCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					coCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					coCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					coCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					coCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 					
 				}else {
 					coCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -6395,8 +6450,8 @@ public class ExcelServiceImpl implements ExcelService {
 					coCostCellStyle.setBorderBottom(BorderStyle.NONE);
 					coCostCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 					coCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-					coCostCellStyle.setBorderBottom(BorderStyle.THIN);
-					coCostCellStyle.setBorderRight(BorderStyle.THIN); 
+					coCostCellStyle.setBorderBottom(BorderStyle.HAIR);
+					coCostCellStyle.setBorderRight(BorderStyle.HAIR); 
 				}
 				
 				
@@ -6408,8 +6463,8 @@ public class ExcelServiceImpl implements ExcelService {
 				orderNoFont.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				orderNoFont.setAlignment(HorizontalAlignment.CENTER);
 				orderNoFont.setVerticalAlignment(VerticalAlignment.CENTER);
-				orderNoFont.setBorderBottom(BorderStyle.THIN);
-				orderNoFont.setBorderRight(BorderStyle.THIN);
+				orderNoFont.setBorderBottom(BorderStyle.HAIR);
+				orderNoFont.setBorderRight(BorderStyle.HAIR);
 				orderNoFont.setFont(allFont);
 				
 				if(resource.get(i).getType().equals("A")) {
@@ -6430,8 +6485,9 @@ public class ExcelServiceImpl implements ExcelService {
 					}
 					allCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-					allCellStyle.setBorderBottom(BorderStyle.THIN);
-					allCellStyle.setBorderRight(BorderStyle.THIN);
+					allCellStyle.setBorderBottom(BorderStyle.HAIR);
+					allCellStyle.setBorderRight(BorderStyle.HAIR);
+					allCellStyle.setWrapText(true);
 				
 					allCellStyle.setFont(allFont);
 					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":resource.get(i).getNoStr()));
@@ -6460,29 +6516,31 @@ public class ExcelServiceImpl implements ExcelService {
 					row.getCell(11).setCellValue(resource.get(i).getCoCost());
 					row.getCell(11).setCellStyle(coCostCellStyle);
 					row.getCell(12).setCellValue(resource.get(i).getHwajumiUnbi());
-					row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(12).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(12).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(13).setCellValue(resource.get(i).getHwajumiPickupCost());
-					row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(13).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(13).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(14).setCellValue(resource.get(i).getContainerWorkCost());
-					row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(14).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(14).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(15).setCellValue(resource.get(i).getContainerWorkCost2());
-					row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(15).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(16).setCellValue(resource.get(i).getContainerMoveCost());
-					row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(16).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(16).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(17).setCellValue(resource.get(i).getTotalSum());
-					row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(17).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(17).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(18).setCellValue(resource.get(i).getMemo1());
-					row.getCell(18).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(18).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(18).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(18).getCellStyle().setBorderRight(BorderStyle.HAIR); 
+					row.getCell(18).getCellStyle().setWrapText(true);
 					row.getCell(19).setCellValue(resource.get(i).getMemo2());
-					row.getCell(19).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(19).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(19).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(19).getCellStyle().setBorderRight(BorderStyle.HAIR); 
+					row.getCell(19).getCellStyle().setWrapText(true);
 				}else {
 					if(resource.get(i).getColorId()==0) {
 						allFont.setColor(IndexedColors.BLACK.getIndex());
@@ -6506,25 +6564,25 @@ public class ExcelServiceImpl implements ExcelService {
 					allCellStyle.setFont(allFont);
 					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":resource.get(i).getNoStr()));
 					row.getCell(0).setCellStyle(orderNoFont);
-					row.getCell(0).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(0).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(0).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(0).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(1).setCellValue((resource.get(i).getWorkDateStr()==null?"":resource.get(i).getWorkDateStr()));
 					row.getCell(1).setCellStyle(allCellStyle);
-					row.getCell(1).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(1).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(1).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(1).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(2).setCellValue(resource.get(i).getTypebTitle());
 					row.getCell(2).setCellStyle(allCellStyle);
-					row.getCell(2).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(2).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(2).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(2).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(3).setCellValue("");
-					row.getCell(3).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(3).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(3).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(3).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(4).setCellValue("");
-					row.getCell(4).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(4).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(4).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(4).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(5).setCellValue("");
-					row.getCell(5).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(5).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(5).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(5).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(6).setCellValue(resource.get(i).getUnbi());
 					row.getCell(6).setCellStyle(unbiCellStyle);
 					row.getCell(7).setCellValue(resource.get(i).getPickupCost());
@@ -6538,29 +6596,29 @@ public class ExcelServiceImpl implements ExcelService {
 					row.getCell(11).setCellValue(resource.get(i).getCoCost());
 					row.getCell(11).setCellStyle(coCostCellStyle);
 					row.getCell(12).setCellValue(resource.get(i).getHwajumiUnbi());
-					row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(12).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(12).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(13).setCellValue(resource.get(i).getHwajumiPickupCost());
-					row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(13).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(13).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(14).setCellValue(resource.get(i).getContainerWorkCost());
-					row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(14).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(14).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(15).setCellValue(resource.get(i).getContainerWorkCost2());
-					row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(15).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(16).setCellValue(resource.get(i).getContainerMoveCost());
-					row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(16).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(16).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(17).setCellValue(resource.get(i).getTotalSum());
-					row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(17).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(17).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(18).setCellValue(resource.get(i).getMemo1());
-					row.getCell(18).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(18).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(18).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(18).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 					row.getCell(19).setCellValue(resource.get(i).getMemo2());
-					row.getCell(19).getCellStyle().setBorderBottom(BorderStyle.THIN);
-					row.getCell(19).getCellStyle().setBorderRight(BorderStyle.THIN); 
+					row.getCell(19).getCellStyle().setBorderBottom(BorderStyle.HAIR);
+					row.getCell(19).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 				}
 				
 				

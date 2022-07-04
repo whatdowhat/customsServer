@@ -1062,6 +1062,9 @@ public class InboundServiceImpl implements InboundService {
 		if(cellIndex == 18) {
 			inboundRes.setAmountType(value);
 		}
+		if(cellIndex == 19) {
+			inboundRes.setBackgroundColor(value);
+		}
 		
 	}
 	
@@ -1115,6 +1118,12 @@ public class InboundServiceImpl implements InboundService {
 				}else {
 					item.setAmountType("PCS");
 				}
+			}
+			if(item.getBackgroundColor() == null) {
+				item.setBackgroundColor("WHITE");
+			}else {
+				
+				item.setBackgroundColor("SALGU");			
 			}
 					
 			//cbm 문자 곱 * 박스 갯수

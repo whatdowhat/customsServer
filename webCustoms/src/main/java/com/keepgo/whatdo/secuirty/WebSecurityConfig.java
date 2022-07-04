@@ -38,14 +38,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-//
+
 	@Autowired
 	private UserDetailsService jwtUserDetailsService;
-//
+
+//    @Autowired
+//    private ExceptionHandlerFilter exceptionHandlerFilter;
+	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
-//
-//	
+
+	
 	@Autowired
 	private CustomAccessDeniedHandler accessDeniedHandler;
 
@@ -72,8 +75,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**").antMatchers(HttpMethod.OPTIONS);
-//		web.ignoring().antMatchers("/resources/**").antMatchers(HttpMethod.GET);
-        //web.ignoring().antMatchers("/static/css/**", "/static//js/**", "/img/**", "/lib/**");
 	}
 
 	
@@ -113,11 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 //		httpSecurity.cors().configurationSource(request -> corsConfig);
 		// We don't need CSRF for this example
-		
-		httpSecurity
-		.httpBasic().and()
-//		.disable()
-		.csrf().disable()
+		httpSecurity.csrf().disable()
 		// dont authenticate this particular request
 //        	.authorizeRequests().antMatchers("/**").permitAll().and()
 //        	
@@ -128,22 +125,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests().antMatchers("/test/**").permitAll().and()
             .authorizeRequests().antMatchers("/test/**/**").permitAll().and()
 				.authorizeRequests()
-				.antMatchers("/favicon.ico").permitAll()
-				.antMatchers("/static/**/**").permitAll()
-				.antMatchers("/").permitAll()
-				.antMatchers("js/**/**").permitAll()
-				.antMatchers("css/**/**").permitAll()
-				.antMatchers("js/**").permitAll()
-				.antMatchers("css/**").permitAll()
-//				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
-//						"/static/static/**","/static/css/**", "/**/*.js","/pub/**")
-//				.permitAll()
-//				
+				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
+						"/static/**", "/**/*.js","/pub/**")
+				.permitAll()
+				
 				//권한설정 url mapping
 //				.antMatchers("/front/getAllCondition").hasAnyAuthority(SUPER,ADMIN)
 //				.antMatchers("/front/getAllCondition").hasAnyAuthority(ADMIN)
 				//권한설정 url mapping
-				.antMatchers("/index.html").permitAll()
+				
 				.antMatchers("/index.jsp").permitAll()
 				.antMatchers("/static/index.html").permitAll()
 				.antMatchers("/excel/**").permitAll()
@@ -170,11 +160,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //             stateless session exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 //             sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//		httpSecurity.addFilterAfter(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
 		// Add a filter to validate the tokens with every request
 //		JwtRequestFilter jwtRequestFilter = new JwtRequestFilter();
-		
+		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 //		httpSecurity.addFilterBefore(exceptionHandlerFilter, JwtRequestFilter.class);
 	}
 }

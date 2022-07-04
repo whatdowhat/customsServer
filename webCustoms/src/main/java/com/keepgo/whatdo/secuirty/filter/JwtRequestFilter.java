@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
 
 //    	chain.doFilter(request, response);
-    	
+    	 Gson gson = new Gson();
         if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
             chain.doFilter(request, response);
         }else {
@@ -72,17 +73,31 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         	jwtToken = requestTokenHeader.substring(7);
                             username = jwtTokenUtil.getUsernameFromToken(jwtToken);
                         } catch (IllegalArgumentException e) {
-                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
-                        	throw new UsernameFromTokenException("Username from token error");
+                			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                			String resultObj = gson.toJson(
+                					ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("JWT Token has expired").build());
+                			response.getWriter().println(resultObj);
+                			return;
                         } catch (ExpiredJwtException e) {
 //                        	
-                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("403_EXPIREDJWT").build());
-                        	throw new UsernameFromTokenException("Username from token error");
+                			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                			String resultObj = gson.toJson(
+                					ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("JWT Token has expired").build());
+                			response.getWriter().println(resultObj);
+
+                			response.getWriter().println(resultObj);
+                			 return;
                         	
                         } catch (Exception e) {
                         	
-                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
-                        	throw new UsernameFromTokenException("Username from token error");
+                			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                			String resultObj = gson.toJson(
+                					ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("JWT Token has expired").build());
+                			response.getWriter().println(resultObj);
+                			return;
             			}
                         
                         
@@ -102,19 +117,35 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                                 chain.doFilter(request, response);
                             }else {
-                            	System.out.println("token validation not pass!");
+                    			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                    			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    			String resultObj = gson.toJson(
+                    					ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("JWT Token has expired").build());
+
+                    			response.getWriter().println(resultObj);
+                    			return;
                             }
                         }else {
                         //운영 버전
-                        	request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("SignatureException").errorMessage("JWT validity cannot be asserted and should not be trusted").build());
-                        	throw new UsernameFromTokenException("Username from token error");
+                			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                			String resultObj = gson.toJson(
+                					ErrorVO.builder().status(200).errorCode("403_PASSWORD_INCORRECT").errorMessage("PASSWORD INCORRECT").build());
+                			response.getWriter().println(resultObj);
+                			return;
                         }
                         
                         
                     } else {
                         logger.warn("JWT Token does not begin with Bearer String");
+                       
                         request.setAttribute("exception", ErrorVO.builder().status(200).errorCode("UsernameFromTokenException").errorMessage("Username from token error").build());
-                        throw new UsernameFromTokenException("Username from token error");
+            			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+            			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            			String resultObj = gson.toJson(
+            					ErrorVO.builder().status(200).errorCode("403_ID_EMPTY").errorMessage("ID EMPTY").build());
+            			response.getWriter().println(resultObj);
+            			return;
                     	
                     }        	
                 }

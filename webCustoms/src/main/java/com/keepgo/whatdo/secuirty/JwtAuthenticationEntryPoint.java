@@ -31,26 +31,26 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 	 * 한글 출력을 위해 getWriter() 사용
 	 */
 	private void setResponse(HttpServletResponse response, ErrorVO exErrorVO) throws IOException {
-		if(exErrorVO!=null) {
-			Gson gson = new Gson();
-			if (exErrorVO.getErrorCode().equals("403_EXPIREDJWT")) {
-				response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println(gson.toJson(exErrorVO));
-			}
 
-			if (exErrorVO.getErrorCode().equals("403_PASSWORD_INCORRECT")) {
-				response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println(gson.toJson(exErrorVO));
-			}
-			
-			if (exErrorVO.getErrorCode().equals("403_ID_EMPTY")) {
-				response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println(gson.toJson(exErrorVO));
-			}
-	
+		Gson gson = new Gson();
+		if (exErrorVO.getErrorCode().equals("403_EXPIREDJWT")) {
+			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().println(gson.toJson(exErrorVO));
 		}
+
+		if (exErrorVO.getErrorCode().equals("403_PASSWORD_INCORRECT")) {
+			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().println(gson.toJson(exErrorVO));
+		}
+		
+		if (exErrorVO.getErrorCode().equals("403_ID_EMPTY")) {
+			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().println(gson.toJson(exErrorVO));
+		}
+
+
 	}
 }

@@ -48,7 +48,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //    	chain.doFilter(request, response);
     	 Gson gson = new Gson();
         if (request.getMethod().equals(RequestMethod.OPTIONS.name())||
-        		request.getRequestURI().startsWith("/static")
+        		request.getRequestURI().startsWith("/static") ||
+        		request.getRequestURI().startsWith("/custom_container.js")||
+        		request.getRequestURI().startsWith("/index.css")||
+        		request.getRequestURI().startsWith("/manifest.json")||
+        		request.getRequestURI().startsWith("/favicon.ico")
         		
         		) {
             chain.doFilter(request, response);

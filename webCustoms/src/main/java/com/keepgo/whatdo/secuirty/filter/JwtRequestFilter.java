@@ -47,7 +47,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 //    	chain.doFilter(request, response);
     	 Gson gson = new Gson();
-        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())||
+        		request.getRequestURI().startsWith("/static")
+        		
+        		) {
             chain.doFilter(request, response);
         }else {
         	if(secretYn.equals("false")) {

@@ -84,7 +84,7 @@ public interface ExcelService {
 	InboundViewListRes previewData(InboundReq inboundReq) throws Exception;
 	
 	@Transactional
-	boolean preview(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,HttpServletResponse response) throws Exception;
+	boolean preview(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,FinalInboundRes container,HttpServletResponse response) throws Exception;
 	@Transactional
 	boolean previewContainer(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,FinalInboundRes container,HttpServletResponse response) throws Exception;
 }

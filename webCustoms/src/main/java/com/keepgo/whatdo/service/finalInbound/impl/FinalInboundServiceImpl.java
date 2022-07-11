@@ -677,7 +677,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //					if(inbound.getBoxCount()==null||inbound.getBoxCount().equals("")) {
 //						inbound.setBoxCount(new Double(0));
 //					}
-					
+					// 20220706
+					if(inbound.getItemCount()==null||inbound.getItemCount().equals("")) {
+					inbound.setItemCount(new Double(0));
+				}
 					
 					
 //					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")) {
@@ -685,7 +688,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //					}
 //					
 //					inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
-					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")) {
+					if(inbound.getReportPrice()==null||inbound.getReportPrice().equals("")||inbound.getItemCount()==null||inbound.getItemCount().equals("")) {
 						inbound.setReportPrice(null);
 						inbound.setTotalPrice(null);
 					}else {

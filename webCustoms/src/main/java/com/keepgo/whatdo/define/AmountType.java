@@ -11,9 +11,10 @@ public enum AmountType {
 	A(1,"PCS",1),
 	B(2,"M",2),
 	C(3,"YD",3),
-	D(4,"KG",4);
-//	E(5,"공장CO",4);
-//	E(5,"YATAI",4);
+	D(4,"KG",4),
+	E(5,"SET",5),
+	F(6,"DOZ",6),
+	G(7,"PAIR",7);
 	
 	Integer id;
 	String name;

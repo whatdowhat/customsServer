@@ -20,6 +20,7 @@ public class CorpTypeRes {
 	private int id;
 	private String code;
 	private String name;
+	private String showName;
 	private int order;
 	
 }

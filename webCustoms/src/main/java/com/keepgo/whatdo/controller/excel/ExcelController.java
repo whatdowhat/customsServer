@@ -245,8 +245,8 @@ public class ExcelController {
 
 		InboundViewListRes s =_excelService.previewData(req);
 		List<UnbiRes> list = _unbiservice.getUnbiByMasterIdForPreView(req);
-
-		_excelService.preview(s, list,response);
+		FinalInboundRes container = _finalInboundService.getOne(req.getFinalInboundId());
+		_excelService.preview(s, list,container,response);
 	}
 	
 	@RequestMapping(value = "/excel/document/previewContainer", method = { RequestMethod.POST })

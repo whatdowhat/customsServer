@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.define.FreightType;
 import com.keepgo.whatdo.entity.customs.CheckImport;
 import com.keepgo.whatdo.entity.customs.FileUpload;
+import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
@@ -217,6 +219,7 @@ public class FinalInboundController {
 
 		List<FinalInboundInboundMaster> l = _finalInboundInboundMasterRepository.findByFinalInboundId(containerId);
 //		Collections.reverse(l);
+		l.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
 		List<InboundViewRes> finalList = new ArrayList<>();
 		int no = 1;
 		for (int i = 0; i < l.size(); i++) {

@@ -21,11 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.keepgo.whatdo.define.AmountType;
+import com.keepgo.whatdo.define.CorpType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
+import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
@@ -57,7 +60,10 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 	public List<?> getAll(CompanyInfoReq req) {
 
 		List<?> list = _companyInfoRepository.findAll().stream()
-				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
+//				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed())
+				.sorted(Comparator.comparing(CompanyInfo::getCorpType).thenComparing(CompanyInfo::getCoNm))
+//				.sorted(Comparator.comparing(CompanyInfo::getCoNm)
+				.map(item -> {
 //				.sorted(Comparator.comparing(CompanyInfo::getId).reversed()).map(item -> {
 					CompanyInfoRes dto = CompanyInfoRes.builder()
 
@@ -85,10 +91,21 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 					sb.insert(3, "-");
 					sb.insert(6, "-");
 					dto.setCoNum(sb.toString());
+					
+						for(int k=0; k<CorpType.getList().size();k++) {
+							if(CorpType.getList().get(k).getId()==item.getCorpType()) {
+								dto.setCorpId(CorpType.getList().get(k).getId());
+								dto.setCorpShowName(CorpType.getList().get(k).getShowName());
+							}else {
+
+							}
+						}
+						
+					
 
 					return dto;
 				}).collect(Collectors.toList());
-
+//		l.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
 		return list;
 	}
 	
@@ -194,6 +211,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setUpdateDt(new Date());
 		companyInfo.setCoNmEn(companyInfoReq.getCoNmEn());
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
+		companyInfo.setCorpType(companyInfoReq.getCorpId());
 //		companyInfo.setUser(User.builder().build());
 
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());

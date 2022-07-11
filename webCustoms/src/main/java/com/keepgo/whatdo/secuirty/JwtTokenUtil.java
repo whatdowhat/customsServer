@@ -22,7 +22,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtTokenUtil implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;//
-    public static final long EXPIREDTIME = 1000 * 60L * 60L * 1L;// 1시간
+    public static final long EXPIREDTIME = 1000 * 60L * 10L * 1L;// 1시간
 //    public static final long EXPIREDTIME = 1000 * 60L * 1L * 1L;// 1시간
     @Value("${jwt.secret}")
     private String secret = "jwtsecretkey";
@@ -48,7 +48,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //check if the token has expired
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
@@ -77,9 +77,14 @@ public class JwtTokenUtil implements Serializable {
             .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
+//    //validate token
+//    public Boolean validateToken(String token, UserDetails userDetails) {
+//        final String username = getUsernameFromToken(token);
+//        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+//    }
     //validate token
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()));
     }
 }

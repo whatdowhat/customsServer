@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -35,7 +36,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     
     @Value("${app.administratorPassword}")
     private String ADMINISTRATORPASSWORD;
-    
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

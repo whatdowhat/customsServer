@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +20,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.gson.Gson;
 import com.keepgo.whatdo.entity.ErrorVO;
-import com.keepgo.whatdo.exception.UsernameFromTokenException;
+import com.keepgo.whatdo.entity.customs.User;
+import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.secuirty.JwtTokenUtil;
 import com.keepgo.whatdo.secuirty.JwtUserDetailsService;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 
 @Component
 @CrossOrigin
@@ -35,6 +35,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Value("${jwt.secretYn}")
     private String secretYn;
     
+    @Value("${app.administrator}")
+    private String ADMINISTRATOR;
+    
+	@Autowired
+	UserRepository _user;
+	
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
 
@@ -76,6 +82,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }else {
                     if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
                         
+                    	
                         try {
                         	jwtToken = requestTokenHeader.substring(7);
                             username = jwtTokenUtil.getUsernameFromToken(jwtToken);
@@ -102,7 +109,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
                 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 			String resultObj = gson.toJson(
-                					ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("JWT Token has expired").build());
+                					ErrorVO.builder().status(200).errorCode("403_PASSWORD_INCORRECT").errorMessage("403_PASSWORD_INCORRECT").build());
                 			response.getWriter().println(resultObj);
                 			return;
             			}
@@ -121,13 +128,34 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                 // After setting the Authentication in the context, we specify
                                 // that the current user is authenticated. So it passes the
                                 // Spring Security Configurations successfully.
+                                //refresh 추가.
+                                //System.out.println("##############"+SecurityContextHolder.getContext().getAuthentication().getName()); 
+                              //refresh 추가.
                                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                                if(SecurityContextHolder.getContext().getAuthentication() != null) {
+                                	System.out.println("##############"+SecurityContextHolder.getContext().getAuthentication().getName());
+                                	String token = jwtTokenUtil.generateToken(userDetails);
+                                	
+                                	response.setHeader("refreshToken", token);
+                                	System.out.println("############## refresh token setting"+token);
+                                }else {
+                                	System.out.println("##############"+"null!!");
+                                }
+                                
                                 chain.doFilter(request, response);
-                            }else {
-                    			response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                            }else if(jwtTokenUtil.isTokenExpired(jwtToken)){
+                            	response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
                     			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     			String resultObj = gson.toJson(
                     					ErrorVO.builder().status(200).errorCode("403_EXPIREDJWT").errorMessage("JWT Token has expired").build());
+
+                    			response.getWriter().println(resultObj);
+                    			return;
+                            }else {
+                            	response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());
+                    			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    			String resultObj = gson.toJson(
+                    					ErrorVO.builder().status(200).errorCode("403_PASSWORD_INCORRECT").errorMessage("PASSWORD INCORRECT").build());
 
                     			response.getWriter().println(resultObj);
                     			return;

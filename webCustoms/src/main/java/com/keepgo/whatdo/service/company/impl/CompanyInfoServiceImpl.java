@@ -113,7 +113,8 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 	public List<?> getCompanyByCorpType(CompanyInfoReq req) {
 
 		List<?> list = _companyInfoRepository.findByCorpType(req.getCorpId()).stream()
-				.sorted(Comparator.comparing(CompanyInfo::getUpdateDt).reversed()).map(item -> {
+				.sorted(Comparator.comparing(CompanyInfo::getCorpType).thenComparing(CompanyInfo::getCoNm))
+				.map(item -> {
 //				.sorted(Comparator.comparing(CompanyInfo::getId).reversed()).map(item -> {
 					CompanyInfoRes dto = CompanyInfoRes.builder()
 

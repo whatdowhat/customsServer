@@ -141,7 +141,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                 }else {
                                 	System.out.println("##############"+"null!!");
                                 }
-                                
+                                //refresh 추가
                                 chain.doFilter(request, response);
                             }else if(jwtTokenUtil.isTokenExpired(jwtToken)){
                             	response.setContentType(org.springframework.http.MediaType.APPLICATION_XML.toString());

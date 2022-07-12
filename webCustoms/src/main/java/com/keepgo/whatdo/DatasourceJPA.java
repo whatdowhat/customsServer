@@ -85,16 +85,16 @@ public class DatasourceJPA {
 		
 		
 //		dev
-		props.setProperty("hibernate.SQL", "info");
-		props.setProperty("hibernate.show_sql", "true");
-
-//		real
 //		props.setProperty("hibernate.SQL", "info");
 //		props.setProperty("hibernate.show_sql", "true");
+
+//		real
+		props.setProperty("hibernate.SQL", "info");
+		props.setProperty("hibernate.show_sql", "true");
 		props.setProperty("hibernate.format_sql", "true");
 		props.setProperty("hibernate.use_sql_comments", "true");
 		props.setProperty("spring.jpa.properties.hibernate.format_sql", "true");
-		
+//		
 		props.setProperty("hibernate.hbm2ddl.auto", "update");
 		
 

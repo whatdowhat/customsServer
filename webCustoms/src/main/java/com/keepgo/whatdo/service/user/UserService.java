@@ -31,6 +31,13 @@ public interface UserService {
 	@Transactional
 	UserRes changePassword(UserReq userReq);
 	
+	@Transactional
+	UserRes resetPassword(UserReq userReq);
 	
+	@Transactional
+	UserRes userInfo(UserReq userReq);
+	
+	@Transactional
+	UserRes changeUserInfo(UserReq userReq);
 
 }

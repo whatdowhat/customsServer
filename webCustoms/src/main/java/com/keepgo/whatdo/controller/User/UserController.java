@@ -94,6 +94,14 @@ public class UserController {
 		return result;
 
 	}
+	@RequestMapping(value = "/admin/resetPassword", method = {RequestMethod.POST })
+
+	public  UserRes resetPassword(@RequestBody UserReq userReq) throws IOException, InterruptedException {
+		
+		UserRes result = _userService.resetPassword(userReq);
+		return result;
+
+	}
 
 	
 
@@ -128,7 +136,25 @@ public class UserController {
 	}
 	
 	
+	@RequestMapping(value = "/user/userInfo", method = {RequestMethod.POST })
 
+	public  UserRes userInfo(@RequestBody UserReq userReq) throws IOException, InterruptedException {
+
+	
+		UserRes result = _userService.userInfo(userReq);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/user/changeUserInfo", method = {RequestMethod.POST })
+
+	public  UserRes changeUserInfo(@RequestBody UserReq userReq) throws IOException, InterruptedException {
+
+	
+		UserRes result = _userService.changeUserInfo(userReq);
+		return result;
+
+	}
 	
 
 	

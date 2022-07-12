@@ -1955,6 +1955,18 @@ public class ExcelServiceImpl implements ExcelService {
 				       
 
 				}
+				if(cn==1) {
+					
+					for (int l = 0; l < excelInpackRes.getSubItem().size(); l++) {
+						
+						XSSFRow row = sheet.getRow(startCount+(2*l));
+						int startNum = startCount+(2*l)+1;
+						String a = "K";
+						String b = String.valueOf(startNum);
+						String c = "I";
+						row.getCell(9).setCellFormula(a+b+"-"+c+b);
+					}
+				}
 			}
 			
 			//기존
@@ -2331,9 +2343,11 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()));
 					} else if (i == 8) {
 						newCell.setCellValue((item.getBoxCount() == null ? 0d : item.getBoxCount()));
-					} else if (i == 9) {
-						newCell.setCellValue( (item.getWeight() == null ? 0d : item.getWeight()));
-					} else if (i == 10) {
+					} 
+//					else if (i == 9) {
+//						newCell.setCellValue( (item.getWeight() == null ? 0d : item.getWeight()));
+//					} 
+					else if (i == 10) {
 						newCell.setCellValue( (item.getTotalWeight() == null ? 0 : item.getTotalWeight()));
 					} else if (i == 11) {
 						newCell.setCellValue( (item.getCbm() == null ? 0d : item.getCbm()  ));
@@ -2688,8 +2702,20 @@ public class ExcelServiceImpl implements ExcelService {
 			r.setHcnnam(""+f.getInboundMaster().getCompanyInfo().getCoNmEn()+"("+sb.toString()+")");
 			r.setHcnadd(""+f.getInboundMaster().getCompanyInfo().getCoAddress());
 			r.setHnfnam("SAME AS CONSIGNEE");
-			r.setHfwnam(""+f.getInboundMaster().getCompanyInfo().getCoNm());
-			r.setHfwadd(""+f.getInboundMaster().getCompanyInfo().getCoNmEn());
+//			r.setHfwnam(""+f.getInboundMaster().getCompanyInfo().getCoNm());
+//			r.setHfwadd(""+f.getInboundMaster().getCompanyInfo().getCoNmEn());
+			
+			for(int l=0; l<CorpType.getList().size();l++) {
+				if(CorpType.getList().get(l).getId()==f.getInboundMaster().getCompanyInfo().getCorpType()) {
+					r.setHfwnam(""+CorpType.getList().get(l).getName());
+					r.setHfwadd(""+CorpType.getList().get(l).getCode());
+					
+				}else {
+
+				}
+			}
+			
+			
 			r.setHplcod((f.getFinalInbound().getDepartPort() == null ? "" : ""+ _commonRepository.findById(f.getFinalInbound().getDepartPort()).get().getValue()));
 			r.setHplnam((f.getFinalInbound().getDepartPort() == null ? "" : ""+ _commonRepository.findById(f.getFinalInbound().getDepartPort()).get().getValue2()));
 			r.setHpdcod((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue()));
@@ -4429,21 +4455,21 @@ public class ExcelServiceImpl implements ExcelService {
 				
 				// item add
 				// 문서마다 시작하는 숫자가 고정
-				int startCount = 6;
+				int startCount = 7;
 				for (int i = 0; i < list.size(); i++) {
 					shiftRowForCLP(startCount, sheet, "D", list.get(i), workbook);
 				}
 				
 				chageDataforCLP(sheet, list.get(0), workbook);
 
-				for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
-					if (sheet.getMergedRegion(i).getFirstRow() == startCount+list.size()) {
-						sheet.removeMergedRegion(i);
-						sheet.removeMergedRegion(i);
-						sheet.removeMergedRegion(i);
-					}
-				}
-				sheet.shiftRows(startCount+list.size()+1, sheet.getLastRowNum(), -1);
+//				for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
+//					if (sheet.getMergedRegion(i).getFirstRow() == startCount+list.size()) {
+//						sheet.removeMergedRegion(i);
+//						sheet.removeMergedRegion(i);
+//						sheet.removeMergedRegion(i);
+//					}
+//				}
+				sheet.shiftRows(7, sheet.getLastRowNum(), -1);
 			
 			
 			
@@ -4473,7 +4499,7 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFWorkbook workbook) {
 
 		 
-		copyRowForCLP(workbook, sheet, startIndex, startIndex, item);
+		copyRowForCLP(workbook, sheet, 6, 7, item);
 		
 
 	}
@@ -4559,13 +4585,12 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getBlNo());
 					}else if (i == 3) {
 						newCell.setCellValue(item.getMarking());
+						newCell.getCellStyle().setWrapText(true);
 					}else if (i == 6) {
 						XSSFRichTextString richString = new XSSFRichTextString( item.getEngNm());
 						
 						newCell.setCellValue(richString);
 //						newCell.setCellValue(item.getEngNm());
-					}else if (i == 7) {
-						newCell.setCellValue(item.getMemo1());
 					} else {
 						newCell.setCellValue(oldCell.getStringCellValue());
 					}
@@ -4647,40 +4672,6 @@ public class ExcelServiceImpl implements ExcelService {
 			});
 
 		}
-
-//		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
-//			if (sheet.getMergedRegion(i).getFirstRow() == 23) {
-//				sheet.removeMergedRegion(i);
-//				sheet.removeMergedRegion(i);
-//				sheet.removeMergedRegion(i);
-//			}
-//		}
-//		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
-//
-//		for (int i = 0; i < sheet.getMergedRegions().size(); i++) {
-//			if (sheet.getMergedRegion(i).getFirstRow() == 23) {
-//				sheet.removeMergedRegion(i);
-//				sheet.removeMergedRegion(i);
-//				sheet.removeMergedRegion(i);
-//			}
-//		}
-//		sheet.shiftRows(24, sheet.getLastRowNum(), -1);
-//
-//		int dataSize = (excelCLPRes.getSubItem().size())*2;
-//		int firstRow = (excelCLPRes.getSubItem().size())*2-1;
-//
-//		for (int i = 0; i <dataSize-2; i++) {
-//	    	   
-//	    	   for(int j=0; j<sheet.getMergedRegions().size();j++) {
-//	    	       	if(sheet.getMergedRegion(j).getFirstRow() == 23+dataSize) {
-//	    	    		sheet.removeMergedRegion(j);
-//	    	    		sheet.removeMergedRegion(j);
-//	    	    		
-//	    	       	}
-//	    	   }
-//	    	   
-//	    	   sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
-//			}
 
 	}
 

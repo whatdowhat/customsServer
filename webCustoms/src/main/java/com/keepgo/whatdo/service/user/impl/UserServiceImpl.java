@@ -98,6 +98,7 @@ public class UserServiceImpl implements UserService {
 	
 	
 	
+	
 
 	@Override
 	public UserRes addUser(UserReq userReq) {
@@ -135,7 +136,7 @@ public class UserServiceImpl implements UserService {
 		user.setId(userReq.getId());
 		user.setName(userReq.getName());
 		user.setPhoneNo(userReq.getPhoneNo());
-		user.setPassword(password);
+//		user.setPassword(password);
 		user.setLoginId(userReq.getLoginId());
 		user.setRegDt(new Date());
 		user.setUpdateDt(new Date());
@@ -188,7 +189,76 @@ public class UserServiceImpl implements UserService {
 		UserRes userRes = new UserRes();
 		return userRes;
 	}
+	@Override
+	public UserRes resetPassword(UserReq userReq) {
+		List<Long> list = userReq.getIds();
+		for (int i = 0; i < list.size(); i++) {
+
+			User user = _userRepository.findById(list.get(i).longValue()).get();
+
+			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+			String password = "";
+			password = bCryptPasswordEncoder.encode(user.getLoginId());
+			
+			user.setPassword(password);
+			user.setUpdateDt(new Date());
+			user.setUpdateId("admin");
+			user.setFirstLogin("Y");
+			
+			
+			_userRepository.save(user);
+		}
+		
+		UserRes userRes = new UserRes();
+		return userRes;
+	}
 	
+	@Override
+	public UserRes userInfo(UserReq req) {
+
+		User item = _userRepository.findByLoginId(req.getLoginId());
+		
+
+			UserRes dto = UserRes.builder()
+
+					
+					.id(item.getId()).name(item.getName()).phoneNo(item.getPhoneNo()).password(item.getPassword())
+					.loginId(item.getLoginId()).updateDt(item.getUpdateDt()).regDt(item.getRegDt())
+					.updateId(item.getUpdateId())
+					
+					.firstLogin(item.getFirstLogin())
+											
+					.build();
+					for(int i=0; i<UserType.getList().size(); i++) {
+						String code = UserType.getList().get(i).getCode();
+						if(code.equals(item.getAuthority())) {
+							dto.setAuthority(UserType.getList().get(i).getName());
+						}
+					}
+					
+			return dto;
+		
+
+	}
+	
+	@Override
+	public UserRes  changeUserInfo(UserReq userReq) {
+		User user = _userRepository.findByLoginId(userReq.getLoginId());
+		
+		user.setLoginId(userReq.getLoginId());
+		user.setName(userReq.getName());
+		user.setPhoneNo(userReq.getPhoneNo());
+		user.setUpdateDt(new Date());
+		user.setUpdateId(userReq.getLoginId());
+		user.setFirstLogin("N");
+		
+		
+		_userRepository.save(user);
+		
+
+		UserRes userRes = new UserRes();
+		return userRes;
+	}
 
 	
 }

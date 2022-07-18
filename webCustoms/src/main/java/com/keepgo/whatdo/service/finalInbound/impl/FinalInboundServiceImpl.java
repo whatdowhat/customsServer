@@ -515,6 +515,58 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 		return r;
 	}
+	@Override
+	public List<FinalInboundRes> getFIList(FinalInboundReq req) {
+		
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
+		Date tempDate = req.getStartDate();
+		Date tempDate2 = req.getEndDate();
+		String startDt = afterFormat.format(tempDate);
+		String endDt =  afterFormat.format(tempDate2);
+		
+		if(req.getDateType()==null||req.getDateType()==0) {
+			List<FinalInboundRes>  r = _finalInboundRepository.findByDepartDtStrBetween(startDt,endDt)
+					.stream()
+					.sorted(Comparator.comparing(FinalInbound::getDepartDtStr))
+					.map(t->{
+						
+							
+						
+						return  FinalInboundRes.builder()
+								.id(t.getId())
+								.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
+								.gubunCode(t.getGubun())
+								.departDtStr(t.getDepartDtStr())
+								.title(t.getTitle())
+								.incomeDt(t.getIncomeDt())
+								.build();
+					}).collect(Collectors.toList());
+
+			return r;
+		}else {
+			List<FinalInboundRes>  r = _finalInboundRepository.findByIncomeDtBetween(startDt,endDt)
+					.stream()
+					.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
+					.map(t->{
+						
+							
+						
+						return  FinalInboundRes.builder()
+								.id(t.getId())
+								.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
+								.gubunCode(t.getGubun())
+								.departDtStr(t.getDepartDtStr())
+								.title(t.getTitle())
+								.incomeDt(t.getIncomeDt())
+								.build();
+					}).collect(Collectors.toList());
+
+			return r;
+		}
+		
+		
+	}
 	
 	@Override
 	public boolean excelRead(MultipartFile file, InboundReq Req, String id, String loginId) throws IOException {

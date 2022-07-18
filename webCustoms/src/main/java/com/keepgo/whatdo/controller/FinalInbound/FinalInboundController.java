@@ -52,6 +52,7 @@ import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
 import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
+import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
@@ -110,6 +111,9 @@ public class FinalInboundController {
 
 	@Autowired
 	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
+	
+	@Autowired
+	FinalInboundRepository _finalInboundRepository;
 
 	@RequestMapping(value = "/front/finalInboundCreate", method = { RequestMethod.POST })
 	public boolean finalInboundCreate(HttpServletRequest httpServletRequest,
@@ -403,6 +407,14 @@ public class FinalInboundController {
 		model.addAttribute("sheetName", "first");
 		model.addAttribute("workBookName", filename);
 		return new CustomExcel();
+
+	}
+	
+	@RequestMapping(value = "/front/getFIList", method = { RequestMethod.POST })
+	public List<FinalInboundRes> getFIList(HttpServletRequest httpServletRequest,
+			@RequestBody FinalInboundReq finalInboundReq) {
+		
+		return _finalInboundService.getFIList(finalInboundReq);
 
 	}
 }

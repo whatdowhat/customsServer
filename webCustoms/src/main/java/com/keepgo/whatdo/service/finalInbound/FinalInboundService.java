@@ -22,6 +22,8 @@ public interface FinalInboundService {
 
 	@Transactional
 	List<FinalInboundRes> getAllCondition(FinalInboundReq finalInboundReq); 
+	@Transactional
+	List<FinalInboundRes> getFIList(FinalInboundReq finalInboundReq); 
 	
 	@Transactional
 	FinalInboundRes  getOne(Long id); 

@@ -4477,6 +4477,11 @@ public class ExcelServiceImpl implements ExcelService {
 			String fileName =  "CLP.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
+			workbook.removeSheetAt(1);
+			workbook.removeSheetAt(1);
+			workbook.removeSheetAt(1);
+			workbook.removeSheetAt(1);
+			workbook.removeSheetAt(1);
 			workbook.write(response.getOutputStream());
 			workbook.close();
 
@@ -5201,6 +5206,7 @@ public class ExcelServiceImpl implements ExcelService {
 			workbook.setSheetName(0, "CONTAINER");
 				
 			XSSFSheet sheet = workbook.getSheetAt(0);
+			sheet.setDefaultRowHeightInPoints(new Float("25"));		
 			XSSFSheet sheet2 = workbook.getSheetAt(1);
 			XSSFSheet sheet3 = workbook.getSheetAt(2);
 			XSSFSheet sheet4 = workbook.getSheetAt(4);
@@ -5208,6 +5214,7 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFSheet sheet7 = workbook.getSheetAt(7);
 			XSSFSheet sheet8 = workbook.getSheetAt(8);
 			int startRow = 1;
+			List<Integer> rowNum = new ArrayList<>();
 			List<InboundViewRes> list2 = inboundViewListRes.getInbounds();
 //			for(int i=0; i<1; i++) {
 			for(int i=0; i<list2.size(); i++) {
@@ -5266,6 +5273,18 @@ public class ExcelServiceImpl implements ExcelService {
 						step10ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
 						sheet.addMergedRegion(new CellRangeAddress(1,4,16,16));
 						sheet.addMergedRegion(new CellRangeAddress(1,4,17,19));
+						sheet.getRow(0).setHeightInPoints(new Float("36"));
+						sheet.getRow(1).setHeightInPoints(new Float("21"));
+						sheet.getRow(2).setHeightInPoints(new Float("21"));
+						sheet.getRow(3).setHeightInPoints(new Float("21"));
+						sheet.getRow(4).setHeightInPoints(new Float("21"));
+						sheet.getRow(5).setHeightInPoints(new Float("21"));
+						if(list.size()==1) {
+							rowNum.add(startRow+2);
+						}
+						for(int w=6; w<list.size()+startRow+5+unbiList.size()+7; w++) {
+							sheet.getRow(w).setHeightInPoints(new Float("25"));
+					}
 						startRow=startRow+list.size();	
 						
 				 }else if(i==list2.size()-1) {
@@ -5322,19 +5341,42 @@ public class ExcelServiceImpl implements ExcelService {
 //						sheet.addMergedRegion(new CellRangeAddress(1,4,16,19));
 						sheet.addMergedRegion(new CellRangeAddress(1,4,16,16));
 						sheet.addMergedRegion(new CellRangeAddress(1,4,17,19));
+						sheet.getRow(0).setHeightInPoints(new Float("36"));
+						sheet.getRow(1).setHeightInPoints(new Float("21"));
+						sheet.getRow(2).setHeightInPoints(new Float("21"));
+						sheet.getRow(3).setHeightInPoints(new Float("21"));
+						sheet.getRow(4).setHeightInPoints(new Float("21"));
+						sheet.getRow(5).setHeightInPoints(new Float("21"));
+						for(int w=6; w<list.size()+startRow+5+unbiList.size()+7; w++) {
+								sheet.getRow(w).setHeightInPoints(new Float("25"));
+						}
+						if(list.size()==1) {
+							rowNum.add(startRow+2);
+						}
+						for(int q=0; q<rowNum.size(); q++) {
+							sheet.getRow(rowNum.get(q)+6).setHeightInPoints(new Float("50"));
+						}
+						startRow=startRow+list.size();	
 						
 				 }else if(i==0) {
 					 
 						step01ForPreview(list, sheet, workbook,startRow);
 						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow,sheet2, 0);	
 						step02ForPreview(list, sheet, workbook,list.size()+startRow);
+						if(list.size()==1) {
+							rowNum.add(startRow);
+						}
 						startRow=startRow+list.size();	
 						
 				 }else {
 					 	step01ForPreview(list, sheet, workbook,startRow+i);	
 						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
 						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
-						startRow=startRow+list.size();	
+						if(list.size()==1) {
+							rowNum.add(startRow+2);
+						}
+						startRow=startRow+list.size();
+						
 				 }
 						
 				
@@ -5345,7 +5387,12 @@ public class ExcelServiceImpl implements ExcelService {
 			response.setHeader("custom-header", fileName);
 			workbook.removeSheetAt(1);
 			workbook.removeSheetAt(2);
-//			workbook.removeSheetAt(3);
+			workbook.removeSheetAt(3);
+			workbook.removeSheetAt(4);
+			workbook.removeSheetAt(5);
+//			workbook.removeSheetAt(6);
+//			workbook.removeSheetAt(7);
+//			workbook.removeSheetAt(8);
 			
 			workbook.write(response.getOutputStream());
 			workbook.close();
@@ -5383,10 +5430,14 @@ public class ExcelServiceImpl implements ExcelService {
 
 			XSSFRow row = sheet.getRow(startRow+i);
 			if(resource.size()==1) {
-			row.setHeight((short)2000);
-		}else {
-			row.setHeight((short)500);
-		}
+				
+//				row.setHeight(new Short("2000"));
+				row.setHeightInPoints(new Float("50"));
+				}else {
+//				row.setHeight(new Short("500"));
+				row.setHeightInPoints(new Float("25"));
+				}
+			
 			XSSFCellStyle orderNoFont  = workbook.createCellStyle();
 			XSSFCellStyle allCellStyle = workbook.createCellStyle();
 			
@@ -6086,6 +6137,8 @@ public class ExcelServiceImpl implements ExcelService {
 				row.getCell(19).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 				row.getCell(19).getCellStyle().setBorderRight(BorderStyle.THIN); 
 			}
+			
+			
 
 		}
 		// merge 규칙

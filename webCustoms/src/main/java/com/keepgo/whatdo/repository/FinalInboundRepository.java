@@ -16,4 +16,6 @@ public interface FinalInboundRepository extends JpaRepository<FinalInbound, Long
 	List<FinalInbound> findByIncomeDt(String IncomeDt);
 //	List<CommonMaster> findAll(Specification<CommonMaster> condition);
 	List<FinalInbound> findAll(Specification<FinalInbound> condition);
+	List<FinalInbound> findByIncomeDtBetween(String start, String end);
+	List<FinalInbound> findByDepartDtStrBetween(String start, String end);
 }

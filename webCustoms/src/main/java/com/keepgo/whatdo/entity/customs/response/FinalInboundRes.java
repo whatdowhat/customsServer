@@ -53,6 +53,7 @@ public class FinalInboundRes {
 	private String hangCha;
 	private String memo;
 	private Integer corpId;
+	private String corpType;
 	//중국 상검
 	private int chinaSanggumYn;
 	//출항 지연

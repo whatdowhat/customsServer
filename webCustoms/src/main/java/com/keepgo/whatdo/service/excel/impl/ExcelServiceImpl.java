@@ -2781,6 +2781,7 @@ public class ExcelServiceImpl implements ExcelService {
 			
 			
 			r.setHecdec(hecdec);
+			r.setHecitm(hecdec);
 			r.setHblseq(String.valueOf(no));
 			r.setHblatn(f.getInboundMaster().getUser().getLoginId().toUpperCase());
 			r.setHisdte(afterFormat.format(departDt));
@@ -3102,6 +3103,8 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getPrjcod());
 					}else if (i == 81) {
 						newCell.setCellValue(item.getPftdat());
+					}else if (i == 82) {
+						newCell.setCellValue(item.getHecitm());
 					} else {
 						newCell.setCellValue(oldCell.getStringCellValue());
 					}
@@ -3154,11 +3157,21 @@ public class ExcelServiceImpl implements ExcelService {
 			
 				
 			XSSFSheet sheet = workbook.getSheetAt(0);
+			sheet.setDefaultRowHeightInPoints(new Float("25"));		
 			XSSFSheet sheet2 = workbook.getSheetAt(1);
 			step01ForInbound(list, sheet, workbook);
 			copyRowOtherSheetForInbound(workbook, sheet, list.size()+1,sheet2, 0);	
 			step02ForInbound(list, sheet, workbook);
 			
+			sheet.getRow(0).setHeightInPoints(new Float("25"));
+			sheet.getRow(list.size()+1).setHeightInPoints(new Float("25"));
+			if(list.size()==1) {
+				sheet.getRow(1).setHeightInPoints(new Float("50"));
+			}else {
+				for(int i=0; i<list.size(); i++) {
+					sheet.getRow(i+1).setHeightInPoints(new Float("25"));
+				}
+						}
 			String fileName =  "INBOUND.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -3182,13 +3195,23 @@ public class ExcelServiceImpl implements ExcelService {
 		Font font = workbook.createFont();
 		font.setColor(IndexedColors.RED.getIndex());
 		font.setFontName("굴림체");
+		Font font1 = workbook.createFont();
+		font1.setColor(IndexedColors.BLACK.getIndex());
+		font1.setFontName("굴림체");
 		XSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setFont(font);
 		cellStyle.setAlignment(HorizontalAlignment.CENTER);;
 		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 		cellStyle.setBorderBottom(BorderStyle.THIN);
 		cellStyle.setBorderRight(BorderStyle.THIN);
-		cellStyle.setBorderTop(BorderStyle.HAIR);		
+		cellStyle.setBorderTop(BorderStyle.HAIR);	
+		XSSFCellStyle cellStyle1 = workbook.createCellStyle();
+		cellStyle1.setFont(font1);
+		cellStyle1.setAlignment(HorizontalAlignment.CENTER);
+		cellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+		cellStyle1.setBorderBottom(BorderStyle.THIN);
+		cellStyle1.setBorderRight(BorderStyle.THIN);
+		cellStyle1.setBorderTop(BorderStyle.HAIR);	
 		// item 채우기
 		for (int i = 0; i < resource.size(); i++) {
 
@@ -3861,9 +3884,14 @@ public class ExcelServiceImpl implements ExcelService {
 			row.getCell(14).setCellValue(resource.get(i).getHsCode());
 			row.getCell(14).setCellStyle(hsCodeCellStyle);
 			row.getCell(15).setCellValue(resource.get(i).getCoCode());
-			row.getCell(15).setCellStyle(cellStyle);
+			if(resource.get(i).getCoCode().equals("안받음")) {
+				row.getCell(15).setCellStyle(cellStyle1);
+			}else {
+				row.getCell(15).setCellStyle(cellStyle);
+			}
+			
 			row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
-			row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR);
+			row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 			if (resource.get(i).getTotalPrice() == null) {
 				row.getCell(16).setCellValue("");
 				row.getCell(16).setCellStyle(totalPriceCellStyle);
@@ -5351,7 +5379,7 @@ public class ExcelServiceImpl implements ExcelService {
 								sheet.getRow(w).setHeightInPoints(new Float("25"));
 						}
 						if(list.size()==1) {
-							rowNum.add(startRow+2);
+							rowNum.add(startRow+i-1);
 						}
 						for(int q=0; q<rowNum.size(); q++) {
 							sheet.getRow(rowNum.get(q)+6).setHeightInPoints(new Float("50"));
@@ -5373,7 +5401,7 @@ public class ExcelServiceImpl implements ExcelService {
 						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
 						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
 						if(list.size()==1) {
-							rowNum.add(startRow+2);
+							rowNum.add(startRow+i);
 						}
 						startRow=startRow+list.size();
 						
@@ -5414,6 +5442,10 @@ public class ExcelServiceImpl implements ExcelService {
 		font.setColor(IndexedColors.RED.getIndex());
 		font.setFontName("굴림체");
 		
+		Font font1 = workbook.createFont();
+		font1.setColor(IndexedColors.BLACK.getIndex());
+		font1.setFontName("굴림체");
+		
 		XSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setFont(font);
 		cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -5421,6 +5453,16 @@ public class ExcelServiceImpl implements ExcelService {
 		cellStyle.setBorderBottom(BorderStyle.THIN);
 		cellStyle.setBorderRight(BorderStyle.THIN);
 		cellStyle.setBorderTop(BorderStyle.HAIR);		
+		
+		XSSFCellStyle cellStyle1 = workbook.createCellStyle();
+		cellStyle1.setFont(font1);
+		cellStyle1.setAlignment(HorizontalAlignment.CENTER);
+		cellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+		cellStyle1.setBorderBottom(BorderStyle.THIN);
+		cellStyle1.setBorderRight(BorderStyle.THIN);
+		cellStyle1.setBorderTop(BorderStyle.HAIR);		
+		
+		
 		XSSFSheet sheet3 = workbook.getSheetAt(3);
 		// item 채우기
 		for (int i = 0; i < resource.size(); i++) {
@@ -6105,7 +6147,12 @@ public class ExcelServiceImpl implements ExcelService {
 			row.getCell(14).setCellValue(resource.get(i).getHsCode());
 			row.getCell(14).setCellStyle(hsCodeCellStyle);
 			row.getCell(15).setCellValue(resource.get(i).getCoCode());
-			row.getCell(15).setCellStyle(cellStyle);
+			if(resource.get(i).getCoCode().equals("안받음")) {
+				row.getCell(15).setCellStyle(cellStyle1);
+			}else {
+				row.getCell(15).setCellStyle(cellStyle);
+			}
+			
 			row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 			row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 			if (resource.get(i).getTotalPrice() == null) {

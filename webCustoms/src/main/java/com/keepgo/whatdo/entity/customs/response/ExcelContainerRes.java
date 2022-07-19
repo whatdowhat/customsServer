@@ -156,7 +156,7 @@ public class ExcelContainerRes {
 	String prjcod="";
 	@Builder.Default
 	String pftdat="";
-	
+	String hecitm;
 
 	
 	

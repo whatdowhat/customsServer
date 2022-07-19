@@ -57,4 +57,5 @@ public class CompanyInfoRes {
 	//공통 컬럼.
 	private Integer corpId;
 	private String corpShowName;
+	private String forwarding;
 }

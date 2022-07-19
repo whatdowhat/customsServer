@@ -32,6 +32,7 @@ import com.keepgo.whatdo.define.AmountType;
 import com.keepgo.whatdo.define.BackgroundColorType;
 import com.keepgo.whatdo.define.CoType;
 import com.keepgo.whatdo.define.ColorType;
+import com.keepgo.whatdo.define.CorpType;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.CheckImport;
 import com.keepgo.whatdo.entity.customs.Common;
@@ -168,7 +169,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.silNo(req.getSilNo()).cargoName(req.getCargoName()).departPort(req.getDepartPortId())
 				.hangCha(req.getHangCha()).containerSizeStr(req.getContainerSizeStr())
 				.weatherCondition(req.getWeatherCondition()).memo(req.getMemo())
-
+				.corpId(req.getCorpId())
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
 
@@ -276,7 +277,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		finalInbound.setWorkDepartDt(afterFormat.format(tempDate3));
 		finalInbound.setDeliveryNm(req.getDeliveryNm());
 		finalInbound.setChulhangPort(req.getChulhangPort());		
-		finalInbound.setMemo(req.getMemo());		
+		finalInbound.setMemo(req.getMemo());
+		finalInbound.setCorpId(req.getCorpId());
 		finalInbound.setIsUsing(true);
 		finalInbound.setUpdateDt(new Date());
 		finalInbound.setCreateDt(new Date());
@@ -507,6 +509,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							.id(t.getId())
 							.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
 							.gubunCode(t.getGubun())
+							.corpType(CorpType.getList().stream().filter(type->type.getId() == t.getCorpId()).findFirst().get().getShowName())
 							.departDtStr(t.getDepartDtStr())
 							.title(t.getTitle())
 							.incomeDt(t.getIncomeDt())

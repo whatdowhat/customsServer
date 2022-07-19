@@ -70,7 +70,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 							.id(item.getId()).coAddress(item.getCoAddress()).coNm(item.getCoNm())
 							.coInvoice(item.getCoInvoice()).updateDt(item.getUpdateDt()).coNmEn(item.getCoNmEn())
 							.isUsing(item.getIsUsing()).createDt(item.getCreateDt()).consignee(item.getConsignee())
-							.manager(item.getManager())
+							.manager(item.getManager()).forwarding(item.getForwarding())
 							
 //							.exports(item.getExports().stream().map(sub_item -> {
 //								Map<String, Object> f = new HashMap<>();
@@ -213,6 +213,8 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setCoNmEn(companyInfoReq.getCoNmEn());
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
 		companyInfo.setCorpType(companyInfoReq.getCorpId());
+		companyInfo.setManager(companyInfoReq.getManager());
+		companyInfo.setForwarding(companyInfoReq.getForwarding());
 //		companyInfo.setUser(User.builder().build());
 
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());
@@ -239,6 +241,8 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setManager(companyInfoReq.getManager());
 		companyInfo.setCoNmEn(companyInfoReq.getCoNmEn());
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
+		companyInfo.setForwarding(companyInfoReq.getForwarding());
+		companyInfo.setCorpType(companyInfoReq.getCorpId());
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());
 		companyInfo.setIsUsing(isUsing);
 

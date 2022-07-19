@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
 				.orElse(User.builder().build());
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		String password = "";
-		password = bCryptPasswordEncoder.encode(userReq.getPassword());
+//		password = bCryptPasswordEncoder.encode(userReq.getPassword());
 		
 		user.setId(userReq.getId());
 		user.setName(userReq.getName());
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
 		user.setLoginId(userReq.getLoginId());
 		user.setRegDt(new Date());
 		user.setUpdateDt(new Date());
-		user.setUpdateId("admin");
+		user.setUpdateId(userReq.getUpdateId());
 		user.setFirstLogin("N");
 		user.setAuthority(userReq.getAuthority());
 		

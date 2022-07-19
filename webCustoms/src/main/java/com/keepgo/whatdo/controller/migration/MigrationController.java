@@ -294,8 +294,10 @@ public class MigrationController {
 			
 			process01(sheet0,atomicInteger01,atomicInteger02,CorpType.B);
 			process01(sheet1,atomicInteger01,atomicInteger02,CorpType.A);
-			process01(sheet3,atomicInteger01,atomicInteger02,CorpType.B);
-			process01(sheet4,atomicInteger01,atomicInteger02,CorpType.A);
+//			process01(sheet3,atomicInteger01,atomicInteger02,CorpType.B);
+//			process01(sheet4,atomicInteger01,atomicInteger02,CorpType.A);
+			process01_forward(sheet3,atomicInteger01,atomicInteger02,CorpType.B);
+			process01_forward(sheet4,atomicInteger01,atomicInteger02,CorpType.A);
 			_CompanyInfoExportRepository.deleteAll();
 			process02(sheet2,atomicInteger01,atomicInteger02,CorpType.A);
 			process02(sheet2,atomicInteger01,atomicInteger02,CorpType.B);
@@ -389,6 +391,7 @@ public class MigrationController {
 					}
 					if(cell.getColumnIndex()==7) {
 						companyInfo.setCoInvoice(numberToString );	
+						companyInfo.setForwarding("");
 					}
 					companyInfo.setCorpType(corpType.id);
 					break;
@@ -410,6 +413,99 @@ public class MigrationController {
 		});
 	}
 	
+	public void process01_forward(XSSFSheet sheet,AtomicInteger atomicInteger01,AtomicInteger atomicInteger02,CorpType corpType) {
+		
+		sheet.rowIterator().forEachRemaining(row->{
+			if(row.getRowNum() == 0) return;
+			if(row.getRowNum() == 1) return;
+			//없는 경우 RETURN 
+			
+			CompanyInfo companyInfo = CompanyInfo.builder().build();
+			companyInfo.setIsUsing(true);
+			companyInfo.setCreateDt(new Date());
+			companyInfo.setUpdateDt(new Date());
+			row.cellIterator().forEachRemaining(cell -> {
+				if(cell.getColumnIndex()==1 && cell.getStringCellValue().equals("") ) return;	
+
+				
+				switch (cell.getCellTypeEnum().name()) {
+				case "STRING":
+					String string1 = cell.getStringCellValue();
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+
+					if(cell.getColumnIndex()==1) {
+						//상호(한글)
+						companyInfo.setCoNm(string1);	
+					}
+					if(cell.getColumnIndex()==2) {
+						//상호(영문)
+						companyInfo.setCoNmEn(string1);
+					}
+					if(cell.getColumnIndex()==3) {
+						companyInfo.setConsignee(string1);	
+					}
+					if(cell.getColumnIndex()==4) {
+						companyInfo.setCoNum(string1);	
+					}
+					if(cell.getColumnIndex()==5) {
+						companyInfo.setCoAddress(string1);	
+					}
+					if(cell.getColumnIndex()==6) {
+						companyInfo.setManager(string1);	
+					}
+					if(cell.getColumnIndex()==7) {
+						companyInfo.setCoInvoice("");	
+						companyInfo.setForwarding(string1);
+					}
+					companyInfo.setCorpType(corpType.id);
+//					
+					break;
+				case "NUMERIC":
+					cell.setCellType( HSSFCell.CELL_TYPE_STRING );
+					String numberToString = cell.getStringCellValue();
+							
+					if(cell.getColumnIndex()==1) {
+						//상호(한글)
+						companyInfo.setCoNm(numberToString );	
+					}
+					if(cell.getColumnIndex()==2) {
+						//상호(영문)
+						companyInfo.setCoNmEn(numberToString );
+					}
+					if(cell.getColumnIndex()==3) {
+						companyInfo.setConsignee(numberToString );	
+					}
+					if(cell.getColumnIndex()==4) {
+						companyInfo.setCoNum(numberToString );	
+					}
+					if(cell.getColumnIndex()==5) {
+						companyInfo.setCoAddress(numberToString );	
+					}
+					if(cell.getColumnIndex()==6) {
+						companyInfo.setManager(numberToString);	
+					}
+					if(cell.getColumnIndex()==7) {
+						companyInfo.setCoInvoice(numberToString );	
+					}
+					companyInfo.setCorpType(corpType.id);
+					break;
+				case "FORMULA":
+					System.out.println("CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+					String formula1 = cell.getCellFormula();
+					cell.setCellFormula(formula1);
+					break;
+
+				default:
+					break;
+				}
+				
+				
+			});
+			
+			_companyInfoRepository.save(companyInfo);
+			
+		});
+	}
 	
 	public void process02(XSSFSheet sheet,AtomicInteger atomicInteger01,AtomicInteger atomicInteger02,CorpType corpType) {
 		

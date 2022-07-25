@@ -1189,7 +1189,7 @@ public class InboundServiceImpl implements InboundService {
 			inboundViewRes.setCbmSumD(cbmSum);
 			inboundViewRes.setWeightSumD(weightSum);;
 			inboundViewRes.setItemCountSum(getStringResult(itemCountSum));
-			inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
+			inboundViewRes.setBoxCountSum(getStringResult(boxCountSum));
 			inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
 			inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
 			if(totalPriceSum==null) {
@@ -1248,7 +1248,7 @@ public class InboundServiceImpl implements InboundService {
 					if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
 						f.put("boxCount",  "0");
 					}else {
-						f.put("boxCount",  decimalFormat2.format(sub_item.getBoxCount()));	
+						f.put("boxCount", getStringResult(sub_item.getBoxCount()));
 					}
 					
 					if(sub_item.getWeight() == null) {
@@ -1459,7 +1459,7 @@ public class InboundServiceImpl implements InboundService {
 			inboundViewRes.setCbmSumD(cbmSum);
 			inboundViewRes.setWeightSumD(weightSum);;
 			inboundViewRes.setItemCountSum(getStringResult(itemCountSum));
-			inboundViewRes.setBoxCountSum(decimalFormat2.format(boxCountSum));
+			inboundViewRes.setBoxCountSum(getStringResult(boxCountSum));
 			inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
 			inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
 			if(totalPriceSum==null) {

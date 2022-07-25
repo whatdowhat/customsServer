@@ -44,6 +44,7 @@ import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
+import com.keepgo.whatdo.entity.customs.Unbi;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
@@ -63,6 +64,7 @@ import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
+import com.keepgo.whatdo.repository.UnbiRepository;
 import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
 import com.keepgo.whatdo.service.finalInbound.FinalInboundService;
@@ -100,6 +102,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	
 	@Autowired
 	UserRepository _userRepository;
+	@Autowired
+	UnbiRepository _unbiRepository;
 
 	@Override
 	public List<?> getAll(FinalInboundReq req) {
@@ -219,8 +223,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.incomeDt(afterFormat.format(tempDate2))
 				.departDtStr(afterFormat.format(tempDate))
 				.workDepartDt(afterFormat.format(tempDate3))
-				.incomePort(new Long(1))
-				.departPort(new Long(1))
+				.incomePort(new Long(321))
+				.departPort(new Long(307))
 				// todo 사용자 세션 아이디로 수정해야됨.
 				.user(User.builder().id(new Long(1)).build())
 
@@ -454,9 +458,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.corpId(r.getCorpId())
 				.build();
 		dto.setDepartPort((r.getDepartPort() == null ? "" : _commonRepository.findById(r.getDepartPort()).get().getValue2()));
-		dto.setDepartPortId((r.getDepartPort() == null ? new Long(1) : r.getDepartPort()));
+		dto.setDepartPortId((r.getDepartPort() == null ? new Long(307) : r.getDepartPort()));
 		dto.setIncomePort((r.getIncomePort() == null ? "" : _commonRepository.findById(r.getIncomePort()).get().getValue2()));
-		dto.setIncomePortId((r.getIncomePort() == null ? new Long(1) : r.getIncomePort()));
+		dto.setIncomePortId((r.getIncomePort() == null ? new Long(321) : r.getIncomePort()));
 		dto.setMemo((r.getMemo() == null ? "" : r.getMemo()));
 		if(r.getInboundMasters().size()>0){
 			dto.setInboundMasters(r.getInboundMasters().stream()
@@ -510,6 +514,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
 							.gubunCode(t.getGubun())
 							.corpType(CorpType.getList().stream().filter(type->type.getId() == t.getCorpId()).findFirst().get().getShowName())
+							.corpId(CorpType.getList().stream().filter(type->type.getId() == t.getCorpId()).findFirst().get().getId())
 							.departDtStr(t.getDepartDtStr())
 							.title(t.getTitle())
 							.incomeDt(t.getIncomeDt())
@@ -574,6 +579,32 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean excelRead(MultipartFile file, InboundReq Req, String id, String loginId) throws IOException {
 
+		
+		
+		List<FinalInboundInboundMaster> deleteList=_finalInboundInboundMasterRepository.findByFinalInboundId(Long.valueOf(id));
+		for(int i=0; i<deleteList.size(); i++) {
+			Long inboundMasterId=deleteList.get(i).getInboundMaster().getId();
+			InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterId).get();
+			
+			List<Inbound> inboundList = _inboundRepository.findByInboundMasterId(inboundMasterId);
+			for (int j = 0; j < inboundList.size(); j++) {
+				_inboundRepository.delete(inboundList.get(j));
+			}
+			CheckImport checkImport = _checkImportRepository.findByInboundMasterId(inboundMasterId);
+			if(checkImport!=null) {
+				_checkImportRepository.delete(checkImport);
+			}
+			List<Unbi> unbiList = _unbiRepository.findByFinalInboundId(Long.valueOf(id));
+			for (int j = 0; j < unbiList.size(); j++) {
+				_unbiRepository.delete(unbiList.get(j));
+			}
+			
+			_inboundMasterRepository.delete(inboundMaster);
+			_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(Long.valueOf(id), inboundMasterId);
+			
+		}
+		
+		
 		String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
 		if (!extension.equals("xlsx") && !extension.equals("xls")) {

@@ -36,7 +36,7 @@ public class ExcelCLPRes {
 	Double cbm;
 	String engNm;
 	String memo1;
-	
+	Integer corpId;
 	
 	
 }

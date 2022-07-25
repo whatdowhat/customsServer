@@ -91,7 +91,10 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 					sb.insert(3, "-");
 					sb.insert(6, "-");
 					dto.setCoNum(sb.toString());
-					
+					if(item.getCorpType()==null||item.getCorpType()==0) {
+						dto.setCorpId(new Integer(1));
+						dto.setCorpShowName("KMJP");
+					}else {
 						for(int k=0; k<CorpType.getList().size();k++) {
 							if(CorpType.getList().get(k).getId()==item.getCorpType()) {
 								dto.setCorpId(CorpType.getList().get(k).getId());
@@ -100,6 +103,8 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
 							}
 						}
+					}
+						
 						
 					
 
@@ -201,7 +206,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 	}
 
 	@Override
-	public CompanyInfoRes addCompanyInfo(CompanyInfoReq companyInfoReq) {
+	public boolean addCompanyInfo(CompanyInfoReq companyInfoReq) {
 		CompanyInfo companyInfo = new CompanyInfo();
 
 		companyInfo.setCoAddress(companyInfoReq.getCoAddress());
@@ -212,18 +217,31 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		companyInfo.setUpdateDt(new Date());
 		companyInfo.setCoNmEn(companyInfoReq.getCoNmEn());
 		companyInfo.setConsignee(companyInfoReq.getConsignee());
-		companyInfo.setCorpType(companyInfoReq.getCorpId());
+		
 		companyInfo.setManager(companyInfoReq.getManager());
 		companyInfo.setForwarding(companyInfoReq.getForwarding());
 //		companyInfo.setUser(User.builder().build());
 
 		Boolean isUsing = Boolean.valueOf(companyInfoReq.getIsUsing());
 		companyInfo.setIsUsing(isUsing);
-
-		_companyInfoRepository.save(companyInfo);
-
-		CompanyInfoRes companyInfoRes = new CompanyInfoRes();
-		return companyInfoRes;
+		if(companyInfoReq.getCorpId()==null||companyInfoReq.getCorpId()==0) {
+			companyInfo.setCorpType(new Integer(1));
+		}else {
+			companyInfo.setCorpType(companyInfoReq.getCorpId());
+		}
+		
+		List<CompanyInfo> list = _companyInfoRepository.findByCorpTypeAndCoNum(companyInfoReq.getCorpId(), companyInfoReq.getCoNum());
+		if(list.size()==0) {
+			_companyInfoRepository.save(companyInfo);
+			return true;
+			
+		}else {
+			return false;
+		}
+		
+		
+		
+		
 	}
 
 	@Override

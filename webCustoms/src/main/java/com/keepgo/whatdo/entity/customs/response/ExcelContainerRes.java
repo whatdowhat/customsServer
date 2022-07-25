@@ -112,7 +112,7 @@ public class ExcelContainerRes {
 	
 	String hacnam;
 	@Builder.Default
-	String hpicod="JPCHI";
+	String hpicod="CHINA";
 	@Builder.Default
 	String hpinam="CHINA";
 	@Builder.Default
@@ -131,8 +131,7 @@ public class ExcelContainerRes {
 	String slscod="";
 	@Builder.Default
 	String slsnam="";
-	@Builder.Default
-	String cntdec="";
+	String cntdec;
 	@Builder.Default
 	String hponum="";
 	String mrkmrk;

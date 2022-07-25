@@ -27,7 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -565,6 +567,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 			List<InboundRes> inbound_list = new ArrayList<>();
 			List<Inbound> origin_inbound_list = new ArrayList<>();
+			List<Inbound> total_inbound_list = new ArrayList<>();
 			ExcelFTARes item = ExcelFTARes.builder().build();
 			List<ExcelFTASubRes> list = new ArrayList<>();
 			DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
@@ -608,10 +611,12 @@ public class ExcelServiceImpl implements ExcelService {
 			Map<Long, String> markingInfo = new HashMap<>();
 			markingInfo = _utilService.getMakingForFTA(inbound_list);
 //			System.out.println(markingInfo+"<<<<<<<<<<<markingInfo");
-
+			total_inbound_list = t.getInboundMaster().getInbounds().stream()
+					.sorted(Comparator.comparing(Inbound::getOrderNo)).collect(Collectors.toList());
 			origin_inbound_list = t.getInboundMaster().getInbounds().stream()
 					.sorted(Comparator.comparing(Inbound::getOrderNo)).filter(where -> where.getCoId().intValue() == 1)
 					.collect(Collectors.toList());
+			
 
 			List<ExcelFTASubRes> sublist = new ArrayList<>();
 			for (int i = 0; i < origin_inbound_list.size(); i++) {
@@ -629,7 +634,8 @@ public class ExcelServiceImpl implements ExcelService {
 //				markingInfo.put(1l, "f");
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setDepartDtStr(departDt);
-				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+//				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
+				subRes.setBoxCount(total_inbound_list.get(i).getBoxCount());
 				if(origin_inbound_list.get(i).getAmountType()!=null) {
 					subRes.setAmountType(origin_inbound_list.get(i).getAmountType());
 				}else {
@@ -1833,11 +1839,11 @@ public class ExcelServiceImpl implements ExcelService {
 				
 				//셀 병합
 				//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
-//				if(cn==0) {
+				if(cn==0) {
 //					sheet.addMergedRegion(new CellRangeAddress(15,16,0,5));
-//					sheet.addMergedRegion(new CellRangeAddress(20,21,10,11));
+					sheet.addMergedRegion(new CellRangeAddress(20,21,10,11));
 //					
-//				}
+				}
 				 if(cn==1) {
 					sheet.addMergedRegion(new CellRangeAddress(0,2,0,11));
 				}
@@ -1967,6 +1973,18 @@ public class ExcelServiceImpl implements ExcelService {
 						row.getCell(9).setCellFormula(a+b+"-"+c+b);
 					}
 				}
+				if(cn==0) {
+					
+					for (int l = 0; l < excelInpackRes.getSubItem().size(); l++) {
+						
+						XSSFRow row = sheet.getRow(startCount+(2*l));
+						int startNum = startCount+(2*l)+1;
+						String a = "G";
+						String b = String.valueOf(startNum);
+						String c = "J";
+						row.getCell(10).setCellFormula(a+b+"*"+c+b);
+					}
+				}
 			}
 			
 			//기존
@@ -2080,7 +2098,7 @@ public class ExcelServiceImpl implements ExcelService {
 							}else if(excelInpackRes.getSubItem().size()==countYD) {
 								cell.setCellValue("YD");
 							}else {
-								cell.setCellValue("UNIT");
+								cell.setCellValue(excelInpackRes.getSubItem().get(excelInpackRes.getSubItem().size()-1).getAmountType());
 							}
 						
 					}
@@ -2142,19 +2160,18 @@ public class ExcelServiceImpl implements ExcelService {
 //		for (int i = 0; i <dataSize-2; i++) {
 //			sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
 //		}
-		for (int i = 0; i <dataSize-2; i++) {
-	    	   
-	    	   for(int j=0; j<sheet.getMergedRegions().size();j++) {
-	    	       	if(sheet.getMergedRegion(j).getFirstRow() == 23+dataSize) {
-	    	    		sheet.removeMergedRegion(j);
-	    	    		sheet.removeMergedRegion(j);
+//		for (int i = 0; i <dataSize-2; i++) {
+//	    	   
+//	    	   for(int j=0; j<sheet.getMergedRegions().size();j++) {
+//	    	       	if(sheet.getMergedRegion(j).getFirstRow() == 23+dataSize) {
 //	    	    		sheet.removeMergedRegion(j);
-	    	    		
-	    	       	}
-	    	   }
-	    	   
-	    	   sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
-			}
+//	    	    		sheet.removeMergedRegion(j);
+//	    	    		
+//	    	       	}
+//	    	   }
+//	    	   
+//	    	   sheet.shiftRows(24+dataSize, sheet.getLastRowNum(), -1);
+//			}
 
 	}
 
@@ -2326,12 +2343,10 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue((item.getItemPrice() == null ? 0d : item.getItemPrice()));
 					} else if (i == 10) {
 						if(item.getCurrencyType().equals("$")){
-							newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()) * (item.getItemPrice() == null ? 0d : item.getItemPrice()));
+//							newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()) * (item.getItemPrice() == null ? 0d : item.getItemPrice()));
 							newCell.getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
-//							row.getCell(cell.getColumnIndex() + 1).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
 						}else {
-							newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()) * (item.getItemPrice() == null ? 0d : item.getItemPrice()));
-//							newCell.setCellStyle(xcs_wian);
+//							newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()) * (item.getItemPrice() == null ? 0d : item.getItemPrice()));
 							newCell.getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
 						}
 						
@@ -2365,7 +2380,7 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getJejil());
 					}else if (i == 7) {
 						if(item.getAmountType()==null||item.getAmountType().equals("PCS")) {
-							newCell.setCellValue("UNIT");
+							newCell.setCellValue("PCS");
 						}else {
 							newCell.setCellValue(item.getAmountType());
 						}
@@ -2382,7 +2397,7 @@ public class ExcelServiceImpl implements ExcelService {
 						newCell.setCellValue(item.getJejil());
 					}else if (i == 7) {
 						if(item.getAmountType()==null||item.getAmountType().equals("PCS")) {
-							newCell.setCellValue("UNIT");
+							newCell.setCellValue("PCS");
 						}else {
 							newCell.setCellValue(item.getAmountType());
 						}
@@ -2766,6 +2781,11 @@ public class ExcelServiceImpl implements ExcelService {
 			r.setHaccod(f.getInboundMaster().getCompanyInfo().getConsignee());
 			r.setHacnam(f.getInboundMaster().getCompanyInfo().getCoNmEn());
 			r.setMrkmrk(inboundList.get(0).getMarking());
+//			r.setContainerNo(f.getFinalInbound().getContainerNo());
+//			r.setSilNo(f.getFinalInbound().getSilNo());
+			String conNo = f.getFinalInbound().getContainerNo()==null||f.getFinalInbound().getContainerNo()=="" ? "":f.getFinalInbound().getContainerNo();
+			String silNo = f.getFinalInbound().getSilNo()==null||f.getFinalInbound().getSilNo()=="" ? "":f.getFinalInbound().getSilNo();
+			r.setCntdec(conNo+"/"+silNo);
 			List <String> nameList = new ArrayList<>();
 			
 			
@@ -2838,8 +2858,8 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.removeMergedRegion(i);
 					}
 				}
-				sheet.shiftRows(startCount+list.size()+1, sheet.getLastRowNum(), -1);
-			
+//				sheet.shiftRows(startCount+list.size()+1, sheet.getLastRowNum(), -1);
+				sheet.shiftRows(startCount+list.size()+1, startCount+list.size()+1, -1);
 			
 			
 			
@@ -3172,6 +3192,19 @@ public class ExcelServiceImpl implements ExcelService {
 					sheet.getRow(i+1).setHeightInPoints(new Float("25"));
 				}
 						}
+			for(int i=0; i<list.size(); i++) {
+				
+				int startNum = i+2;
+				String a = "F";
+				String b = String.valueOf(startNum);
+				String c = "J";
+				sheet.getRow(startNum-1).getCell(16).setCellFormula(a+b+"*"+c+b);
+			}
+			sheet.getRow(list.size()+1).getCell(5).setCellFormula("SUM(F"+"2"+":"+"F"+String.valueOf(list.size()+1)+")");
+			sheet.getRow(list.size()+1).getCell(6).setCellFormula("SUM(G"+"2"+":"+"G"+String.valueOf(list.size()+1)+")");
+			sheet.getRow(list.size()+1).getCell(7).setCellFormula("SUM(H"+"2"+":"+"H"+String.valueOf(list.size()+1)+")");
+			sheet.getRow(list.size()+1).getCell(8).setCellFormula("SUM(I"+"2"+":"+"I"+String.valueOf(list.size()+1)+")");
+			sheet.getRow(list.size()+1).getCell(16).setCellFormula("SUM(Q"+"2"+":"+"Q"+String.valueOf(list.size()+1)+")");
 			String fileName =  "INBOUND.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -3261,6 +3294,8 @@ public class ExcelServiceImpl implements ExcelService {
 			orderNoFont.setBorderLeft(BorderStyle.THIN);
 				
 			orderNoFont.setFont(allFont);
+			HSSFWorkbook hwb = new HSSFWorkbook();
+			
 			
 			if(resource.get(i).getColorId()==0) {
 				allFont.setColor(IndexedColors.BLACK.getIndex());
@@ -3276,6 +3311,27 @@ public class ExcelServiceImpl implements ExcelService {
 				allFont.setColor(IndexedColors.ORANGE.getIndex());
 			}else if(resource.get(i).getColorId()==6){
 				allFont.setColor(IndexedColors.VIOLET.getIndex());
+			}else if(resource.get(i).getColorId()==7){
+				HSSFPalette palette = hwb.getCustomPalette();
+				// get the color which most closely matches the color you want to use
+				HSSFColor myColor = palette.findSimilarColor(0, 216, 255);
+				// get the palette index of that color 
+				short palIndex = myColor.getIndex();
+				allFont.setColor(palIndex);
+			}else if(resource.get(i).getColorId()==8){
+				HSSFPalette palette = hwb.getCustomPalette();
+				// get the color which most closely matches the color you want to use
+				HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+				// get the palette index of that color 
+				short palIndex = myColor.getIndex();
+				allFont.setColor(palIndex);
+			}else if(resource.get(i).getColorId()==9){
+				HSSFPalette palette = hwb.getCustomPalette();
+				// get the color which most closely matches the color you want to use
+				HSSFColor myColor = palette.findSimilarColor(138, 73, 36);
+				// get the palette index of that color 
+				short palIndex = myColor.getIndex();
+				allFont.setColor(palIndex);
 			}
 			allCellStyle.setAlignment(HorizontalAlignment.CENTER);
 			allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -3832,11 +3888,33 @@ public class ExcelServiceImpl implements ExcelService {
 			row.getCell(4).setCellValue(resource.get(i).getKorNm());
 			row.getCell(4).setCellStyle(korNmCellStyle);
 			if(resource.get(i).getAmountType().equals("PCS")) {
-				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount()));
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
 				row.getCell(5).setCellStyle(itemCountCellStyle);
-			}else {
-				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount())+" "+resource.get(i).getAmountType());
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			}else if(resource.get(i).getAmountType().equals("M")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
 				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"M\""));
+			}else if(resource.get(i).getAmountType().equals("YD")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"YD\""));
+			}else if(resource.get(i).getAmountType().equals("KG")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"KG\""));
+			}else if(resource.get(i).getAmountType().equals("SET")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"SET\""));
+			}else if(resource.get(i).getAmountType().equals("DOZ")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"DOZ\""));
+			}else if(resource.get(i).getAmountType().equals("PAIR")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"PAIR\""));
 			}
 			
 			
@@ -3844,11 +3922,13 @@ public class ExcelServiceImpl implements ExcelService {
 			
 			if (resource.get(i).getBoxCount() == null) {
 				row.getCell(6).setCellStyle(boxCountCellStyle);
-				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+//				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00_ "));
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(new Double(0))));
 			} else {
 				row.getCell(6).setCellValue(resource.get(i).getBoxCount());
 				row.getCell(6).setCellStyle(boxCountCellStyle);
-				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+//				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00_ "));
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(i).getBoxCount())));
 			}
 
 			row.getCell(7).setCellValue(resource.get(i).getWeight() == null ? 0 :resource.get(i).getWeight());
@@ -4013,12 +4093,18 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFRow row = sheet.getRow(resource.size() + 1);
 			
 			row.getCell(5).setCellValue(resource.get(0).getItemCountSum());
+//			row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(0).getItemCountSum())));
 			if (resource.get(0).getBoxCountSum() == null) {
 			} else {
 				row.getCell(6).setCellValue(resource.get(0).getBoxCountSum());
+//				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(0).getBoxCountSum())));
 			}
 
 			row.getCell(7).setCellValue(resource.get(0).getWeightSum());
+//			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(0).getWeightSum())));
 			row.getCell(8).setCellValue(resource.get(0).getCbmSum());
 			
 
@@ -4424,11 +4510,7 @@ public class ExcelServiceImpl implements ExcelService {
 			List<InboundRes> inboundList = _InboundService.getInboundByMasterId(f.getInboundMaster().getId());
 			List<InboundRes> result2 = _utilService.changeExcelFormatNew(inboundList);
 			InboundViewRes i = _InboundService.changeInbound(result2);
-//			StringBuffer sb = new StringBuffer();
-//			String companyNum=f.getInboundMaster().getCompanyInfo().getCoNum();
-//			sb.append(companyNum);
-//			sb.insert(3, "-");
-//			sb.insert(6, "-");
+
 			
 			for(int l=0; l<inboundList.size(); l++) {
 				ExcelCLPRes r  = ExcelCLPRes.builder().build();
@@ -4444,14 +4526,10 @@ public class ExcelServiceImpl implements ExcelService {
 				r.setCbm(inboundList.get(l).getCbm());
 				r.setEngNm(inboundList.get(l).getEngNm());
 				r.setMemo1(inboundList.get(l).getMemo1());
+				r.setCorpId(f.getFinalInbound().getCorpId());
 				result.add(r);
 				}
-			
-			
-			
-			
-			
-			
+	
 		}
 		
 		
@@ -4465,7 +4543,9 @@ public class ExcelServiceImpl implements ExcelService {
 		String path = DocumentType.getList().stream().filter(t -> t.getId() == 7).findFirst().get().getName();
 
 		try {
-
+			List<Integer> no = new ArrayList<>();
+			List<Integer> rowNum = new ArrayList<>();
+			
 			Resource resource = resourceLoader.getResource(path);
 
 			File file = new File(resource.getURI());
@@ -4474,11 +4554,15 @@ public class ExcelServiceImpl implements ExcelService {
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			workbook.setSheetName(0, "CLP");
+			
 			Collections.reverse(list);
-			
-			
+			XSSFSheet sheet = workbook.getSheetAt(0);
+				if(list.get(0).getCorpId()==1) {
+					 sheet = workbook.getSheetAt(1);
+				}else if(list.get(0).getCorpId()==2){
+					 sheet = workbook.getSheetAt(0);
+				}
 				
-				XSSFSheet sheet = workbook.getSheetAt(0);
 
 				
 				// item add
@@ -4499,17 +4583,57 @@ public class ExcelServiceImpl implements ExcelService {
 //				}
 				sheet.shiftRows(7, sheet.getLastRowNum(), -1);
 			
-			
-			
+				
+				for (int i = 0; i < list.size(); i++) {
+					no.add(list.get(i).getNo());
+				}
+				Collections.reverse(no);
+				for (int i = 0; i < no.size()-1; i++) {
+					
+					if(no.get(i)==no.get(i+1)) {
+						
+					}else {
+						rowNum.add(i);
+					}
+				}
+				for(int i=0; i<rowNum.size(); i++) {
+					sheet.getRow(rowNum.get(i)+6).getCell(0).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(0).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(1).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(1).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(2).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(2).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(3).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(3).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(4).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(4).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(5).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(5).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(6).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(6).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+				}
 			
 			String fileName =  "CLP.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
-			workbook.removeSheetAt(1);
-			workbook.removeSheetAt(1);
-			workbook.removeSheetAt(1);
-			workbook.removeSheetAt(1);
-			workbook.removeSheetAt(1);
+			if(list.get(0).getCorpId()==1) {
+				workbook.removeSheetAt(0);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+			}else {
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+				workbook.removeSheetAt(1);
+			}
+			
 			workbook.write(response.getOutputStream());
 			workbook.close();
 
@@ -5014,6 +5138,43 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 		
 	}
+public String getDoubleResult(Double param) {
+		
+		try {
+			boolean finalCheck = false;
+			String[] arr = String.valueOf(param).split("\\.");
+			char[] texts = arr[1].toCharArray();
+			Boolean checkPoint1[] = new Boolean[texts.length];
+			
+			for(int i = 0; i<texts.length;i++) {
+				//System.out.println(texts[i]);
+				if(texts[i] == '0' ) {
+					checkPoint1[i] = true;
+				}else {
+					checkPoint1[i] = false;
+				}
+			}
+			
+			for(int i = 0; i<checkPoint1.length;i++) {
+				if(i == 0 ) {
+					finalCheck = checkPoint1[i];
+					
+				}else {
+					finalCheck = (finalCheck && checkPoint1[i]);
+				}
+			}
+			
+			
+			if(finalCheck) {
+				return "#,##0_ ";
+			}else {
+				return "#,##0.00_ ";
+			}
+		}catch (Exception e) {
+			return String.valueOf(param);
+		}
+		
+	}
 
 	@Override
 	public InboundViewListRes previewData(InboundReq inboundReq) throws Exception {
@@ -5051,6 +5212,10 @@ public class ExcelServiceImpl implements ExcelService {
 		finalRes.setBoxCountSumFinal(decimalFormat2.format(boxCountSumFinal));
 		finalRes.setCbmSumFinal(decimalFormat.format(cbmSumFinal));
 		finalRes.setWeightSumFinal(decimalFormat2.format(weightSumFinal));
+		finalRes.setItemCountSumFinalD(itemCountSumFinal);
+		finalRes.setBoxCountSumFinalD(boxCountSumFinal);
+		finalRes.setCbmSumFinalD(cbmSumFinal);
+		finalRes.setWeightSumFinalD(weightSumFinal);
 		if(inboundMasterIdList.size()==0) {
 			finalRes.setPackingType("CTN");
 		}else {
@@ -5077,6 +5242,7 @@ public class ExcelServiceImpl implements ExcelService {
 			workbook.setSheetName(0, "PREVIEW");
 				
 			XSSFSheet sheet = workbook.getSheetAt(0);
+			sheet.setDefaultRowHeightInPoints(new Float("25"));
 			XSSFSheet sheet2 = workbook.getSheetAt(1);
 			XSSFSheet sheet3 = workbook.getSheetAt(2);
 			XSSFSheet sheet4 = workbook.getSheetAt(4);
@@ -5084,12 +5250,18 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFSheet sheet7 = workbook.getSheetAt(7);
 			
 			int startRow = 1;
+			List<Integer> rowNum = new ArrayList<>();
+			List<Integer> itemSize = new ArrayList<>();
+			List<Integer> itemStartNum = new ArrayList<>();
+			List<Integer> sTotalNum = new ArrayList<>();
 			List<InboundViewRes> list2 = inboundViewListRes.getInbounds();
-//			for(int i=0; i<1; i++) {
+			int itemCount = 0;
+			int blCount = list2.size();
 			for(int i=0; i<list2.size(); i++) {
 				 List<InboundRes> list = list2.get(i).getInboundsForPreview();
-
-				 
+				 itemCount=itemCount+list.size();	
+				 itemStartNum.add(startRow+i);
+				 itemSize.add(list.size());
 				 if(i==0 && list2.size()==1) {
 					 
 						step01ForPreview(list, sheet, workbook,startRow);
@@ -5130,9 +5302,14 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
-//						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
-//						shiftRowforPreview(0, sheet, 5);
-						
+
+						if(list.size()==1) {
+							rowNum.add(startRow+2);
+						}
+						for(int w=0; w<list.size()+startRow+5+unbiList.size()+1; w++) {
+							sheet.getRow(w).setHeightInPoints(new Float("25"));
+						}
+						sheet.getRow(1).setHeightInPoints(new Float("50"));
 						startRow=startRow+list.size();	
 						
 				 }else if(i==list2.size()-1) {
@@ -5176,25 +5353,86 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
+						
+						for(int w=0; w<list.size()+startRow+5+unbiList.size()+1; w++) {
+							sheet.getRow(w).setHeightInPoints(new Float("25"));
+					}
+					if(list.size()==1) {
+						rowNum.add(startRow+i);
+					}
+					for(int q=0; q<rowNum.size(); q++) {
+						sheet.getRow(rowNum.get(q)).setHeightInPoints(new Float("50"));
+					}
+						
 						startRow=startRow+list.size();	
-//						shiftRowforPreview(0, sheet, 5);
 						
 				 }else if(i==0) {
 					 
 						step01ForPreview(list, sheet, workbook,startRow);
 						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow,sheet2, 0);	
 						step02ForPreview(list, sheet, workbook,list.size()+startRow);
+						if(list.size()==1) {
+							rowNum.add(startRow);
+						}
 						startRow=startRow+list.size();	
 						
 				 }else {
 					 	step01ForPreview(list, sheet, workbook,startRow+i);	
 						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i,sheet2, 0);	
 						step02ForPreview(list, sheet, workbook,list.size()+startRow+i);
+						if(list.size()==1) {
+							rowNum.add(startRow+i);
+						}
 						startRow=startRow+list.size();	
 				 }
 						
 				
 			}
+			for(int i=0; i<unbiList.size(); i++){
+				sheet.getRow(5+itemCount+blCount+i).getCell(17).setCellFormula("SUM(G"+String.valueOf(5+itemCount+blCount+i+1)+":"+"Q"+String.valueOf(5+itemCount+blCount+i+1)+")");
+			}
+			for(int i=0; i<unbiList.size()+4; i++){
+				sheet.getRow(2+itemCount+blCount+i).setHeightInPoints(new Float("25"));
+			}
+			
+			for(int i=0; i<itemSize.size(); i++){
+				for(int j=0; j<itemSize.get(i); j++) {
+					String a = "F";
+					String b = String.valueOf(itemStartNum.get(i)+j+1);
+					String c = "J";
+					sheet.getRow(itemStartNum.get(i)+j).getCell(16).setCellFormula(a+b+"*"+c+b);	
+					if(j==itemSize.get(i)-1) {
+						sheet.getRow(itemStartNum.get(i)+j+1).getCell(5).setCellFormula("SUM(F"+String.valueOf(itemStartNum.get(i)+j+1+1-itemSize.get(i))+":"+"F"+String.valueOf(itemStartNum.get(i)+j+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+1).getCell(6).setCellFormula("SUM(G"+String.valueOf(itemStartNum.get(i)+j+1+1-itemSize.get(i))+":"+"G"+String.valueOf(itemStartNum.get(i)+j+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+1).getCell(7).setCellFormula("SUM(H"+String.valueOf(itemStartNum.get(i)+j+1+1-itemSize.get(i))+":"+"H"+String.valueOf(itemStartNum.get(i)+j+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+1).getCell(8).setCellFormula("SUM(I"+String.valueOf(itemStartNum.get(i)+j+1+1-itemSize.get(i))+":"+"I"+String.valueOf(itemStartNum.get(i)+j+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+1).getCell(16).setCellFormula("SUM(Q"+String.valueOf(itemStartNum.get(i)+j+1+1-itemSize.get(i))+":"+"Q"+String.valueOf(itemStartNum.get(i)+j+1+1-1)+")");
+					}
+					
+					}
+			}
+			List<String> totalItemCount = new ArrayList<>();
+			List<String> totalBoxCount = new ArrayList<>();
+			List<String> totalWeight = new ArrayList<>();
+			List<String> totalCBM = new ArrayList<>();
+			for(int i=0; i<itemSize.size(); i++){
+				sTotalNum.add(itemSize.get(i)+itemStartNum.get(i));
+				}
+			for(int i=0; i<sTotalNum.size(); i++){
+				totalItemCount.add("F"+String.valueOf(sTotalNum.get(i)+1));
+				totalBoxCount.add("G"+String.valueOf(sTotalNum.get(i)+1));
+				totalWeight.add("H"+String.valueOf(sTotalNum.get(i)+1));
+				totalCBM.add("I"+String.valueOf(sTotalNum.get(i)+1));
+			}
+			String totalItemCount1 = String.join("+", totalItemCount);
+			String totalBoxCount1 = String.join("+", totalBoxCount);
+			String totalWeight1 = String.join("+", totalWeight);
+			String totalCBM1 = String.join("+", totalCBM);
+			
+			sheet.getRow(1+itemCount+blCount).getCell(5).setCellFormula(totalItemCount1);
+			sheet.getRow(1+itemCount+blCount).getCell(6).setCellFormula(totalBoxCount1);
+			sheet.getRow(1+itemCount+blCount).getCell(7).setCellFormula(totalWeight1);
+			sheet.getRow(1+itemCount+blCount).getCell(8).setCellFormula(totalCBM1);
 			
 			String fileName =  "PREVIEW.xlsx";
 			response.setContentType("application/download;charset=utf-8");
@@ -5243,12 +5481,18 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFSheet sheet8 = workbook.getSheetAt(8);
 			int startRow = 1;
 			List<Integer> rowNum = new ArrayList<>();
+			List<Integer> itemSize = new ArrayList<>();
+			List<Integer> itemStartNum = new ArrayList<>();
+			List<Integer> sTotalNum = new ArrayList<>();
 			List<InboundViewRes> list2 = inboundViewListRes.getInbounds();
-//			for(int i=0; i<1; i++) {
+			int itemCount = 0;
+			int blCount = list2.size();
+			
 			for(int i=0; i<list2.size(); i++) {
 				 List<InboundRes> list = list2.get(i).getInboundsForPreview();
-
-				 
+				 itemCount=itemCount+list.size();
+				 itemStartNum.add(startRow+i);
+				 itemSize.add(list.size());
 				 if(i==0 && list2.size()==1) {
 					 
 						step01ForPreview(list, sheet, workbook,startRow);
@@ -5289,7 +5533,7 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
-//						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
+						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
 						shiftRowforPreview(0, sheet, 6);
 						for(int j=0; j<6;j++) {
 							copyRowOtherSheetForPreview(workbook, sheet, j,sheet8, j);	
@@ -5298,7 +5542,7 @@ public class ExcelServiceImpl implements ExcelService {
 						step07ForPreview(container, sheet, workbook,2);
 						step08ForPreview(container, sheet, workbook,3);
 						step09ForPreview(container, sheet, workbook,4);
-						step10ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
+//						step10ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
 						sheet.addMergedRegion(new CellRangeAddress(1,4,16,16));
 						sheet.addMergedRegion(new CellRangeAddress(1,4,17,19));
 						sheet.getRow(0).setHeightInPoints(new Float("36"));
@@ -5313,6 +5557,7 @@ public class ExcelServiceImpl implements ExcelService {
 						for(int w=6; w<list.size()+startRow+5+unbiList.size()+7; w++) {
 							sheet.getRow(w).setHeightInPoints(new Float("25"));
 					}
+						sheet.getRow(1+6).setHeightInPoints(new Float("50"));
 						startRow=startRow+list.size();	
 						
 				 }else if(i==list2.size()-1) {
@@ -5365,7 +5610,7 @@ public class ExcelServiceImpl implements ExcelService {
 						step07ForPreview(container, sheet, workbook,2);
 						step08ForPreview(container, sheet, workbook,3);
 						step09ForPreview(container, sheet, workbook,4);
-						step10ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
+//						step10ForPreview(unbiList, sheet, workbook,list.size()+startRow+5+unbiList.size());
 //						sheet.addMergedRegion(new CellRangeAddress(1,4,16,19));
 						sheet.addMergedRegion(new CellRangeAddress(1,4,16,16));
 						sheet.addMergedRegion(new CellRangeAddress(1,4,17,19));
@@ -5384,7 +5629,7 @@ public class ExcelServiceImpl implements ExcelService {
 						for(int q=0; q<rowNum.size(); q++) {
 							sheet.getRow(rowNum.get(q)+6).setHeightInPoints(new Float("50"));
 						}
-						startRow=startRow+list.size();	
+//						startRow=startRow+list.size();	
 						
 				 }else if(i==0) {
 					 
@@ -5409,6 +5654,47 @@ public class ExcelServiceImpl implements ExcelService {
 						
 				
 			}
+			for(int i=0; i<unbiList.size(); i++){
+				sheet.getRow(11+itemCount+blCount+i).getCell(17).setCellFormula("SUM(G"+String.valueOf(11+itemCount+blCount+i+1)+":"+"Q"+String.valueOf(11+itemCount+blCount+i+1)+")");
+			}
+			for(int i=0; i<itemSize.size(); i++){
+				for(int j=0; j<itemSize.get(i); j++) {
+					String a = "F";
+					String b = String.valueOf(itemStartNum.get(i)+j+1+6);
+					String c = "J";
+					sheet.getRow(itemStartNum.get(i)+j+6).getCell(16).setCellFormula(a+b+"*"+c+b);	
+					if(j==itemSize.get(i)-1) {
+						sheet.getRow(itemStartNum.get(i)+j+6+1).getCell(5).setCellFormula("SUM(F"+String.valueOf(itemStartNum.get(i)+j+6+1+1-itemSize.get(i))+":"+"F"+String.valueOf(itemStartNum.get(i)+j+6+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+6+1).getCell(6).setCellFormula("SUM(G"+String.valueOf(itemStartNum.get(i)+j+6+1+1-itemSize.get(i))+":"+"G"+String.valueOf(itemStartNum.get(i)+j+6+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+6+1).getCell(7).setCellFormula("SUM(H"+String.valueOf(itemStartNum.get(i)+j+6+1+1-itemSize.get(i))+":"+"H"+String.valueOf(itemStartNum.get(i)+j+6+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+6+1).getCell(8).setCellFormula("SUM(I"+String.valueOf(itemStartNum.get(i)+j+6+1+1-itemSize.get(i))+":"+"I"+String.valueOf(itemStartNum.get(i)+j+6+1+1-1)+")");
+						sheet.getRow(itemStartNum.get(i)+j+6+1).getCell(16).setCellFormula("SUM(Q"+String.valueOf(itemStartNum.get(i)+j+6+1+1-itemSize.get(i))+":"+"Q"+String.valueOf(itemStartNum.get(i)+j+6+1+1-1)+")");
+					}
+					
+					}
+			}
+			List<String> totalItemCount = new ArrayList<>();
+			List<String> totalBoxCount = new ArrayList<>();
+			List<String> totalWeight = new ArrayList<>();
+			List<String> totalCBM = new ArrayList<>();
+			for(int i=0; i<itemSize.size(); i++){
+				sTotalNum.add(itemSize.get(i)+itemStartNum.get(i));
+				}
+			for(int i=0; i<sTotalNum.size(); i++){
+				totalItemCount.add("F"+String.valueOf(sTotalNum.get(i)+6+1));
+				totalBoxCount.add("G"+String.valueOf(sTotalNum.get(i)+6+1));
+				totalWeight.add("H"+String.valueOf(sTotalNum.get(i)+6+1));
+				totalCBM.add("I"+String.valueOf(sTotalNum.get(i)+6+1));
+			}
+			String totalItemCount1 = String.join("+", totalItemCount);
+			String totalBoxCount1 = String.join("+", totalBoxCount);
+			String totalWeight1 = String.join("+", totalWeight);
+			String totalCBM1 = String.join("+", totalCBM);
+			
+			sheet.getRow(7+itemCount+blCount).getCell(5).setCellFormula(totalItemCount1);
+			sheet.getRow(7+itemCount+blCount).getCell(6).setCellFormula(totalBoxCount1);
+			sheet.getRow(7+itemCount+blCount).getCell(7).setCellFormula(totalWeight1);
+			sheet.getRow(7+itemCount+blCount).getCell(8).setCellFormula(totalCBM1);
 			
 			String fileName =  "CONTAINER.xlsx";
 			response.setContentType("application/download;charset=utf-8");
@@ -5513,7 +5799,7 @@ public class ExcelServiceImpl implements ExcelService {
 			orderNoFont.setBorderRight(BorderStyle.HAIR);
 			orderNoFont.setBorderLeft(BorderStyle.THIN);;
 			orderNoFont.setFont(allFont);
-			
+			HSSFWorkbook hwb = new HSSFWorkbook();
 			if(resource.get(i).getColorId()==0) {
 				allFont.setColor(IndexedColors.BLACK.getIndex());
 			}else if(resource.get(i).getColorId()==1){
@@ -5528,6 +5814,27 @@ public class ExcelServiceImpl implements ExcelService {
 				allFont.setColor(IndexedColors.ORANGE.getIndex());
 			}else if(resource.get(i).getColorId()==6){
 				allFont.setColor(IndexedColors.VIOLET.getIndex());
+			}else if(resource.get(i).getColorId()==7){
+				HSSFPalette palette = hwb.getCustomPalette();
+				// get the color which most closely matches the color you want to use
+				HSSFColor myColor = palette.findSimilarColor(0, 216, 255);
+				// get the palette index of that color 
+				short palIndex = myColor.getIndex();
+				allFont.setColor(palIndex);
+			}else if(resource.get(i).getColorId()==8){
+				HSSFPalette palette = hwb.getCustomPalette();
+				// get the color which most closely matches the color you want to use
+				HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+				// get the palette index of that color 
+				short palIndex = myColor.getIndex();
+				allFont.setColor(palIndex);
+			}else if(resource.get(i).getColorId()==9){
+				HSSFPalette palette = hwb.getCustomPalette();
+				// get the color which most closely matches the color you want to use
+				HSSFColor myColor = palette.findSimilarColor(138, 73, 36);
+				// get the palette index of that color 
+				short palIndex = myColor.getIndex();
+				allFont.setColor(palIndex);
 			}
 			allCellStyle.setAlignment(HorizontalAlignment.CENTER);
 			allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -6091,31 +6398,66 @@ public class ExcelServiceImpl implements ExcelService {
 			row.getCell(3).setCellStyle(markingCellStyle);
 			row.getCell(4).setCellValue(resource.get(i).getKorNm());
 			row.getCell(4).setCellStyle(korNmCellStyle);
+//			if(resource.get(i).getAmountType().equals("PCS")) {
+//				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount()));
+//				row.getCell(5).setCellStyle(itemCountCellStyle);
+//				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+//			}else {
+//				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount())+" "+resource.get(i).getAmountType());
+//				row.getCell(5).setCellStyle(itemCountCellStyle);
+//				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+//			}
 			if(resource.get(i).getAmountType().equals("PCS")) {
-				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount()));
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
 				row.getCell(5).setCellStyle(itemCountCellStyle);
 				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
-			}else {
-				row.getCell(5).setCellValue(getStringResult(resource.get(i).getItemCount())+" "+resource.get(i).getAmountType());
+			}else if(resource.get(i).getAmountType().equals("M")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
 				row.getCell(5).setCellStyle(itemCountCellStyle);
-				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"M\""));
+			}else if(resource.get(i).getAmountType().equals("YD")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"YD\""));
+			}else if(resource.get(i).getAmountType().equals("KG")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"KG\""));
+			}else if(resource.get(i).getAmountType().equals("SET")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"SET\""));
+			}else if(resource.get(i).getAmountType().equals("DOZ")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"DOZ\""));
+			}else if(resource.get(i).getAmountType().equals("PAIR")){
+				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+				row.getCell(5).setCellStyle(itemCountCellStyle);
+				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"PAIR\""));
 			}
-			
-			
+//			else if(resource.get(i).getAmountType().equals("PAIR")){
+//				row.getCell(5).setCellValue(resource.get(i).getItemCount());
+//				row.getCell(5).setCellStyle(itemCountCellStyle);
+//				row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00 \"PAIR\""));
+//			}
 			
 			
 			if (resource.get(i).getBoxCount() == null) {
 				row.getCell(6).setCellStyle(boxCountCellStyle);
-				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+//				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(new Double(0))));
 			} else {
 				row.getCell(6).setCellValue(resource.get(i).getBoxCount());
 				row.getCell(6).setCellStyle(boxCountCellStyle);
-				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(i).getBoxCount())));
+//				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			}
 
 			row.getCell(7).setCellValue(resource.get(i).getWeight() == null ? 0 :resource.get(i).getWeight());
 			row.getCell(7).setCellStyle(weightCellStyle);
-			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+//			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(i).getWeight())));
 			row.getCell(8).setCellValue(resource.get(i).getCbm() == null ? 0 :resource.get(i).getCbm());
 			row.getCell(8).setCellStyle(cbmCellStyle);
 			row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("0.000_ "));
@@ -6276,12 +6618,15 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFRow row = sheet.getRow(startRow);
 			
 			row.getCell(5).setCellValue(resource.get(0).getItemCountSum());
+			row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(0).getItemCountSum())));
 			if (resource.get(0).getBoxCountSum() == null) {
 			} else {
 				row.getCell(6).setCellValue(resource.get(0).getBoxCountSum());
+				row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(0).getBoxCountSum())));
 			}
 
 			row.getCell(7).setCellValue(resource.get(0).getWeightSum());
+			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.get(0).getWeightSum())));
 			row.getCell(8).setCellValue(resource.get(0).getCbmSum());
 			
 
@@ -6308,28 +6653,56 @@ public class ExcelServiceImpl implements ExcelService {
 	private void step03ForPreview(InboundViewListRes resource, XSSFSheet sheet, XSSFWorkbook workbook, int startRow) {
 
 
-		// item 채우기
-//		for (int i = 0; i < resource.size(); i++) {
-
-//			if ((i + 1) == resource.size()) {
-//
-//			} else {
-//				
-//				copyRowForInbound(workbook, sheet, i + 1, i + 2);
-//			}
-
-
-//			XSSFRow row = sheet.getRow(resource.size() + 1);
+//		else if(resource.get(i).getAmountType().equals("YD")){
+//			row.getCell(5).setCellValue(resource.get(i).getItemCount());
+//			row.getCell(5).setCellStyle(itemCountCellStyle);
+//			row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"YD\""));
 			XSSFRow row = sheet.getRow(startRow);
 			
-			row.getCell(5).setCellValue(resource.getItemCountSumFinal());
+			row.getCell(5).setCellValue(resource.getItemCountSumFinalD());
+//			Double itemCountSumFinal = Double.valueOf(resource.getItemCountSumFinal());
+//			row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+			row.getCell(5).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(getDoubleResult(resource.getItemCountSumFinalD())));
 			if (resource.getBoxCountSumFinal() == null) {
 			} else {
-				row.getCell(6).setCellValue(resource.getBoxCountSumFinal()+" "+resource.getPackingType());
+				if(resource.getPackingType().equals("CTN")) {
+					row.getCell(6).setCellValue(resource.getBoxCountSumFinalD());
+					if(getDoubleResult(resource.getBoxCountSumFinalD()).equals("#,##0_ ")) {
+						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"CTN\""));
+					}else {
+						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00_ \"CTN\""));
+					}
+					
+					
+					
+				}
+				else if(resource.getPackingType().equals("PL")) {
+					row.getCell(6).setCellValue(resource.getBoxCountSumFinalD());
+					if(getDoubleResult(resource.getBoxCountSumFinalD()).equals("#,##0_ ")) {
+						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"PL\""));
+					}else {
+						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00_ \"PL\""));
+					}
+				}
+				else if(resource.getPackingType().equals("GT")) {
+					row.getCell(6).setCellValue(resource.getBoxCountSumFinalD());
+					if(getDoubleResult(resource.getBoxCountSumFinalD()).equals("#,##0_ ")) {
+						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"GT\""));
+					}else {
+						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00_ \"GT\""));
+					}
+				}
+				
 			}
 
-			row.getCell(7).setCellValue(resource.getWeightSumFinal()+" "+"KG");
-			row.getCell(8).setCellValue(resource.getCbmSumFinal()+" "+"CBM");
+			row.getCell(7).setCellValue(resource.getWeightSumFinalD());
+			if(getDoubleResult(resource.getWeightSumFinalD()).equals("#,##0_ ")) {
+				row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ \"KG\""));
+			}else {
+				row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0.00_ \"KG\""));
+			}
+			row.getCell(8).setCellValue(resource.getCbmSumFinalD());
+			row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("0.000_ \"CBM\""));
 			
 
 	}
@@ -6794,7 +7167,7 @@ public class ExcelServiceImpl implements ExcelService {
 				orderNoFont.setBorderRight(BorderStyle.HAIR);
 				orderNoFont.setBorderLeft(BorderStyle.THIN);
 				orderNoFont.setFont(allFont);
-				
+				HSSFWorkbook hwb = new HSSFWorkbook();
 				if(resource.get(i).getType().equals("A")) {
 					if(resource.get(i).getColorId()==0) {
 						allFont.setColor(IndexedColors.BLACK.getIndex());
@@ -6810,6 +7183,27 @@ public class ExcelServiceImpl implements ExcelService {
 						allFont.setColor(IndexedColors.ORANGE.getIndex());
 					}else if(resource.get(i).getColorId()==6){
 						allFont.setColor(IndexedColors.VIOLET.getIndex());
+					}else if(resource.get(i).getColorId()==7){
+						HSSFPalette palette = hwb.getCustomPalette();
+						// get the color which most closely matches the color you want to use
+						HSSFColor myColor = palette.findSimilarColor(0, 216, 255);
+						// get the palette index of that color 
+						short palIndex = myColor.getIndex();
+						allFont.setColor(palIndex);
+					}else if(resource.get(i).getColorId()==8){
+						HSSFPalette palette = hwb.getCustomPalette();
+						// get the color which most closely matches the color you want to use
+						HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+						// get the palette index of that color 
+						short palIndex = myColor.getIndex();
+						allFont.setColor(palIndex);
+					}else if(resource.get(i).getColorId()==9){
+						HSSFPalette palette = hwb.getCustomPalette();
+						// get the color which most closely matches the color you want to use
+						HSSFColor myColor = palette.findSimilarColor(138, 73, 36);
+						// get the palette index of that color 
+						short palIndex = myColor.getIndex();
+						allFont.setColor(palIndex);
 					}
 					allCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -6976,6 +7370,27 @@ public class ExcelServiceImpl implements ExcelService {
 						allFont.setColor(IndexedColors.ORANGE.getIndex());
 					}else if(resource.get(i).getColorId()==6){
 						allFont.setColor(IndexedColors.VIOLET.getIndex());
+					}else if(resource.get(i).getColorId()==7){
+						HSSFPalette palette = hwb.getCustomPalette();
+						// get the color which most closely matches the color you want to use
+						HSSFColor myColor = palette.findSimilarColor(0, 216, 255);
+						// get the palette index of that color 
+						short palIndex = myColor.getIndex();
+						allFont.setColor(palIndex);
+					}else if(resource.get(i).getColorId()==8){
+						HSSFPalette palette = hwb.getCustomPalette();
+						// get the color which most closely matches the color you want to use
+						HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+						// get the palette index of that color 
+						short palIndex = myColor.getIndex();
+						allFont.setColor(palIndex);
+					}else if(resource.get(i).getColorId()==9){
+						HSSFPalette palette = hwb.getCustomPalette();
+						// get the color which most closely matches the color you want to use
+						HSSFColor myColor = palette.findSimilarColor(138, 73, 36);
+						// get the palette index of that color 
+						short palIndex = myColor.getIndex();
+						allFont.setColor(palIndex);
 					}
 					allCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					allCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);

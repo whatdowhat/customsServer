@@ -37,9 +37,13 @@ public class InboundViewListRes {
 	
 		
 	private String itemCountSumFinal;
+	private Double itemCountSumFinalD;
 	private String boxCountSumFinal;
+	private Double boxCountSumFinalD;
 	private String cbmSumFinal;
+	private Double cbmSumFinalD;
 	private String weightSumFinal;
+	private Double weightSumFinalD;
 	private String packingType;
 	
 	

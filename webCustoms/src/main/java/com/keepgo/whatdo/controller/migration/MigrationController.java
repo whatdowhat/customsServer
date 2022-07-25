@@ -451,12 +451,14 @@ public class MigrationController {
 						companyInfo.setCoAddress(string1);	
 					}
 					if(cell.getColumnIndex()==6) {
-						companyInfo.setManager(string1);	
-					}
-					if(cell.getColumnIndex()==7) {
-						companyInfo.setCoInvoice("");	
+//						companyInfo.setManager(string1);
 						companyInfo.setForwarding(string1);
+						companyInfo.setManager("");
 					}
+//					if(cell.getColumnIndex()==7) {
+//						companyInfo.setCoInvoice("");	
+//						companyInfo.setForwarding(string1);
+//					}
 					companyInfo.setCorpType(corpType.id);
 //					
 					break;

@@ -504,6 +504,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		
 		List<FinalInboundRes>  r = _finalInboundRepository.findAll(FinalInboundSpecification.withCondition(condition))
 				.stream()
+				//sort 설정 0726 요청
+				.sorted(Comparator.comparing(FinalInbound::getTitle))
+				//sort 설정 0726 요청
 				.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
 				.map(t->{
 					
@@ -536,6 +539,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		if(req.getDateType()==null||req.getDateType()==0) {
 			List<FinalInboundRes>  r = _finalInboundRepository.findByDepartDtStrBetween(startDt,endDt)
 					.stream()
+					//sort 설정 0726 요청
+					.sorted(Comparator.comparing(FinalInbound::getTitle))
+					//sort 설정 0726 요청
 					.sorted(Comparator.comparing(FinalInbound::getDepartDtStr))
 					.map(t->{
 						

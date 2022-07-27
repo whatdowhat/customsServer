@@ -516,7 +516,7 @@ public class MigrationController {
 			if(row.getRowNum() == 1) return;
 			//없는 경우 RETURN 
 			
-			CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
+			
 			String coNum = "";
 			try {
 				coNum = row.getCell(3).getStringCellValue();	
@@ -540,6 +540,7 @@ public class MigrationController {
 				if(shiperCode != null && !shiperCode.equals("")) {
 					common = _commonRepository.findByValue3(shiperCode);
 					if(common != null & company != null) {
+						CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
 						companyInfoExport.setCommon(common);
 						companyInfoExport.setCompanInfoy(company);
 						companyInfoExport.setPreperOrder(1);
@@ -558,6 +559,7 @@ public class MigrationController {
 				if(shiperCode != null && !shiperCode.equals("")) {
 					common = _commonRepository.findByValue3(shiperCode);
 					if(common != null & company != null) {
+						CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
 						companyInfoExport.setCommon(common);
 						companyInfoExport.setCompanInfoy(company);
 						companyInfoExport.setPreperOrder(2);
@@ -576,6 +578,7 @@ public class MigrationController {
 				if(shiperCode != null && !shiperCode.equals("")) {
 					common = _commonRepository.findByValue3(shiperCode);
 					if(common != null & company != null) {
+						CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
 						companyInfoExport.setCommon(common);
 						companyInfoExport.setCompanInfoy(company);
 						companyInfoExport.setPreperOrder(3);
@@ -594,6 +597,7 @@ public class MigrationController {
 				if(shiperCode != null && !shiperCode.equals("")) {
 					common = _commonRepository.findByValue3(shiperCode);
 					if(common != null & company != null) {
+						CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
 						companyInfoExport.setCommon(common);
 						companyInfoExport.setCompanInfoy(company);
 						companyInfoExport.setPreperOrder(4);
@@ -612,6 +616,7 @@ public class MigrationController {
 				if(shiperCode != null && !shiperCode.equals("")) {
 					common = _commonRepository.findByValue3(shiperCode);
 					if(common != null & company != null) {
+						CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
 						companyInfoExport.setCommon(common);
 						companyInfoExport.setCompanInfoy(company);
 						companyInfoExport.setPreperOrder(5);

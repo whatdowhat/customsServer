@@ -35,4 +35,5 @@ public class ExcelInpackSubRes {
 	private String currencyType;
 	private String packingType;
 	private String amountType;
+	private String marking;
 }

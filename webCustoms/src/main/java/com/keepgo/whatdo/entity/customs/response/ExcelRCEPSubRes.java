@@ -26,6 +26,7 @@ public class ExcelRCEPSubRes {
 	private String hsCode;
 	private String data10;
 	private String itemCount;
+	private Double itemCountD;
 	private Double boxCount;
 	private String companyInvoice;
 	private String amountType;

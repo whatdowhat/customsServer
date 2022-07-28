@@ -287,8 +287,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		finalInbound.setUpdateDt(new Date());
 		finalInbound.setCreateDt(new Date());
 		finalInbound.setUser(User.builder().id(new Long(1)).build());
-		
-		
+		finalInbound.setTitle(req.getTitle());	
 		 _finalInboundRepository.save(finalInbound);
 //		final Long companyId = target.getId();
 //		AtomicInteger index_m = new AtomicInteger(1);
@@ -456,6 +455,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.createDt(r.getCreateDt())
 				.updateDt(r.getUpdateDt())
 				.corpId(r.getCorpId())
+				.title(r.getTitle())
 				.build();
 		dto.setDepartPort((r.getDepartPort() == null ? "" : _commonRepository.findById(r.getDepartPort()).get().getValue2()));
 		dto.setDepartPortId((r.getDepartPort() == null ? new Long(307) : r.getDepartPort()));
@@ -505,9 +505,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		List<FinalInboundRes>  r = _finalInboundRepository.findAll(FinalInboundSpecification.withCondition(condition))
 				.stream()
 				//sort 설정 0726 요청
-				.sorted(Comparator.comparing(FinalInbound::getTitle))
+//				.sorted(Comparator.comparing(FinalInbound::getTitle))
 				//sort 설정 0726 요청
-				.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
+				.sorted(Comparator.comparing(FinalInbound::getIncomeDt).thenComparing(FinalInbound::getTitle))
+				
 				.map(t->{
 					
 						
@@ -542,7 +543,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					//sort 설정 0726 요청
 					.sorted(Comparator.comparing(FinalInbound::getTitle))
 					//sort 설정 0726 요청
-					.sorted(Comparator.comparing(FinalInbound::getDepartDtStr))
+//					.sorted(Comparator.comparing(FinalInbound::getDepartDtStr))
 					.map(t->{
 						
 							
@@ -785,8 +786,8 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 						inbound.setTotalPrice(null);
 					}else {
 						Double reportPrice = inbound.getReportPrice();
-						Double result =  Math.round(reportPrice*1000)/1000.0;
-						inbound.setReportPrice(result);
+//						Double result =  Math.round(reportPrice*1000)/1000.0;
+						inbound.setReportPrice(reportPrice);
 						inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					}
 					

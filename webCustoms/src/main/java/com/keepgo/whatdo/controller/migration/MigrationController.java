@@ -452,13 +452,13 @@ public class MigrationController {
 					}
 					if(cell.getColumnIndex()==6) {
 //						companyInfo.setManager(string1);
-						companyInfo.setForwarding(string1);
-						companyInfo.setManager("");
-					}
-//					if(cell.getColumnIndex()==7) {
-//						companyInfo.setCoInvoice("");	
 //						companyInfo.setForwarding(string1);
-//					}
+						companyInfo.setManager(string1);
+					}
+					if(cell.getColumnIndex()==7) {
+						companyInfo.setCoInvoice("");	
+						companyInfo.setForwarding(string1);
+					}
 					companyInfo.setCorpType(corpType.id);
 //					
 					break;
@@ -487,7 +487,8 @@ public class MigrationController {
 						companyInfo.setManager(numberToString);	
 					}
 					if(cell.getColumnIndex()==7) {
-						companyInfo.setCoInvoice(numberToString );	
+						companyInfo.setCoInvoice("" );	
+						companyInfo.setForwarding(numberToString);
 					}
 					companyInfo.setCorpType(corpType.id);
 					break;
@@ -620,6 +621,25 @@ public class MigrationController {
 						companyInfoExport.setCommon(common);
 						companyInfoExport.setCompanInfoy(company);
 						companyInfoExport.setPreperOrder(5);
+						_CompanyInfoExportRepository.save(companyInfoExport);
+					}
+				}
+			}
+			if(row.getCell(9) != null) {
+				
+				try {
+					shiperCode = row.getCell(9).getStringCellValue();
+				}catch (Exception e) {
+					row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
+					shiperCode = String.valueOf(row.getCell(9).getStringCellValue());
+				}
+				if(shiperCode != null && !shiperCode.equals("")) {
+					common = _commonRepository.findByValue3(shiperCode);
+					if(common != null & company != null) {
+						CompanyInfoExport companyInfoExport = CompanyInfoExport.builder().build();
+						companyInfoExport.setCommon(common);
+						companyInfoExport.setCompanInfoy(company);
+						companyInfoExport.setPreperOrder(6);
 						_CompanyInfoExportRepository.save(companyInfoExport);
 					}
 				}

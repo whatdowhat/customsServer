@@ -82,21 +82,7 @@ public class ExcelController {
 	public ExcelFTARes ExcelFTARes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
 			HttpServletResponse response) throws Exception {
 
-//		String path = DocumentType.getList().stream().filter(t->t.getId() == 1).findFirst().get().getName();
-////		Path filePath = Paths.get(path);
-//		
-//		Resource resource = resourceLoader.getResource(path); 
-////				new InputStreamResource(Files.newInputStream(filePath)); // 파일 resource 얻기
-//
-//		System.out.println(resource.exists());
-//		System.out.println(resource.getFilename());
-//		
-//		File file = new File(resource.getURI());
-////		
-//		System.out.println(file.isFile());
-//		System.out.println(path);
 
-//		return null;
 		return _excelService.ftaData(req);
 	}
 
@@ -261,5 +247,51 @@ public class ExcelController {
 		_excelService.previewContainer(s, list,container,response);
 	}
 	
+	@RequestMapping(value = "/excel/document/listInpackData", method = { RequestMethod.POST })
+	public List<ExcelInpackRes> listInpackData(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.listInpackData(req);
+	}
+	@RequestMapping(value = "/excel/document/listInpack", method = { RequestMethod.POST })
+	public void listInpack(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		List<ExcelInpackRes> s =_excelService.listInpackData(req);
+		
+		_excelService.listInpack(s, response);
+	}
+	@RequestMapping(value = "/excel/document/listFtaData", method = { RequestMethod.POST })
+	public List<ExcelFTARes> listFtaData(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.listFtaData(req);
+	}
+	@RequestMapping(value = "/excel/document/listFta", method = { RequestMethod.POST })
+	public void listFta(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		List<ExcelFTARes> s =_excelService.listFtaData(req);
+		
+		_excelService.listFta(s, response);
+	}
+	@RequestMapping(value = "/excel/document/listRcepData", method = { RequestMethod.POST })
+	public List<ExcelRCEPRes> listRcepData(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.listRcepData(req);
+	}
+	@RequestMapping(value = "/excel/document/listYataiData", method = { RequestMethod.POST })
+	public List<ExcelYATAIRes> listYataiData(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.listYataiData(req);
+	}
 
 }

@@ -1144,14 +1144,14 @@ public class InboundServiceImpl implements InboundService {
 			//total  = 수량 * 신고단가 
 			//소수 2째자리 
 //			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
-			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
+			if(item.getReportPrice() == null || item.getReportPrice().equals("")||item.getItemCount()==null||item.getItemCount().equals("")) {
 				item.setReportPrice(null);
 				item.setTotalPrice(null);
 			}else {
 				Double reportPrice = item.getReportPrice();
-				Double result =  Math.round(reportPrice*1000)/1000.0;
-				item.setReportPrice(result);
-				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
+//				Double result =  Math.round(reportPrice*1000)/1000.0;
+				item.setReportPrice(reportPrice);
+				item.setTotalPrice(item.getItemCount()*item.getReportPrice());
 			}
 			
 			
@@ -1190,7 +1190,7 @@ public class InboundServiceImpl implements InboundService {
 			inboundViewRes.setWeightSumD(weightSum);;
 			inboundViewRes.setItemCountSum(getStringResult(itemCountSum));
 			inboundViewRes.setBoxCountSum(getStringResult(boxCountSum));
-			inboundViewRes.setWeightSum(decimalFormat2.format(weightSum));
+			inboundViewRes.setWeightSum(getStringResult(weightSum));
 			inboundViewRes.setCbmSum(decimalFormat.format(cbmSum));
 			if(totalPriceSum==null) {
 				inboundViewRes.setTotalPriceSum(" ");
@@ -1254,7 +1254,7 @@ public class InboundServiceImpl implements InboundService {
 					if(sub_item.getWeight() == null) {
 						f.put("weight",  "0");
 					}else {
-						f.put("weight", decimalFormat2.format(sub_item.getWeight()));	
+						f.put("weight", getStringResult(sub_item.getWeight()));	
 					}
 					
 					if(sub_item.getCbm() == null) {

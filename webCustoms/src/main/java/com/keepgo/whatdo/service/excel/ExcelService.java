@@ -87,4 +87,17 @@ public interface ExcelService {
 	boolean preview(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,FinalInboundRes container,HttpServletResponse response) throws Exception;
 	@Transactional
 	boolean previewContainer(InboundViewListRes inboundViewListRes,List<UnbiRes> unbiList,FinalInboundRes container,HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	List<ExcelInpackRes> listInpackData(FinalInboundInboundMasterReq req) throws Exception;
+	@Transactional
+	boolean listInpack(List<ExcelInpackRes> excelInpackRes,HttpServletResponse response) throws Exception;
+	@Transactional
+	List<ExcelFTARes> listFtaData(FinalInboundInboundMasterReq req) throws Exception;
+	@Transactional
+	boolean listFta(List<ExcelFTARes> excelFTARes,HttpServletResponse response) throws Exception;
+	@Transactional
+	List<ExcelRCEPRes> listRcepData(FinalInboundInboundMasterReq req) throws Exception;
+	@Transactional
+	List<ExcelYATAIRes> listYataiData(FinalInboundInboundMasterReq req) throws Exception;
 }

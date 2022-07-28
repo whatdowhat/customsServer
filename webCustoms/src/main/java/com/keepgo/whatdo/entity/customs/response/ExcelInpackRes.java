@@ -63,6 +63,9 @@ public class ExcelInpackRes {
 	Integer countM;
 	Integer countKG;
 	Integer countYD;
+	Integer countSET;
+	Integer countDOZ;
+	Integer countPAIR;
 	//품목 리스트
 	List<ExcelInpackSubRes>  subItem;
 }

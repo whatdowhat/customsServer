@@ -41,6 +41,7 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.PaperSize;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -8288,20 +8289,41 @@ public String getDoubleResult(Double param) {
 //			}
 			
 			workbook.setSheetName(0, excelListInpackRes.get(0).getFileNm());
+			workbook.setSheetName(1, excelListInpackRes.get(0).getFileNm()+"패킹");
 //			XSSFSheet sheet = workbook.getSheetAt(3);
 //			sheet = workbook.cloneSheet(0);
+			
+			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
+			int cloenStartIndex = 1;
 			for(int i=0; i<excelListInpackRes.size()-1; i++) {
-			workbook.cloneSheet(0, excelListInpackRes.get(i+1).getFileNm());
-			workbook.cloneSheet(1,excelListInpackRes.get(i+1).getFileNm()+"패킹");
+				
+				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
+				cloenStartIndex++;
+				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
+				String printAreaReference1 = workbook.getPrintArea(0).split("!")[1];
+				workbook.cloneSheet(0, excelListInpackRes.get(i+1).getFileNm());
+				//페이지 레이아웃 배열 속성 default 100에서 template 이 80이므로 80으로 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
+				//페이지 레이아웃 용지크기가 a4-paper이므로 clone될 sheet도 동일하게 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setPaperSize(PaperSize.A4_PAPER);
+				//페이지 레이아웃 프린트 영역 template에 맞춰 셋팅. (데이터 insert는 페이지 레이아웃이 설정된 후 진행되므로 자동으로 맞춰짐)
+				workbook.setPrintArea(cloenStartIndex, printAreaReference1);
+				
+				
+				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
+				cloenStartIndex++;
+				String printAreaReference2 = workbook.getPrintArea(1).split("!")[1];
+				workbook.cloneSheet(1,excelListInpackRes.get(i+1).getFileNm()+"패킹");
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setPaperSize(PaperSize.A4_PAPER);
+				workbook.setPrintArea(cloenStartIndex, printAreaReference2);
+				
+//				workbook.setPrintArea(2, "$A$1:$M$67");
+				
 			}
 			
 			//시트 수
 			int sheetCn = workbook.getNumberOfSheets();
-			
-			
-
-		      
-
 			
 			
 			for(int cn=0; cn<sheetCn; cn++) {

@@ -44,6 +44,8 @@ public class DatasourceJPA {
 //		  hikariConfig .setJdbcUrl("jdbc:mysql://peacherp.cafe24.com/peacherp?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"); 
 //		  hikariConfig.setUsername("peacherp");
 //		  hikariConfig.setPassword("vlcldldkfvl!");
+		  hikariConfig.setLeakDetectionThreshold(60 * 5000);
+		  hikariConfig.setConnectionTimeout(120 * 1000);
 		  hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
 		  hikariConfig.setJdbcUrl("jdbc:mysql://kmjtlogis.cafe24.com/kmjtlogis?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul");
 		  hikariConfig.setUsername("kmjtlogis");

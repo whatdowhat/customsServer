@@ -33,7 +33,7 @@ public class AgGridController {
 	@ResponseBody
     public BaseInfo formexample(@RequestBody BaseInfo data,HttpServletRequest req) throws Exception, NumberFormatException {
     	
-    	System.out.println(">>>>>>>>>>>>"+data);
+//    	System.out.println(">>>>>>>>>>>>"+data);
 
 		return data;
 	}

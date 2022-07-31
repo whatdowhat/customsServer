@@ -286,12 +286,30 @@ public class ExcelController {
 
 		return _excelService.listRcepData(req);
 	}
+	@RequestMapping(value = "/excel/document/listRcep", method = { RequestMethod.POST })
+	public void listRcep(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		List<ExcelRCEPRes> s =_excelService.listRcepData(req);
+		
+		_excelService.listRcep(s, response);
+	}
 	@RequestMapping(value = "/excel/document/listYataiData", method = { RequestMethod.POST })
 	public List<ExcelYATAIRes> listYataiData(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
 			HttpServletResponse response) throws Exception {
 
 
 		return _excelService.listYataiData(req);
+	}
+	@RequestMapping(value = "/excel/document/listYatai", method = { RequestMethod.POST })
+	public void listYatai(HttpServletRequest httpServletRequest, @RequestBody FinalInboundInboundMasterReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		List<ExcelYATAIRes> s =_excelService.listYataiData(req);
+		
+		_excelService.listYatai(s, response);
 	}
 
 }

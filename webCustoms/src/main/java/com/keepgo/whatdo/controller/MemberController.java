@@ -41,11 +41,11 @@ public class MemberController {
       
     	String tes = httpServletRequest.getParameter("test");
     
-    	System.out.println("tes::"+tes);
-    	System.out.println("tes::"+data01);
+//    	System.out.println("tes::"+tes);
+//    	System.out.println("tes::"+data01);
     	List<Notice> l= (List<Notice>) _notices.selectAll();
     	
-    	System.out.println(l);
+//    	System.out.println(l);
     	
     	_notice.findAll()
 //    	.stream().map(item ->{
@@ -65,7 +65,7 @@ public class MemberController {
     public String t2() throws Exception {
       
     	
-	  System.out.println("size::"+_notices.selectAll().size());
+//	  System.out.println("size::"+_notices.selectAll().size());
 	  return "/templates/helloHtml";
 	  
     }
@@ -74,7 +74,7 @@ public class MemberController {
     public String admint1() throws Exception {
     
 //      LOG.info("admint1 enter");
-	  System.out.println("admint1 enter");
+//	  System.out.println("admint1 enter");
 	  return "admin/adminpage";
 	  
     }

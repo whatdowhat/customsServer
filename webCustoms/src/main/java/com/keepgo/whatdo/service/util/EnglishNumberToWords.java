@@ -137,25 +137,25 @@ public class EnglishNumberToWords {
 			   * @param args
 			   */
 			  public static void main(String[] args) {
-			    System.out.println("*** " + EnglishNumberToWords.convert(0));
-			    System.out.println("*** " + EnglishNumberToWords.convert(1));
-			    System.out.println("*** " + EnglishNumberToWords.convert(16));
-			    System.out.println("*** " + EnglishNumberToWords.convert(100));
-			    System.out.println("*** " + EnglishNumberToWords.convert(118));
-			    System.out.println("*** " + EnglishNumberToWords.convert(200));
-			    System.out.println("*** " + EnglishNumberToWords.convert(219));
-			    System.out.println("*** " + EnglishNumberToWords.convert(800));
-			    System.out.println("*** " + EnglishNumberToWords.convert(801));
-			    System.out.println("*** " + EnglishNumberToWords.convert(1316));
-			    System.out.println("*** " + EnglishNumberToWords.convert(1000000));
-			    System.out.println("*** " + EnglishNumberToWords.convert(2000000));
-			    System.out.println("*** " + EnglishNumberToWords.convert(3000200));
-			    System.out.println("*** " + EnglishNumberToWords.convert(700000));
-			    System.out.println("*** " + EnglishNumberToWords.convert(9000000));
-			    System.out.println("*** " + EnglishNumberToWords.convert(9001000));
-			    System.out.println("*** " + EnglishNumberToWords.convert(123456789));
-			    System.out.println("*** " + EnglishNumberToWords.convert(2147483647));
-			    System.out.println("*** " + EnglishNumberToWords.convert(3000000010L));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(0));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(1));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(16));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(100));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(118));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(200));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(219));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(800));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(801));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(1316));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(1000000));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(2000000));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(3000200));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(700000));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(9000000));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(9001000));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(123456789));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(2147483647));
+//			    System.out.println("*** " + EnglishNumberToWords.convert(3000000010L));
 
 			    /*
 			     *** zero

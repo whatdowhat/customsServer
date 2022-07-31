@@ -285,7 +285,7 @@ public class InboundController {
 			Boolean checkPoint1[] = new Boolean[texts.length];
 			
 			for(int i = 0; i<texts.length;i++) {
-				System.out.println(texts[i]);
+//				System.out.println(texts[i]);
 				if(texts[i] == '0' ) {
 					checkPoint1[i] = true;
 				}else {

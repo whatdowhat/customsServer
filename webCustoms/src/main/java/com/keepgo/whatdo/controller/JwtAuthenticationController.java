@@ -85,9 +85,9 @@ public class JwtAuthenticationController {
         }
         	
         Date nn =  jwtTokenUtil.getExpirationDateFromToken(token);
-        System.out.println(ex);
-        System.out.println(claims);
-        System.out.println(nn);
+//        System.out.println(ex);
+//        System.out.println(claims);
+//        System.out.println(nn);
         
         return ResponseEntity.ok(new JwtResponse(token,claims,u.getName(),u.getFirstLogin()));
 //        return ResponseEntity.ok("sdf");
@@ -95,7 +95,7 @@ public class JwtAuthenticationController {
 
     @RequestMapping(value = "/authenticate/test", method = {RequestMethod.POST,RequestMethod.GET})
     public ResponseEntity<?> test(Principal principal) throws Exception {
-    	System.out.println("principal :"+principal);
+//    	System.out.println("principal :"+principal);
     	return ResponseEntity.ok("principal");
     }
     

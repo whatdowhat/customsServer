@@ -99,5 +99,9 @@ public interface ExcelService {
 	@Transactional
 	List<ExcelRCEPRes> listRcepData(FinalInboundInboundMasterReq req) throws Exception;
 	@Transactional
+	boolean listRcep(List<ExcelRCEPRes> excelRCEPRes,HttpServletResponse response) throws Exception;
+	@Transactional
 	List<ExcelYATAIRes> listYataiData(FinalInboundInboundMasterReq req) throws Exception;
+	@Transactional
+	boolean listYatai(List<ExcelYATAIRes> excelYATAIRes,HttpServletResponse response) throws Exception;
 }

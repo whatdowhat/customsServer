@@ -1939,7 +1939,7 @@ public class ExcelServiceImpl implements ExcelService {
 					}
 					sheet.getRow(LastRow).setHeightInPoints(new Float("18"));
 					sheet.rowIterator().forEachRemaining(row ->{
-						if(row.getRowNum() <= 300 && row.getRowNum() > LastRow) {
+						if(row.getRowNum() <= 600 && row.getRowNum() > LastRow) {
 							row.setHeightInPoints(new Float("14"));
 						}
 					});
@@ -7872,7 +7872,7 @@ public String getDoubleResult(Double param) {
 				subRes.setTotalWeight(origin_inbound_list.get(i).getWeight());
 				subRes.setWeight((subRes.getTotalWeight()  == null ? 0d : subRes.getTotalWeight()) - (subRes.getBoxCount() == null ? 0d : subRes.getBoxCount()) );
 				subRes.setCbm(origin_inbound_list.get(i).getCbm());
-				if(origin_inbound_list.get(i).getCoId()!=3) {
+				if(origin_inbound_list.get(i).getCoId()!=null||origin_inbound_list.get(i).getCoId()!=3) {
 					item.setCoYn(true);
 				}
 				if(t.getInboundMaster().getCurrencyType()==null||t.getInboundMaster().getCurrencyType().equals("$")) {
@@ -8458,7 +8458,7 @@ public String getDoubleResult(Double param) {
 					}
 					sheet.getRow(LastRow).setHeightInPoints(new Float("18"));
 					sheet.rowIterator().forEachRemaining(row ->{
-						if(row.getRowNum() <= 300 && row.getRowNum() > LastRow) {
+						if(row.getRowNum() <= 600 && row.getRowNum() > LastRow) {
 							row.setHeightInPoints(new Float("14"));
 						}
 					});
@@ -8620,9 +8620,27 @@ public String getDoubleResult(Double param) {
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			workbook.setSheetName(0, excelListFTARes.get(0).getFileNm());
+			
+			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
+			int cloenStartIndex = 0;
 			for(int i=0; i<excelListFTARes.size()-1; i++) {
+				
+				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
+				cloenStartIndex++;
+				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
+				String printAreaReference1 = workbook.getPrintArea(0).split("!")[1];
 				workbook.cloneSheet(0, excelListFTARes.get(i+1).getFileNm());
+				//페이지 레이아웃 배열 속성 default 100에서 template 이 80이므로 80으로 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
+				//페이지 레이아웃 용지크기가 a4-paper이므로 clone될 sheet도 동일하게 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setPaperSize(PaperSize.A4_PAPER);
+				//페이지 레이아웃 프린트 영역 template에 맞춰 셋팅. (데이터 insert는 페이지 레이아웃이 설정된 후 진행되므로 자동으로 맞춰짐)
+				workbook.setPrintArea(cloenStartIndex, printAreaReference1);
+				
+//				workbook.cloneSheet(0, excelListFTARes.get(i+1).getFileNm());
 				}
+			
+			
 			//시트 수
 			int sheetCn = workbook.getNumberOfSheets();
 			
@@ -8662,5 +8680,157 @@ public String getDoubleResult(Double param) {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	@Override
+	public boolean listRcep(List<ExcelRCEPRes> excelListRCEPRes, HttpServletResponse response) throws Exception {
+
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 2).findFirst().get().getName();
+
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, excelListRCEPRes.get(0).getFileNm());
+
+			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
+			int cloenStartIndex = 0;
+			for(int i=0; i<excelListRCEPRes.size()-1; i++) {
+				
+				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
+				cloenStartIndex++;
+				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
+				String printAreaReference1 = workbook.getPrintArea(0).split("!")[1];
+				workbook.cloneSheet(0, excelListRCEPRes.get(i+1).getFileNm());
+				//페이지 레이아웃 배열 속성 default 100에서 template 이 80이므로 80으로 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
+				//페이지 레이아웃 용지크기가 a4-paper이므로 clone될 sheet도 동일하게 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setPaperSize(PaperSize.A4_PAPER);
+				//페이지 레이아웃 프린트 영역 template에 맞춰 셋팅. (데이터 insert는 페이지 레이아웃이 설정된 후 진행되므로 자동으로 맞춰짐)
+				workbook.setPrintArea(cloenStartIndex, printAreaReference1);
+				
+//				workbook.cloneSheet(0, excelListFTARes.get(i+1).getFileNm());
+				}
+			//시트 수
+			int sheetCn = workbook.getNumberOfSheets();
+			
+			for(int cn=0; cn<sheetCn; cn++) {
+			ExcelRCEPRes excelRCEPRes = new ExcelRCEPRes();
+			excelRCEPRes = excelListRCEPRes.get(cn);
+				
+			XSSFSheet sheet = workbook.getSheetAt(cn);
+			Collections.reverse(excelRCEPRes.getSubItem());
+			// item add
+			// 문서마다 시작하는 숫자가 고정
+			int startCount = 22;
+			for (int i = 0; i < excelRCEPRes.getSubItem().size(); i++) {
+
+//				shiftRow(startCount+1,sheet,sheet.getRow(1),"D");
+
+				shiftRowForRCEP(startCount, sheet, "D", excelRCEPRes.getSubItem().get(i), workbook);
+				shiftRowForRCEP(startCount + 1, sheet, "BL", excelRCEPRes.getSubItem().get(i), workbook);
+//				startCount+=2;
+//				startCount+=1;
+
+			}
+
+			// data 치환
+
+			chageDataforRCEP(sheet, excelRCEPRes, workbook);
+
+			// item add
+			
+			}
+			String fileName = "RCEP.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean listYatai(List<ExcelYATAIRes> excelListYATAIRes, HttpServletResponse response) throws Exception {
+
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 3).findFirst().get().getName();
+
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			;
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, excelListYATAIRes.get(0).getFileNm());
+
+			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
+			int cloenStartIndex = 0;
+			for(int i=0; i<excelListYATAIRes.size()-1; i++) {
+				
+				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
+				cloenStartIndex++;
+				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
+				String printAreaReference1 = workbook.getPrintArea(0).split("!")[1];
+				workbook.cloneSheet(0, excelListYATAIRes.get(i+1).getFileNm());
+				//페이지 레이아웃 배열 속성 default 100에서 template 이 80이므로 80으로 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
+				//페이지 레이아웃 용지크기가 a4-paper이므로 clone될 sheet도 동일하게 셋팅.
+				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setPaperSize(PaperSize.A4_PAPER);
+				//페이지 레이아웃 프린트 영역 template에 맞춰 셋팅. (데이터 insert는 페이지 레이아웃이 설정된 후 진행되므로 자동으로 맞춰짐)
+				workbook.setPrintArea(cloenStartIndex, printAreaReference1);
+				
+//				workbook.cloneSheet(0, excelListFTARes.get(i+1).getFileNm());
+				}
+			//시트 수
+			int sheetCn = workbook.getNumberOfSheets();
+			
+			for(int cn=0; cn<sheetCn; cn++) {
+			ExcelYATAIRes excelYATAIRes = new ExcelYATAIRes();
+			excelYATAIRes = excelListYATAIRes.get(cn);
+			XSSFSheet sheet = workbook.getSheetAt(cn);
+
+			Collections.reverse(excelYATAIRes.getSubItem());
+			// item add
+			// 문서마다 시작하는 숫자가 고정
+			int startCount = 8;
+			for (int i = 0; i < excelYATAIRes.getSubItem().size(); i++) {
+
+				shiftRowForYATAI(startCount, sheet, "D", excelYATAIRes.getSubItem().get(i), workbook);
+				shiftRowForYATAI(startCount + 1, sheet, "BL", excelYATAIRes.getSubItem().get(i), workbook);
+
+			}
+//			
+			// data 치환
+
+			chageDataforYATAI(sheet, excelYATAIRes, workbook);
+
+			// item add
+			}
+			String fileName ="YATAI.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+//			System.err.println(e.getMessage());
+		}
+		return true;
+//		return null;
 	}
 }

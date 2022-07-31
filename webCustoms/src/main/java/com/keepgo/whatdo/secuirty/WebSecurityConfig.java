@@ -133,6 +133,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //				.antMatchers("/front/getAllCondition").hasAnyAuthority(SUPER,ADMIN)
 //				.antMatchers("/front/getAllCondition").hasAnyAuthority(ADMIN)
 				//권한설정 url mapping
+				//menu url
+				.antMatchers("/MainListF").permitAll()
+				//menu url				
+				
 				
 				.antMatchers("/index.jsp").permitAll()
 				.antMatchers("/static/index.html").permitAll()

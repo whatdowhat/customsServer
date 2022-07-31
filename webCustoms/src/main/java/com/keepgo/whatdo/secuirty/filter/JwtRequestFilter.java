@@ -58,6 +58,29 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         		request.getRequestURI().startsWith("/custom_container.js")||
         		request.getRequestURI().startsWith("/index.css")||
         		request.getRequestURI().startsWith("/manifest.json")||
+        		
+        		//menu url 
+        		request.getRequestURI().startsWith("/Company")||
+        		request.getRequestURI().startsWith("/Common")||
+        		request.getRequestURI().startsWith("/Company")||
+        		request.getRequestURI().startsWith("/User")||
+        		request.getRequestURI().startsWith("/MainPage")||
+        		request.getRequestURI().startsWith("/MainListF")||
+        		request.getRequestURI().startsWith("/MainListUserF")||
+        		request.getRequestURI().startsWith("/UserInfo")||
+        		request.getRequestURI().startsWith("/InboundMaster")||
+        		request.getRequestURI().startsWith("/InboundMasterView")||
+        		request.getRequestURI().startsWith("/FileUpload")||
+        		request.getRequestURI().startsWith("/UserDatatable")||
+        		request.getRequestURI().startsWith("/FinalInboundMasterView")||
+        		request.getRequestURI().startsWith("/FinalInbound")||
+        		request.getRequestURI().startsWith("/FinalInboundMasterViewF")||
+        		request.getRequestURI().startsWith("/InboundMasterViewNew")||
+        		request.getRequestURI().startsWith("/InboundMasterViewF")||
+        		request.getRequestURI().startsWith("/FinalInboundMasterViewUserF")||
+        		request.getRequestURI().startsWith("/InboundMasterViewUserF")||
+        		//menu url         		
+        		
         		request.getRequestURI().startsWith("/favicon.ico")
         		
         		) {
@@ -133,13 +156,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                               //refresh 추가.
                                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                                 if(SecurityContextHolder.getContext().getAuthentication() != null) {
-                                	System.out.println("##############"+SecurityContextHolder.getContext().getAuthentication().getName());
+//                                	System.out.println("##############"+SecurityContextHolder.getContext().getAuthentication().getName());
                                 	String token = jwtTokenUtil.generateToken(userDetails);
                                 	
                                 	response.setHeader("refreshToken", token);
-                                	System.out.println("############## refresh token setting"+token);
+//                                	System.out.println("############## refresh token setting"+token);
                                 }else {
-                                	System.out.println("##############"+"null!!");
+//                                	System.out.println("##############"+"null!!");
                                 }
                                 //refresh 추가
                                 chain.doFilter(request, response);

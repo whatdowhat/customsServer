@@ -396,7 +396,7 @@ public class MigrationController {
 					companyInfo.setCorpType(corpType.id);
 					break;
 				case "FORMULA":
-					System.out.println("CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+//					System.out.println("CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
 					String formula1 = cell.getCellFormula();
 					cell.setCellFormula(formula1);
 					break;
@@ -493,7 +493,7 @@ public class MigrationController {
 					companyInfo.setCorpType(corpType.id);
 					break;
 				case "FORMULA":
-					System.out.println("CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+//					System.out.println("CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
 					String formula1 = cell.getCellFormula();
 					cell.setCellFormula(formula1);
 					break;
@@ -798,7 +798,7 @@ public class MigrationController {
 							.build();
 					_commonRepository.save(comm);	
 				}else {
-					System.out.println("nono:::"+i);
+//					System.out.println("nono:::"+i);
 				}
 			}
 			
@@ -860,7 +860,7 @@ public class MigrationController {
 					switch (cell.getCellTypeEnum().name()) {
 					case "STRING":
 						String string1 = cell.getStringCellValue();
-						System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+//						System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
 
 						
 						//쉬퍼 이름.
@@ -876,10 +876,10 @@ public class MigrationController {
 						
 						break;
 					case "NUMERIC":
-						System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
+//						System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
 						break;
 					case "FORMULA":
-						System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+//						System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
 						String formula1 = cell.getCellFormula();
 						cell.setCellFormula(formula1);
 						break;
@@ -908,9 +908,9 @@ public class MigrationController {
 	public void process01 (List<String> values,List<String> values2) {
 		
 		
-		System.out.println("######process01#######");
-		System.out.println("######process01####### values.size()" + values.size());
-		System.out.println("######process01####### values2.size()" + values2.size());
+//		System.out.println("######process01#######");
+//		System.out.println("######process01####### values.size()" + values.size());
+//		System.out.println("######process01####### values2.size()" + values2.size());
 		
 		List<Common> list= new ArrayList<Common>();
 		
@@ -927,7 +927,7 @@ public class MigrationController {
 		newList.stream().forEach(item->{
 			_commonRepository.save(item);
 		});
-		System.out.println("######process01####### Complete");
+//		System.out.println("######process01####### Complete");
 	}
 	public Common getCommon (String value,String value2) {
 		
@@ -1125,7 +1125,7 @@ public class MigrationController {
 					}
 					break;
 				case "FORMULA":
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
 					String formula1 = cell.getCellFormula();
 					cell.setCellFormula(formula1);
 					break;
@@ -1137,7 +1137,7 @@ public class MigrationController {
 				
 			});
 			
-			System.out.println("######company####### info" + companyInfo.toString());
+//			System.out.println("######company####### info" + companyInfo.toString());
 			list.add(companyInfo);
 		}
 		return list;
@@ -1226,7 +1226,7 @@ public class MigrationController {
 						}
 						break;
 					case "FORMULA":
-						System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+//						System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
 						String formula1 = cell.getCellFormula();
 						cell.setCellFormula(formula1);
 						break;
@@ -1238,7 +1238,7 @@ public class MigrationController {
 					
 				});
 				
-				System.out.println("######company####### info" + companyInfo.toString());
+//				System.out.println("######company####### info" + companyInfo.toString());
 				list.add(companyInfo);
 			}
 			return list;
@@ -1428,7 +1428,7 @@ public class MigrationController {
 				switch (cell.getCellTypeEnum().name()) {
 				case "STRING":
 					String string1 = cell.getStringCellValue();
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
 
 					if(cell.getColumnIndex()==1) {
 						//상호(한글)
@@ -1451,11 +1451,11 @@ public class MigrationController {
 					
 					break;
 				case "NUMERIC":
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_NUMERIC: : " +  cell.getColumnIndex()  + " 열 = " + cell.getDateCellValue());
 					cell.setCellType( HSSFCell.CELL_TYPE_STRING );
 					String numberToString = cell.getStringCellValue();
 							
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_STRING:::: " + cell.getColumnIndex()  + " 열 = " + cell.getStringCellValue());
 
 					if(cell.getColumnIndex()==1) {
 						//상호(한글)
@@ -1477,7 +1477,7 @@ public class MigrationController {
 					
 					break;
 				case "FORMULA":
-					System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
+//					System.out.println("row index:"+rowInx+ "CELL_TYPE_FORMULA:: : " +  cell.getColumnIndex()  + " 열 = " + cell.getCellFormula());
 					String formula1 = cell.getCellFormula();
 					cell.setCellFormula(formula1);
 					break;

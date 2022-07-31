@@ -743,7 +743,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 							if(CoType.getList().get(k).getName().equals(inbound.getCoCode())) {
 								inbound.setCoId(CoType.getList().get(k).getId());
 							}else {
-
+								inbound.setCoId(Integer.valueOf(3));
 							}
 						}
 						

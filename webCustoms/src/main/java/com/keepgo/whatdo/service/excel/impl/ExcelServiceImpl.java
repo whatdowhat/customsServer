@@ -10,6 +10,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8296,7 +8297,7 @@ public String getDoubleResult(Double param) {
 			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
 			int cloenStartIndex = 1;
 			for(int i=0; i<excelListInpackRes.size()-1; i++) {
-				
+				System.out.println("#########("+i +"/"+excelListInpackRes.size()+") 처리중... #########");	
 				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
 				cloenStartIndex++;
 				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
@@ -8354,7 +8355,7 @@ public String getDoubleResult(Double param) {
 				
 				int startCount = 23;
 				for (int i = 0; i < excelInpackRes.getSubItem().size(); i++) {
-
+					System.out.println(LocalDateTime.now().toString()+ "######### ( 전체 시트 "+(sheetCn)+"중 "+(cn+1)+"시트, 항목"  +(i+1) +"/"+excelInpackRes.getSubItem().size()+") 처리중... #########");	
 					shiftRowForInpack(startCount, sheet, "D", excelInpackRes.getSubItem().get(i), workbook, pageNo);
 					shiftRowForInpack(startCount + 1, sheet, "BL", excelInpackRes.getSubItem().get(i), workbook, pageNo);
 
@@ -8588,7 +8589,7 @@ public String getDoubleResult(Double param) {
 			}
 			
 			//기존
-			
+			System.out.println(LocalDateTime.now().toString()+ "######### inpack exceldownload 처리완료 #########");
 			String fileName ="Inpack.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);

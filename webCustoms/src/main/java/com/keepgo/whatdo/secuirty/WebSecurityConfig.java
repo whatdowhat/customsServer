@@ -126,6 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests().antMatchers("/test/**/**").permitAll().and()
 				.authorizeRequests()
 				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
+						"/index.html",
 						"/static/**", "/**/*.js","/pub/**")
 				.permitAll()
 				
@@ -136,6 +137,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				//menu url
 				.antMatchers("/MainListF").permitAll()
 				//menu url				
+				
+				.antMatchers("/migration/server/image").permitAll()
+				.antMatchers("/front/downloadFile").permitAll()
 				
 				
 				.antMatchers("/index.jsp").permitAll()

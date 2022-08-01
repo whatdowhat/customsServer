@@ -8,6 +8,8 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -42,6 +44,7 @@ import com.keepgo.whatdo.repository.FileUploadRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
+import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.util.UtilService;
 
@@ -66,6 +69,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 	
 	@Autowired
 	CommonRepository _commonRepository;
+	
+	@Autowired
+	UserRepository _userRepository;
 	
 	@Value("${fileupload.root}")
 	String uploadRoot;
@@ -119,6 +125,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 	//masterid,common type
 	@Override
 	public List<?> getFileList2(FileUploadReq fileUploadReq) {
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
 		List<?> list = new ArrayList<>();
 		if(fileUploadReq.getFileType() ==  0) {
 			list = _fileUploadRepository
@@ -139,7 +147,44 @@ public class FileUploadServiceImpl implements FileUploadService {
 //					.fileCount(fileCount)
 											
 					.build();
-					
+//20220801	
+					int a =item.getFileSize();
+					String fileSizeNew = "";
+				dto.setUserName(item.getUser().getName());
+				dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+				String fileTypeNew = item.getFileName1();
+				int idx = fileTypeNew.indexOf(".");
+				String fileTypeNew1 = fileTypeNew.substring(0,idx);
+				String fileTypeNew2 = fileTypeNew.substring(idx+1);
+				if(fileTypeNew2.equals("xlsx")) {
+					dto.setFileTypeNew("Microsoft Excel 워크시트");
+				}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+					dto.setFileTypeNew("JPG 파일");
+				}else if(fileTypeNew2.equals("png")) {
+					dto.setFileTypeNew("PNG 파일");
+				}else if(fileTypeNew2.equals("pdf")) {
+					dto.setFileTypeNew("PDF 파일");
+				}else {
+					dto.setFileTypeNew("");
+				}
+				
+				if(item.getFileSize()>=1024*1024) {
+						a=item.getFileSize()/(1024*1024);
+						fileSizeNew=decimalFormat2.format(a);
+						fileSizeNew=fileSizeNew+"MB";
+						dto.setFileSizeStr(fileSizeNew);
+					}else if(item.getFileSize()>=1024) {
+						a=item.getFileSize()/1024;
+						fileSizeNew=decimalFormat2.format(a);
+						fileSizeNew=fileSizeNew+"KB";
+						dto.setFileSizeStr(fileSizeNew);
+					}else {
+						a=item.getFileSize();
+						fileSizeNew=decimalFormat2.format(a);
+						fileSizeNew=fileSizeNew+"Bytes";
+						dto.setFileSizeStr(fileSizeNew);
+					}
+			
 			return dto;
 		}).collect(Collectors.toList());
 		}else {
@@ -348,6 +393,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		//path2=298, filetypeid
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(Long.valueOf(fileUploadReq.getPath1()))
 				.orElse(InboundMaster.builder().build());
+		User user = _userRepository.findByLoginId(fileUploadReq.getLoginId());
 		StringBuilder strPath = new StringBuilder(uploadRoot);
 		//파일생성 폴더 이름은 사업자번호
 		strPath.append(File.separatorChar+inboundMaster.getCompanyInfo().getCoNum());
@@ -382,7 +428,12 @@ public class FileUploadServiceImpl implements FileUploadService {
 		FileUpload fileupload = new FileUpload();
 		fileupload.setInboundMaster(inboundMaster);
 		//todo 사용자 세션 아이디로 수정해야됨.
-		fileupload.setUser(User.builder().id(new Long(1)).build());
+		if(user==null) {
+			fileupload.setUser(User.builder().id(new Long(1)).build());
+		}else {
+			fileupload.setUser(user);
+		}
+		
 		
 		fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == Integer.valueOf(fileUploadReq.getPath2())).findFirst().get().getId());
 		

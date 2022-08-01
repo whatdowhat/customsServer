@@ -1,5 +1,6 @@
 package com.keepgo.whatdo.entity.customs.request;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class CheckImportReq {
 	private String memo;
 	private String regDtStr;
 	
-	
+	private List<Long> ids = new ArrayList<>();
+	private String loginId;
 	
 }

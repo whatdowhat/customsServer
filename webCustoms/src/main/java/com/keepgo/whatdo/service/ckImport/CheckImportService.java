@@ -35,4 +35,12 @@ public interface CheckImportService {
 	@Transactional
 	boolean commitCheckImport(CheckImportReq checkImportReq);
 	
+	@Transactional
+	boolean deleteCheckImport(CheckImportReq checkImportReq);
+	
+	@Transactional
+	boolean deleteCheckImportByInboundMasterId(CheckImportReq checkImportReq);
+	
+	@Transactional
+	boolean updateCheckImport(CheckImportReq checkImportReq);
 }

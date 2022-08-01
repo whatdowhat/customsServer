@@ -67,6 +67,7 @@ import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
 import com.keepgo.whatdo.repository.UnbiRepository;
+import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.ckImport.CheckImportService;
 import com.keepgo.whatdo.service.inbound.InboundService;
 import com.keepgo.whatdo.service.util.UtilService;
@@ -104,6 +105,8 @@ public class CheckImportServiceImpl implements CheckImportService {
 	
 	@Autowired
 	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
+	@Autowired
+	UserRepository _userRepository;
 	
 	@Override
 	public List<CheckImportRes> getCheckImportByCompanyId(CheckImportReq checkImportReq)  {
@@ -115,7 +118,7 @@ public class CheckImportServiceImpl implements CheckImportService {
 		Long companyId = im.getCompanyInfo().getId();
 		
 		List<CheckImportRes> result = _checkImportRepository.findByCompanyInfoId(companyId).stream()
-				.sorted(Comparator.comparing(CheckImport::getRegDate))
+				.sorted(Comparator.comparing(CheckImport::getRegDate).reversed())
 				.map(item->{
 					CheckImportRes rt = CheckImportRes.builder()
 							.id(item.getId())
@@ -140,12 +143,17 @@ public class CheckImportServiceImpl implements CheckImportService {
 		CheckImport checkImport = _checkImportRepository.findByInboundMasterIdAndCompanyInfoId(checkImportReq.getInboundMasterId(), checkImportReq.getCompanyInfoId());
 		InboundMaster im = _inboundMasterRepository.findById(checkImportReq.getInboundMasterId()).get();
 		CompanyInfo company = _companyInfoRepository.findById(checkImportReq.getCompanyInfoId()).get();
+		User user = _userRepository.findByLoginId(checkImportReq.getLoginId());
 		String blNo = im.getBlNo();
 		if(checkImport!=null) {
 //			checkImport.setMemo(blNo+" "+checkImportReq.getMemo());
 			checkImport.setMemo(checkImportReq.getMemo());
 			checkImport.setRegDate(new Date());
-			
+			if(user==null) {
+				checkImport.setUser(User.builder().id(new Long(1)).build());
+			}else {
+				checkImport.setUser(user);
+			}
 			
 			
 			_checkImportRepository.save(checkImport);
@@ -154,7 +162,11 @@ public class CheckImportServiceImpl implements CheckImportService {
 			ch.setInboundMaster(im);
 			ch.setCompanyInfo(company);
 			ch.setRegDate(new Date());
-			ch.setUser(User.builder().id(new Long(1)).build());
+			if(user==null) {
+				ch.setUser(User.builder().id(new Long(1)).build());
+			}else {
+				ch.setUser(user);
+			}
 			ch.setNo(0);
 			ch.setOrderNo(0);	
 //			ch.setMemo(blNo+" "+checkImportReq.getMemo());
@@ -168,6 +180,48 @@ public class CheckImportServiceImpl implements CheckImportService {
 		return true;
 	}
 	
+	@Override
+	public boolean deleteCheckImport(CheckImportReq checkImportReq) {
+		List<Long> checkImportList = checkImportReq.getIds();
+		for (int i = 0; i < checkImportList.size(); i++) {
+			CheckImport checkImport = _checkImportRepository.findById(checkImportList.get(i).longValue()).get();
+			_checkImportRepository.delete(checkImport);
+		}
+		return true;
+	}
+	@Override
+	public boolean deleteCheckImportByInboundMasterId(CheckImportReq checkImportReq) {
+		List<Long> checkImportList = checkImportReq.getIds();
+		for (int i = 0; i < checkImportList.size(); i++) {
+			CheckImport checkImport = _checkImportRepository.findByInboundMasterId(checkImportList.get(i).longValue());
+			_checkImportRepository.delete(checkImport);
+		}
+		return true;
+	}
 	
+	@Override
+	public boolean updateCheckImport(CheckImportReq checkImportReq) {
+		
+		List<Long> checkImportList = checkImportReq.getIds();
+		CheckImport checkImport = _checkImportRepository.findById(checkImportList.get(0).longValue()).get();
+		User user = _userRepository.findByLoginId(checkImportReq.getLoginId());
+		if(checkImport!=null) {
+			checkImport.setMemo(checkImportReq.getMemo());
+			checkImport.setRegDate(new Date());
+			if(user==null) {
+				checkImport.setUser(User.builder().id(new Long(1)).build());
+			}else {
+				checkImport.setUser(user);
+			}
+			
+			
+			_checkImportRepository.save(checkImport);
+		}
+		
+		
+
+
+		return true;
+	}
 
 }

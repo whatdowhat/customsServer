@@ -8412,7 +8412,7 @@ public String getDoubleResult(Double param) {
 							if (sheet.getMergedRegion(i).getFirstRow() == startRow-1) {
 								sheet.removeMergedRegion(i);
 								sheet.removeMergedRegion(i);
-								sheet.removeMergedRegion(i);
+//								sheet.removeMergedRegion(i);
 							}
 							
 						}

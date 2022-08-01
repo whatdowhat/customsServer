@@ -43,7 +43,7 @@ public class FileUploadReq {
 	private Long commonId;
 	private Long finalInboundId;
 	
-	
+	private String loginId;
 	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;

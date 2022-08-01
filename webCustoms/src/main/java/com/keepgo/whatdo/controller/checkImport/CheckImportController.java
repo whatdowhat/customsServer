@@ -85,7 +85,30 @@ public class CheckImportController {
 		return _checkImportService.commitCheckImport(checkImportReq);
 
 	}
+	@RequestMapping(value = "/front/deleteCheckImport", method = { RequestMethod.POST })
+
+	public boolean deleteCheckImport(@RequestBody CheckImportReq checkImportReq)
+			throws IOException, InterruptedException {
+
+		return _checkImportService.deleteCheckImport(checkImportReq);
+
+	}
+	@RequestMapping(value = "/front/deleteCheckImportByInboundMasterId", method = { RequestMethod.POST })
+
+	public boolean deleteCheckImportByInboundMasterId(@RequestBody CheckImportReq checkImportReq)
+			throws IOException, InterruptedException {
+
+		return _checkImportService.deleteCheckImportByInboundMasterId(checkImportReq);
+
+	}
 	
+	@RequestMapping(value = "/front/updateCheckImport", method = { RequestMethod.POST })
+	public boolean updateCheckImport(HttpServletRequest httpServletRequest,
+			@RequestBody CheckImportReq checkImportReq) {
+
+		return _checkImportService.updateCheckImport(checkImportReq);
+
+	}
 	
 	
 	

@@ -100,7 +100,7 @@ public class FileUpload {
 	
 	@ExcelColumn(headerName="사용자",order = 5)
 	@OneToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "userId")
 	private User user;
 //	//공통 컬럼.
 }

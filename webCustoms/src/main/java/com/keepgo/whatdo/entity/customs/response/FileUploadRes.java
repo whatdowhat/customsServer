@@ -42,6 +42,10 @@ public class FileUploadRes {
 	private Long commonId;
 	private Long finalInboundId;
 	
+	private String fileSizeStr;
+	private String fileTypeNew;
+	private String userName;
+	private String updateDtStr;
 	
 	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

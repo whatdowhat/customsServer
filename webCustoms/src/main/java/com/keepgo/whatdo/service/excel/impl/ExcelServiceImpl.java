@@ -8297,7 +8297,10 @@ public String getDoubleResult(Double param) {
 			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
 			int cloenStartIndex = 1;
 			for(int i=0; i<excelListInpackRes.size()-1; i++) {
-				System.out.println("#########("+i +"/"+excelListInpackRes.size()+") 처리중... #########");	
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println("#########("+i +"/"+excelListInpackRes.size()+") 처리중... #########");	
+				}
+					
 				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
 				cloenStartIndex++;
 				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
@@ -8355,7 +8358,10 @@ public String getDoubleResult(Double param) {
 				
 				int startCount = 23;
 				for (int i = 0; i < excelInpackRes.getSubItem().size(); i++) {
-					System.out.println(LocalDateTime.now().toString()+ "######### ( 전체 시트 "+(sheetCn)+"중 "+(cn+1)+"시트, 항목"  +(i+1) +"/"+excelInpackRes.getSubItem().size()+") 처리중... #########");	
+					if(uploadRoot.equals("c:/kmjtlogis")) {
+						System.out.println(LocalDateTime.now().toString()+ "######### ( 전체 시트 "+(sheetCn)+"중 "+(cn+1)+"시트, 항목"  +(i+1) +"/"+excelInpackRes.getSubItem().size()+") 처리중... #########");
+					}
+						
 					shiftRowForInpack(startCount, sheet, "D", excelInpackRes.getSubItem().get(i), workbook, pageNo);
 					shiftRowForInpack(startCount + 1, sheet, "BL", excelInpackRes.getSubItem().get(i), workbook, pageNo);
 
@@ -8589,7 +8595,10 @@ public String getDoubleResult(Double param) {
 			}
 			
 			//기존
-			System.out.println(LocalDateTime.now().toString()+ "######### inpack exceldownload 처리완료 #########");
+			if(uploadRoot.equals("c:/kmjtlogis")) {
+				System.out.println(LocalDateTime.now().toString()+ "######### inpack exceldownload 처리완료 #########");
+			}
+			
 			String fileName ="Inpack.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -8625,7 +8634,9 @@ public String getDoubleResult(Double param) {
 			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
 			int cloenStartIndex = 0;
 			for(int i=0; i<excelListFTARes.size()-1; i++) {
-				
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println("#########("+i +"/"+excelListFTARes.size()+") 처리중... #########");	
+				}
 				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
 				cloenStartIndex++;
 				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
@@ -8654,7 +8665,9 @@ public String getDoubleResult(Double param) {
 			// 문서마다 시작하는 숫자가 고정
 			int startCount = 22;
 			for (int i = 0; i < excelFTARes.getSubItem().size(); i++) {
-
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println(LocalDateTime.now().toString()+ "######### ( 전체 시트 "+(sheetCn)+"중 "+(cn+1)+"시트, 항목"  +(i+1) +"/"+excelFTARes.getSubItem().size()+") 처리중... #########");
+				}
 				shiftRow(startCount, sheet, "D", excelFTARes.getSubItem().get(i), workbook);
 				shiftRow(startCount + 1, sheet, "BL", excelFTARes.getSubItem().get(i), workbook);
 
@@ -8669,6 +8682,10 @@ public String getDoubleResult(Double param) {
 
 			// item add
 			}
+			if(uploadRoot.equals("c:/kmjtlogis")) {
+				System.out.println(LocalDateTime.now().toString()+ "######### FTA exceldownload 처리완료 #########");
+			}
+			
 			String fileName = "FTA.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -8701,7 +8718,9 @@ public String getDoubleResult(Double param) {
 			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
 			int cloenStartIndex = 0;
 			for(int i=0; i<excelListRCEPRes.size()-1; i++) {
-				
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println("#########("+i +"/"+excelListRCEPRes.size()+") 처리중... #########");	
+				}
 				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
 				cloenStartIndex++;
 				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
@@ -8731,7 +8750,9 @@ public String getDoubleResult(Double param) {
 			for (int i = 0; i < excelRCEPRes.getSubItem().size(); i++) {
 
 //				shiftRow(startCount+1,sheet,sheet.getRow(1),"D");
-
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println(LocalDateTime.now().toString()+ "######### ( 전체 시트 "+(sheetCn)+"중 "+(cn+1)+"시트, 항목"  +(i+1) +"/"+excelRCEPRes.getSubItem().size()+") 처리중... #########");
+				}
 				shiftRowForRCEP(startCount, sheet, "D", excelRCEPRes.getSubItem().get(i), workbook);
 				shiftRowForRCEP(startCount + 1, sheet, "BL", excelRCEPRes.getSubItem().get(i), workbook);
 //				startCount+=2;
@@ -8745,6 +8766,9 @@ public String getDoubleResult(Double param) {
 
 			// item add
 			
+			}
+			if(uploadRoot.equals("c:/kmjtlogis")) {
+				System.out.println(LocalDateTime.now().toString()+ "######### RCEP exceldownload 처리완료 #########");
 			}
 			String fileName = "RCEP.xlsx";
 			response.setContentType("application/download;charset=utf-8");
@@ -8779,7 +8803,9 @@ public String getDoubleResult(Double param) {
 			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
 			int cloenStartIndex = 0;
 			for(int i=0; i<excelListYATAIRes.size()-1; i++) {
-				
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println("#########("+i +"/"+excelListYATAIRes.size()+") 처리중... #########");	
+				}
 				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
 				cloenStartIndex++;
 				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
@@ -8807,7 +8833,9 @@ public String getDoubleResult(Double param) {
 			// 문서마다 시작하는 숫자가 고정
 			int startCount = 8;
 			for (int i = 0; i < excelYATAIRes.getSubItem().size(); i++) {
-
+				if(uploadRoot.equals("c:/kmjtlogis")) {
+					System.out.println(LocalDateTime.now().toString()+ "######### ( 전체 시트 "+(sheetCn)+"중 "+(cn+1)+"시트, 항목"  +(i+1) +"/"+excelYATAIRes.getSubItem().size()+") 처리중... #########");
+				}
 				shiftRowForYATAI(startCount, sheet, "D", excelYATAIRes.getSubItem().get(i), workbook);
 				shiftRowForYATAI(startCount + 1, sheet, "BL", excelYATAIRes.getSubItem().get(i), workbook);
 
@@ -8818,6 +8846,9 @@ public String getDoubleResult(Double param) {
 			chageDataforYATAI(sheet, excelYATAIRes, workbook);
 
 			// item add
+			}
+			if(uploadRoot.equals("c:/kmjtlogis")) {
+				System.out.println(LocalDateTime.now().toString()+ "######### YATAI exceldownload 처리완료 #########");
 			}
 			String fileName ="YATAI.xlsx";
 			response.setContentType("application/download;charset=utf-8");

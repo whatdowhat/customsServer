@@ -214,7 +214,7 @@ public class InboundController {
 		finalRes.setItemCountSumFinal(getStringResult(itemCountSumFinal));
 		finalRes.setBoxCountSumFinal(getStringResult(boxCountSumFinal));
 		finalRes.setCbmSumFinal(decimalFormat.format(cbmSumFinal));
-		finalRes.setWeightSumFinal(decimalFormat2.format(weightSumFinal));
+		finalRes.setWeightSumFinal(getStringResult(weightSumFinal));
 		if(inboundMasterIdList.size()==0) {
 			finalRes.setPackingType("CTN");
 		}else {

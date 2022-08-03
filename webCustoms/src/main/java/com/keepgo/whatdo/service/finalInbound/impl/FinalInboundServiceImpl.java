@@ -221,6 +221,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.gubun(req.getGubun())
 				.corpId((req.getCorpId()==null||req.getCorpId()==0 ? 1 : req.getCorpId() ))
 				.incomeDt(afterFormat.format(tempDate2))
+				.firstDepartDt(afterFormat.format(tempDate))
 				.departDtStr(afterFormat.format(tempDate))
 				.workDepartDt(afterFormat.format(tempDate3))
 				.incomePort(new Long(321))

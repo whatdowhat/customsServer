@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.controller.chinaSanggum;
+package com.keepgo.whatdo.controller.Manage;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -34,6 +34,7 @@ import com.keepgo.whatdo.entity.customs.request.FileUploadReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.request.ManageReq;
 import com.keepgo.whatdo.entity.customs.request.UnbiReq;
 import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CheckImportRes;
@@ -44,34 +45,39 @@ import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
+import com.keepgo.whatdo.entity.customs.response.ManageRes;
 import com.keepgo.whatdo.entity.customs.response.UnbiRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.service.chinaSanggum.ChinaSanggumService;
 import com.keepgo.whatdo.service.ckImport.CheckImportService;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
+import com.keepgo.whatdo.service.manage.ManageService;
 import com.keepgo.whatdo.service.unbi.UnbiService;
 import com.keepgo.whatdo.service.util.UtilService;
 
 @RestController
-public class ChinaSanggumController{
+public class ManageController{
 	
 	static final Logger log = LoggerFactory.getLogger(CheckImportController.class);
 	@Autowired
 	ChinaSanggumService _chinaSanggumService;
-	@RequestMapping(value = "/front/getChinaSanggum", method = {RequestMethod.POST })
-	public List<ChinaSanggumRes> getChinaSanggum(HttpServletRequest httpServletRequest,@RequestBody ChinaSanggumReq chinaSanggumReq) throws Exception{
+	@Autowired
+	ManageService _manageService;
+	
+	@RequestMapping(value = "/front/getManage", method = {RequestMethod.POST })
+	public List<ManageRes> getManage(HttpServletRequest httpServletRequest,@RequestBody ManageReq manageReq) throws Exception{
 
-		List<ChinaSanggumRes> list = _chinaSanggumService.getChinaSanggum(chinaSanggumReq);		
+		List<ManageRes> list = _manageService.getManage(manageReq);		
 		
 		return  list;
 	}
 	
-	@RequestMapping(value = "/front/commitChinaSanggum", method = { RequestMethod.POST })
-	public boolean commitChinaSanggum(HttpServletRequest httpServletRequest,
-			@RequestBody ChinaSanggumReq chinaSanggumReq) {
+	@RequestMapping(value = "/front/commitManage", method = { RequestMethod.POST })
+	public boolean commitManage(HttpServletRequest httpServletRequest,
+			@RequestBody ManageReq manageReq) {
 
-		return _chinaSanggumService.commitChinaSanggum(chinaSanggumReq);
+		return _manageService.commitManage(manageReq);
 
 	}
 	

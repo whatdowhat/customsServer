@@ -20,4 +20,6 @@ public interface FinalInboundRepository extends JpaRepository<FinalInbound, Long
 	List<FinalInbound> findByDepartDtStrBetween(String start, String end);
 	
 	List<FinalInbound> findByChinaSanggumYn(int ChinaSanggumYn);
+	List<FinalInbound> findByDepartDelayYn(int departDelayYn);
+	List<FinalInbound> findByGwanriYn(int gwanriYn);
 }

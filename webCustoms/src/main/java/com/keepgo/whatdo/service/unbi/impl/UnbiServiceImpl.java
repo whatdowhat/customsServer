@@ -288,7 +288,21 @@ public class UnbiServiceImpl implements UnbiService {
 				result.get(0).setContainerWorkCostSum(result.stream().filter(t->t.getContainerWorkCostD()!= null).mapToDouble(t->t.getContainerWorkCostD()).sum());
 				result.get(0).setContainerWorkCost2Sum(result.stream().filter(t->t.getContainerWorkCost2D()!= null).mapToDouble(t->t.getContainerWorkCost2D()).sum());
 				result.get(0).setContainerMoveCostSum(result.stream().filter(t->t.getContainerMoveCostD()!= null).mapToDouble(t->t.getContainerMoveCostD()).sum());
-				result.get(0).setTotalSumFinal(result.stream().filter(t->t.getTotalSum()!= null).mapToDouble(t->t.getTotalSum()).sum());	
+				result.get(0).setTotalSumFinal(result.stream().filter(t->t.getTotalSum()!= null).mapToDouble(t->t.getTotalSum()).sum());
+				
+//				result.get(0).setOfficeNameSums( decimalFormat.format(result.get(0).getOfficeNameSum()));
+//				result.get(0).setUnbiSums(decimalFormat.format(result.get(0).getUnbiSum()));
+//				result.get(0).setPickupCostSums(decimalFormat.format(result.get(0).getPickupCostSum()));
+//				result.get(0).setSanghachaCostSums(decimalFormat.format(result.get(0).getSanghachaCostSum()));
+//				result.get(0).setEtcCostSums(decimalFormat.format(result.get(0).getEtcCostSum()));
+//				result.get(0).setHacksodanCostSums(decimalFormat.format(result.get(0).getHacksodanCostSum()));
+//				result.get(0).setCoCostSums(decimalFormat.format(result.get(0).getCoCostSum()));
+//				result.get(0).setHwajumiUnbiSums(decimalFormat.format(result.get(0).getHwajumiUnbiSum()));
+//				result.get(0).setHwajumiPickupCostSums(decimalFormat.format(result.get(0).getHwajumiPickupCostSum()));
+//				result.get(0).setContainerWorkCostSums(decimalFormat.format(result.get(0).getContainerWorkCostSum()));
+//				result.get(0).setContainerWorkCost2Sums(decimalFormat.format(result.get(0).getContainerWorkCost2Sum()));
+//				result.get(0).setContainerMoveCostSums(decimalFormat.format(result.get(0).getContainerMoveCostSum()));
+//				result.get(0).setTotalSumFinals(decimalFormat.format(result.get(0).getTotalSumFinal()));
 			}
 		
 			

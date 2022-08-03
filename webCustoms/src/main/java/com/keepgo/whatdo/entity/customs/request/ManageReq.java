@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.entity.customs.response;
+package com.keepgo.whatdo.entity.customs.request;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +31,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChinaSanggumRes {
+public class ManageReq {
 
 	
 	private Long id;
@@ -42,11 +42,8 @@ public class ChinaSanggumRes {
 	private String incomeDtStr;
 	private String memo;
 	private String regDtStr;
-	private String masterBlNo;
-	private String containerNo;
 	
 	private List<Long> ids = new ArrayList<>();
 	private String loginId;
-	private String userNm;
 	
 }

@@ -31,7 +31,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChinaSanggumRes {
+public class ManageRes {
 
 	
 	private Long id;

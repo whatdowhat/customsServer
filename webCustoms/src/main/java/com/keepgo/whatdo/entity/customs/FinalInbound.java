@@ -55,6 +55,9 @@ public class FinalInbound {
 	@Column(name = "incomeDt")
 	private String incomeDt;
 	
+	@Column(name = "firstDepartDt")
+	private String firstDepartDt;
+	
 	// 출발일
 	@Column(name = "departDt")
 	private String departDtStr;

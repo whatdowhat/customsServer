@@ -31,7 +31,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "web_china_sanggum")
+@Table(name = "web_departDelay")
 @Data
 @Builder
 @Getter
@@ -39,7 +39,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 //@ToString
-public class ChinaSanggum {
+public class DepartDelay {
 
 	@Id
 	@Column(name = "id")

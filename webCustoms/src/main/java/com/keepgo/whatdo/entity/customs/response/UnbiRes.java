@@ -101,6 +101,20 @@ public class UnbiRes {
 	private Double containerWorkCost2Sum;
 	private Double containerMoveCostSum;
 	private Double officeNameSum;
+	private String totalSums;
+	private String totalSumFinals;
+	private String unbiSums;
+	private String pickupCostSums;
+	private String sanghachaCostSums;
+	private String etcCostSums;
+	private String hacksodanCostSums;
+	private String coCostSums;
+	private String hwajumiUnbiSums;
+	private String hwajumiPickupCostSums;
+	private String containerWorkCostSums;
+	private String containerWorkCost2Sums;
+	private String containerMoveCostSums;
+	private String officeNameSums;
 	private String type;
 	private Long finalInboundId;
 	

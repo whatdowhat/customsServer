@@ -31,7 +31,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChinaSanggumRes {
+public class DepartDelayRes {
 
 	
 	private Long id;
@@ -44,7 +44,8 @@ public class ChinaSanggumRes {
 	private String regDtStr;
 	private String masterBlNo;
 	private String containerNo;
-	
+	private String departDtStr;
+	private String firstDepartDtStr;
 	private List<Long> ids = new ArrayList<>();
 	private String loginId;
 	private String userNm;

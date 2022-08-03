@@ -1,4 +1,4 @@
-package com.keepgo.whatdo.service.chinaSanggum.impl;
+package com.keepgo.whatdo.service.manage.impl;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -43,6 +43,7 @@ import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
+import com.keepgo.whatdo.entity.customs.Manage;
 import com.keepgo.whatdo.entity.customs.Unbi;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.CheckImportReq;
@@ -51,6 +52,7 @@ import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.request.ManageReq;
 import com.keepgo.whatdo.entity.customs.request.UnbiReq;
 import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CheckImportRes;
@@ -60,6 +62,7 @@ import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
+import com.keepgo.whatdo.entity.customs.response.ManageRes;
 import com.keepgo.whatdo.entity.customs.response.UnbiRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
 import com.keepgo.whatdo.repository.CheckImportRepository;
@@ -72,16 +75,18 @@ import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
+import com.keepgo.whatdo.repository.ManageRepository;
 import com.keepgo.whatdo.repository.UnbiRepository;
 import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.chinaSanggum.ChinaSanggumService;
 import com.keepgo.whatdo.service.ckImport.CheckImportService;
 import com.keepgo.whatdo.service.inbound.InboundService;
+import com.keepgo.whatdo.service.manage.ManageService;
 import com.keepgo.whatdo.service.util.UtilService;
 import com.keepgo.whatdo.service.unbi.UnbiService;
 
 @Component
-public class ChinaSanggumServiceImpl implements ChinaSanggumService {
+public class ManageServiceImpl implements ManageService {
 
 	@Autowired
 	InboundRepository _inboundRepository;
@@ -111,6 +116,8 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 	CheckImportRepository _checkImportRepository;
 	@Autowired
 	ChinaSanggumRepository _chinaSanggumRepository;
+	@Autowired
+	ManageRepository _manageRepository;
 	
 	@Autowired
 	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
@@ -118,19 +125,19 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 	UserRepository _userRepository;
 	
 	@Override
-	public List<ChinaSanggumRes> getChinaSanggum(ChinaSanggumReq chinaSanggumReq)  {
+	public List<ManageRes> getManage(ManageReq manageReq)  {
 		
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
 		SimpleDateFormat beforFormat = new SimpleDateFormat("yyyy-MM-dd");
-		List<FinalInbound> finalInboundList = _finalInboundRepository.findByChinaSanggumYn(1);
+		List<FinalInbound> finalInboundList = _finalInboundRepository.findByGwanriYn(1);
 		finalInboundList.sort(Comparator.comparing(FinalInbound::getUpdateDt).reversed());
-		List<ChinaSanggumRes> result = new ArrayList<>();
+		List<ManageRes> result = new ArrayList<>();
 		for(int i=0; i<finalInboundList.size(); i++) {
-			ChinaSanggum target = new ChinaSanggum();
-			ChinaSanggumRes ch = new ChinaSanggumRes();
+			Manage target = new Manage();
+			ManageRes ch = new ManageRes();
 			Date incomeDt = null;
-			target = _chinaSanggumRepository.findByFinalInboundId(finalInboundList.get(i).getId());	
+			target = _manageRepository.findByFinalInboundId(finalInboundList.get(i).getId());	
 //			ch.setId(target.getId());
 			ch.setFinalInboundId(finalInboundList.get(i).getId());
 			for(int j=0; j<CorpType.getList().size();j++) {
@@ -159,26 +166,25 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 	}
 	
 	@Override
-	public boolean commitChinaSanggum(ChinaSanggumReq chinaSanggumReq) {
+	public boolean commitManage(ManageReq manageReq) {
 		
-		List<Long> chinaSanggumList = chinaSanggumReq.getIds();
-		ChinaSanggum chinaSanggum = _chinaSanggumRepository.findByFinalInboundId(chinaSanggumList.get(0).longValue());
-		User user = _userRepository.findByLoginId(chinaSanggumReq.getLoginId());
-		FinalInbound finalInbound = _finalInboundRepository.findById(chinaSanggumList.get(0).longValue()).get();
-		if(chinaSanggum!=null) {
-//			checkImport.setMemo(blNo+" "+checkImportReq.getMemo());
-			chinaSanggum.setMemo(chinaSanggumReq.getMemo());
-			chinaSanggum.setRegDate(new Date());
+		List<Long> list = manageReq.getIds();
+		Manage manage = _manageRepository.findByFinalInboundId(list.get(0).longValue());
+		User user = _userRepository.findByLoginId(manageReq.getLoginId());
+		FinalInbound finalInbound = _finalInboundRepository.findById(list.get(0).longValue()).get();
+		if(manage!=null) {
+			manage.setMemo(manageReq.getMemo());
+			manage.setRegDate(new Date());
 			if(user==null) {
-				chinaSanggum.setUser(User.builder().id(new Long(1)).build());
+				manage.setUser(User.builder().id(new Long(1)).build());
 			}else {
-				chinaSanggum.setUser(user);
+				manage.setUser(user);
 			}
-			chinaSanggum.setFinalInbound(finalInbound);		
-			_chinaSanggumRepository.save(chinaSanggum);
+			manage.setFinalInbound(finalInbound);		
+			_manageRepository.save(manage);
 		}else {
-			ChinaSanggum ch = new ChinaSanggum();
-			ch.setMemo(chinaSanggumReq.getMemo());
+			Manage ch = new Manage();
+			ch.setMemo(manageReq.getMemo());
 			ch.setRegDate(new Date());
 			if(user==null) {
 				ch.setUser(User.builder().id(new Long(1)).build());
@@ -188,7 +194,7 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 			ch.setNo(0);
 			ch.setOrderNo(0);	
 			ch.setFinalInbound(finalInbound);		
-			_chinaSanggumRepository.save(ch);
+			_manageRepository.save(ch);
 		}
 		
 		
@@ -196,49 +202,7 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 
 		return true;
 	}
-//	
-//	@Override
-//	public boolean deleteCheckImport(CheckImportReq checkImportReq) {
-//		List<Long> checkImportList = checkImportReq.getIds();
-//		for (int i = 0; i < checkImportList.size(); i++) {
-//			CheckImport checkImport = _checkImportRepository.findById(checkImportList.get(i).longValue()).get();
-//			_checkImportRepository.delete(checkImport);
-//		}
-//		return true;
-//	}
-//	@Override
-//	public boolean deleteCheckImportByInboundMasterId(CheckImportReq checkImportReq) {
-//		List<Long> checkImportList = checkImportReq.getIds();
-//		for (int i = 0; i < checkImportList.size(); i++) {
-//			CheckImport checkImport = _checkImportRepository.findByInboundMasterId(checkImportList.get(i).longValue());
-//			_checkImportRepository.delete(checkImport);
-//		}
-//		return true;
-//	}
-//	
-//	@Override
-//	public boolean updateCheckImport(CheckImportReq checkImportReq) {
-//		
-//		List<Long> checkImportList = checkImportReq.getIds();
-//		CheckImport checkImport = _checkImportRepository.findById(checkImportList.get(0).longValue()).get();
-//		User user = _userRepository.findByLoginId(checkImportReq.getLoginId());
-//		if(checkImport!=null) {
-//			checkImport.setMemo(checkImportReq.getMemo());
-//			checkImport.setRegDate(new Date());
-//			if(user==null) {
-//				checkImport.setUser(User.builder().id(new Long(1)).build());
-//			}else {
-//				checkImport.setUser(user);
-//			}
-//			
-//			
-//			_checkImportRepository.save(checkImport);
-//		}
-//		
-//		
-//
-//
-//		return true;
-//	}
+
+
 
 }

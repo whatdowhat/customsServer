@@ -3417,7 +3417,7 @@ public class ExcelServiceImpl implements ExcelService {
 			}else if(resource.get(i).getColorId()==8){
 				HSSFPalette palette = hwb.getCustomPalette();
 				// get the color which most closely matches the color you want to use
-				HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+				HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
 				// get the palette index of that color 
 				short palIndex = myColor.getIndex();
 				allFont.setColor(palIndex);
@@ -4078,6 +4078,15 @@ public class ExcelServiceImpl implements ExcelService {
 						
 			
 			if (resource.get(i).getReportPrice() == null) {
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(9).setCellValue(0);
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+					row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_-[$$-en-US]* #,##0.000_ ;_-[$$-en-US]* -#,##0.000 ;_-[$$-en-US]* \"-\"???_ ;_-@_ "));
+				}else {
+					row.getCell(9).setCellValue(0);
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+					row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.00_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
 			} else {
 				if(resource.get(i).getCurrencyType().equals("$")){
 					row.getCell(9).setCellValue(resource.get(i).getReportPrice());
@@ -4110,8 +4119,15 @@ public class ExcelServiceImpl implements ExcelService {
 			row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 			row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 			if (resource.get(i).getTotalPrice() == null) {
-				row.getCell(16).setCellValue("");
-				row.getCell(16).setCellStyle(totalPriceCellStyle);
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(16).setCellValue(0);
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_-[$$-en-US]* #,##0.000_ ;_-[$$-en-US]* -#,##0.000 ;_-[$$-en-US]* \"-\"???_ ;_-@_ "));
+				}else {
+					row.getCell(16).setCellValue(0);
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.00_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
 				
 			} else {
 				if(resource.get(i).getCurrencyType().equals("$")){
@@ -4638,7 +4654,6 @@ public class ExcelServiceImpl implements ExcelService {
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 		
-		
 		List<ExcelCLPRes> result = new ArrayList<>();
 		List<InboundMasterReq> list = req.getInboundMasterData();
 		for (int k = 0; k < list.size(); k++) {
@@ -4647,11 +4662,14 @@ public class ExcelServiceImpl implements ExcelService {
 			List<InboundRes> inboundList = _InboundService.getInboundByMasterId(f.getInboundMaster().getId());
 			List<InboundRes> result2 = _utilService.changeExcelFormatNew(inboundList);
 			InboundViewRes i = _InboundService.changeInbound(result2);
-
+			
+			
 			
 			for(int l=0; l<inboundList.size(); l++) {
 				ExcelCLPRes r  = ExcelCLPRes.builder().build();
-				r.setNo(list.get(k).getNo());
+				
+//				r.setNo(inboundList.get(l).getOrderNoStr()==null?0:Integer.valueOf(inboundList.get(l).getOrderNoStr()));
+				r.setNo(Integer.valueOf(inboundList.get(0).getOrderNoStr()));
 				r.setIncomeDt(f.getFinalInbound().getIncomeDt());
 				r.setChulhangPort(f.getFinalInbound().getChulhangPort());
 				r.setContainerNo(f.getFinalInbound().getContainerNo());
@@ -4750,8 +4768,25 @@ public class ExcelServiceImpl implements ExcelService {
 					sheet.getRow(rowNum.get(i)+6).getCell(6).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
 					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
 					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					
 				}
-			
+				for(int i=0; i<rowNum.size(); i++) {
+					if(i==0) {
+						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,0,0));
+						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,1,1));
+						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,2,2));
+					}else if(rowNum.get(i)-rowNum.get(i-1)==1){
+						
+					}else if(i==0&&rowNum.get(i)-rowNum.get(i-1)==1){
+						
+					}else{
+						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,0,0));
+						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,1,1));
+						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,2,2));
+					}
+				}
+				
+//				sheet.addMergedRegion(new CellRangeAddress(6,11,0,0));
 			String fileName =  "CLP.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -5971,7 +6006,7 @@ public String getDoubleResult(Double param) {
 			}else if(resource.get(i).getColorId()==8){
 				HSSFPalette palette = hwb.getCustomPalette();
 				// get the color which most closely matches the color you want to use
-				HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+				HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
 				// get the palette index of that color 
 				short palIndex = myColor.getIndex();
 				allFont.setColor(palIndex);
@@ -6640,6 +6675,16 @@ public String getDoubleResult(Double param) {
 						
 			
 			if (resource.get(i).getReportPrice() == null) {
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(9).setCellValue(0);
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+					row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_-[$$-en-US]* #,##0.000_ ;_-[$$-en-US]* -#,##0.000 ;_-[$$-en-US]* \"-\"???_ ;_-@_ "));
+					
+				}else {
+					row.getCell(9).setCellValue(0);
+					row.getCell(9).setCellStyle(reportPriceCellStyle);
+					row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.00_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
 			} else {
 				if(resource.get(i).getCurrencyType().equals("$")){
 					row.getCell(9).setCellValue(resource.get(i).getReportPrice());
@@ -6673,8 +6718,16 @@ public String getDoubleResult(Double param) {
 			row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 			row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 			if (resource.get(i).getTotalPrice() == null) {
-				row.getCell(16).setCellValue("");
-				row.getCell(16).setCellStyle(totalPriceCellStyle);
+				
+				if(resource.get(i).getCurrencyType().equals("$")){
+					row.getCell(16).setCellValue(0);
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_-[$$-en-US]* #,##0.000_ ;_-[$$-en-US]* -#,##0.000 ;_-[$$-en-US]* \"-\"???_ ;_-@_ "));
+				}else {
+					row.getCell(16).setCellValue(0);
+					row.getCell(16).setCellStyle(totalPriceCellStyle);
+					row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.00_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ "));
+				}
 				
 			} else {
 				if(resource.get(i).getCurrencyType().equals("$")){
@@ -6913,17 +6966,29 @@ public String getDoubleResult(Double param) {
 //			row.getCell(6).setCellValue(resource.get(0).getUnbiSum());
 //			row.getCell(6).setCellType(HSSFCell.CELL_TYPE_FORMULA);
 			row.getCell(6).setCellFormula(unbiSum);
+			row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(7).setCellFormula(pickupCostSum);
+			row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(8).setCellFormula(sanghachaCostSum);
+			row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(9).setCellFormula(officeNameSum);
+			row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(10).setCellFormula(hacksodanCostSum);
+			row.getCell(10).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(11).setCellFormula(coCostSum);
+			row.getCell(11).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(12).setCellFormula(hwajumiUnbiSum);
+			row.getCell(12).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(13).setCellFormula(hwajumiPickupCostSum);
+			row.getCell(13).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(14).setCellFormula(containerWorkCostSum);
+			row.getCell(14).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(15).setCellFormula(containerWorkCost2Sum);
+			row.getCell(15).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(16).setCellFormula(containerMoveCostSum);
+			row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			row.getCell(17).setCellFormula(totalSumFinal);
+			row.getCell(17).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
 			
 			
 			
@@ -7368,7 +7433,7 @@ public String getDoubleResult(Double param) {
 					}else if(resource.get(i).getColorId()==8){
 						HSSFPalette palette = hwb.getCustomPalette();
 						// get the color which most closely matches the color you want to use
-						HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+						HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
 						// get the palette index of that color 
 						short palIndex = myColor.getIndex();
 						allFont.setColor(palIndex);
@@ -7555,7 +7620,7 @@ public String getDoubleResult(Double param) {
 					}else if(resource.get(i).getColorId()==8){
 						HSSFPalette palette = hwb.getCustomPalette();
 						// get the color which most closely matches the color you want to use
-						HSSFColor myColor = palette.findSimilarColor(171, 242, 0);
+						HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
 						// get the palette index of that color 
 						short palIndex = myColor.getIndex();
 						allFont.setColor(palIndex);

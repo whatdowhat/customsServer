@@ -245,10 +245,10 @@ public class CompanyInfoController {
 	
 	@RequestMapping(value = "/company/addData", method = {RequestMethod.POST })
 
-	public  boolean addData(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
+	public  CompanyInfoRes addData(@RequestBody CompanyInfoReq companyInfoReq) throws IOException, InterruptedException {
 
 	
-		boolean result = _companyInfoService.addCompanyInfo(companyInfoReq);
+		CompanyInfoRes result = _companyInfoService.addCompanyInfo(companyInfoReq);
 		return result;
 
 	}

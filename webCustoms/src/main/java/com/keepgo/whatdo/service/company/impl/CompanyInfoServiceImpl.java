@@ -206,7 +206,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 	}
 
 	@Override
-	public boolean addCompanyInfo(CompanyInfoReq companyInfoReq) {
+	public CompanyInfoRes addCompanyInfo(CompanyInfoReq companyInfoReq) {
 		CompanyInfo companyInfo = new CompanyInfo();
 
 		companyInfo.setCoAddress(companyInfoReq.getCoAddress());
@@ -233,10 +233,17 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		List<CompanyInfo> list = _companyInfoRepository.findByCorpTypeAndCoNum(companyInfoReq.getCorpId(), companyInfoReq.getCoNum());
 		if(list.size()==0) {
 			_companyInfoRepository.save(companyInfo);
-			return true;
+			List<CompanyInfo> result = _companyInfoRepository.findByCorpTypeAndCoNum(companyInfoReq.getCorpId(), companyInfoReq.getCoNum());
+			CompanyInfoRes companyInfoRes = new CompanyInfoRes();
+			companyInfoRes.setId(result.get(0).getId());
+			companyInfoRes.setIsUsing(true);
+			return companyInfoRes;
 			
 		}else {
-			return false;
+			CompanyInfoRes companyInfoRes = new CompanyInfoRes();
+			companyInfoRes.setId(new Long(0));
+			companyInfoRes.setIsUsing(false);
+			return companyInfoRes;
 		}
 		
 		

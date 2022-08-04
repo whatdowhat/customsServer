@@ -15,7 +15,7 @@ public enum ColorType {
 	E(5,"ORANGE","#E26B0A","O",5),
 	F(6,"PURPLE","#9900FF","PP",6),
 	H(7,"SKYBLUE","#00D8FF","SB",7),
-	I(8,"YELLOWGREEN","#ABF200","YG",8),
+	I(8,"DARKGREEN","#22741C","DG",8),
 	J(9,"BROWN","#8A4924","BR",9),
 	G(0,"BLACK","#333","",0);
 	

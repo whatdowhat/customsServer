@@ -34,7 +34,7 @@ public interface CompanyInfoService {
 	CompanyInfoRes deleteCompanyInfo(CompanyInfoReq companyInfoReq);
 	
 	@Transactional
-	boolean addCompanyInfo(CompanyInfoReq companyInfoReq);
+	CompanyInfoRes addCompanyInfo(CompanyInfoReq companyInfoReq);
 	
 	@Transactional
 	CompanyInfoRes updateCompanyInfo(CompanyInfoReq companyInfoReq);

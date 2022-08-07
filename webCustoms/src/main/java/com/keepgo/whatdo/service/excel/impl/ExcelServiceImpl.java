@@ -1301,7 +1301,7 @@ public class ExcelServiceImpl implements ExcelService {
 			chageDataforYATAI(sheet, excelYATAIRes, workbook);
 
 			// item add
-			String fileName = excelYATAIRes.getFileNm() + "_YATAI.xlsx";
+			String fileName = excelYATAIRes.getFileNm() + "_APTA.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
 			workbook.write(response.getOutputStream());
@@ -5245,7 +5245,7 @@ public class ExcelServiceImpl implements ExcelService {
 			if(item.get(m).getCoId()==1) {
 				result.setType("FTA");				
 			}else if(item.get(m).getCoId()==2) {
-				result.setType("YATAI");	
+				result.setType("APTA");	
 			}else if(item.get(m).getCoId()==3) {
 				result.setType(" ");	
 			}else if(item.get(m).getCoId()==4) {
@@ -5470,15 +5470,20 @@ public String getDoubleResult(Double param) {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,14,14));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,15,15));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,16,16));
-						
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
+						if(unbiList.get(0).getTypeBCount()!=0) {
+							for(int z=0; z<unbiList.get(0).getTypeBCount(); z++) {
+								sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+unbiList.size()-(z+1),list.size()+startRow+i+5+unbiList.size()-(z+1),2,5));
+							}
+							
+						}
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
 
 						if(list.size()==1) {
 							rowNum.add(startRow+2);
 						}
-						for(int w=0; w<list.size()+startRow+5+unbiList.size()+1; w++) {
+						for(int w=0; w<sheet.getLastRowNum(); w++) {
 							sheet.getRow(w).setHeightInPoints(new Float("25"));
 						}
 						sheet.getRow(1).setHeightInPoints(new Float("50"));
@@ -5520,13 +5525,18 @@ public String getDoubleResult(Double param) {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,14,14));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,15,15));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,16,16));
+						if(unbiList.get(0).getTypeBCount()!=0) {
+							for(int z=0; z<unbiList.get(0).getTypeBCount(); z++) {
+								sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+unbiList.size()-(z+1),list.size()+startRow+i+5+unbiList.size()-(z+1),2,5));
+							}
+							
+						}
 						
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
 						
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
-						
-						for(int w=0; w<list.size()+startRow+5+unbiList.size()+1; w++) {
+						for(int w=0; w<sheet.getLastRowNum(); w++) {
 							sheet.getRow(w).setHeightInPoints(new Float("25"));
 					}
 					if(list.size()==1) {
@@ -5707,11 +5717,16 @@ public String getDoubleResult(Double param) {
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,14,14));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,15,15));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+3,list.size()+startRow+4,16,16));
+						if(unbiList.get(0).getTypeBCount()!=0) {
+							for(int z=0; z<unbiList.get(0).getTypeBCount(); z++) {
+								sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+unbiList.size()-(z+1),list.size()+startRow+i+5+unbiList.size()-(z+1),2,5));
+							}
+							
+						}
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
 						
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size(),list.size()+startRow+5+list2.size(),2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+1,list.size()+startRow+5+list2.size()+1,2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+5+list2.size()+2,list.size()+startRow+5+list2.size()+2,2,5));
-						sheet.shiftRows(0, sheet.getLastRowNum(), 3);
 						shiftRowforPreview(0, sheet, 6);
 						for(int j=0; j<6;j++) {
 							copyRowOtherSheetForPreview(workbook, sheet, j,sheet8, j);	
@@ -5732,11 +5747,14 @@ public String getDoubleResult(Double param) {
 						if(list.size()==1) {
 							rowNum.add(startRow+2);
 						}
-						for(int w=6; w<list.size()+startRow+5+unbiList.size()+7; w++) {
+						for(int w=6; w<sheet.getLastRowNum(); w++) {
 							sheet.getRow(w).setHeightInPoints(new Float("25"));
 					}
-						sheet.getRow(1+6).setHeightInPoints(new Float("50"));
-						startRow=startRow+list.size();	
+						if(itemCount==1) {
+							sheet.getRow(1+6).setHeightInPoints(new Float("50"));
+						}
+						
+//						startRow=startRow+list.size();	
 						
 				 }else if(i==list2.size()-1) {
 					 
@@ -5752,33 +5770,42 @@ public String getDoubleResult(Double param) {
 						step04ForPreview(unbiList, sheet, workbook,list.size()+startRow+i+5);
 						copyRowOtherSheetForPreview(workbook, sheet, list.size()+startRow+i+5+unbiList.size(),sheet6, 0);
 						step05ForPreview(unbiList, sheet, workbook,list.size()+startRow+i+5+unbiList.size());
-						
+						//화주청구
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,6,11));
+						//화주 미청구
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,12,13));
+						//컨테이너비용
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+2,14,16));
+						//비고
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,18,19));
-						
+						//other charge
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+3,6,10));
-						
+						// no,작업일자, 발송업체, 마킹, 한글품명, 출발지
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,0,0));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,1,1));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,2,2));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,3,3));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,4,4));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,5,5));
+						//합계
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+2,list.size()+startRow+i+4,17,17));
-						
+						//co 발급비, 운비, 픽업비, 컨테이너1,2,3
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,11,11));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,12,12));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,13,13));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,14,14));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,15,15));
 						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+3,list.size()+startRow+i+4,16,16));
-						
-						
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
-						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
+						//20220807
+						if(unbiList.get(0).getTypeBCount()!=0) {
+							for(int z=0; z<unbiList.get(0).getTypeBCount(); z++) {
+								sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+unbiList.size()-(z+1),list.size()+startRow+i+5+unbiList.size()-(z+1),2,5));
+							}
+							
+						}
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size(),list.size()+startRow+i+5+list2.size(),2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+1,list.size()+startRow+i+5+list2.size()+1,2,5));
+//						sheet.addMergedRegion(new CellRangeAddress(list.size()+startRow+i+5+list2.size()+2,list.size()+startRow+i+5+list2.size()+2,2,5));
 						startRow=startRow+list.size();	
 						shiftRowforPreview(0, sheet, 6);
 						for(int j=0; j<6;j++) {
@@ -5798,7 +5825,7 @@ public String getDoubleResult(Double param) {
 						sheet.getRow(3).setHeightInPoints(new Float("21"));
 						sheet.getRow(4).setHeightInPoints(new Float("21"));
 						sheet.getRow(5).setHeightInPoints(new Float("21"));
-						for(int w=6; w<list.size()+startRow+5+unbiList.size()+7; w++) {
+						for(int w=6; w<sheet.getLastRowNum(); w++) {
 								sheet.getRow(w).setHeightInPoints(new Float("25"));
 						}
 						if(list.size()==1) {
@@ -7637,11 +7664,13 @@ public String getDoubleResult(Double param) {
 					allCellStyle.setBorderBottom(BorderStyle.NONE);
 				
 					allCellStyle.setFont(allFont);
-					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":resource.get(i).getNoStr()));
+//					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":resource.get(i).getNoStr()));
+					row.getCell(0).setCellValue((resource.get(i).getNoStr()==null?"":""));
 					row.getCell(0).setCellStyle(orderNoFont);
 					row.getCell(0).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 					row.getCell(0).getCellStyle().setBorderRight(BorderStyle.HAIR); 
-					row.getCell(1).setCellValue((resource.get(i).getWorkDateStr()==null?"":resource.get(i).getWorkDateStr()));
+//					row.getCell(1).setCellValue((resource.get(i).getWorkDateStr()==null?"":resource.get(i).getWorkDateStr()));
+					row.getCell(1).setCellValue((resource.get(i).getWorkDateStr()==null?"":""));
 					row.getCell(1).setCellStyle(allCellStyle);
 					row.getCell(1).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 					row.getCell(1).getCellStyle().setBorderRight(BorderStyle.HAIR); 
@@ -7901,7 +7930,6 @@ public String getDoubleResult(Double param) {
 					InboundReq.builder().inboundMasterId(t.getInboundMaster().getId()).build());
 			inbound_list = _utilService.changeExcelFormatNew(inbound_list);
 //			Map<Long, String> markingInfo = new HashMap<>();
-//			markingInfo = _utilService.getMakingForYATAI(inbound_list);
 
 			origin_inbound_list = t.getInboundMaster().getInbounds().stream()
 					.sorted(Comparator.comparing(Inbound::getOrderNo)).collect(Collectors.toList());

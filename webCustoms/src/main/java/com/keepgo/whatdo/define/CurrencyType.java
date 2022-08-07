@@ -11,9 +11,7 @@ public enum CurrencyType {
 	A(1,"$",1),
 	B(2,"￥",2);
 	
-//	D(4,"RCEP",3),
-//	E(5,"공장CO",4);
-//	E(5,"YATAI",4);
+
 	
 	Integer id;
 	String name;

@@ -118,6 +118,8 @@ public class UnbiRes {
 	private String type;
 	private Long finalInboundId;
 	
+	private Integer typeACount;
+	private Integer typeBCount;
 	
 	
 	

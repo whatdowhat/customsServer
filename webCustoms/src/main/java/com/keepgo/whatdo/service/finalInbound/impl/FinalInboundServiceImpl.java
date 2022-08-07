@@ -288,7 +288,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		finalInbound.setUpdateDt(new Date());
 		finalInbound.setCreateDt(new Date());
 		finalInbound.setUser(User.builder().id(new Long(1)).build());
-		finalInbound.setTitle(req.getTitle());	
+		finalInbound.setTitle(req.getTitle()==null||req.getTitle().equals("")?"":req.getTitle());	
 		 _finalInboundRepository.save(finalInbound);
 //		final Long companyId = target.getId();
 //		AtomicInteger index_m = new AtomicInteger(1);
@@ -791,7 +791,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 						inbound.setReportPrice(reportPrice);
 						inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
 					}
-					
+					if(inbound.getCoId()==null) {
+						inbound.setCoId(Integer.valueOf(3));
+					}
 					inbound.setInboundMaster(target);
 					inbound.setOrderNo(orderNo);
 					list.add(inbound);

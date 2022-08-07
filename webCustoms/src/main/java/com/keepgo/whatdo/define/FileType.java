@@ -14,7 +14,7 @@ public enum FileType {
 	C(3,"인증서류",8), 
 	D(4,"화주서류",7),
 	E(5,"RCEP CO",3),
-	F(6,"YATAI CO",4),
+	F(6,"APTA CO",4),
 	G(7,"공장 CO",5),
 	
 	K(10,"도장이미지",10),

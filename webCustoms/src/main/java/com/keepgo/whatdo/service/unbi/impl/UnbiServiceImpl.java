@@ -303,9 +303,22 @@ public class UnbiServiceImpl implements UnbiService {
 //				result.get(0).setContainerWorkCost2Sums(decimalFormat.format(result.get(0).getContainerWorkCost2Sum()));
 //				result.get(0).setContainerMoveCostSums(decimalFormat.format(result.get(0).getContainerMoveCostSum()));
 //				result.get(0).setTotalSumFinals(decimalFormat.format(result.get(0).getTotalSumFinal()));
+				
 			}
-		
-			
+			Integer typeACount= 0;
+			Integer typeBCount= 0;
+			if(result.size()>0) {
+				for (int i=0; i<result.size();i++) {
+					if(result.get(i).getType().equals("A")) {
+						typeACount = typeACount+1;
+					}else if(result.get(i).getType().equals("B")) {
+						typeBCount = typeBCount+1;
+					}
+					
+				}
+			}
+			result.get(0).setTypeACount(typeACount);
+			result.get(0).setTypeBCount(typeBCount);
 		
 		return result;
 	}

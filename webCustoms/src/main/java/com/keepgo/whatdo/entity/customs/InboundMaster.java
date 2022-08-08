@@ -67,7 +67,7 @@ public class InboundMaster {
 	@JoinColumn(name = "companyInfoId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
-	private CompanyInfo CompanyInfo;
+	private CompanyInfo companyInfo;
 	
 	//작업형태
 	@JoinColumn(name = "exportId")

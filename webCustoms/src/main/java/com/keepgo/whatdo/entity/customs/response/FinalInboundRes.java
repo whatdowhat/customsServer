@@ -82,6 +82,14 @@ public class FinalInboundRes {
 	private String deliveryNm;
 	private String chulhangPort;
 	
+	private String masterBlNo;
+	private String BlNo;
+	private String CompanyNm;
+	private String korNm;
+	private String engNm;
+	private String memo1;
+	private String memo2;
+	
 	
 	//조인컬럼 삭제용
 	private Long inboundMasterId;

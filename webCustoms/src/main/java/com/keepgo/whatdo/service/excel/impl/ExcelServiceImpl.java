@@ -1809,7 +1809,9 @@ public class ExcelServiceImpl implements ExcelService {
 			InputStream targetStream = new FileInputStream(file);
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
-			workbook.setSheetName(0, excelInpackRes.getFileNm());
+			
+			workbook.setSheetName(0, excelInpackRes.getCompanyNm()+" "+"인보이스");
+			workbook.setSheetName(1,excelInpackRes.getCompanyNm()+" "+"패킹");
 			Collections.reverse(excelInpackRes.getSubItem());
 			//시트 수
 			int sheetCn = workbook.getNumberOfSheets();
@@ -2769,6 +2771,7 @@ public class ExcelServiceImpl implements ExcelService {
 			item.setCountDOZ(countDOZ);
 			item.setCountPAIR(countPAIR);
 			item.setSubItem(sublist);
+			item.setCompanyNm(t.getInboundMaster().getCompanyInfo().getCoNm());
 			return item;
 		}).get();
 
@@ -7835,9 +7838,26 @@ public String getDoubleResult(Double param) {
 	public List<ExcelInpackRes> listInpackData(FinalInboundInboundMasterReq req) throws Exception {
 		List<ExcelInpackRes> finalResult = new ArrayList<>();
 		List<FinalInboundInboundMaster> fiiList =  new ArrayList<>();
+		List <String> companyNmList = new ArrayList<>();
+		List <String> companyNmList2 = new ArrayList<>();
+		Integer value = 1;
 		for(int i=0; i<req.getIds().size(); i++) {
 			fiiList.add(_FinalInboundInboundMasterRepository.findByFinalInboundIdAndInboundMasterId(req.getId(),req.getIds().get(i)));
 		}
+		for (int j =0; j<fiiList.size(); j++) {
+			companyNmList.add(fiiList.get(j).getInboundMaster().getCompanyInfo().getCoNm());		
+			}
+		for(int i=0; i<companyNmList.size(); i++) {
+			if(companyNmList2.contains(companyNmList.get(i))) {
+				companyNmList2.add(companyNmList.get(i)+" "+String.valueOf(value));
+        		value = value+1;
+        	}else {
+        		companyNmList2.add(companyNmList.get(i));
+        	}
+		}
+		
+		
+		
 		for (int j =0; j<fiiList.size(); j++) {
 		
 		ExcelInpackRes result = _FinalInboundInboundMasterRepository.findById(fiiList.get(j).getId()).map(t -> {
@@ -8011,9 +8031,13 @@ public String getDoubleResult(Double param) {
 			item.setCountDOZ(countDOZ);
 			item.setCountPAIR(countPAIR);
 			item.setSubItem(sublist);
+			
 			return item;
 		}).get();
 		finalResult.add(result);	
+		}
+		for(int i=0; i<finalResult.size();i++) {
+			finalResult.get(i).setCompanyNm(companyNmList2.get(i));
 		}
 		return finalResult;
 	}
@@ -8382,8 +8406,9 @@ public String getDoubleResult(Double param) {
 //				XSSFSheet sheet = workbook.createSheet();
 //			}
 			
-			workbook.setSheetName(0, excelListInpackRes.get(0).getFileNm());
-			workbook.setSheetName(1, excelListInpackRes.get(0).getFileNm()+"패킹");
+			workbook.setSheetName(0, excelListInpackRes.get(0).getCompanyNm()+" "+"인보이스");
+			workbook.setSheetName(1, excelListInpackRes.get(0).getCompanyNm()+" "+"패킹");
+			
 //			XSSFSheet sheet = workbook.getSheetAt(3);
 //			sheet = workbook.cloneSheet(0);
 			
@@ -8398,7 +8423,7 @@ public String getDoubleResult(Double param) {
 				cloenStartIndex++;
 				//printarea 설정. reference 0번 시트를 참조 하여 문자열 !기준으로 뒤에 값이 reference string이 됨.
 				String printAreaReference1 = workbook.getPrintArea(0).split("!")[1];
-				workbook.cloneSheet(0, excelListInpackRes.get(i+1).getFileNm());
+				workbook.cloneSheet(0, excelListInpackRes.get(i+1).getCompanyNm()+" "+"인보이스");
 				//페이지 레이아웃 배열 속성 default 100에서 template 이 80이므로 80으로 셋팅.
 				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
 				//페이지 레이아웃 용지크기가 a4-paper이므로 clone될 sheet도 동일하게 셋팅.
@@ -8410,7 +8435,7 @@ public String getDoubleResult(Double param) {
 				//시작 인덱스 증가 //copy되는 sheet는 +1이므로
 				cloenStartIndex++;
 				String printAreaReference2 = workbook.getPrintArea(1).split("!")[1];
-				workbook.cloneSheet(1,excelListInpackRes.get(i+1).getFileNm()+"패킹");
+				workbook.cloneSheet(1,excelListInpackRes.get(i+1).getCompanyNm()+" "+"패킹");
 				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setScale(new Short("80"));
 				workbook.getSheetAt(cloenStartIndex).getPrintSetup().setPaperSize(PaperSize.A4_PAPER);
 				workbook.setPrintArea(cloenStartIndex, printAreaReference2);

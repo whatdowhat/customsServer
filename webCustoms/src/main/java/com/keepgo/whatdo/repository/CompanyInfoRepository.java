@@ -26,6 +26,7 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> 
 	
 	List<CompanyInfo> findByCorpType(Integer corpType);
 	List<CompanyInfo> findByCorpTypeAndCoNum(Integer corpType, String coNum );
+	List<CompanyInfo> findByCoNmContainingIgnoreCase(String coNm);
 //	CompanyInfo findByCompanyInfo(CompanyInfo companyInfo);
 	
 	@Transactional

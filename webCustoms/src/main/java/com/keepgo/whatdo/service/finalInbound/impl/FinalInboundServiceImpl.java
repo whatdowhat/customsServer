@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,6 +51,7 @@ import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.CompanyInfoRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
+import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
 import com.keepgo.whatdo.entity.customs.request.CompanyInfoReq;
@@ -537,7 +540,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		Date tempDate2 = req.getEndDate();
 		String startDt = afterFormat.format(tempDate);
 		String endDt =  afterFormat.format(tempDate2);
-		
+		List<FinalInboundRes> finalResult = new ArrayList<>();
 		if(req.getDateType()==null||req.getDateType()==0) {
 			List<FinalInboundRes>  r = _finalInboundRepository.findByDepartDtStrBetween(startDt,endDt)
 					.stream()
@@ -556,11 +559,33 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 								.departDtStr(t.getDepartDtStr())
 								.title(t.getTitle())
 								.incomeDt(t.getIncomeDt())
+								.masterBlNo(t.getFinalMasterBl())
 								.build();
 					}).collect(Collectors.toList());
-
-			return r;
-		}else {
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
+				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
+				
+				for(int j=0; j<fimList.size();j++) {
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
+					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}
+				 				
+			}
+			finalResult = result;
+			
+		}else if(req.getDateType()==1){
 			List<FinalInboundRes>  r = _finalInboundRepository.findByIncomeDtBetween(startDt,endDt)
 					.stream()
 					.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
@@ -575,13 +600,316 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 								.departDtStr(t.getDepartDtStr())
 								.title(t.getTitle())
 								.incomeDt(t.getIncomeDt())
+								.masterBlNo(t.getFinalMasterBl())
 								.build();
 					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
+				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
+				
+				for(int j=0; j<fimList.size();j++) {
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
+					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}
+				 				
+			}
 
-			return r;
+			finalResult = result;
+			
+		}else if(req.getDateType()==2){
+			List<FinalInboundRes>  r = _finalInboundRepository.findByFinalMasterBlContainingIgnoreCase(req.getSearchInput())
+					.stream()
+					.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
+					.map(t->{
+						return  FinalInboundRes.builder()
+								.id(t.getId())
+								.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
+								.gubunCode(t.getGubun())
+								.departDtStr(t.getDepartDtStr())
+								.title(t.getTitle())
+								.incomeDt(t.getIncomeDt())
+								.masterBlNo(t.getFinalMasterBl())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
+				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
+				
+				for(int j=0; j<fimList.size();j++) {
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
+					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}
+				 				
+			}
+			finalResult = result;
+		}else if(req.getDateType()==3){
+			List<InboundMasterRes> r = _inboundMasterRepository.findByBlNoContainingIgnoreCase(req.getSearchInput())
+					.stream()
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.map(t->{
+						return  InboundMasterRes.builder()
+								.id(t.getId())
+								.blNo(t.getBlNo())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				
+					Integer gubunType = fim.getFinalInbound().getGubun(); 
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(fim.getFinalInbound().getId());
+					res.setInboundMasterId(r.get(i).getId());
+					res.setTitle(fim.getFinalInbound().getTitle());
+					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
+					res.setBlNo(r.get(i).getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
+					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
+					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					result.add(res);
+				 				
+			}
+			finalResult = result;
+		}else if(req.getDateType()==4){
+			List<CompanyInfo> c = _companyInfoRepository.findByCoNmContainingIgnoreCase(req.getSearchInput());
+			List<InboundMaster> totalList = new ArrayList<>();
+			for(int i=0; i<c.size(); i++) {
+				List<InboundMaster> imList = new ArrayList<>();
+				imList = _inboundMasterRepository.findByCompanyInfo(c.get(i));
+				for(int j=0; j<imList.size(); j++) {
+					totalList.add(imList.get(j));				
+					}
+			}
+			List<InboundMasterRes> r = totalList
+					.stream()
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.map(t->{
+						return  InboundMasterRes.builder()
+								.id(t.getId())
+								.blNo(t.getBlNo())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				
+					Integer gubunType = fim.getFinalInbound().getGubun(); 
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(fim.getFinalInbound().getId());
+					res.setInboundMasterId(r.get(i).getId());
+					res.setTitle(fim.getFinalInbound().getTitle());
+					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
+					res.setBlNo(r.get(i).getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
+					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
+					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					result.add(res);
+				 				
+			}
+			finalResult = result;
+		}else if(req.getDateType()==5){
+			List<Inbound> in = _inboundRepository.findByKorNmContainingIgnoreCase(req.getSearchInput());
+			List<InboundMaster> totalList = new ArrayList<>();
+			List<InboundMaster> totalList2 = new ArrayList<>();
+			for(int i=0; i<in.size(); i++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = _inboundMasterRepository.findById(in.get(i).getInboundMaster().getId()).get();
+				totalList.add(inboundMaster);
+				}
+			List<Long> ids = new ArrayList<Long>();
+			for(int z=0; z<totalList.size(); z++) {
+				if(!ids.contains(totalList.get(z).getId())) {
+					ids.add(totalList.get(z).getId());
+				}
+				
+			}
+			
+			for(int x=0; x<ids.size(); x++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = _inboundMasterRepository.findById(ids.get(x)).get();
+				totalList2.add(inboundMaster);
+				}
+			List<InboundMasterRes> r = totalList2
+					.stream()
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.map(t->{
+						return  InboundMasterRes.builder()
+								.id(t.getId())
+								.blNo(t.getBlNo())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				if(fim==null) {
+					
+				}else {
+					Integer gubunType = fim.getFinalInbound().getGubun(); 
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(fim.getFinalInbound().getId());
+					res.setInboundMasterId(r.get(i).getId());
+					res.setTitle(fim.getFinalInbound().getTitle());
+					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
+					res.setBlNo(r.get(i).getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
+					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
+					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					result.add(res);
+				}
+					
+				 				
+			}
+			finalResult = result;
+		}else if(req.getDateType()==6){
+			List<Inbound> in = _inboundRepository.findByEngNmContainingIgnoreCase(req.getSearchInput());
+			List<InboundMaster> totalList = new ArrayList<>();
+			List<InboundMaster> totalList2 = new ArrayList<>();
+			for(int i=0; i<in.size(); i++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = _inboundMasterRepository.findById(in.get(i).getInboundMaster().getId()).get();
+					totalList.add(inboundMaster);
+				}
+			List<Long> ids = new ArrayList<Long>();
+			for(int z=0; z<totalList.size(); z++) {
+				if(!ids.contains(totalList.get(z).getId())) {
+					ids.add(totalList.get(z).getId());
+				}
+				
+			}
+			
+			for(int x=0; x<ids.size(); x++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = _inboundMasterRepository.findById(ids.get(x)).get();
+				totalList2.add(inboundMaster);
+				}
+
+			List<InboundMasterRes> r = totalList2
+					.stream()
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.map(t->{
+						return  InboundMasterRes.builder()
+								.id(t.getId())
+								.blNo(t.getBlNo())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				if(fim==null) {
+					
+				}else {
+					Integer gubunType = fim.getFinalInbound().getGubun(); 
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(fim.getFinalInbound().getId());
+					res.setInboundMasterId(r.get(i).getId());
+					res.setTitle(fim.getFinalInbound().getTitle());
+					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
+					res.setBlNo(r.get(i).getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
+					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
+					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					result.add(res);
+				}
+					
+				 				
+			}
+			
+			finalResult = result;
+		}else if(req.getDateType()==7){
+			List<Inbound> in = _inboundRepository.findByMemo1ContainingIgnoreCaseOrMemo2ContainingIgnoreCase(req.getSearchInput(),req.getSearchInput());
+			List<InboundMaster> totalList = new ArrayList<>();
+			List<InboundMaster> totalList2 = new ArrayList<>();
+			for(int i=0; i<in.size(); i++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = _inboundMasterRepository.findById(in.get(i).getInboundMaster().getId()).get();
+					totalList.add(inboundMaster);
+				}
+			List<Long> ids = new ArrayList<Long>();
+			for(int z=0; z<totalList.size(); z++) {
+				if(!ids.contains(totalList.get(z).getId())) {
+					ids.add(totalList.get(z).getId());
+				}
+				
+			}
+			
+			for(int x=0; x<ids.size(); x++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = _inboundMasterRepository.findById(ids.get(x)).get();
+				totalList2.add(inboundMaster);
+				}
+
+			List<InboundMasterRes> r = totalList2
+					.stream()
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.map(t->{
+						return  InboundMasterRes.builder()
+								.id(t.getId())
+								.blNo(t.getBlNo())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				if(fim==null) {
+					
+				}else {
+					Integer gubunType = fim.getFinalInbound().getGubun(); 
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(fim.getFinalInbound().getId());
+					res.setInboundMasterId(r.get(i).getId());
+					res.setTitle(fim.getFinalInbound().getTitle());
+					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
+					res.setBlNo(r.get(i).getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
+					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
+					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					result.add(res);
+				}
+					
+				 				
+			}
+			
+			finalResult = result;
 		}
 		
-		
+		return finalResult;
 	}
 	
 	@Override

@@ -80,6 +80,7 @@ public class FinalInboundReq {
 	private Date workDepartDate;
 	private String deliveryNm;
 	private String chulhangPort;
+	private String searchInput;
 	
 	List<InboundMasterReq> inboundMasterData;
 	List<FinalInboundReq> finalInboundReqData;

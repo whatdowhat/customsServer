@@ -68,4 +68,5 @@ public class ExcelInpackRes {
 	Integer countPAIR;
 	//품목 리스트
 	List<ExcelInpackSubRes>  subItem;
+	String companyNm;
 }

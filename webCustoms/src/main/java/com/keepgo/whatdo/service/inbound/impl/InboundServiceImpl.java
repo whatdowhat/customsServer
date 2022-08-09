@@ -1183,7 +1183,7 @@ public class InboundServiceImpl implements InboundService {
 			
 			
 			
-			
+			inboundViewRes.setCurrencyType(list.get(0).getCurrencyType());
 			inboundViewRes.setItemCountSumD(itemCountSum);
 			inboundViewRes.setBoxCountSumD(boxCountSum);
 			inboundViewRes.setCbmSumD(cbmSum);
@@ -1266,6 +1266,11 @@ public class InboundServiceImpl implements InboundService {
 						f.put("amountType",  "");
 					}else {
 						f.put("amountType", sub_item.getAmountType());	
+					}
+					if(sub_item.getCurrencyType()==null) {
+						f.put("currencyType",  "$");
+					}else {
+						f.put("currencyType", sub_item.getCurrencyType());	
 					}
 					
 					

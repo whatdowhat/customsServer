@@ -152,7 +152,8 @@ public class ManageServiceImpl implements ManageService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ch.setIncomeDtStr(format.format(incomeDt));
+//			ch.setIncomeDtStr(format.format(incomeDt));
+			ch.setIncomeDtStr(finalInboundList.get(i).getIncomeDt());
 			ch.setRegDtStr(target==null?format.format(finalInboundList.get(i).getUpdateDt()):format.format(target.getRegDate()));
 			ch.setMemo(target==null?"":target.getMemo());
 			ch.setMasterBlNo(finalInboundList.get(i).getFinalMasterBl());

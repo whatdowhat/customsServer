@@ -459,13 +459,14 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				.createDt(r.getCreateDt())
 				.updateDt(r.getUpdateDt())
 				.corpId(r.getCorpId())
+				.corpType(CorpType.getList().stream().filter(type->type.getId() == r.getCorpId()).findFirst().get().getShowName())
 				.title(r.getTitle())
 				.build();
 		dto.setDepartPort((r.getDepartPort() == null ? "" : _commonRepository.findById(r.getDepartPort()).get().getValue2()));
 		dto.setDepartPortId((r.getDepartPort() == null ? new Long(307) : r.getDepartPort()));
 		dto.setIncomePort((r.getIncomePort() == null ? "" : _commonRepository.findById(r.getIncomePort()).get().getValue2()));
 		dto.setIncomePortId((r.getIncomePort() == null ? new Long(321) : r.getIncomePort()));
-		dto.setMemo((r.getMemo() == null ? "" : r.getMemo()));
+		dto.setMemo((r.getMemo() == null ? "" : r.getMemo().replace("\r\n", "<br>")));
 		if(r.getInboundMasters().size()>0){
 			dto.setInboundMasters(r.getInboundMasters().stream()
 					

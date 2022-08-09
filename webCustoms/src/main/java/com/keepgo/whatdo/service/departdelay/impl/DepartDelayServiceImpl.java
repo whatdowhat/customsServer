@@ -163,9 +163,12 @@ public class DepartDelayServiceImpl implements DepartDelayService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ch.setDepartDtStr(format.format(departDt));
-			ch.setFirstDepartDtStr(format.format(firstDepartDt));
-			ch.setIncomeDtStr(format.format(incomeDt));
+//			ch.setDepartDtStr(format.format(departDt));
+//			ch.setFirstDepartDtStr(format.format(firstDepartDt));
+//			ch.setIncomeDtStr(format.format(incomeDt));
+			ch.setDepartDtStr(finalInboundList.get(i).getDepartDtStr());
+			ch.setFirstDepartDtStr(finalInboundList.get(i).getFirstDepartDt()==null?finalInboundList.get(i).getDepartDtStr():finalInboundList.get(i).getFirstDepartDt());
+			ch.setIncomeDtStr(finalInboundList.get(i).getIncomeDt());
 			ch.setRegDtStr(target==null?format.format(finalInboundList.get(i).getUpdateDt()):format.format(target.getRegDate()));
 			ch.setMemo(target==null?"":target.getMemo());
 			ch.setMasterBlNo(finalInboundList.get(i).getFinalMasterBl());

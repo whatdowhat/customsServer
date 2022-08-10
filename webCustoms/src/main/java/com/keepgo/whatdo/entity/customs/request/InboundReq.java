@@ -80,7 +80,7 @@ public class InboundReq {
 	private String hsCodeYn="";
 	private String totalPriceYn=""; 
 	private String engNmYn="";
-	
+	private String coIdYn="";
 	
 	
 	@Column(name = "korNm")
@@ -122,7 +122,7 @@ public class InboundReq {
 	
 	@Transient
 //	@Column(name = "coYn")
-	private boolean coYn;
+	private boolean coExistYn;
 	@Transient
 //	@Column(name = "coCode")
 	private String coCode;

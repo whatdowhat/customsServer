@@ -142,10 +142,11 @@ public class Inbound {
 	private String hsCodeYn;
 	private String totalPriceYn; 
 	private String engNmYn;
+	private String coIdYn;
 	
 	@Transient
 //	@Column(name = "coYn")
-	private boolean coYn;
+	private boolean coExistYn;
 	@Transient
 //	@Column(name = "coCode")
 	private String coCode;

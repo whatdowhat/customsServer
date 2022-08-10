@@ -88,7 +88,7 @@ public class ExcelInboundRes {
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	private Common co;
 	
-	private boolean coYn;
+	private boolean coExistYn;
 	private String coCode;
 	private String coNm;
 	

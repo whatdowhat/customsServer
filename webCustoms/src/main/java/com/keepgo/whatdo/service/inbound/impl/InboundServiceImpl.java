@@ -354,7 +354,7 @@ public class InboundServiceImpl implements InboundService {
 						.hsCodeYn(item.getHsCodeYn()==null ? "" : item.getHsCodeYn())
 						.totalPriceYn(item.getTotalPriceYn()==null ? "" : item.getTotalPriceYn())
 						.engNmYn(item.getEngNmYn()==null ? "" : item.getEngNmYn())
-
+						.coIdYn(item.getCoIdYn()==null ? "" : item.getCoIdYn())
 //						.companyNmYn(item.)
 //						.markingYn(item.getMarkingYn()))
 //						.color(item.getColorCode())
@@ -537,8 +537,9 @@ public class InboundServiceImpl implements InboundService {
 						.hsCodeYn(item.getHsCodeYn()==null ? "" : item.getHsCodeYn())
 						.totalPriceYn(item.getTotalPriceYn()==null ? "" : item.getTotalPriceYn())
 						.engNmYn(item.getEngNmYn()==null ? "" : item.getEngNmYn())
-
-//						.color(item.getColorCode())
+						.coIdYn(item.getCoIdYn()==null ? "" : item.getCoIdYn())
+								
+						//						.color(item.getColorCode())
 //						.color(ColorType.getList().stream().filter(type->type.getId() == item.getColor()).findFirst().get().getShowName())
 //						.colorCode(item.getColor())
 						.inboundMasterId(item.getInboundMaster().getId())
@@ -780,6 +781,8 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setHsCodeYn(list.get(i).getHsCodeYn());
 			inbound.setTotalPriceYn(list.get(i).getTotalPriceYn());
 			inbound.setEngNmYn(list.get(i).getEngNmYn());
+//20220810
+			inbound.setCoIdYn(list.get(i).getCoIdYn());
 			//color
 			
 			inbound.setKorNm(list.get(i).getKorNm());
@@ -1430,6 +1433,11 @@ public class InboundServiceImpl implements InboundService {
 						f.put("engNmYn", "");
 					}else {
 						f.put("engNmYn", sub_item.getEngNmYn());
+					}
+					if(sub_item.getCoIdYn()==null||sub_item.getCoIdYn().equals("")) {
+						f.put("coIdYn", "");
+					}else {
+						f.put("coIdYn", sub_item.getCoIdYn());
 					}
 					
 					

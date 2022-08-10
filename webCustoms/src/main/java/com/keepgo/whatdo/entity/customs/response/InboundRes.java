@@ -101,6 +101,8 @@ public class InboundRes {
 	private String totalPriceYn=""; 
 	@Builder.Default
 	private String engNmYn="";
+	@Builder.Default
+	private String coIdYn="";
 	//수량
 	private Double itemCount;
 	//박스수
@@ -128,7 +130,7 @@ public class InboundRes {
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	private Common co;
 	
-	private boolean coYn;
+	private boolean coExistYn;
 	private String coCode;
 	private String coNm;
 	

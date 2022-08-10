@@ -56,7 +56,7 @@ public class ExcelInpackRes {
 	
 	String totalCountEng;
 	Long inboundMasterId;
-	Boolean coYn;
+	Boolean coExistYn;
 	String invoice;
 	String noCoDt;
 	Integer countPCS;

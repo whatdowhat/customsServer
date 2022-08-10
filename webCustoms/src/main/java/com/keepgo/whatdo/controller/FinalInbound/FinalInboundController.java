@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -385,6 +386,13 @@ public class FinalInboundController {
 			result.setCurrencyType(inboundMaster.getCurrencyType());
 			result.setPackingType(inboundMaster.getPackingType());
 			no = no + 1;
+			
+			List <String> nameList = new ArrayList<>();
+			for(int j=0; j<list.size(); j++) {
+				nameList.add(list.get(j).getEngNm());
+			}
+			String itemNmList = nameList.stream().distinct().collect(Collectors.joining("\n"));
+			result.setItemNmList(itemNmList);
 			finalList.add(result);
 		}
 

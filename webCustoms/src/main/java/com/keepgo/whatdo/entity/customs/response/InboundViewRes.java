@@ -110,6 +110,8 @@ public class InboundViewRes {
 	private String hTypeInfo;
 	private String fileTotalInfo;
 	
+	private String itemNmList;
+	
 
 	private List<Map<String,Object>> inbounds = new ArrayList();
 	private List<InboundRes> inboundsForPreview = new ArrayList();

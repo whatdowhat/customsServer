@@ -4898,23 +4898,27 @@ public class ExcelServiceImpl implements ExcelService {
 			
 			
 			
-			for(int l=0; l<inboundList.size(); l++) {
+			for(int l=0; l<result2.size(); l++) {
 				ExcelCLPRes r  = ExcelCLPRes.builder().build();
 				
 //				r.setNo(inboundList.get(l).getOrderNoStr()==null?0:Integer.valueOf(inboundList.get(l).getOrderNoStr()));
-				r.setNo(Integer.valueOf(inboundList.get(0).getOrderNoStr()));
+				r.setNo(result2.get(l).getOrderNoStr()==null?0:Integer.valueOf(result2.get(l).getOrderNoStr()));
 				r.setIncomeDt(f.getFinalInbound().getIncomeDt());
 				r.setChulhangPort(f.getFinalInbound().getChulhangPort());
 				r.setContainerNo(f.getFinalInbound().getContainerNo());
 				r.setSilNo(f.getFinalInbound().getSilNo());
 				r.setCompanyNm(f.getInboundMaster().getCompanyInfo().getCoNm());
 				r.setBlNo(f.getInboundMaster().getBlNo());
-				r.setMarking(inboundList.get(l).getMarking());
-				r.setBoxCount(inboundList.get(l).getBoxCount());
-				r.setCbm(inboundList.get(l).getCbm());
-				r.setEngNm(inboundList.get(l).getEngNm());
-				r.setMemo1(inboundList.get(l).getMemo1());
+				r.setMarking(result2.get(l).getMarking()==null?"":result2.get(l).getMarking());
+				r.setBoxCount(result2.get(l).getBoxCount());
+				r.setCbm(result2.get(l).getCbm());
+				r.setEngNm(result2.get(l).getEngNm());
+				r.setMemo1(result2.get(l).getMemo1());
 				r.setCorpId(f.getFinalInbound().getCorpId());
+				r.setBlNoSpan(result2.get(l).getBlNoSpan());
+				r.setMasterCompanySpan(result2.get(l).getMasterCompanySpan());
+				r.setMarkingSpan(result2.get(l).getMarkingSpan());	
+				r.setOrderNoStrSpan(result2.get(l).getOrderNoStrSpan());			
 				result.add(r);
 				}
 	
@@ -4933,7 +4937,8 @@ public class ExcelServiceImpl implements ExcelService {
 		try {
 			List<Integer> no = new ArrayList<>();
 			List<Integer> rowNum = new ArrayList<>();
-			
+			List<String> blNo = new ArrayList<>();
+			List<Integer> orderNo = new ArrayList<>();
 			Resource resource = resourceLoader.getResource(path);
 
 			File file = new File(resource.getURI());
@@ -4944,6 +4949,7 @@ public class ExcelServiceImpl implements ExcelService {
 			workbook.setSheetName(0, "CLP");
 			
 			Collections.reverse(list);
+			
 			XSSFSheet sheet = workbook.getSheetAt(0);
 				if(list.get(0).getCorpId()==1) {
 					 sheet = workbook.getSheetAt(1);
@@ -4972,13 +4978,16 @@ public class ExcelServiceImpl implements ExcelService {
 				sheet.shiftRows(7, sheet.getLastRowNum(), -1);
 			
 				
+//				for (int i = 0; i < list.size(); i++) {
+//					no.add(list.get(i).getNo());
+//				}
 				for (int i = 0; i < list.size(); i++) {
-					no.add(list.get(i).getNo());
+					blNo.add(list.get(i).getBlNo());
 				}
-				Collections.reverse(no);
-				for (int i = 0; i < no.size()-1; i++) {
+				Collections.reverse(blNo);
+				for (int i = 0; i < blNo.size()-1; i++) {
 					
-					if(no.get(i)==no.get(i+1)) {
+					if(blNo.get(i)==blNo.get(i+1)) {
 						
 					}else {
 						rowNum.add(i);
@@ -5003,23 +5012,39 @@ public class ExcelServiceImpl implements ExcelService {
 					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
 					
 				}
-				for(int i=0; i<rowNum.size(); i++) {
-					if(i==0) {
-						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,0,0));
-						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,1,1));
-						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,2,2));
-					}else if(rowNum.get(i)-rowNum.get(i-1)==1){
-						
-					}else if(i==0&&rowNum.get(i)-rowNum.get(i-1)==1){
-						
-					}else{
-						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,0,0));
-						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,1,1));
-						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,2,2));
+//				for(int i=0; i<rowNum.size(); i++) {
+//					if(i==0&&list.get(i).getOrderNoStrSpan()==1) {
+//						
+//					}
+//					else if(i==0) {
+////						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,0,0));
+//						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,1,1));
+//						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,2,2));
+//					}else if(rowNum.get(i)-rowNum.get(i-1)==1){
+//						
+//					}else if(i==0&&rowNum.get(i)-rowNum.get(i-1)==1){
+//						
+//					}else{
+////						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,0,0));
+//						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,1,1));
+//						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,2,2));
+//					}
+//				}
+				Collections.reverse(list);
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).getOrderNoStrSpan() > 1) {
+						sheet.addMergedRegion(new CellRangeAddress((i + 6), (i+6-1 + list.get(i).getOrderNoStrSpan()), 0, 0));
+					}
+					if (list.get(i).getMasterCompanySpan() > 1) {
+						sheet.addMergedRegion(new CellRangeAddress((i + 6), (i+6-1 + list.get(i).getMasterCompanySpan()), 1, 1));
+					}
+					if (list.get(i).getBlNoSpan() > 1) {
+						sheet.addMergedRegion(new CellRangeAddress((i + 6), (i+6-1 + list.get(i).getBlNoSpan()), 2, 2));
+					}
+					if (list.get(i).getMarkingSpan() > 1) {
+						sheet.addMergedRegion(new CellRangeAddress((i + 6), (i+6-1 + list.get(i).getMarkingSpan()), 3, 3));
 					}
 				}
-				
-//				sheet.addMergedRegion(new CellRangeAddress(6,11,0,0));
 			String fileName =  "CLP.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -7760,7 +7785,8 @@ public String getDoubleResult(Double param) {
 				XSSFCellStyle officeNameCellStyle = workbook.createCellStyle();
 				XSSFCellStyle hacksodanCostCellStyle = workbook.createCellStyle();
 				XSSFCellStyle coCostCellStyle = workbook.createCellStyle();
-				
+				Font allFont = workbook.createFont();
+				allFont.setFontName("굴림체");
 				if(resource.get(i).getUnbiYn().equals("Y")){
 					unbiCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					unbiCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -7769,7 +7795,7 @@ public String getDoubleResult(Double param) {
 					unbiCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					unbiCellStyle.setBorderBottom(BorderStyle.HAIR);
 					unbiCellStyle.setBorderRight(BorderStyle.HAIR); 
-					unbiCellStyle.setFont(otherFont);
+					unbiCellStyle.setFont(allFont);
 					
 				}else {
 					unbiCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7779,7 +7805,7 @@ public String getDoubleResult(Double param) {
 					unbiCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					unbiCellStyle.setBorderBottom(BorderStyle.HAIR);
 					unbiCellStyle.setBorderRight(BorderStyle.HAIR); 
-					unbiCellStyle.setFont(otherFont);
+					unbiCellStyle.setFont(allFont);
 				}
 				if(resource.get(i).getPickupCostYn().equals("Y")){
 					pickupCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7789,7 +7815,7 @@ public String getDoubleResult(Double param) {
 					pickupCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					pickupCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					pickupCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					pickupCostCellStyle.setFont(otherFont);
+					pickupCostCellStyle.setFont(allFont);
 					
 				}else {
 					pickupCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7799,7 +7825,7 @@ public String getDoubleResult(Double param) {
 					pickupCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					pickupCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					pickupCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					pickupCostCellStyle.setFont(otherFont);
+					pickupCostCellStyle.setFont(allFont);
 				}
 				if(resource.get(i).getSanghachaCostYn().equals("Y")){
 					sanghachaCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7809,7 +7835,7 @@ public String getDoubleResult(Double param) {
 					sanghachaCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					sanghachaCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					sanghachaCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					sanghachaCostCellStyle.setFont(otherFont);
+					sanghachaCostCellStyle.setFont(allFont);
 					
 				}else {
 					sanghachaCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7819,7 +7845,7 @@ public String getDoubleResult(Double param) {
 					sanghachaCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					sanghachaCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					sanghachaCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					sanghachaCostCellStyle.setFont(otherFont);
+					sanghachaCostCellStyle.setFont(allFont);
 				}
 				if(resource.get(i).getOfficeNameYn().equals("Y")){
 					officeNameCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7829,7 +7855,7 @@ public String getDoubleResult(Double param) {
 					officeNameCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					officeNameCellStyle.setBorderBottom(BorderStyle.HAIR);
 					officeNameCellStyle.setBorderRight(BorderStyle.HAIR); 
-					officeNameCellStyle.setFont(otherFont);
+					officeNameCellStyle.setFont(allFont);
 				}else {
 					officeNameCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					officeNameCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -7838,7 +7864,7 @@ public String getDoubleResult(Double param) {
 					officeNameCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					officeNameCellStyle.setBorderBottom(BorderStyle.HAIR);
 					officeNameCellStyle.setBorderRight(BorderStyle.HAIR); 
-					officeNameCellStyle.setFont(otherFont);
+					officeNameCellStyle.setFont(allFont);
 				}
 				if(resource.get(i).getHacksodanCostYn().equals("Y")){
 					hacksodanCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7848,7 +7874,7 @@ public String getDoubleResult(Double param) {
 					hacksodanCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					hacksodanCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					hacksodanCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					hacksodanCostCellStyle.setFont(otherFont);
+					hacksodanCostCellStyle.setFont(allFont);
 				}else {
 					hacksodanCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					hacksodanCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -7857,7 +7883,7 @@ public String getDoubleResult(Double param) {
 					hacksodanCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					hacksodanCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					hacksodanCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					hacksodanCostCellStyle.setFont(otherFont);
+					hacksodanCostCellStyle.setFont(allFont);
 				}
 				if(resource.get(i).getCoCostYn().equals("Y")){
 					coCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -7867,7 +7893,7 @@ public String getDoubleResult(Double param) {
 					coCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					coCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					coCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					coCostCellStyle.setFont(otherFont);
+					coCostCellStyle.setFont(allFont);
 				}else {
 					coCostCellStyle.setAlignment(HorizontalAlignment.CENTER);
 					coCostCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -7876,14 +7902,13 @@ public String getDoubleResult(Double param) {
 					coCostCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 					coCostCellStyle.setBorderBottom(BorderStyle.HAIR);
 					coCostCellStyle.setBorderRight(BorderStyle.HAIR); 
-					coCostCellStyle.setFont(otherFont);			
+					coCostCellStyle.setFont(allFont);			
 					}
 				
 				
 				
 				
-				Font allFont = workbook.createFont();
-				allFont.setFontName("굴림체");
+				
 				
 				orderNoFont.setFillForegroundColor(new XSSFColor(new java.awt.Color(255, 255, 204)));
 				orderNoFont.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -7954,121 +7979,145 @@ public String getDoubleResult(Double param) {
 						row.getCell(6).setCellValue("");
 						row.getCell(6).setCellStyle(unbiCellStyle);
 						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(6).getCellStyle().setFont(allFont);					
 					}else {
 						row.getCell(6).setCellValue(resource.get(i).getUnbiD());
 						row.getCell(6).setCellStyle(unbiCellStyle);
 						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(6).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getPickupCostD()==0) {
 						row.getCell(7).setCellValue("");
 						row.getCell(7).setCellStyle(pickupCostCellStyle);
 						row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(7).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(7).setCellValue(resource.get(i).getPickupCostD());
 						row.getCell(7).setCellStyle(pickupCostCellStyle);
 						row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(7).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getSanghachaCostD()==0) {
 						row.getCell(8).setCellValue("");
 						row.getCell(8).setCellStyle(sanghachaCostCellStyle);
 						row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(8).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(8).setCellValue(resource.get(i).getSanghachaCostD());
 						row.getCell(8).setCellStyle(sanghachaCostCellStyle);
 						row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(8).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getOfficeNameD()==0) {
 						row.getCell(9).setCellValue("");
 						row.getCell(9).setCellStyle(officeNameCellStyle);
 						row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(9).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(9).setCellValue(resource.get(i).getOfficeNameD());
 						row.getCell(9).setCellStyle(officeNameCellStyle);
 						row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(9).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getHacksodanCostD()==0) {
 						row.getCell(10).setCellValue("");
 						row.getCell(10).setCellStyle(hacksodanCostCellStyle);
 						row.getCell(10).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(10).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(10).setCellValue(resource.get(i).getHacksodanCostD());
 						row.getCell(10).setCellStyle(hacksodanCostCellStyle);
 						row.getCell(10).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(10).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getCoCostD()==0) {
 						row.getCell(11).setCellValue("");
 						row.getCell(11).setCellStyle(coCostCellStyle);
 						row.getCell(11).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(11).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(11).setCellValue(resource.get(i).getCoCostD());
 						row.getCell(11).setCellStyle(coCostCellStyle);
 						row.getCell(11).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(11).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getHwajumiUnbiD()==0) {
 						row.getCell(12).setCellValue("");
 						row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(12).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(12).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(12).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(12).setCellValue(resource.get(i).getHwajumiUnbiD());
 						row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(12).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(12).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(12).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getHwajumiPickupCostD()==0) {
 						row.getCell(13).setCellValue("");
 						row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(13).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(13).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(13).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(13).setCellValue(resource.get(i).getHwajumiPickupCostD());
 						row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(13).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(13).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(13).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getContainerWorkCostD()==0) {
 						row.getCell(14).setCellValue("");
 						row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(14).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(14).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(14).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(14).setCellValue(resource.get(i).getContainerWorkCostD());
 						row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(14).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(14).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(14).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getContainerWorkCost2D()==0) {
 						row.getCell(15).setCellValue("");
 						row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(15).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(15).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(15).setCellValue(resource.get(i).getContainerWorkCost2D());
 						row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(15).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(15).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getContainerMoveCostD()==0) {
 						row.getCell(16).setCellValue("");
 						row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(16).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(16).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(16).setCellValue(resource.get(i).getContainerMoveCostD());
 						row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(16).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(16).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getTotalSum()==0) {
 						row.getCell(17).setCellValue("");
 						row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(17).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(17).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(17).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(17).setCellValue(resource.get(i).getTotalSum());
 						row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(17).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(17).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(17).getCellStyle().setFont(allFont);
 					}
 					
 					
@@ -8150,121 +8199,145 @@ public String getDoubleResult(Double param) {
 						row.getCell(6).setCellValue("");
 						row.getCell(6).setCellStyle(unbiCellStyle);
 						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(6).getCellStyle().setFont(allFont);				
 					}else {
 						row.getCell(6).setCellValue(resource.get(i).getUnbiD());
 						row.getCell(6).setCellStyle(unbiCellStyle);
 						row.getCell(6).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(6).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getPickupCostD()==0) {
 						row.getCell(7).setCellValue("");
 						row.getCell(7).setCellStyle(pickupCostCellStyle);
 						row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(7).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(7).setCellValue(resource.get(i).getPickupCostD());
 						row.getCell(7).setCellStyle(pickupCostCellStyle);
 						row.getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(7).getCellStyle().setFont(allFont);	
 					}
 					if(resource.get(i).getSanghachaCostD()==0) {
 						row.getCell(8).setCellValue("");
 						row.getCell(8).setCellStyle(sanghachaCostCellStyle);
 						row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(8).getCellStyle().setFont(allFont);	
 					}else {
 						row.getCell(8).setCellValue(resource.get(i).getSanghachaCostD());
 						row.getCell(8).setCellStyle(sanghachaCostCellStyle);
 						row.getCell(8).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(8).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getOfficeNameD()==0) {
 						row.getCell(9).setCellValue("");
 						row.getCell(9).setCellStyle(officeNameCellStyle);
 						row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(9).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(9).setCellValue(resource.get(i).getOfficeNameD());
 						row.getCell(9).setCellStyle(officeNameCellStyle);
 						row.getCell(9).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(9).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getHacksodanCostD()==0) {
 						row.getCell(10).setCellValue("");
 						row.getCell(10).setCellStyle(hacksodanCostCellStyle);
 						row.getCell(10).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(10).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(10).setCellValue(resource.get(i).getHacksodanCostD());
 						row.getCell(10).setCellStyle(hacksodanCostCellStyle);
 						row.getCell(10).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(10).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getCoCostD()==0) {
 						row.getCell(11).setCellValue("");
 						row.getCell(11).setCellStyle(coCostCellStyle);
 						row.getCell(11).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(11).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(11).setCellValue(resource.get(i).getCoCostD());
 						row.getCell(11).setCellStyle(coCostCellStyle);
 						row.getCell(11).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(11).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getHwajumiUnbiD()==0) {
 						row.getCell(12).setCellValue("");
 						row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(12).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(12).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(12).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(12).setCellValue(resource.get(i).getHwajumiUnbiD());
 						row.getCell(12).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(12).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(12).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(12).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getHwajumiPickupCostD()==0) {
 						row.getCell(13).setCellValue("");
 						row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(13).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(13).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(13).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(13).setCellValue(resource.get(i).getHwajumiPickupCostD());
 						row.getCell(13).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(13).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(13).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(13).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getContainerWorkCostD()==0) {
 						row.getCell(14).setCellValue("");
 						row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(14).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(14).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(14).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(14).setCellValue(resource.get(i).getContainerWorkCostD());
 						row.getCell(14).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(14).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(14).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(14).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getContainerWorkCost2D()==0) {
 						row.getCell(15).setCellValue("");
 						row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(15).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(15).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(15).setCellValue(resource.get(i).getContainerWorkCost2D());
 						row.getCell(15).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(15).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(15).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(15).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getContainerMoveCostD()==0) {
 						row.getCell(16).setCellValue("");
 						row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(16).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(16).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(16).setCellValue(resource.get(i).getContainerMoveCostD());
 						row.getCell(16).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(16).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(16).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(16).getCellStyle().setFont(allFont);
 					}
 					if(resource.get(i).getTotalSum()==0) {
 						row.getCell(17).setCellValue("");
 						row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(17).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(17).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(17).getCellStyle().setFont(allFont);
 					}else {
 						row.getCell(17).setCellValue(resource.get(i).getTotalSum());
 						row.getCell(17).getCellStyle().setBorderBottom(BorderStyle.HAIR);
 						row.getCell(17).getCellStyle().setBorderRight(BorderStyle.HAIR); 
 						row.getCell(17).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("#,##0_ "));
+						row.getCell(17).getCellStyle().setFont(allFont);
 					}
 					row.getCell(18).setCellValue(resource.get(i).getMemo1());
 					row.getCell(18).getCellStyle().setBorderBottom(BorderStyle.HAIR);

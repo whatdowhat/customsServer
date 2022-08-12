@@ -174,7 +174,7 @@ public class ExcelController {
 	}
 	
 	@RequestMapping(value = "/excel/document/inbound", method = { RequestMethod.POST })
-	public void clp(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
+	public void inbound(HttpServletRequest httpServletRequest, @RequestBody InboundReq req,
 			HttpServletResponse response) throws Exception {
 
 		List<InboundRes> s =_excelService.inboundData(req);

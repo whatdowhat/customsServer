@@ -2147,19 +2147,25 @@ public class ExcelServiceImpl implements ExcelService {
 
 						final String CELLFORMAT_DOLLAR = "_-$* #,##0.000_ ;_-$* -#,##0.000 ;_-$* \"-\"???_ ;_-@_ ";
 						final String CELLFORMAT_WIAN = "_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.00_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ ";
+						
+//						row.getCell(cell.getColumnIndex() + 1).getCellStyle().cl
+						//특이하게 cellstyle을 공유하게 되어 있어서 각각 만들어서 기존 셀 스타일 카피해서 각각 넣어줌.
 						XSSFCellStyle xcs_wian = workbook.createCellStyle();
+						xcs_wian.cloneStyleFrom(row.getCell(cell.getColumnIndex()+1).getCellStyle());
 						xcs_wian.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
 
 						XSSFCellStyle xcs_dollar = workbook.createCellStyle();
+						xcs_dollar.cloneStyleFrom(row.getCell(cell.getColumnIndex()+1).getCellStyle());
 						xcs_dollar.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
 //20220816
 //						if (excelInpackRes.getSubItem().size() > 0) {
 							cell.setCellValue("");
 //							if (excelInpackRes.getSubItem().get(0).getCurrencyType().equals("$")) {
 							if (excelInpackRes.getCurrencyType().equals("$")) {
-								row.getCell(cell.getColumnIndex() + 1).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+								row.getCell(cell.getColumnIndex() + 1).setCellStyle(xcs_dollar);
 							} else{
-								row.getCell(cell.getColumnIndex() + 1).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
+								
+								row.getCell(cell.getColumnIndex() + 1).setCellStyle(xcs_wian);
 							}
 //						}
 						

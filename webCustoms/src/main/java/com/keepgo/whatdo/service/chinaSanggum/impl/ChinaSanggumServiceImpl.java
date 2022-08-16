@@ -154,7 +154,7 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 			ch.setUserNm(target==null?"":target.getUser().getName());
 			result.add(ch);		
 			}
-		
+		result.sort(Comparator.comparing(ChinaSanggumRes::getRegDtStr).reversed());
 		return result;
 	
 	}

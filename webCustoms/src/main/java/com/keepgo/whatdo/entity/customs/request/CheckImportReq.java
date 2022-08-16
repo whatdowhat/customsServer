@@ -46,5 +46,5 @@ public class CheckImportReq {
 	
 	private List<Long> ids = new ArrayList<>();
 	private String loginId;
-	
+	private Integer type;
 }

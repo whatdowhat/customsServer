@@ -105,6 +105,13 @@ public class FileuploadController {
 		_fileUploadService.uploadFile2(file,frq);
 		return true;
 	}
+	@RequestMapping(value = "/front/uploadFileContainer", method = {RequestMethod.POST })
+	public boolean uploadFileContainer(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
+		Gson gson = new Gson();
+		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);
+		_fileUploadService.uploadFileContainer(file,frq);
+		return true;
+	}
 	@RequestMapping(value = "/common/uploadFile3", method = {RequestMethod.POST })
 	public boolean uploadFile3(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		Gson gson = new Gson();

@@ -69,4 +69,5 @@ public class ExcelInpackRes {
 	//품목 리스트
 	List<ExcelInpackSubRes>  subItem;
 	String companyNm;
+	String currencyType;
 }

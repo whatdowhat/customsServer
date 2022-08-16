@@ -34,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.keepgo.whatdo.define.FileType;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.FileUpload;
+import com.keepgo.whatdo.entity.customs.FinalInbound;
+import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.request.FileUploadReq;
@@ -41,6 +43,7 @@ import com.keepgo.whatdo.entity.customs.response.FileUploadRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.FileUploadRepository;
+import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
@@ -66,7 +69,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 
 	@Autowired
 	UtilService _UtilService;
-	
+	@Autowired
+	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
 	@Autowired
 	CommonRepository _commonRepository;
 	
@@ -164,6 +168,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 					dto.setFileTypeNew("PNG 파일");
 				}else if(fileTypeNew2.equals("pdf")) {
 					dto.setFileTypeNew("PDF 파일");
+				}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+					dto.setFileTypeNew("ZIP 압축 파일");
 				}else {
 					dto.setFileTypeNew("");
 				}
@@ -224,6 +230,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -284,6 +292,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -344,6 +354,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -404,6 +416,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -464,6 +478,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -524,6 +540,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -584,6 +602,70 @@ public class FileUploadServiceImpl implements FileUploadService {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  8) {
+			list = _fileUploadRepository
+					.findByInboundMasterAndFileType(_inboundMasterRepository.findById(fileUploadReq.getInboundMasterId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
 						}else {
 							dto.setFileTypeNew("");
 						}
@@ -616,28 +698,568 @@ public class FileUploadServiceImpl implements FileUploadService {
 	@Override
 	public List<?> getFileList3(FileUploadReq fileUploadReq) {
 		
-		List<?> list = _fileUploadRepository
-				.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
-						fileUploadReq.getFileType().intValue())
-		 
-		 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
-			.map(item -> {
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+		List<?> list = new ArrayList<>();
+		if(fileUploadReq.getFileType() ==  0) {
+			list = _fileUploadRepository
+					.findByFinalInbound(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
 
-		FileUploadRes dto = FileUploadRes.builder()
+			FileUploadRes dto = FileUploadRes.builder()
 
+					
+					.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+					.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+					.root(item.getRoot())
+					.fileType(item.getFileType())
+					.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//					.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//					.fileCount(fileCount)
+											
+					.build();
+//20220801	
+					int a =item.getFileSize();
+					String fileSizeNew = "";
+				dto.setUserName(item.getUser().getName());
+				dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+				String fileTypeNew = item.getFileName1();
+				int idx = fileTypeNew.indexOf(".");
+				String fileTypeNew1 = fileTypeNew.substring(0,idx);
+				String fileTypeNew2 = fileTypeNew.substring(idx+1);
+				if(fileTypeNew2.equals("xlsx")) {
+					dto.setFileTypeNew("Microsoft Excel 워크시트");
+				}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+					dto.setFileTypeNew("JPG 파일");
+				}else if(fileTypeNew2.equals("png")) {
+					dto.setFileTypeNew("PNG 파일");
+				}else if(fileTypeNew2.equals("pdf")) {
+					dto.setFileTypeNew("PDF 파일");
+				}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+					dto.setFileTypeNew("ZIP 압축 파일");
+				}else {
+					dto.setFileTypeNew("");
+				}
 				
-				.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
-				.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
-				.root(item.getRoot())
-				.fileType(item.getFileType())
-				.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
-				
-//				.fileCount(fileCount)
-										
-				.build();
-				
-		return dto;
-	}).collect(Collectors.toList());
+				if(item.getFileSize()>=1024*1024) {
+						a=item.getFileSize()/(1024*1024);
+						fileSizeNew=decimalFormat2.format(a);
+						fileSizeNew=fileSizeNew+"MB";
+						dto.setFileSizeStr(fileSizeNew);
+					}else if(item.getFileSize()>=1024) {
+						a=item.getFileSize()/1024;
+						fileSizeNew=decimalFormat2.format(a);
+						fileSizeNew=fileSizeNew+"KB";
+						dto.setFileSizeStr(fileSizeNew);
+					}else {
+						a=item.getFileSize();
+						fileSizeNew=decimalFormat2.format(a);
+						fileSizeNew=fileSizeNew+"Bytes";
+						dto.setFileSizeStr(fileSizeNew);
+					}
+			
+			return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  1) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  2) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  3) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  4) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  5) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  6) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  7) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  8) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
+		}
+		
 		 
 		return list;
 	}
@@ -790,6 +1412,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		//path2=298, filetypeid
 		InboundMaster inboundMaster = _inboundMasterRepository.findById(Long.valueOf(fileUploadReq.getPath1()))
 				.orElse(InboundMaster.builder().build());
+		FinalInboundInboundMaster f = _finalInboundInboundMasterRepository.findByInboundMasterId(Long.valueOf(fileUploadReq.getPath1()));
 		User user = _userRepository.findByLoginId(fileUploadReq.getLoginId());
 		StringBuilder strPath = new StringBuilder(uploadRoot);
 		//파일생성 폴더 이름은 사업자번호
@@ -824,6 +1447,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 		FileUpload fileupload = new FileUpload();
 		fileupload.setInboundMaster(inboundMaster);
+		fileupload.setFinalInbound(f.getFinalInbound());
 		//todo 사용자 세션 아이디로 수정해야됨.
 		if(user==null) {
 			fileupload.setUser(User.builder().id(new Long(1)).build());
@@ -1029,6 +1653,92 @@ public class FileUploadServiceImpl implements FileUploadService {
 		return FileUploadRes.builder().commonId(Long.valueOf(fileUploadReq.getCommonId())).build();
 	}
 
+	@Override
+	public FileUploadRes uploadFileContainer(MultipartFile file, FileUploadReq fileUploadReq) throws IOException {
+		
+		// path1=1, masterid 
+		//path2=298, filetypeid
+//		InboundMaster inboundMaster = _inboundMasterRepository.findById(Long.valueOf(fileUploadReq.getPath1()))
+//				.orElse(InboundMaster.builder().build());
+		FinalInbound finalInbound = _finalInboundRepository.findById(Long.valueOf(fileUploadReq.getPath1())).get();
+		List<FinalInboundInboundMaster> list = _finalInboundInboundMasterRepository.findByFinalInboundId(finalInbound.getId());
+		InboundMaster inboundMaster = list.get(0).getInboundMaster();
+		User user = _userRepository.findByLoginId(fileUploadReq.getLoginId());
+		StringBuilder strPath = new StringBuilder(uploadRoot);
+		//파일생성 폴더 이름은 사업자번호
+		strPath.append(File.separatorChar+inboundMaster.getCompanyInfo().getCoNum());
+		//파일생성 폴더 이름은 value값으로 
+		strPath.append(File.separatorChar+fileUploadReq.getPath2());
+		//stringBuilder.append(File.separatorChar+fileUploadReq.getPath3());
+		//c:/Customs/212351251/A/filename.xml
+//		String path = root+"a"; //폴더 경로
+		File Folder = new File(strPath.toString());
 
+		// 해당 디렉토리가 없을경우 디렉토리를 생성
+		if (!Folder.exists()) {
+			try{
+			    Folder.mkdirs(); //폴더 생성
+//			    System.out.println("폴더가 생성되었습니다.");
+		        } 
+		        catch(Exception e){
+			    e.getStackTrace();
+			}        
+	         }else {
+//			System.out.println("이미 폴더가 생성되어 있습니다.");
+		}
+		
+		String fileName= file.getOriginalFilename();
+		int filesize=(int)file.getSize();
+		File saveFile = new File(strPath.toString(), file.getOriginalFilename());
+		file.transferTo(saveFile);
+		
+		
+
+		
+		FileUpload fileupload = new FileUpload();
+		fileupload.setFinalInbound(finalInbound);
+		//todo 사용자 세션 아이디로 수정해야됨.
+		if(user==null) {
+			fileupload.setUser(User.builder().id(new Long(1)).build());
+		}else {
+			fileupload.setUser(user);
+		}
+		
+		
+		fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == Integer.valueOf(fileUploadReq.getPath2())).findFirst().get().getId());
+		
+		fileupload.setFileName1(fileName);
+		fileupload.setRoot(uploadRoot);
+		fileupload.setCreateDt(new Date());
+		fileupload.setUpdateDt(new Date());
+		fileupload.setFileSize(filesize);
+		fileupload.setPath1(inboundMaster.getCompanyInfo().getCoNum());
+		fileupload.setPath2(fileUploadReq.getPath2());
+		fileupload.setPath3(fileName);
+//		fileupload.setUploadType(fileUploadReq.getPath2());
+//		fileupload.setUploadTypeNm(common.getValue2());
+		fileupload.setRoot(strPath.toString());
+		fileupload.setIsUsing(true);
+		
+		List<FileUpload> already = _fileUploadRepository.findByInboundMasterAndFileTypeAndPath3(inboundMaster, Integer.valueOf(fileUploadReq.getPath2()), fileName);
+		if(already.size()>0) {
+			//파일이름이 이미 있는경우는 db에 update 날짜만 수정한다.
+			already.get(0).setUpdateDt(new Date());
+			_fileUploadRepository.save(already.get(0));
+			
+
+		}else {
+			_fileUploadRepository.save(fileupload);
+		}
+		
+		
+		
+		
+		
+		
+//		FileUploadRes fileUploadRes = new FileUploadRes();
+//		return fileUploadRes;
+		return FileUploadRes.builder().inboundMasterId(Long.valueOf(fileUploadReq.getPath1())).build();
+	}
 	
 }

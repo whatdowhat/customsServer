@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.keepgo.whatdo.entity.customs.Common;
+import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
 import com.keepgo.whatdo.entity.customs.request.CommonReq;
@@ -39,6 +40,8 @@ import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.UserRes;
+import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
+import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.service.fileupload.FileUploadService;
 import com.keepgo.whatdo.service.inbound.InboundService;
@@ -61,6 +64,10 @@ public class InboundController {
 	
 	@Autowired
 	InboundMasterRepository _inboundMasterRepository;
+	@Autowired
+	FinalInboundInboundMasterRepository _finalInboundInboundMasterRepository;
+	@Autowired
+	FinalInboundRepository _finalInboundRepository;
 
 	@RequestMapping(value = "/test/inbound", method = { RequestMethod.POST })
 	public List<InboundRes> shopper(HttpServletRequest httpServletRequest,InboundReq inboundReq){
@@ -188,12 +195,17 @@ public class InboundController {
 		Double boxCountSumFinal = new Double(0);
 		Double cbmSumFinal = new Double(0);
 		Double weightSumFinal = new Double(0);
-		
-		
+		List<FinalInboundInboundMaster> fimList = new ArrayList<>();
+//		List<Long> inboundMasterIdList = inboundReq.getInboundMasterIds();
+		List<Long> inboundMasterIdList =  new ArrayList<>();
+		List<InboundViewRes> finalList = new ArrayList<>();
+		fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(inboundReq.getFinalInboundId());
+		for(int j=0; j<fimList.size();j++) {
+			inboundMasterIdList.add(fimList.get(j).getInboundMaster().getId());
+		}
 		InboundViewListRes finalRes = new InboundViewListRes();
 		
-		List<Long> inboundMasterIdList = inboundReq.getInboundMasterIds();
-		List<InboundViewRes> finalList = new ArrayList<>();
+		
 		
 		for(int i=0; i<inboundMasterIdList.size(); i++) {
 			InboundMaster inboundMaster = _inboundMasterRepository.findById(inboundMasterIdList.get(i).longValue()).get();

@@ -148,6 +148,13 @@ public class FinalInboundController {
 		return _finalInboundService.updateFinalInbound(finalInboundReq);
 
 	}
+	@RequestMapping(value = "/front/finalInboundUpdateForUser", method = { RequestMethod.POST })
+	public boolean finalInboundUpdateForUser(HttpServletRequest httpServletRequest,
+			@RequestBody FinalInboundReq finalInboundReq) {
+
+		return _finalInboundService.updateFinalInboundForUser(finalInboundReq);
+
+	}
 
 	@RequestMapping(value = "/front/finalInbound", method = { RequestMethod.POST })
 	public FinalInboundRes finalInbound(HttpServletRequest httpServletRequest,
@@ -299,8 +306,8 @@ public class FinalInboundController {
 						.filter(tt -> tt.getFileType() == FileType.F.getId()).count());
 				result.setGTypeCount(inboundMaster.getFileUploads().stream()
 						.filter(tt -> tt.getFileType() == FileType.G.getId()).count());
-//				result.setHTypeCount(inboundMaster.getFileUploads().stream()
-//						.filter(tt -> tt.getFileType() == FileType.H.getId()).count());
+				result.setHTypeCount(inboundMaster.getFileUploads().stream()
+						.filter(tt -> tt.getFileType() == FileType.H.getId()).count());
 			} else {
 				result.setATypeCount(new Long(0));
 				result.setBTypeCount(new Long(0));
@@ -309,7 +316,7 @@ public class FinalInboundController {
 				result.setETypeCount(new Long(0));
 				result.setFTypeCount(new Long(0));
 				result.setGTypeCount(new Long(0));
-//				result.setHTypeCount(new Long(0));
+				result.setHTypeCount(new Long(0));
 				
 
 			}
@@ -320,7 +327,7 @@ public class FinalInboundController {
 			result.setETypeNm(FileType.E.getName());
 			result.setFTypeNm(FileType.F.getName());
 			result.setGTypeNm(FileType.G.getName());
-//			result.setHTypeNm(FileType.H.getName());
+			result.setHTypeNm(FileType.H.getName());
 			result.setATypeInfo(result.getATypeNm() + ":" + result.getATypeCount() + "개");
 			result.setBTypeInfo(result.getBTypeNm() + ":" + result.getBTypeCount() + "개");
 			result.setCTypeInfo(result.getCTypeNm() + ":" + result.getCTypeCount() + "개");
@@ -328,7 +335,10 @@ public class FinalInboundController {
 			result.setETypeInfo(result.getETypeNm() + ":" + result.getETypeCount() + "개");
 			result.setFTypeInfo(result.getFTypeNm() + ":" + result.getFTypeCount() + "개");
 			result.setGTypeInfo(result.getGTypeNm() + ":" + result.getGTypeCount() + "개");
-			
+			result.setHTypeInfo(result.getHTypeNm() + ":" + result.getHTypeCount() + "개");
+
+					
+					
 //			if (result.getATypeCount() == 1) {
 //				List<FileUpload> fileList = _fileUploadRepository.findByInboundMasterAndFileType(inboundMaster, 1);
 //				result.setATypeFileNm(fileList.get(0).getFileName1());

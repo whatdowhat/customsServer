@@ -23,4 +23,5 @@ public interface FinalInboundRepository extends JpaRepository<FinalInbound, Long
 	List<FinalInbound> findByDepartDelayYn(int departDelayYn);
 	List<FinalInbound> findByGwanriYn(int gwanriYn);
 	List<FinalInbound> findByFinalMasterBlContainingIgnoreCase(String finalMasterBl);
+	List<FinalInbound> findByContainerNoContainingIgnoreCase(String containerNo);
 }

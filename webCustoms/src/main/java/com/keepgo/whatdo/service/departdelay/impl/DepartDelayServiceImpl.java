@@ -176,7 +176,7 @@ public class DepartDelayServiceImpl implements DepartDelayService {
 			ch.setUserNm(target==null?"":target.getUser().getName());
 			result.add(ch);		
 			}
-		
+		result.sort(Comparator.comparing(DepartDelayRes::getRegDtStr).reversed());
 		return result;
 	
 	}

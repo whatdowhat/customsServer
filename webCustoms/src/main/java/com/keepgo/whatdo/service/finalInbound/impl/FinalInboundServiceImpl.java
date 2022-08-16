@@ -306,7 +306,29 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 		return true;
 	}
-	
+	@Override
+	public boolean updateFinalInboundForUser(FinalInboundReq req) {
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
+		Date tempDate = req.getDepartDate();
+		Date tempDate2 = req.getIncomeDate();
+		Date tempDate3 = req.getWorkDepartDate();
+		
+		
+		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId())
+				.orElse(FinalInbound.builder().build());
+		
+		finalInbound.setId(req.getId());
+		finalInbound.setChinaSanggumYn(req.getChinaSanggumYn()==0?0:req.getChinaSanggumYn());
+		finalInbound.setDepartDelayYn(req.getDepartDelayYn()==0?0:req.getDepartDelayYn());
+		finalInbound.setGwanriYn(req.getGwanriYn()==0?0:req.getGwanriYn());
+		finalInbound.setIsUsing(true);
+		finalInbound.setUpdateDt(new Date());
+		 _finalInboundRepository.save(finalInbound);
+
+
+		return true;
+	}
 	@Override
 	public boolean deleteFinalInboundMasterItems(FinalInboundReq req) {
 		
@@ -546,9 +568,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			List<FinalInboundRes>  r = _finalInboundRepository.findByDepartDtStrBetween(startDt,endDt)
 					.stream()
 					//sort 설정 0726 요청
-					.sorted(Comparator.comparing(FinalInbound::getTitle))
+//					.sorted(Comparator.comparing(FinalInbound::getTitle))
 					//sort 설정 0726 요청
-//					.sorted(Comparator.comparing(FinalInbound::getDepartDtStr))
+					.sorted(Comparator.comparing(FinalInbound::getDepartDtStr))
 					.map(t->{
 						
 							
@@ -631,7 +653,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		}else if(req.getDateType()==2){
 			List<FinalInboundRes>  r = _finalInboundRepository.findByFinalMasterBlContainingIgnoreCase(req.getSearchInput())
 					.stream()
-					.sorted(Comparator.comparing(FinalInbound::getIncomeDt))
+					.sorted(Comparator.comparing(FinalInbound::getUpdateDt).reversed())
 					.map(t->{
 						return  FinalInboundRes.builder()
 								.id(t.getId())
@@ -666,49 +688,46 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			}
 			finalResult = result;
 		}else if(req.getDateType()==3){
-			List<InboundMasterRes> r = _inboundMasterRepository.findByBlNoContainingIgnoreCase(req.getSearchInput())
+			List<FinalInboundRes>  r = _finalInboundRepository.findByContainerNoContainingIgnoreCase(req.getSearchInput())
 					.stream()
-					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.sorted(Comparator.comparing(FinalInbound::getUpdateDt).reversed())
 					.map(t->{
-						return  InboundMasterRes.builder()
+						return  FinalInboundRes.builder()
 								.id(t.getId())
-								.blNo(t.getBlNo())
+								.gubun(GubunType.getList().stream().filter(type->type.getId() == t.getGubun()).findFirst().get().getName())
+								.gubunCode(t.getGubun())
+								.departDtStr(t.getDepartDtStr())
+								.title(t.getTitle())
+								.incomeDt(t.getIncomeDt())
+								.masterBlNo(t.getFinalMasterBl())
 								.build();
 					}).collect(Collectors.toList());
 			List<FinalInboundRes>  result = new ArrayList<>();
 			
 			for(int i=0; i<r.size();i++ ) {
-				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
-				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
+				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
 				
-					Integer gubunType = fim.getFinalInbound().getGubun(); 
+				for(int j=0; j<fimList.size();j++) {
 					FinalInboundRes res = new FinalInboundRes();
-					res.setId(fim.getFinalInbound().getId());
-					res.setInboundMasterId(r.get(i).getId());
-					res.setTitle(fim.getFinalInbound().getTitle());
-					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
-					res.setBlNo(r.get(i).getBlNo());
-					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
-					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
-					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
-					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
+					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
 					result.add(res);
+				}
 				 				
 			}
 			finalResult = result;
 		}else if(req.getDateType()==4){
-			List<CompanyInfo> c = _companyInfoRepository.findByCoNmContainingIgnoreCase(req.getSearchInput());
-			List<InboundMaster> totalList = new ArrayList<>();
-			for(int i=0; i<c.size(); i++) {
-				List<InboundMaster> imList = new ArrayList<>();
-				imList = _inboundMasterRepository.findByCompanyInfo(c.get(i));
-				for(int j=0; j<imList.size(); j++) {
-					totalList.add(imList.get(j));				
-					}
-			}
-			List<InboundMasterRes> r = totalList
+			List<InboundMasterRes> r = _inboundMasterRepository.findByBlNoContainingIgnoreCase(req.getSearchInput())
 					.stream()
-					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
 					.map(t->{
 						return  InboundMasterRes.builder()
 								.id(t.getId())
@@ -737,6 +756,46 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			}
 			finalResult = result;
 		}else if(req.getDateType()==5){
+			List<CompanyInfo> c = _companyInfoRepository.findByCoNmContainingIgnoreCase(req.getSearchInput());
+			List<InboundMaster> totalList = new ArrayList<>();
+			for(int i=0; i<c.size(); i++) {
+				List<InboundMaster> imList = new ArrayList<>();
+				imList = _inboundMasterRepository.findByCompanyInfo(c.get(i));
+				for(int j=0; j<imList.size(); j++) {
+					totalList.add(imList.get(j));				
+					}
+			}
+			List<InboundMasterRes> r = totalList
+					.stream()
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
+					.map(t->{
+						return  InboundMasterRes.builder()
+								.id(t.getId())
+								.blNo(t.getBlNo())
+								.build();
+					}).collect(Collectors.toList());
+			List<FinalInboundRes>  result = new ArrayList<>();
+			
+			for(int i=0; i<r.size();i++ ) {
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(r.get(i).getId());
+				
+					Integer gubunType = fim.getFinalInbound().getGubun(); 
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(fim.getFinalInbound().getId());
+					res.setInboundMasterId(r.get(i).getId());
+					res.setTitle(fim.getFinalInbound().getTitle());
+					res.setMasterBlNo(fim.getFinalInbound().getFinalMasterBl());
+					res.setBlNo(r.get(i).getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
+					res.setGubun(GubunType.getList().stream().filter(type->type.getId() == gubunType).findFirst().get().getName());
+					res.setDepartDtStr(fim.getFinalInbound().getDepartDtStr());
+					res.setIncomeDt(fim.getFinalInbound().getIncomeDt());
+					result.add(res);
+				 				
+			}
+			finalResult = result;
+		}else if(req.getDateType()==6){
 			List<Inbound> in = _inboundRepository.findByKorNmContainingIgnoreCase(req.getSearchInput());
 			List<InboundMaster> totalList = new ArrayList<>();
 			List<InboundMaster> totalList2 = new ArrayList<>();
@@ -760,7 +819,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				}
 			List<InboundMasterRes> r = totalList2
 					.stream()
-					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
 					.map(t->{
 						return  InboundMasterRes.builder()
 								.id(t.getId())
@@ -792,7 +851,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				 				
 			}
 			finalResult = result;
-		}else if(req.getDateType()==6){
+		}else if(req.getDateType()==7){
 			List<Inbound> in = _inboundRepository.findByEngNmContainingIgnoreCase(req.getSearchInput());
 			List<InboundMaster> totalList = new ArrayList<>();
 			List<InboundMaster> totalList2 = new ArrayList<>();
@@ -817,7 +876,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 			List<InboundMasterRes> r = totalList2
 					.stream()
-					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
 					.map(t->{
 						return  InboundMasterRes.builder()
 								.id(t.getId())
@@ -850,7 +909,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			}
 			
 			finalResult = result;
-		}else if(req.getDateType()==7){
+		}else if(req.getDateType()==8){
 			List<Inbound> in = _inboundRepository.findByMemo1ContainingIgnoreCaseOrMemo2ContainingIgnoreCase(req.getSearchInput(),req.getSearchInput());
 			List<InboundMaster> totalList = new ArrayList<>();
 			List<InboundMaster> totalList2 = new ArrayList<>();
@@ -875,7 +934,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 
 			List<InboundMasterRes> r = totalList2
 					.stream()
-					.sorted(Comparator.comparing(InboundMaster::getUpdateDt))
+					.sorted(Comparator.comparing(InboundMaster::getUpdateDt).reversed())
 					.map(t->{
 						return  InboundMasterRes.builder()
 								.id(t.getId())

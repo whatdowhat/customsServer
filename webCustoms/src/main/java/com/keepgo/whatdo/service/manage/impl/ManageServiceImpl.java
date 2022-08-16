@@ -59,6 +59,7 @@ import com.keepgo.whatdo.entity.customs.response.CheckImportRes;
 import com.keepgo.whatdo.entity.customs.response.ChinaSanggumRes;
 import com.keepgo.whatdo.entity.customs.request.ChinaSanggumReq;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
+import com.keepgo.whatdo.entity.customs.response.DepartDelayRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
@@ -161,7 +162,7 @@ public class ManageServiceImpl implements ManageService {
 			ch.setUserNm(target==null?"":target.getUser().getName());
 			result.add(ch);		
 			}
-		
+		result.sort(Comparator.comparing(ManageRes::getRegDtStr).reversed());
 		return result;
 	
 	}

@@ -37,6 +37,8 @@ public interface FinalInboundService {
 	
 	@Transactional
 	boolean updateFinalInbound(FinalInboundReq finalInboundReq);
+	@Transactional
+	boolean updateFinalInboundForUser(FinalInboundReq finalInboundReq);
 	
 	@Transactional
 	boolean deleteFinalInboundMasterItems(FinalInboundReq finalInboundReq);

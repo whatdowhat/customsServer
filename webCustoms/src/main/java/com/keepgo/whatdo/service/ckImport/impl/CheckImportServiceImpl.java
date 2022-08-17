@@ -51,6 +51,7 @@ import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.request.UnbiReq;
 import com.keepgo.whatdo.entity.customs.request.UserReq;
 import com.keepgo.whatdo.entity.customs.response.CheckImportRes;
+import com.keepgo.whatdo.entity.customs.response.ChinaSanggumRes;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 import com.keepgo.whatdo.entity.customs.response.InboundMasterRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
@@ -117,22 +118,50 @@ public class CheckImportServiceImpl implements CheckImportService {
 		FinalInboundInboundMaster finalInboundInboundMaster = _finalInboundInboundMasterRepository.findByInboundMasterId(im.getId());
 		Long companyId = im.getCompanyInfo().getId();
 		
-		List<CheckImportRes> result = _checkImportRepository.findByCompanyInfoId(companyId).stream()
-				.sorted(Comparator.comparing(CheckImport::getRegDate).reversed())
-				.map(item->{
-					CheckImportRes rt = CheckImportRes.builder()
-							.id(item.getId())
-							.blNo(item.getInboundMaster().getBlNo())
-							.userNm(item.getUser().getName())
-							.companyNm(item.getCompanyInfo().getCoNm())
-							.memo(item.getMemo())
-							.incomeDtStr(finalInboundInboundMaster.getFinalInbound().getIncomeDt())
-							.regDtStr(format.format(item.getRegDate()))
-							.build();
-				return rt;
-				})
-				.collect(Collectors.toList());
+		
+		List<CheckImportRes> result = new ArrayList<>();
+		if(checkImportReq.getType()==null||checkImportReq.getType()==0) {
+			List<CheckImport> checkImportList = _checkImportRepository.findByCompanyInfoId(companyId);
+			for(int i=0; i<checkImportList.size(); i++) {
+				CheckImportRes dto = new CheckImportRes();
+				dto.setId(checkImportList.get(i).getId());
+				dto.setBlNo(checkImportList.get(i).getInboundMaster().getBlNo());
+				dto.setUserNm(checkImportList.get(i).getUser().getName());
+				dto.setCompanyNm(checkImportList.get(i).getCompanyInfo().getCoNm());
+				dto.setMemo(checkImportList.get(i).getMemo());
+				dto.setIncomeDtStr(finalInboundInboundMaster.getFinalInbound().getIncomeDt());
+				dto.setRegDtStr(format.format(checkImportList.get(i).getRegDate()));
+				dto.setInboundMasterId(im.getId());
+				dto.setFinalInboundId(finalInboundInboundMaster.getFinalInbound().getId());			
+				result.add(dto);
+				}
+		
+		
+		}else {
+			List<CheckImport> checkImportList = _checkImportRepository.findAll();
+			for(int i=0; i<checkImportList.size(); i++) {
+				CheckImportRes dto = new CheckImportRes();
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				fim = _finalInboundInboundMasterRepository.findByInboundMasterId(checkImportList.get(i).getInboundMaster().getId());
+				dto.setId(checkImportList.get(i).getId());
+				dto.setBlNo(checkImportList.get(i).getInboundMaster().getBlNo());
+				dto.setUserNm(checkImportList.get(i).getUser().getName());
+				dto.setCompanyNm(checkImportList.get(i).getCompanyInfo().getCoNm());
+				dto.setMemo(checkImportList.get(i).getMemo());
+				dto.setIncomeDtStr(fim.getFinalInbound().getIncomeDt());
+				dto.setRegDtStr(format.format(checkImportList.get(i).getRegDate()));
+				dto.setInboundMasterId(fim.getInboundMaster().getId());
+				dto.setFinalInboundId(fim.getFinalInbound().getId());	
+				result.add(dto);
+				}
+		}
+		
+		
+		result.sort(Comparator.comparing(CheckImportRes::getRegDtStr).reversed());
+		
+		
 		return result;
+				
 	
 	}
 	

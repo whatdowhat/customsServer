@@ -1447,7 +1447,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 		FileUpload fileupload = new FileUpload();
 		fileupload.setInboundMaster(inboundMaster);
-		fileupload.setFinalInbound(f.getFinalInbound());
+//		fileupload.setFinalInbound(f.getFinalInbound());
 		//todo 사용자 세션 아이디로 수정해야됨.
 		if(user==null) {
 			fileupload.setUser(User.builder().id(new Long(1)).build());

@@ -35,6 +35,7 @@ public class CommonRes {
 	
 	private boolean imageYn;
 	private byte[] image;
+	private String imageExistYn;
 	
 }
 

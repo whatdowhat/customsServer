@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -200,6 +201,7 @@ public class InboundController {
 		List<Long> inboundMasterIdList =  new ArrayList<>();
 		List<InboundViewRes> finalList = new ArrayList<>();
 		fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(inboundReq.getFinalInboundId());
+		fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
 		for(int j=0; j<fimList.size();j++) {
 			inboundMasterIdList.add(fimList.get(j).getInboundMaster().getId());
 		}

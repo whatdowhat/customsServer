@@ -16,6 +16,7 @@ import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelCountDetailRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
@@ -104,4 +105,10 @@ public interface ExcelService {
 	List<ExcelYATAIRes> listYataiData(FinalInboundInboundMasterReq req) throws Exception;
 	@Transactional
 	boolean listYatai(List<ExcelYATAIRes> excelYATAIRes,HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	List<ExcelCountDetailRes> countDetailData(FinalInboundReq req) throws Exception;
+	
+	@Transactional
+	boolean countDetail(List<ExcelCountDetailRes> list, HttpServletResponse response) throws Exception;
 }

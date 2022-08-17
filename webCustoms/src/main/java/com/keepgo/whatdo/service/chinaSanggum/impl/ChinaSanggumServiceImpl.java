@@ -197,49 +197,6 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 
 		return true;
 	}
-//	
-//	@Override
-//	public boolean deleteCheckImport(CheckImportReq checkImportReq) {
-//		List<Long> checkImportList = checkImportReq.getIds();
-//		for (int i = 0; i < checkImportList.size(); i++) {
-//			CheckImport checkImport = _checkImportRepository.findById(checkImportList.get(i).longValue()).get();
-//			_checkImportRepository.delete(checkImport);
-//		}
-//		return true;
-//	}
-//	@Override
-//	public boolean deleteCheckImportByInboundMasterId(CheckImportReq checkImportReq) {
-//		List<Long> checkImportList = checkImportReq.getIds();
-//		for (int i = 0; i < checkImportList.size(); i++) {
-//			CheckImport checkImport = _checkImportRepository.findByInboundMasterId(checkImportList.get(i).longValue());
-//			_checkImportRepository.delete(checkImport);
-//		}
-//		return true;
-//	}
-//	
-//	@Override
-//	public boolean updateCheckImport(CheckImportReq checkImportReq) {
-//		
-//		List<Long> checkImportList = checkImportReq.getIds();
-//		CheckImport checkImport = _checkImportRepository.findById(checkImportList.get(0).longValue()).get();
-//		User user = _userRepository.findByLoginId(checkImportReq.getLoginId());
-//		if(checkImport!=null) {
-//			checkImport.setMemo(checkImportReq.getMemo());
-//			checkImport.setRegDate(new Date());
-//			if(user==null) {
-//				checkImport.setUser(User.builder().id(new Long(1)).build());
-//			}else {
-//				checkImport.setUser(user);
-//			}
-//			
-//			
-//			_checkImportRepository.save(checkImport);
-//		}
-//		
-//		
-//
-//
-//		return true;
-//	}
+
 
 }

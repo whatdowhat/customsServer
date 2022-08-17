@@ -48,6 +48,8 @@ public class FileUploadRes {
 	private String updateDtStr;
 	
 	
+	
+	
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")

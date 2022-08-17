@@ -22,7 +22,7 @@ public interface CommonService {
 	List<?> getCommonAll(CommonReq commonReq); 
 	
 	@Transactional
-	List<?> getCommonByMaster(CommonReq commonReq); 
+	List<CommonRes> getCommonByMaster(CommonReq commonReq); 
 	@Transactional
 	CommonRes getCommonOne(Long id);
 	

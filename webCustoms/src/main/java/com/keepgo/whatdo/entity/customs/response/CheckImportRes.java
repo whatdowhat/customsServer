@@ -34,6 +34,7 @@ public class CheckImportRes {
 	
 	private Long id;
 	private Long inboundMasterId;
+	private Long finalInboundId;
 	private Long companyInfoId;
 	private int orderNo;
 	private int no;

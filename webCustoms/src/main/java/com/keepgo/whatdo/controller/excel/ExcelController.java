@@ -31,6 +31,7 @@ import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelCountDetailRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
@@ -311,5 +312,20 @@ public class ExcelController {
 		
 		_excelService.listYatai(s, response);
 	}
+	@RequestMapping(value = "/excel/document/countDetailData", method = { RequestMethod.POST })
+	public List<ExcelCountDetailRes> excelCountDetailRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
 
+
+		return _excelService.countDetailData(req);
+	}
+	@RequestMapping(value = "/excel/document/countDetail", method = { RequestMethod.POST })
+	public void countDetail(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+		List<ExcelCountDetailRes> s =_excelService.countDetailData(req);
+		
+		
+		_excelService.countDetail(s, response);
+	}
 }

@@ -42,6 +42,7 @@ import com.keepgo.whatdo.entity.customs.response.CommonbyCompanyRes;
 import com.keepgo.whatdo.mapper.CommonMapper;
 import com.keepgo.whatdo.repository.CommonMasterRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
+import com.keepgo.whatdo.repository.FileUploadRepository;
 import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.common.CommonService;
 
@@ -55,6 +56,8 @@ public class CommonServiceImpl implements CommonService {
 	
 	@Autowired
 	UserRepository _userRepository;
+	@Autowired
+	FileUploadRepository _fileUploadRepository;
 	
 	@Autowired
 	CommonMapper _commonMapper;
@@ -100,24 +103,31 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public List<?> getCommonByMaster(CommonReq commonReq) {
+	public List<CommonRes> getCommonByMaster(CommonReq commonReq) {
 		
 		
 		
-		List<?> result = _commonRepository.findByCommonMaster(_commonMasterRepository.findById(commonReq.getCommonMasterId()).orElse(CommonMaster.builder().build())).stream()
-				.sorted(Comparator.comparing(Common::getUpdateDt).reversed())
-				.map(item->CommonRes.builder()
-						.id(item.getId())
-						.value(item.getValue())
-						.value2(item.getValue2())
-						.value3(item.getValue3())
-						.commonMasterId(item.getCommonMaster().getId())
-						.isUsing(item.getIsUsing())
-						.createDt(item.getCreateDt())
-						.updateDt(item.getUpdateDt())
-						.name(item.getNm())
-						.build())
-		.collect(Collectors.toList());
+		List<Common> commonList = _commonRepository.findByCommonMaster(_commonMasterRepository.findById(commonReq.getCommonMasterId()).get());
+		List<CommonRes> result = new ArrayList<>();
+		for(int i=0; i<commonList.size(); i++) {
+			CommonRes common = new CommonRes();
+			common.setId(commonList.get(i).getId());
+			common.setValue(commonList.get(i).getValue());
+			common.setValue2(commonList.get(i).getValue2());
+			common.setValue3(commonList.get(i).getValue3());
+			common.setCommonMasterId(commonList.get(i).getCommonMaster().getId());
+			common.setIsUsing(commonList.get(i).getIsUsing());
+			common.setCreateDt(commonList.get(i).getCreateDt());
+			common.setUpdateDt(commonList.get(i).getUpdateDt());
+			common.setName(commonList.get(i).getNm());
+			if(_fileUploadRepository.findByCommonId(commonList.get(i).getId())==null) {
+				common.setImageExistYn("N");
+			}else {
+				common.setImageExistYn("Y");
+			}
+			result.add(common);
+		}
+		
 		return result;
 	}
 	

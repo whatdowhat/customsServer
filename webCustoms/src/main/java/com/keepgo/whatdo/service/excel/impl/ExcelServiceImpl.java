@@ -82,6 +82,7 @@ import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCOSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
+import com.keepgo.whatdo.entity.customs.response.ExcelCountDetailRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTARes;
 import com.keepgo.whatdo.entity.customs.response.ExcelFTASubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelInboundRes;
@@ -9571,5 +9572,315 @@ public String getDoubleResult(Double param) {
 		}
 		return true;
 //		return null;
+	}
+	
+	@Override
+	public List<ExcelCountDetailRes> countDetailData(FinalInboundReq req) throws Exception {
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		
+		List<ExcelCountDetailRes> result = new ArrayList<>();
+		
+		
+			FinalInboundInboundMaster f=_FinalInboundInboundMasterRepository.findByInboundMasterId(req.getInboundMasterId());
+			
+			List<InboundRes> inboundList = _InboundService.getInboundByMasterId(f.getInboundMaster().getId());
+			List<InboundRes> result2 = _utilService.changeExcelFormatNew(inboundList);
+			InboundViewRes i = _InboundService.changeInbound(result2);
+			
+			
+			
+			for(int l=0; l<result2.size(); l++) {
+				ExcelCountDetailRes r  = ExcelCountDetailRes.builder().build();
+				
+				r.setBlNo(f.getInboundMaster().getBlNo());
+				r.setMarking(result2.get(l).getMarking()==null?"":result2.get(l).getMarking());
+				r.setBoxCount(result2.get(l).getBoxCount());
+				r.setEngNm(result2.get(l).getEngNm());
+				r.setJejil(result2.get(l).getJejil());			
+				r.setBoxCount(result2.get(l).getBoxCount());
+				r.setItemCount(result2.get(l).getItemCount());	
+				
+				r.setMarkingSpan(result2.get(l).getMarkingSpan());	
+				result.add(r);
+				}
+	
+		
+		
+
+		return result;
+	}
+	@Override
+	public boolean countDetail(List<ExcelCountDetailRes> list, HttpServletResponse response) throws Exception {
+		String path = DocumentType.getList().stream().filter(t -> t.getId() == 12).findFirst().get().getName();
+
+		try {
+			
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			workbook.setSheetName(0, "CountDetail");
+			
+			Collections.reverse(list);
+			
+			XSSFSheet sheet = workbook.getSheetAt(0);
+				
+				
+			
+				
+				// item add
+				// 문서마다 시작하는 숫자가 고정
+				int startCount = 4;
+				for (int i = 0; i < list.size(); i++) {
+					shiftRowForCountDetail(startCount, sheet, "D", list.get(i), workbook);
+				}
+				
+				chageDataforCountDetail(sheet, list.get(0), workbook);
+
+
+				sheet.shiftRows(4, sheet.getLastRowNum(), -1);
+			
+				for(int i = 0; i < list.size(); i++) {
+					
+					XSSFRow row = sheet.getRow(i+4);
+					row.getCell(0).getCellStyle().setBorderTop(BorderStyle.HAIR);
+					row.getCell(1).getCellStyle().setBorderTop(BorderStyle.HAIR);
+					row.getCell(2).getCellStyle().setBorderTop(BorderStyle.HAIR);
+					row.getCell(3).getCellStyle().setBorderTop(BorderStyle.HAIR);
+					row.getCell(4).getCellStyle().setBorderTop(BorderStyle.HAIR);
+					row.getCell(5).getCellStyle().setBorderTop(BorderStyle.HAIR);
+				}
+				int lastRow = 35+list.size()-2;
+				String lastRowS = String.valueOf(lastRow);
+				XSSFRow row = sheet.getRow(35+list.size()-2);
+				row.getCell(4).setCellFormula("SUM"+"("+"E"+"4"+":"+"E"+lastRowS+")");
+				row.getCell(5).setCellFormula("SUM"+"("+"F"+"4"+":"+"F"+lastRowS+")");
+				
+				
+			String fileName =  "CountDetail.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			
+			
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	
+	
+	public void shiftRowForCountDetail(int startIndex, XSSFSheet sheet, String type, ExcelCountDetailRes item,
+			XSSFWorkbook workbook) {
+		writeDataForCountDetail(startIndex, sheet, type, item, workbook);
+	}
+
+	public void writeDataForCountDetail(int startIndex, XSSFSheet sheet, String type, ExcelCountDetailRes item,
+			XSSFWorkbook workbook) {
+
+		 
+		copyRowForCountDetail(workbook, sheet, 3, 4, item);
+		
+
+	}
+
+	
+
+	
+
+	private void copyRowForCountDetail(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+			ExcelCountDetailRes item) {
+		// Get the source / new row
+		XSSFRow newRow = worksheet.getRow(destinationRowNum);
+		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+
+
+		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
+		newRow = worksheet.createRow(destinationRowNum);
+		// Loop through source columns to add to new row
+		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+			// Grab a copy of the old/new cell
+//        	XSSFCelle
+
+			XSSFCell oldCell = sourceRow.getCell(i);
+			XSSFCell newCell = newRow.createCell(i);
+
+			// If the old cell is null jump to next cell
+			if (oldCell == null) {
+				newCell = null;
+				continue;
+			}
+
+			// Copy style from old cell and apply to new cell
+			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+			
+			
+			newCell.setCellStyle(newCellStyle);
+
+			// If there is a cell comment, copy
+			if (oldCell.getCellComment() != null) {
+				newCell.setCellComment(oldCell.getCellComment());
+			}
+
+			// If there is a cell hyperlink, copy
+			if (oldCell.getHyperlink() != null) {
+				newCell.setHyperlink(oldCell.getHyperlink());
+			}
+
+			// Set the cell data type
+			newCell.setCellType(oldCell.getCellType());
+
+			// Set the cell data value
+			switch (oldCell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK:
+				newCell.setCellValue(oldCell.getStringCellValue());
+				break;
+			case Cell.CELL_TYPE_BOOLEAN:
+				newCell.setCellValue(oldCell.getBooleanCellValue());
+				break;
+			case Cell.CELL_TYPE_ERROR:
+				newCell.setCellErrorValue(oldCell.getErrorCellValue());
+				break;
+			case Cell.CELL_TYPE_FORMULA:
+				newCell.setCellFormula(oldCell.getCellFormula());
+				break;
+			case Cell.CELL_TYPE_NUMERIC:
+				 if (i == 4) {
+					newCell.setCellValue((item.getBoxCount() == null ? 0d : item.getBoxCount()));
+				}else if (i == 5) {
+					newCell.setCellValue((item.getItemCount() == null ? 0d : item.getItemCount()));
+				} else {
+					newCell.setCellValue(oldCell.getNumericCellValue());
+				}
+				
+				break;
+			case Cell.CELL_TYPE_STRING:
+				
+					 if (i == 0) {
+						newCell.setCellValue(item.getMarking());
+						newCell.getCellStyle().setWrapText(true);
+					}else if (i == 1) {
+						XSSFRichTextString richString = new XSSFRichTextString(item.getEngNm());
+						
+						newCell.setCellValue(richString);
+					}else if (i == 2) {
+						XSSFRichTextString richString = new XSSFRichTextString(item.getJejil());
+						
+						newCell.setCellValue(richString);
+					} else {
+						newCell.setCellValue(oldCell.getStringCellValue());
+					}
+				
+
+//                    newCell.setCellValue(oldCell.getRichStringCellValue());
+//                    newCell.setCellValue(item.get);
+				break;
+			}
+		}
+
+		// If there are are any merged regions in the source row, copy to new row
+//		for (int i = 0; i < worksheet.getNumMergedRegions(); i++) {
+//			CellRangeAddress cellRangeAddress = worksheet.getMergedRegion(i);
+//			if (cellRangeAddress.getFirstRow() == sourceRow.getRowNum()) {
+//				CellRangeAddress newCellRangeAddress = new CellRangeAddress(newRow.getRowNum(),
+//						(newRow.getRowNum() + (cellRangeAddress.getLastRow() - cellRangeAddress.getFirstRow())),
+//						cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+//				worksheet.addMergedRegion(newCellRangeAddress);
+//			}
+//		}
+	}
+	
+	public void chageDataforCountDetail(XSSFSheet sheet, ExcelCountDetailRes excelCountDetailRes, XSSFWorkbook workbook) {
+		int startRowNum = 0;
+		int rowIndex = 0;
+		int columnIndex = 0;
+		int rowCount = sheet.getLastRowNum();
+		List<Integer> deleteList = new ArrayList<Integer>();
+
+		for (int i = 0; i < rowCount; i++) {
+			XSSFRow row = sheet.getRow(i);
+
+//				if(row != null) {
+			if (row == null)
+				break;
+			row.cellIterator().forEachRemaining(cell -> {
+				switch (cell.getCellTypeEnum().name()) {
+				case "STRING":
+					String value = cell.getStringCellValue();
+
+					cell.setCellValue(convertDataForCountDetail(value, excelCountDetailRes));
+					
+					if (value.contains("${total}")) {// 통화단위
+
+						final String CELLFORMAT_DOLLAR = "_-$* #,##0.000_ ;_-$* -#,##0.000 ;_-$* \"-\"???_ ;_-@_ ";
+						final String CELLFORMAT_WIAN = "_ [$¥-ii-CN]* #,##0.00_ ;_ [$¥-ii-CN]* -#,##0.00_ ;_ [$¥-ii-CN]* \"-\"??_ ;_ @_ ";
+						
+						//특이하게 cellstyle을 공유하게 되어 있어서 각각 만들어서 기존 셀 스타일 카피해서 각각 넣어줌.
+						XSSFCellStyle xcs_wian = workbook.createCellStyle();
+						xcs_wian.cloneStyleFrom(row.getCell(cell.getColumnIndex()+1).getCellStyle());
+						xcs_wian.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_WIAN));
+
+						XSSFCellStyle xcs_dollar = workbook.createCellStyle();
+						xcs_dollar.cloneStyleFrom(row.getCell(cell.getColumnIndex()+1).getCellStyle());
+						xcs_dollar.setDataFormat(workbook.createDataFormat().getFormat(CELLFORMAT_DOLLAR));
+							cell.setCellValue("");
+
+//							if (excelInpackRes.getCurrencyType().equals("$")) {
+//								row.getCell(cell.getColumnIndex() + 1).setCellStyle(xcs_dollar);
+//							} else{
+//								
+//								row.getCell(cell.getColumnIndex() + 1).setCellStyle(xcs_wian);
+//							}
+
+						
+						
+					}
+
+
+					break;
+				case "NUMERIC":
+					if (DateUtil.isCellDateFormatted(cell)) {
+						Date date1 = cell.getDateCellValue();
+						cell.setCellValue(date1);
+					} else {
+						double cellValue1 = cell.getNumericCellValue();
+						cell.setCellValue(cellValue1);
+					}
+					break;
+				case "FORMULA":
+					String formula1 = cell.getCellFormula();
+					cell.setCellFormula(formula1);
+					break;
+
+				default:
+					break;
+				}
+
+			});
+
+		}
+
+	}
+
+	public String convertDataForCountDetail(String target, ExcelCountDetailRes excelCountDetailRes) {
+
+		if (target.contains("${blNo}")) {
+			return excelCountDetailRes.getBlNo();
+		}else {
+			return target;
+		}
+
 	}
 }

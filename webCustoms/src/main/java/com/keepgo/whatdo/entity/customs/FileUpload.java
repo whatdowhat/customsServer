@@ -66,7 +66,8 @@ public class FileUpload {
 	
 	@Column(name = "fileType")
 	private int fileType;
-
+	
+	
 	
 	@JoinColumn(name = "inboundMasterId")
 	@ExcelColumn(headerName="inboundMasterId",order = 2)

@@ -92,9 +92,9 @@ public class CommonController {
 		return result;
 	}
 	@RequestMapping(value = "/common/commonByMaster", method = {RequestMethod.POST })
-	public List<?> commonByMaster(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
+	public List<CommonRes> commonByMaster(HttpServletRequest httpServletRequest,@RequestBody CommonReq commonReq) throws Exception {
 
-		List<?> list = _commonService.getCommonByMaster(commonReq);
+		List<CommonRes> list = _commonService.getCommonByMaster(commonReq);
 		return  list;
 	}
 	

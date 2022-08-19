@@ -488,5 +488,48 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 		return dto;
 	}
 	
+	@Override
+	public List<CompanyInfoRes> getManagerList(CompanyInfoReq req) {
 
+		List<CompanyInfo> list = _companyInfoRepository.findAll();
+		List<CompanyInfoRes> result =  new ArrayList<>();
+		List<String> managerList = new ArrayList<>();
+		List<Long> ids = new ArrayList<Long>();
+		for(int i=0; i<list.size(); i++) {
+			if(!managerList.contains(list.get(i).getManager())&&!list.get(i).getManager().equals("")) {
+				managerList.add(list.get(i).getManager());
+				ids.add(list.get(i).getId());
+			}
+		}
+		
+		for(int i=0; i<ids.size(); i++ ) {
+			CompanyInfo c = new CompanyInfo();
+			c = _companyInfoRepository.findById(ids.get(i)).get();
+			CompanyInfoRes dto = new CompanyInfoRes();
+			dto.setId(c.getId());
+			dto.setManager(c.getManager());
+			result.add(dto);
+		}
+		
+		
+		
+		
+		return result;
+	}
+	@Override
+	public boolean updateManager(CompanyInfoReq req) {
+
+		List<CompanyInfo> list = _companyInfoRepository.findByManager(req.getManager());
+		
+		for(int i=0; i<list.size(); i++) {
+			CompanyInfo target = new CompanyInfo();
+			target = list.get(i);
+			target.setManager(req.getNewManager());
+			_companyInfoRepository.save(target);
+		}
+		
+		
+		
+		return true;
+	}
 }

@@ -328,5 +328,19 @@ public class CompanyInfoController {
 		return  _companyInfoService.getOne(companyInfoReq.getId());
 		
 	}
+	@RequestMapping(value = "/company/getManagerList", method = {RequestMethod.POST })
+	public List<CompanyInfoRes> getManagerList(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+
+		return  _companyInfoService.getManagerList(companyInfoReq);
+
+		
+	}
+	@RequestMapping(value = "/company/updateManager", method = {RequestMethod.POST })
+	public boolean updateManager(HttpServletRequest httpServletRequest,@RequestBody CompanyInfoReq companyInfoReq){
+		
+		return  _companyInfoService.updateManager(companyInfoReq);
+		
+	}
 	
 }

@@ -50,4 +50,8 @@ public interface CompanyInfoService {
 	
 	@Transactional
 	CompanyInfoRes  getOne(Long id); 
+	@Transactional
+	List<CompanyInfoRes> getManagerList(CompanyInfoReq companyInfoReq);
+	@Transactional
+	boolean updateManager(CompanyInfoReq companyInfoReq);
 }

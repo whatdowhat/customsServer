@@ -51,7 +51,7 @@ public enum FileType {
 				//도장이미지는 리스트에서 보이지 않음.
 				.filter(t->{
 					
-					return (t.getId() < 10);
+					return (t.getId() != 10);
 				})
 				.sorted(Comparator.comparing(FileTypeRes::getSortOrder)).collect(Collectors.toList());
 		

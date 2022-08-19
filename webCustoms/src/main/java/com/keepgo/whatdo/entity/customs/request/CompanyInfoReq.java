@@ -55,7 +55,7 @@ public class CompanyInfoReq {
 	
 	private Integer corpId;
 	private String forwarding;
-	
+	private String newManager;
 
 	private List<Long> ids = new ArrayList<>();
 	

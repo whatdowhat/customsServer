@@ -1258,6 +1258,68 @@ public class FileUploadServiceImpl implements FileUploadService {
 					
 					return dto;
 		}).collect(Collectors.toList());
+		}else if(fileUploadReq.getFileType() ==  11) {
+			list = _fileUploadRepository
+					.findByFinalInboundAndFileType(_finalInboundRepository.findById(fileUploadReq.getFinalInboundId()).get(),
+							fileUploadReq.getFileType().intValue())
+			 
+			 .stream().sorted(Comparator.comparing(FileUpload::getUpdateDt).reversed())
+				.map(item -> {
+
+					FileUploadRes dto = FileUploadRes.builder()
+
+							
+							.id(item.getId()).path1(item.getPath1()).path2(item.getPath2()).path3(item.getPath3())
+							.fileName1(item.getFileName1()).fileName2(item.getFileNam2()).fileSize(item.getFileSize())
+							.root(item.getRoot())
+							.fileType(item.getFileType())
+							.fileTypeNm(FileType.getList().stream().filter(t->t.getId() == fileUploadReq.getFileType()).findFirst().get().getName())
+//							.inboundMasterId(item.getInboundMaster().getId()).coNum(item.getInboundMaster().getCompanyInfo().getCoNum())
+//							.fileCount(fileCount)
+													
+							.build();
+		//20220801	
+							int a =item.getFileSize();
+							String fileSizeNew = "";
+						dto.setUserName(item.getUser().getName());
+						dto.setUpdateDtStr(dateFormat.format(item.getUpdateDt()));
+						String fileTypeNew = item.getFileName1();
+						int idx = fileTypeNew.indexOf(".");
+						String fileTypeNew1 = fileTypeNew.substring(0,idx);
+						String fileTypeNew2 = fileTypeNew.substring(idx+1);
+						if(fileTypeNew2.equals("xlsx")) {
+							dto.setFileTypeNew("Microsoft Excel 워크시트");
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+							dto.setFileTypeNew("JPG 파일");
+						}else if(fileTypeNew2.equals("png")) {
+							dto.setFileTypeNew("PNG 파일");
+						}else if(fileTypeNew2.equals("pdf")) {
+							dto.setFileTypeNew("PDF 파일");
+						}else if(fileTypeNew2.equals("zip")||fileTypeNew2.equals("ZIP")) {
+							dto.setFileTypeNew("ZIP 압축 파일");
+						}else {
+							dto.setFileTypeNew("");
+						}
+						
+						if(item.getFileSize()>=1024*1024) {
+								a=item.getFileSize()/(1024*1024);
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"MB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else if(item.getFileSize()>=1024) {
+								a=item.getFileSize()/1024;
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"KB";
+								dto.setFileSizeStr(fileSizeNew);
+							}else {
+								a=item.getFileSize();
+								fileSizeNew=decimalFormat2.format(a);
+								fileSizeNew=fileSizeNew+"Bytes";
+								dto.setFileSizeStr(fileSizeNew);
+							}
+					
+					return dto;
+		}).collect(Collectors.toList());
 		}
 		
 		 

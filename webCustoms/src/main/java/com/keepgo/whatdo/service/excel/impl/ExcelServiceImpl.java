@@ -9656,9 +9656,12 @@ public String getDoubleResult(Double param) {
 					row.getCell(4).getCellStyle().setBorderTop(BorderStyle.HAIR);
 					row.getCell(5).getCellStyle().setBorderTop(BorderStyle.HAIR);
 				}
+				sheet.shiftRows(sheet.getLastRowNum()-(list.size()),sheet.getLastRowNum(),-(list.size()));
 				int lastRow = 35+list.size()-2;
-				String lastRowS = String.valueOf(lastRow);
-				XSSFRow row = sheet.getRow(35+list.size()-2);
+//				String lastRowS = String.valueOf(lastRow);
+				String lastRowS =  String.valueOf(sheet.getLastRowNum());
+//				XSSFRow row = sheet.getRow(35+list.size()-2);
+				XSSFRow row = sheet.getRow(sheet.getLastRowNum());
 				row.getCell(4).setCellFormula("SUM"+"("+"E"+"4"+":"+"E"+lastRowS+")");
 				row.getCell(5).setCellFormula("SUM"+"("+"F"+"4"+":"+"F"+lastRowS+")");
 				

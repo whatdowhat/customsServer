@@ -1260,10 +1260,11 @@ public class InboundServiceImpl implements InboundService {
 						f.put("weight", getStringResult(sub_item.getWeight()));	
 					}
 					
-					if(sub_item.getCbm() == null) {
+					if(sub_item.getCbm() == null||sub_item.getCbm() == 0) {
 						f.put("cbm",  "0");
 					}else {
-						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+//						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+						f.put("cbm", getStringResult2(sub_item.getCbm()));	
 					}
 					if(sub_item.getAmountType()==null||sub_item.getAmountType().equals("PCS")) {
 						f.put("amountType",  "");
@@ -1528,6 +1529,44 @@ public class InboundServiceImpl implements InboundService {
 				return decimalFormat.format(Double.parseDouble(arr[0])) ;
 			}else {
 				DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+				return decimalFormat.format(param);
+			}
+		}catch (Exception e) {
+			return String.valueOf(param);
+		}
+		
+	}
+	public String getStringResult2(Double param) {
+		try {
+			boolean finalCheck = false;
+			String[] arr = String.valueOf(param).split("\\.");
+			char[] texts = arr[1].toCharArray();
+			Boolean checkPoint1[] = new Boolean[texts.length];
+			
+			for(int i = 0; i<texts.length;i++) {
+//				System.out.println(texts[i]);
+				if(texts[i] == '0' ) {
+					checkPoint1[i] = true;
+				}else {
+					checkPoint1[i] = false;
+				}
+			}
+			
+			for(int i = 0; i<checkPoint1.length;i++) {
+				if(i == 0 ) {
+					finalCheck = checkPoint1[i];
+					
+				}else {
+					finalCheck = (finalCheck && checkPoint1[i]);
+				}
+			}
+			
+			
+			if(finalCheck) {
+				DecimalFormat decimalFormat = new DecimalFormat("#,###");
+				return decimalFormat.format(Double.parseDouble(arr[0])) ;
+			}else {
+				DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 				return decimalFormat.format(param);
 			}
 		}catch (Exception e) {

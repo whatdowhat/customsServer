@@ -5638,6 +5638,7 @@ public String getDoubleResult(Double param) {
 		List<Long> inboundMasterIdList =  new ArrayList<>();
 		List<InboundViewRes> finalList = new ArrayList<>();
 		fimList = _FinalInboundInboundMasterRepository.findByFinalInboundId(inboundReq.getFinalInboundId());
+		fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
 		for(int j=0; j<fimList.size();j++) {
 			inboundMasterIdList.add(fimList.get(j).getInboundMaster().getId());
 		}
@@ -8545,7 +8546,8 @@ public String getDoubleResult(Double param) {
 				subRes.setTotalWeight(origin_inbound_list.get(i).getWeight());
 				subRes.setWeight((subRes.getTotalWeight()  == null ? 0d : subRes.getTotalWeight()) - (subRes.getBoxCount() == null ? 0d : subRes.getBoxCount()) );
 				subRes.setCbm(origin_inbound_list.get(i).getCbm());
-				if(origin_inbound_list.get(i).getCoId()!=null||origin_inbound_list.get(i).getCoId()!=3) {
+//				if(origin_inbound_list.get(i).getCoId()!=null||origin_inbound_list.get(i).getCoId()!=3) {
+				if(origin_inbound_list.get(i).getCoId()!=3) {
 					item.setCoExistYn(true);
 				}
 				if(t.getInboundMaster().getCurrencyType()==null||t.getInboundMaster().getCurrencyType().equals("$")) {
@@ -8912,7 +8914,9 @@ public String getDoubleResult(Double param) {
 				subRes.setMaking(markingInfo.get(origin_inbound_list.get(i).getId()));
 				subRes.setEngNm(origin_inbound_list.get(i).getEngNm());
 				subRes.setData08(item.getData08());
+				
 				subRes.setItemCount(getStringResult(origin_inbound_list.get(i).getItemCount()));
+				subRes.setItemCountD(origin_inbound_list.get(i).getItemCount());
 				subRes.setCompanyInvoice(t.getInboundMaster().getCompanyInfo().getCoInvoice() + yyMMdd);
 				subRes.setDepartDtStr(departDt);
 				subRes.setBoxCount(origin_inbound_list.get(i).getBoxCount());
@@ -9595,7 +9599,7 @@ public String getDoubleResult(Double param) {
 			for(int l=0; l<result2.size(); l++) {
 				ExcelCountDetailRes r  = ExcelCountDetailRes.builder().build();
 				
-				r.setBlNo(f.getInboundMaster().getBlNo());
+				r.setBlNo("B/L NO: "+f.getInboundMaster().getBlNo());
 				r.setMarking(result2.get(l).getMarking()==null?"":result2.get(l).getMarking());
 				r.setBoxCount(result2.get(l).getBoxCount());
 				r.setEngNm(result2.get(l).getEngNm());
@@ -9656,7 +9660,7 @@ public String getDoubleResult(Double param) {
 					row.getCell(4).getCellStyle().setBorderTop(BorderStyle.HAIR);
 					row.getCell(5).getCellStyle().setBorderTop(BorderStyle.HAIR);
 				}
-				sheet.shiftRows(sheet.getLastRowNum()-(list.size()),sheet.getLastRowNum(),-(list.size()));
+//				sheet.shiftRows(sheet.getLastRowNum()-(list.size()),sheet.getLastRowNum(),-(list.size()));
 				int lastRow = 35+list.size()-2;
 //				String lastRowS = String.valueOf(lastRow);
 				String lastRowS =  String.valueOf(sheet.getLastRowNum());
@@ -9664,7 +9668,10 @@ public String getDoubleResult(Double param) {
 				XSSFRow row = sheet.getRow(sheet.getLastRowNum());
 				row.getCell(4).setCellFormula("SUM"+"("+"E"+"4"+":"+"E"+lastRowS+")");
 				row.getCell(5).setCellFormula("SUM"+"("+"F"+"4"+":"+"F"+lastRowS+")");
-				
+				row.setHeightInPoints(new Float("50"));
+				for(int i=3; i<sheet.getLastRowNum(); i++) {
+					sheet.getRow(i).setHeightInPoints(new Float("30"));
+				}
 				
 			String fileName =  "CountDetail.xlsx";
 			response.setContentType("application/download;charset=utf-8");

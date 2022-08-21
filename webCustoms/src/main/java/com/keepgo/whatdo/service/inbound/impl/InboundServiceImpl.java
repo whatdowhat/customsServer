@@ -1244,28 +1244,52 @@ public class InboundServiceImpl implements InboundService {
 					f.put("orderNo", sub_item.getOrderNo());
 					f.put("korNm", sub_item.getKorNm());
 					
-//					f.put("itemCount",  decimalFormat3.format(sub_item.getItemCount()));
 					f.put("itemCount",  getStringResult(sub_item.getItemCount()));
 					
 					
-					if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
-						f.put("boxCount",  "0");
+//					if(sub_item.getBoxCount() == null||sub_item.getBoxCount() == 0) {
+//						f.put("boxCount",  "0");
+//					}else {
+//						f.put("boxCount", getStringResult(sub_item.getBoxCount()));
+//					}
+//					
+//					if(sub_item.getWeight() == null) {
+//						f.put("weight",  "0");
+//					}else {
+//						f.put("weight", getStringResult(sub_item.getWeight()));	
+//					}
+//					
+//					if(sub_item.getCbm() == null||sub_item.getCbm() == 0) {
+//						f.put("cbm",  "0");
+//					}else {
+////						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+//						f.put("cbm", getStringResult2(sub_item.getCbm()));	
+//					}
+					//20220821
+					
+					
+					if(sub_item.getBoxCount() == null) {
+						f.put("boxCount",  "");
 					}else {
 						f.put("boxCount", getStringResult(sub_item.getBoxCount()));
 					}
 					
 					if(sub_item.getWeight() == null) {
-						f.put("weight",  "0");
+						f.put("weight",  "");
 					}else {
 						f.put("weight", getStringResult(sub_item.getWeight()));	
 					}
 					
-					if(sub_item.getCbm() == null||sub_item.getCbm() == 0) {
-						f.put("cbm",  "0");
+					if(sub_item.getCbm() == null) {
+						f.put("cbm",  "");
 					}else {
 //						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
 						f.put("cbm", getStringResult2(sub_item.getCbm()));	
 					}
+					//20220821	
+					
+					
+					
 					if(sub_item.getAmountType()==null||sub_item.getAmountType().equals("PCS")) {
 						f.put("amountType",  "");
 					}else {

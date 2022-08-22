@@ -4936,7 +4936,8 @@ public class ExcelServiceImpl implements ExcelService {
 				r.setBlNoSpan(result2.get(l).getBlNoSpan());
 				r.setMasterCompanySpan(result2.get(l).getMasterCompanySpan());
 				r.setMarkingSpan(result2.get(l).getMarkingSpan());	
-				r.setOrderNoStrSpan(result2.get(l).getOrderNoStrSpan());			
+				r.setOrderNoStrSpan(result2.get(l).getOrderNoStrSpan());
+				r.setContainer(f.getFinalInbound().getCargoName()==null||f.getFinalInbound().getCargoName().equals("")?"백마창고":f.getFinalInbound().getCargoName());
 				result.add(r);
 				}
 	

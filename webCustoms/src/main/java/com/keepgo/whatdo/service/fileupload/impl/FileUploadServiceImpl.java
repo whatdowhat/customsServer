@@ -162,9 +162,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 				String fileTypeNew2 = fileTypeNew.substring(idx+1);
 				if(fileTypeNew2.equals("xlsx")) {
 					dto.setFileTypeNew("Microsoft Excel 워크시트");
-				}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+				}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 					dto.setFileTypeNew("JPG 파일");
-				}else if(fileTypeNew2.equals("png")) {
+				}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 					dto.setFileTypeNew("PNG 파일");
 				}else if(fileTypeNew2.equals("pdf")) {
 					dto.setFileTypeNew("PDF 파일");
@@ -224,9 +224,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -286,9 +286,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -348,9 +348,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -410,9 +410,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -472,9 +472,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -534,9 +534,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -596,9 +596,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -658,9 +658,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -731,9 +731,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 				String fileTypeNew2 = fileTypeNew.substring(idx+1);
 				if(fileTypeNew2.equals("xlsx")) {
 					dto.setFileTypeNew("Microsoft Excel 워크시트");
-				}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+				}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 					dto.setFileTypeNew("JPG 파일");
-				}else if(fileTypeNew2.equals("png")) {
+				}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 					dto.setFileTypeNew("PNG 파일");
 				}else if(fileTypeNew2.equals("pdf")) {
 					dto.setFileTypeNew("PDF 파일");
@@ -793,9 +793,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -855,9 +855,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -917,9 +917,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -979,9 +979,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -1041,9 +1041,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -1103,9 +1103,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -1165,9 +1165,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -1227,9 +1227,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -1289,9 +1289,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 						String fileTypeNew2 = fileTypeNew.substring(idx+1);
 						if(fileTypeNew2.equals("xlsx")) {
 							dto.setFileTypeNew("Microsoft Excel 워크시트");
-						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")) {
+						}else if(fileTypeNew2.equals("jpg")||fileTypeNew2.equals("JPEG")||fileTypeNew2.equals("JPG")) {
 							dto.setFileTypeNew("JPG 파일");
-						}else if(fileTypeNew2.equals("png")) {
+						}else if(fileTypeNew2.equals("png")||fileTypeNew2.equals("PNG")) {
 							dto.setFileTypeNew("PNG 파일");
 						}else if(fileTypeNew2.equals("pdf")) {
 							dto.setFileTypeNew("PDF 파일");
@@ -1716,7 +1716,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 	}
 
 	@Override
-	public FileUploadRes uploadFileContainer(MultipartFile file, FileUploadReq fileUploadReq) throws IOException {
+	public FileUploadRes uploadFileContainer(List<MultipartFile> file, FileUploadReq fileUploadReq) throws IOException {
 		
 		// path1=1, masterid 
 		//path2=298, filetypeid
@@ -1748,58 +1748,60 @@ public class FileUploadServiceImpl implements FileUploadService {
 	         }else {
 //			System.out.println("이미 폴더가 생성되어 있습니다.");
 		}
-		
-		String fileName= file.getOriginalFilename();
-		int filesize=(int)file.getSize();
-		File saveFile = new File(strPath.toString(), file.getOriginalFilename());
-		file.transferTo(saveFile);
-		
-		
-
-		
-		FileUpload fileupload = new FileUpload();
-		fileupload.setFinalInbound(finalInbound);
-		//todo 사용자 세션 아이디로 수정해야됨.
-		if(user==null) {
-			fileupload.setUser(User.builder().id(new Long(1)).build());
-		}else {
-			fileupload.setUser(user);
-		}
-		
-		
-		fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == Integer.valueOf(fileUploadReq.getPath2())).findFirst().get().getId());
-		
-		fileupload.setFileName1(fileName);
-		fileupload.setRoot(uploadRoot);
-		fileupload.setCreateDt(new Date());
-		fileupload.setUpdateDt(new Date());
-		fileupload.setFileSize(filesize);
-		fileupload.setPath1(inboundMaster.getCompanyInfo().getCoNum());
-		fileupload.setPath2(fileUploadReq.getPath2());
-		fileupload.setPath3(fileName);
-//		fileupload.setUploadType(fileUploadReq.getPath2());
-//		fileupload.setUploadTypeNm(common.getValue2());
-		fileupload.setRoot(strPath.toString());
-		fileupload.setIsUsing(true);
-		
-		List<FileUpload> already = _fileUploadRepository.findByInboundMasterAndFileTypeAndPath3(inboundMaster, Integer.valueOf(fileUploadReq.getPath2()), fileName);
-		if(already.size()>0) {
-			//파일이름이 이미 있는경우는 db에 update 날짜만 수정한다.
-			already.get(0).setUpdateDt(new Date());
-			_fileUploadRepository.save(already.get(0));
+		for(int i=0; i<file.size(); i++) {
+			String fileName= file.get(i).getOriginalFilename();
+			int filesize=(int)file.get(i).getSize();
+			File saveFile = new File(strPath.toString(), file.get(i).getOriginalFilename());
+			file.get(i).transferTo(saveFile);
+			FileUpload fileupload = new FileUpload();
+			fileupload.setFinalInbound(finalInbound);
+			//todo 사용자 세션 아이디로 수정해야됨.
+			if(user==null) {
+				fileupload.setUser(User.builder().id(new Long(1)).build());
+			}else {
+				fileupload.setUser(user);
+			}
 			
+			
+			fileupload.setFileType(FileType.getList().stream().filter(t->t.getId() == Integer.valueOf(fileUploadReq.getPath2())).findFirst().get().getId());
+			
+			fileupload.setFileName1(fileName);
+			fileupload.setRoot(uploadRoot);
+			fileupload.setCreateDt(new Date());
+			fileupload.setUpdateDt(new Date());
+			fileupload.setFileSize(filesize);
+			fileupload.setPath1(inboundMaster.getCompanyInfo().getCoNum());
+			fileupload.setPath2(fileUploadReq.getPath2());
+			fileupload.setPath3(fileName);
+//			fileupload.setUploadType(fileUploadReq.getPath2());
+//			fileupload.setUploadTypeNm(common.getValue2());
+			fileupload.setRoot(strPath.toString());
+			fileupload.setIsUsing(true);
+			
+			List<FileUpload> already = _fileUploadRepository.findByInboundMasterAndFileTypeAndPath3(inboundMaster, Integer.valueOf(fileUploadReq.getPath2()), fileName);
+			if(already.size()>0) {
+				//파일이름이 이미 있는경우는 db에 update 날짜만 수정한다.
+				already.get(0).setUpdateDt(new Date());
+				_fileUploadRepository.save(already.get(0));
+				
 
-		}else {
-			_fileUploadRepository.save(fileupload);
+			}else {
+				_fileUploadRepository.save(fileupload);
+			}
 		}
 		
 		
 		
+
+		
+
 		
 		
 		
-//		FileUploadRes fileUploadRes = new FileUploadRes();
-//		return fileUploadRes;
+		
+		
+		
+
 		return FileUploadRes.builder().inboundMasterId(Long.valueOf(fileUploadReq.getPath1())).build();
 	}
 	

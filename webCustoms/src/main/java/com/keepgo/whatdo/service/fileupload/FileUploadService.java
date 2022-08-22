@@ -41,7 +41,7 @@ public interface FileUploadService {
 	@Transactional
 	FileUploadRes uploadFile2(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;	
 	@Transactional
-	FileUploadRes uploadFileContainer(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;	
+	FileUploadRes uploadFileContainer(List<MultipartFile> file,FileUploadReq fileUploadReq) throws IOException;	
 	@Transactional
 	FileUploadRes uploadFile3(MultipartFile file,FileUploadReq fileUploadReq) throws IOException;
 	@Transactional

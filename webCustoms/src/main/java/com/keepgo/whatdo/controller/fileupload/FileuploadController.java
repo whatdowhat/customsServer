@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,7 +107,7 @@ public class FileuploadController {
 		return true;
 	}
 	@RequestMapping(value = "/front/uploadFileContainer", method = {RequestMethod.POST })
-	public boolean uploadFileContainer(MultipartFile file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
+	public boolean uploadFileContainer(@RequestPart List<MultipartFile> file,@RequestParam String fileUploadReq, HttpServletRequest req)	throws Exception, NumberFormatException {
 		Gson gson = new Gson();
 		FileUploadReq frq = gson.fromJson(fileUploadReq, FileUploadReq.class);
 		_fileUploadService.uploadFileContainer(file,frq);

@@ -5031,24 +5031,7 @@ public class ExcelServiceImpl implements ExcelService {
 					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
 					
 				}
-//				for(int i=0; i<rowNum.size(); i++) {
-//					if(i==0&&list.get(i).getOrderNoStrSpan()==1) {
-//						
-//					}
-//					else if(i==0) {
-////						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,0,0));
-//						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,1,1));
-//						sheet.addMergedRegion(new CellRangeAddress(6,rowNum.get(i)+6,2,2));
-//					}else if(rowNum.get(i)-rowNum.get(i-1)==1){
-//						
-//					}else if(i==0&&rowNum.get(i)-rowNum.get(i-1)==1){
-//						
-//					}else{
-////						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,0,0));
-//						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,1,1));
-//						sheet.addMergedRegion(new CellRangeAddress(rowNum.get(i-1)+6+1,rowNum.get(i)+6,2,2));
-//					}
-//				}
+
 				Collections.reverse(list);
 				for (int i = 0; i < list.size(); i++) {
 					if (list.get(i).getOrderNoStrSpan() > 1) {
@@ -5064,6 +5047,16 @@ public class ExcelServiceImpl implements ExcelService {
 						sheet.addMergedRegion(new CellRangeAddress((i + 6), (i+6-1 + list.get(i).getMarkingSpan()), 3, 3));
 					}
 				}
+				String lastRowS =  String.valueOf(sheet.getLastRowNum());
+				XSSFRow row = sheet.getRow(sheet.getLastRowNum());
+				row.getCell(4).setCellFormula("SUM"+"("+"E"+"7"+":"+"E"+lastRowS+")");
+				row.getCell(5).setCellFormula("SUM"+"("+"F"+"7"+":"+"F"+lastRowS+")");
+				
+				
+				for(int i=6; i<sheet.getLastRowNum(); i++) {
+					sheet.getRow(i).setHeightInPoints(new Float("25"));
+				}
+				sheet.getRow(sheet.getLastRowNum()).setHeightInPoints(new Float("25"));
 			String fileName =  "CLP.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);

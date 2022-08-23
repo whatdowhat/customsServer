@@ -37,15 +37,18 @@ import com.keepgo.whatdo.define.ColorType;
 import com.keepgo.whatdo.define.CorpType;
 import com.keepgo.whatdo.define.GubunType;
 import com.keepgo.whatdo.entity.customs.CheckImport;
+import com.keepgo.whatdo.entity.customs.ChinaSanggum;
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
 import com.keepgo.whatdo.entity.customs.CompanyInfo;
 import com.keepgo.whatdo.entity.customs.CompanyInfoExport;
 import com.keepgo.whatdo.entity.customs.CompanyInfoManage;
+import com.keepgo.whatdo.entity.customs.DepartDelay;
 import com.keepgo.whatdo.entity.customs.FinalInbound;
 import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.InboundMaster;
+import com.keepgo.whatdo.entity.customs.Manage;
 import com.keepgo.whatdo.entity.customs.Unbi;
 import com.keepgo.whatdo.entity.customs.User;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
@@ -59,14 +62,17 @@ import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
 import com.keepgo.whatdo.repository.CheckImportRepository;
+import com.keepgo.whatdo.repository.ChinaSanggumRepository;
 import com.keepgo.whatdo.repository.CommonRepository;
 import com.keepgo.whatdo.repository.CompanyInfoExportRepository;
 import com.keepgo.whatdo.repository.CompanyInfoManageRepository;
 import com.keepgo.whatdo.repository.CompanyInfoRepository;
+import com.keepgo.whatdo.repository.DepartDelayRepository;
 import com.keepgo.whatdo.repository.FinalInboundInboundMasterRepository;
 import com.keepgo.whatdo.repository.FinalInboundRepository;
 import com.keepgo.whatdo.repository.InboundMasterRepository;
 import com.keepgo.whatdo.repository.InboundRepository;
+import com.keepgo.whatdo.repository.ManageRepository;
 import com.keepgo.whatdo.repository.UnbiRepository;
 import com.keepgo.whatdo.repository.UserRepository;
 import com.keepgo.whatdo.service.company.CompanyInfoService;
@@ -97,7 +103,6 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	InboundMasterRepository _inboundMasterRepository;
 	
 	@Autowired
-	
 	InboundRepository _inboundRepository;
 	
 	@Autowired
@@ -107,6 +112,13 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	UserRepository _userRepository;
 	@Autowired
 	UnbiRepository _unbiRepository;
+	
+	@Autowired
+	ChinaSanggumRepository _chinaSanggumRepository;
+	@Autowired
+	ManageRepository _manageRepository;
+	@Autowired
+	DepartDelayRepository _departDelayRepository;
 
 	@Override
 	public List<?> getAll(FinalInboundReq req) {
@@ -200,10 +212,46 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean deleteFinalInbound(FinalInboundReq finalInboundReq) {
 		List<Long> finalInboundList = finalInboundReq.getIds();
+		
 		for (int i = 0; i < finalInboundList.size(); i++) {
 			FinalInbound finalInbound = _finalInboundRepository.findById(finalInboundList.get(i).longValue()).get();
+			
+			List<Unbi> unbiList = new ArrayList<>();
+			ChinaSanggum chinaSanggum =  _chinaSanggumRepository.findByFinalInboundId(finalInboundList.get(i).longValue());
+			if(chinaSanggum!=null) {
+				_chinaSanggumRepository.delete(chinaSanggum);
+			}
+			
+			DepartDelay departDelay = _departDelayRepository.findByFinalInboundId(finalInboundList.get(i).longValue());
+			if(departDelay!=null) {
+				_departDelayRepository.delete(departDelay);
+			}
+			
+			Manage manage = _manageRepository.findByFinalInboundId(finalInboundList.get(i).longValue());
+			if(manage!=null) {
+				_manageRepository.delete(manage);	
+			}
+					
+			unbiList = _unbiRepository.findByFinalInboundId(finalInboundList.get(i).longValue());
+			if(unbiList.size()!=0) {
+				for (int j = 0; j < unbiList.size(); j++) {
+					_unbiRepository.delete(unbiList.get(j));
+				}
+			}
+			
+			List<FinalInboundInboundMaster> fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(finalInboundList.get(i).longValue());
+			for(int j=0; j<fimList.size();j++) {
+				InboundMaster inboundMaster = new InboundMaster();
+				inboundMaster = fimList.get(j).getInboundMaster();
+				CheckImport checkImport = _checkImportRepository.findByInboundMasterId(inboundMaster.getId());
+				if(checkImport!=null) {
+					_checkImportRepository.delete(checkImport);
+				}
+			}
+			
 			_finalInboundRepository.delete(finalInbound);
 		}
+		
 		return true;
 	}
 	@Override
@@ -991,9 +1039,12 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				_checkImportRepository.delete(checkImport);
 			}
 			List<Unbi> unbiList = _unbiRepository.findByFinalInboundId(Long.valueOf(id));
-			for (int j = 0; j < unbiList.size(); j++) {
-				_unbiRepository.delete(unbiList.get(j));
+			if(unbiList.size()!=0) {
+				for (int j = 0; j < unbiList.size(); j++) {
+					_unbiRepository.delete(unbiList.get(j));
+				}
 			}
+				
 			
 			_inboundMasterRepository.delete(inboundMaster);
 			_finalInboundInboundMasterRepository.deleteFinalInboundInboundMaster(Long.valueOf(id), inboundMasterId);

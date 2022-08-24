@@ -1233,6 +1233,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 					if(inbound.getCoId()==null) {
 						inbound.setCoId(Integer.valueOf(3));
 					}
+					if(inbound.getBackgroundColor()==null) {
+						inbound.setBackgroundColor(Integer.valueOf(0));
+					}
 					inbound.setInboundMaster(target);
 					inbound.setOrderNo(orderNo);
 					list.add(inbound);

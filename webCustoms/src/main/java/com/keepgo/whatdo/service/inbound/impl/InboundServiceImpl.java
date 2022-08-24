@@ -335,7 +335,8 @@ public class InboundServiceImpl implements InboundService {
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
-						.amountType(item.getAmountType())
+						
+						.amountType(item.getAmountType()==null?"PCS":item.getAmountType())
 						.currencyType(inboundMaster.getCurrencyType())
 						
 						.companyNmYn(item.getCompanyNmYn()==null ? "" : item.getCompanyNmYn())
@@ -519,7 +520,7 @@ public class InboundServiceImpl implements InboundService {
 						.memo3(item.getMemo3())
 						.totalPrice(item.getTotalPrice())
 						.engNm(item.getEngNm())
-						.amountType(item.getAmountType())
+						.amountType(item.getAmountType()==null?"PCS":item.getAmountType())
 						.currencyType(inboundMaster.getCurrencyType())
 						.companyNmYn(item.getCompanyNmYn()==null ? "" : item.getCompanyNmYn())
 						.markingYn(item.getMarkingYn()==null ? "" : item.getMarkingYn())
@@ -712,7 +713,17 @@ public class InboundServiceImpl implements InboundService {
 			}else {
 				inbound.setColor(Integer.valueOf(0));
 			}
-
+			if(list.get(i).getBackgroundColor()!=null) {
+				for(int j=0; j<BackgroundColorType.getList().size();j++) {
+					if(BackgroundColorType.getList().get(j).getName().equals(list.get(i).getBackgroundColor())) {
+						inbound.setBackgroundColor(BackgroundColorType.getList().get(j).getId());
+					}else {
+					}
+				}
+//				inbound.setBackgroundColor(Integer.valueOf(1));
+			}else {
+				inbound.setBackgroundColor(Integer.valueOf(0));
+			}
 			inbound.setCoId(list.get(i).getCoId().intValue());
 			if(list.get(i).getAmountType()!=null) {
 				for(int j=0; j<AmountType.getList().size();j++) {
@@ -733,6 +744,12 @@ public class InboundServiceImpl implements InboundService {
 			inbound.setEngNm(list.get(i).getEngNm());
 			inbound.setOrderNo(orderNo);
 			inbound.setInboundMaster(inboundMaster);
+			if(inbound.getCoId()==null) {
+				inbound.setCoId(Integer.valueOf(3));
+			}
+			if(inbound.getBackgroundColor()==null) {
+				inbound.setBackgroundColor(Integer.valueOf(0));
+			}
 			_inboundRepository.save(inbound);
 			orderNo = orderNo + 1;
 		}
@@ -1283,8 +1300,8 @@ public class InboundServiceImpl implements InboundService {
 					if(sub_item.getCbm() == null) {
 						f.put("cbm",  "");
 					}else {
-//						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
-						f.put("cbm", getStringResult2(sub_item.getCbm()));	
+						f.put("cbm", decimalFormat.format(sub_item.getCbm()));	
+//						f.put("cbm", getStringResult2(sub_item.getCbm()));	
 					}
 					//20220821	
 					

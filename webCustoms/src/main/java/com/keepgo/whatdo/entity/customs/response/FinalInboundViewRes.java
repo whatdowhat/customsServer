@@ -44,4 +44,17 @@ public class FinalInboundViewRes {
 	
 	private List<InboundViewRes> inbounds = new ArrayList();
 	
+	
+	private String masterBlNo;
+	private String departDtStr;
+	private String cargoName;
+	private String incomePort;
+	private Long incomePortId;
+	private String departPort;
+	private Long departPortId;
+	private String hangName;
+	private String hangCha;
+	private String containerNo;
+	private String silNo;
+	
 }

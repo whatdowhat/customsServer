@@ -111,6 +111,8 @@ public class InboundViewRes {
 	private String fileTotalInfo;
 	
 	private String itemNmList;
+	private String coAddress;
+	private String marking;
 	
 
 	private List<Map<String,Object>> inbounds = new ArrayList();

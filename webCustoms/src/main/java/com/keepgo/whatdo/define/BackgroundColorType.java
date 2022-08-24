@@ -10,7 +10,7 @@ public enum BackgroundColorType {
 	A(0,"WHITE","#FFF","",255,255,255 ,0),
 	B(1,"SALGU","#FDE9D9","S",253,233,217,1),
 	C(2,"BLUE","#0099ff","B",0,153,255,2),
-	D(3,"YELLOW","#ffffcc","Y",255,255,204,3);
+	D(3,"YELLOW","#ffff00","Y",255,255,0,3);
 	
 	
 	

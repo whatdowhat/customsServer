@@ -95,6 +95,7 @@ public class FinalInboundReq {
 	@JsonFormat(pattern="yyyy-MM-dd" ,timezone = "Asia/Seoul")
 	private Date updateDt;
 	private User user;
+	private String loginId;
 	//공통 컬럼.
 	
 }

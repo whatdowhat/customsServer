@@ -23,6 +23,7 @@ import com.keepgo.whatdo.entity.customs.response.ExcelInpackRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
@@ -111,4 +112,9 @@ public interface ExcelService {
 	
 	@Transactional
 	boolean countDetail(List<ExcelCountDetailRes> list, HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	FinalInboundViewRes containerInfoData(FinalInboundReq req) throws Exception;
+	@Transactional
+	boolean containerInfo(FinalInboundViewRes list, HttpServletResponse response) throws Exception;
 }

@@ -20,7 +20,8 @@ public enum DocumentType {
 	I(9,"classpath:static"+File.separatorChar+"inbound"+File.separatorChar+"PREVIEW.xlsx",9),
 	J(10,"classpath:static"+File.separatorChar+"migration"+File.separatorChar+"COMMON.xlsx",8),
 	K(11,"classpath:static"+File.separatorChar+"migration"+File.separatorChar+"PARTNER.xlsx",9),
-	L(12,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"COUNTDETAIL.xlsx",12);
+	L(12,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"COUNTDETAIL.xlsx",12),
+	M(13,"classpath:static"+File.separatorChar+"co"+File.separatorChar+"COUNTAINER-INFO.xlsx",13);
 	public Integer id;
 	public String name;
 	public Integer order;

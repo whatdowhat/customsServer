@@ -39,6 +39,7 @@ import com.keepgo.whatdo.entity.customs.response.ExcelInpackSubRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelRCEPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelYATAIRes;
 import com.keepgo.whatdo.entity.customs.response.FinalInboundRes;
+import com.keepgo.whatdo.entity.customs.response.FinalInboundViewRes;
 import com.keepgo.whatdo.entity.customs.response.InboundRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewListRes;
 import com.keepgo.whatdo.entity.customs.response.InboundViewRes;
@@ -327,5 +328,22 @@ public class ExcelController {
 		
 		
 		_excelService.countDetail(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/containerInfoData", method = { RequestMethod.POST })
+	public FinalInboundViewRes containerInfoData(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.containerInfoData(req);
+	}
+	@RequestMapping(value = "/excel/document/containerInfo", method = { RequestMethod.POST })
+	public void containerInfo(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+		FinalInboundViewRes s =_excelService.containerInfoData(req);
+		
+		
+		_excelService.containerInfo(s, response);
 	}
 }

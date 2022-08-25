@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.keepgo.whatdo.entity.customs.Common;
 import com.keepgo.whatdo.entity.customs.CommonMaster;
+import com.keepgo.whatdo.entity.customs.Inbound;
 import com.keepgo.whatdo.entity.customs.response.CommonRes;
 
 @Repository
@@ -24,6 +25,7 @@ public interface CommonRepository extends JpaRepository<Common, Long>{
 	public Common findByNm(String nm);
 	public Common findByValue(String value);
 	public Common findByValue3(String value3);
+	public Common findBycommonMasterIdAndValue2ContainingIgnoreCase(Long commonMasterId, String value2);
 	
 	@Query("select m from Common m ")
 	List<Common> findAll();

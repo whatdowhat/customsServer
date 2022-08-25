@@ -24,4 +24,7 @@ public interface FinalInboundRepository extends JpaRepository<FinalInbound, Long
 	List<FinalInbound> findByGwanriYn(int gwanriYn);
 	List<FinalInbound> findByFinalMasterBlContainingIgnoreCase(String finalMasterBl);
 	List<FinalInbound> findByContainerNoContainingIgnoreCase(String containerNo);
+	List<FinalInbound> findByDepartPort(Long departPort);
+	List<FinalInbound> findByIncomePort(Long incomePort);
+	List<FinalInbound> findByDeliveryNmContainingIgnoreCase(String deliveryNm);
 }

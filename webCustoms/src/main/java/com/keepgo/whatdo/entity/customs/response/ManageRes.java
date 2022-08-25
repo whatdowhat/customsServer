@@ -44,6 +44,7 @@ public class ManageRes {
 	private String regDtStr;
 	private String masterBlNo;
 	private String containerNo;
+	private String gubun;
 	
 	private List<Long> ids = new ArrayList<>();
 	private String loginId;

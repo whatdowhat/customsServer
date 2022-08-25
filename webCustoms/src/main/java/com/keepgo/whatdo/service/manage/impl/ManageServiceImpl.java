@@ -160,6 +160,13 @@ public class ManageServiceImpl implements ManageService {
 			ch.setMasterBlNo(finalInboundList.get(i).getFinalMasterBl());
 			ch.setContainerNo(finalInboundList.get(i).getContainerNo());
 			ch.setUserNm(target==null?"":target.getUser().getName());
+			
+			for(int j=0; j<GubunType.getList().size();j++) {
+				if(GubunType.getList().get(j).getId() ==finalInboundList.get(i).getGubun()) {
+					ch.setGubun(GubunType.getList().get(j).getName());
+					
+				}
+			}
 			result.add(ch);		
 			}
 		result.sort(Comparator.comparing(ManageRes::getRegDtStr).reversed());

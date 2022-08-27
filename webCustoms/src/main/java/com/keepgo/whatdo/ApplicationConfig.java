@@ -1,5 +1,6 @@
 package com.keepgo.whatdo;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -50,6 +51,22 @@ public class ApplicationConfig {
 		
 		bean.setLocation(classPathResource);
 		bean.setFileEncoding(StandardCharsets.UTF_8.toString());
+		
+		
+		String path = System.getProperty("user.dir");
+		System.out.println("Working Directory = " + path);
+		
+		 File newfile = new File("/mktest");
+		    if (newfile.mkdir()){
+
+		      System.out.println("디렉토리 생성 성공");
+
+		    }else{
+
+		      System.out.println("디렉토리 생성 실패");
+
+		    }
+		    
 		
 		return bean;
 	}

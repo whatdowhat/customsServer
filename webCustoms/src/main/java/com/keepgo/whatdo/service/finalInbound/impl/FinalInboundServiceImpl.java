@@ -251,9 +251,6 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			}
 			
 			_finalInboundRepository.delete(finalInbound);
-			for(int j=0; j<fimList.size();j++) {
-				_finalInboundInboundMasterRepository.delete(fimList.get(j));			
-				}
 		}
 		
 		return true;

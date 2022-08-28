@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -301,11 +302,11 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean updateFinalInbound(FinalInboundReq req) {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
 		Date tempDate3 = req.getWorkDepartDate();
-		
 		
 		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId())
 				.orElse(FinalInbound.builder().build());

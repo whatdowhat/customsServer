@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -114,6 +115,7 @@ public class CheckImportServiceImpl implements CheckImportService {
 		
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+		format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		InboundMaster im = _inboundMasterRepository.findById(checkImportReq.getInboundMasterId()).get();
 		FinalInboundInboundMaster finalInboundInboundMaster = _finalInboundInboundMasterRepository.findByInboundMasterId(im.getId());
 		Long companyId = im.getCompanyInfo().getId();

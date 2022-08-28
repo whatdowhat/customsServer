@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
@@ -295,6 +296,7 @@ public class InboundMstServiceImpl implements InboundMstService {
 		InboundMaster inboundMaster = new InboundMaster();
 
 		SimpleDateFormat foramt1 = new SimpleDateFormat("yyyy-MM-dd");
+		foramt1.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 
 		try {
 			inboundMaster.setWorkDate((inboundMasterReq.getWorkDate() == null) ? new Date()

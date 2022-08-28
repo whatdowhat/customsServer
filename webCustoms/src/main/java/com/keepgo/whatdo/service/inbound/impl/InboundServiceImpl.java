@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -369,6 +370,7 @@ public class InboundServiceImpl implements InboundService {
 						
 					if(item.getWorkDateStr()!=null && !(item.getWorkDateStr().replaceAll(" ", "").equals(""))) {
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						Date d=null;
 						try {
 							d=format.parse(item.getWorkDateStr());
@@ -551,6 +553,7 @@ public class InboundServiceImpl implements InboundService {
 						
 					if(item.getWorkDateStr()!=null && !(item.getWorkDateStr().replaceAll(" ", "").equals(""))) {
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						Date d=null;
 						try {
 							d=format.parse(item.getWorkDateStr());
@@ -1019,7 +1022,9 @@ public class InboundServiceImpl implements InboundService {
 		if (cellIndex == 1) {
 
 			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
+			format1.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+			format2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			Date d=null;
 			d=format1.parse(value);
 			String b= format2.format(d);

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -292,6 +293,7 @@ public class ExcelServiceImpl implements ExcelService {
 			String result = "";
 			String[] data04_arr = excelFTARes.getData04().split(",");
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			try {
 				cell.setCellValue(dateFormat.parse(data04_arr[0]));
 			} catch (ParseException e) {
@@ -538,7 +540,7 @@ public class ExcelServiceImpl implements ExcelService {
 					if (item.getOrderNo() == 1) {
 						
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						
+						dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						try {
 							newCell.setCellValue(dateFormat.parse(item.getDepartDtStr()));
 						} catch (ParseException e) {
@@ -714,8 +716,9 @@ public class ExcelServiceImpl implements ExcelService {
 	public String getDateStr(String date_in) {
 //		String date_in  = "2022-05-09";
 		SimpleDateFormat fmt_in = new SimpleDateFormat("yyyy-MM-dd");
+		fmt_in.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat fmt_out = new SimpleDateFormat("MMM, dd.yyyy", Locale.ENGLISH);
-
+		fmt_out.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		ParsePosition pos = new ParsePosition(0);
 		java.util.Date outTime = fmt_in.parse(date_in, pos);
 		String date_out = fmt_out.format(outTime);
@@ -1145,7 +1148,7 @@ public class ExcelServiceImpl implements ExcelService {
 				if (i == 7) {
 					if (item.getOrderNo() == 1) {
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						
+						dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						try {
 							newCell.setCellValue(dateFormat.parse(item.getDepartDtStr()));
 						} catch (ParseException e) {
@@ -2118,6 +2121,7 @@ public class ExcelServiceImpl implements ExcelService {
 						
 						String data06 = excelInpackRes.getData06();
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						try {
 							cell.setCellValue(dateFormat.parse(data06));
 						} catch (ParseException e) {
@@ -2130,6 +2134,7 @@ public class ExcelServiceImpl implements ExcelService {
 					if(value.contains("${data04}") ) {//date format으로 데이터 넣어야함.
 						if(excelInpackRes.getCoExistYn()==false) {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+							dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 							Date today=new Date();
 							String todayStr=dateFormat.format(today);
 							
@@ -2141,7 +2146,9 @@ public class ExcelServiceImpl implements ExcelService {
 							}
 						}else {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("MMM. dd,yyyy", Locale.ENGLISH);
+							dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 							SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+							dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 							String data04 = excelInpackRes.getData06();
 							try {
 								Date data04Dt = dateFormat2.parse(data04);
@@ -2673,7 +2680,9 @@ public class ExcelServiceImpl implements ExcelService {
 			item.setCoExistYn(false);
 			if(t.getInboundMaster().getCompanyInfo().getCoInvoice()==null) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+				dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				try {
 					Date departDate=dateFormat2.parse(departDt);
 					String departDateStr = dateFormat.format(departDate);
@@ -2688,7 +2697,9 @@ public class ExcelServiceImpl implements ExcelService {
 				item.setInvoice("");
 			}else {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+				dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				try {
 					Date departDate=dateFormat2.parse(departDt);
 					String departDateStr = dateFormat.format(departDate);
@@ -2709,6 +2720,7 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 			Date today = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			String todayStr = dateFormat.format(today);
 			item.setNoCoDt("SJ-"+todayStr);			
 			// 병합처리된 marking 데이터 처리를 위한
@@ -2808,7 +2820,9 @@ public class ExcelServiceImpl implements ExcelService {
 	@Override
 	public List<ExcelContainerRes> containerData(FinalInboundReq req) throws Exception {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
+		beforeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 		DecimalFormat decimalFormat3 = new DecimalFormat("#,##0.00");
@@ -4930,7 +4944,9 @@ public class ExcelServiceImpl implements ExcelService {
 	@Override
 	public List<ExcelCLPRes> clpData(FinalInboundReq req) throws Exception {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
+		beforeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 		
@@ -5266,6 +5282,7 @@ public class ExcelServiceImpl implements ExcelService {
 						
 						String incomeDt = excelCLPRes.getIncomeDt();
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						try {
 							cell.setCellValue(dateFormat.parse(incomeDt));
 						} catch (ParseException e) {
@@ -5390,7 +5407,9 @@ public class ExcelServiceImpl implements ExcelService {
 				item.setCoExistYn(false);
 				if(t.getInboundMaster().getCompanyInfo().getCoInvoice()==null) {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+					dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 					SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+					dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 					try {
 						Date departDate=dateFormat2.parse(departDt);
 						String departDateStr = dateFormat.format(departDate);
@@ -5405,7 +5424,9 @@ public class ExcelServiceImpl implements ExcelService {
 					item.setInvoice("");
 				}else {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+					dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 					SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+					dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 					try {
 						Date departDate=dateFormat2.parse(departDt);
 						String departDateStr = dateFormat.format(departDate);
@@ -5421,6 +5442,7 @@ public class ExcelServiceImpl implements ExcelService {
 				}
 				Date today = new Date();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				String todayStr = dateFormat.format(today);
 				item.setNoCoDt("SJ-"+todayStr);			
 				// 병합처리된 marking 데이터 처리를 위한
@@ -8490,7 +8512,9 @@ public String getDoubleResult(Double param) {
 			item.setCoExistYn(false);
 			if(t.getInboundMaster().getCompanyInfo().getCoInvoice()==null) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+				dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				try {
 					Date departDate=dateFormat2.parse(departDt);
 					String departDateStr = dateFormat.format(departDate);
@@ -8505,7 +8529,9 @@ public String getDoubleResult(Double param) {
 				item.setInvoice("");
 			}else {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+				dateFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 				try {
 					Date departDate=dateFormat2.parse(departDt);
 					String departDateStr = dateFormat.format(departDate);
@@ -8526,6 +8552,7 @@ public String getDoubleResult(Double param) {
 			}
 			Date today = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			String todayStr = dateFormat.format(today);
 			item.setNoCoDt("SJ-"+todayStr);			
 			// 병합처리된 marking 데이터 처리를 위한
@@ -9604,7 +9631,9 @@ public String getDoubleResult(Double param) {
 	@Override
 	public List<ExcelCountDetailRes> countDetailData(FinalInboundReq req) throws Exception {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
+		beforeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 		
@@ -10294,6 +10323,7 @@ public String getDoubleResult(Double param) {
 						
 						String departDtStr = finalInboundViewRes.getDepartDtStr();
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 						try {
 							cell.setCellValue(dateFormat.parse(departDtStr));
 						} catch (ParseException e) {

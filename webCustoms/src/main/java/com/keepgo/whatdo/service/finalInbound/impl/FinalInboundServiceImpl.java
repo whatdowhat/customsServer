@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -250,6 +251,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			}
 			
 			_finalInboundRepository.delete(finalInbound);
+			for(int j=0; j<fimList.size();j++) {
+				_finalInboundInboundMasterRepository.delete(fimList.get(j));			
+				}
 		}
 		
 		return true;
@@ -259,8 +263,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //		String depart=req.getDepartDtStr();
 //		String income=req.getIncomeDt();
 		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyymmdd");
-	
+		beforeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
 		Date tempDate3 =new Date();
@@ -301,7 +306,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean updateFinalInbound(FinalInboundReq req) {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
+		afterFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
 		Date tempDate3 = req.getWorkDepartDate();
@@ -357,7 +364,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean updateFinalInboundForUser(FinalInboundReq req) {
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
+		afterFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		Date tempDate = req.getDepartDate();
 		Date tempDate2 = req.getIncomeDate();
 		Date tempDate3 = req.getWorkDepartDate();
@@ -472,7 +481,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		
 		FinalInbound r = _finalInboundRepository.findById(id).get();
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-		
+		format1.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		Date d=null;
 		Date d2=null;
 		String forViewDepartDateStr="";
@@ -606,7 +615,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	public List<FinalInboundRes> getFIList(FinalInboundReq req) {
 		
 		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyy-MM-dd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat afterFormat2 = new SimpleDateFormat("MM월 dd일");
+		afterFormat2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		Date tempDate = req.getStartDate();
 		Date tempDate2 = req.getEndDate();
 		String startDt = afterFormat.format(tempDate);
@@ -1415,7 +1426,9 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		if (cellIndex == 1) {
 
 			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
+			format1.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+			format2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 			Date d=null;
 			d=format1.parse(value);
 			String b= format2.format(d);

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -122,7 +123,9 @@ public class ChinaSanggumServiceImpl implements ChinaSanggumService {
 		
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+		format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		SimpleDateFormat beforFormat = new SimpleDateFormat("yyyy-MM-dd");
+		beforFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		List<FinalInbound> finalInboundList = _finalInboundRepository.findByChinaSanggumYn(1);
 		finalInboundList.sort(Comparator.comparing(FinalInbound::getUpdateDt).reversed());
 		List<ChinaSanggumRes> result = new ArrayList<>();

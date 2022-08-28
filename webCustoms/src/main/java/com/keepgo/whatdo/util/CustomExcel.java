@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +40,9 @@ public class CustomExcel extends AbstractView
 	        // 겹치는 파일 이름 중복을 피하기 위해 시간을 이용해서 파일 이름에 추
 	        Date date = new Date();
 	        SimpleDateFormat dayformat = new SimpleDateFormat("yyyyMMdd");
+	        dayformat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 	        SimpleDateFormat hourformat = new SimpleDateFormat("hhmmss");
+	        hourformat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 	        String day = dayformat.format(date);
 	        String hour = hourformat.format(date);
 	        String fileName = "_" + day + "_" + hour + ".xlsx";         

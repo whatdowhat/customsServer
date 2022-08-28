@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,6 +132,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 	public List<?> getFileList2(FileUploadReq fileUploadReq) {
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		List<?> list = new ArrayList<>();
 		if(fileUploadReq.getFileType() ==  0) {
 			list = _fileUploadRepository
@@ -700,6 +702,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 		
 		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
 		List<?> list = new ArrayList<>();
 		if(fileUploadReq.getFileType() ==  0) {
 			list = _fileUploadRepository

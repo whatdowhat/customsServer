@@ -313,7 +313,6 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		Date tempDate2 = req.getIncomeDate();
 		Date tempDate3 = req.getWorkDepartDate();
 		
-		
 		FinalInbound finalInbound = _finalInboundRepository.findById(req.getId())
 				.orElse(FinalInbound.builder().build());
 		

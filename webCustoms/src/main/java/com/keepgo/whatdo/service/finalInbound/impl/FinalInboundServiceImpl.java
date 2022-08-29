@@ -1,6 +1,8 @@
 package com.keepgo.whatdo.service.finalInbound.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -644,24 +646,43 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 								.build();
 					}).collect(Collectors.toList());
 			List<FinalInboundRes>  result = new ArrayList<>();
-			
+//			List<Long> ids =  new ArrayList<>();
 			for(int i=0; i<r.size();i++ ) {
 				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
 				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
-				
-				for(int j=0; j<fimList.size();j++) {
+				fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+//				if(fimList.size()==0) {
+//					ids.add(r.get(i).getId())	;	
+//					}
+				if(fimList.size()==0) {
 					FinalInboundRes res = new FinalInboundRes();
 					res.setId(r.get(i).getId());
-					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setInboundMasterId(Long.valueOf(0));
 					res.setTitle(r.get(i).getTitle());
 					res.setMasterBlNo(r.get(i).getMasterBlNo());
-					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
-					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setBlNo("");
+					res.setCompanyNm("");
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}else {
+					fim = fimList.get(0);
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fim.getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fim.getInboundMaster().getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
 					res.setGubun(r.get(i).getGubun());
 					res.setDepartDtStr(r.get(i).getDepartDtStr());
 					res.setIncomeDt(r.get(i).getIncomeDt());
 					result.add(res);
 				}
+				
+
 				 				
 			}
 			finalResult = result;
@@ -689,15 +710,29 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 			for(int i=0; i<r.size();i++ ) {
 				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
 				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
-				
-				for(int j=0; j<fimList.size();j++) {
+				fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				if(fimList.size()==0) {
 					FinalInboundRes res = new FinalInboundRes();
 					res.setId(r.get(i).getId());
-					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setInboundMasterId(Long.valueOf(0));
 					res.setTitle(r.get(i).getTitle());
 					res.setMasterBlNo(r.get(i).getMasterBlNo());
-					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
-					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setBlNo("");
+					res.setCompanyNm("");
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}else {
+					fim = fimList.get(0);
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fim.getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fim.getInboundMaster().getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
 					res.setGubun(r.get(i).getGubun());
 					res.setDepartDtStr(r.get(i).getDepartDtStr());
 					res.setIncomeDt(r.get(i).getIncomeDt());
@@ -729,14 +764,29 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
 				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
 				
-				for(int j=0; j<fimList.size();j++) {
+				fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				if(fimList.size()==0) {
 					FinalInboundRes res = new FinalInboundRes();
 					res.setId(r.get(i).getId());
-					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setInboundMasterId(Long.valueOf(0));
 					res.setTitle(r.get(i).getTitle());
 					res.setMasterBlNo(r.get(i).getMasterBlNo());
-					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
-					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setBlNo("");
+					res.setCompanyNm("");
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}else {
+					fim = fimList.get(0);
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fim.getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fim.getInboundMaster().getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
 					res.setGubun(r.get(i).getGubun());
 					res.setDepartDtStr(r.get(i).getDepartDtStr());
 					res.setIncomeDt(r.get(i).getIncomeDt());
@@ -766,14 +816,29 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
 				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
 				
-				for(int j=0; j<fimList.size();j++) {
+				fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				if(fimList.size()==0) {
 					FinalInboundRes res = new FinalInboundRes();
 					res.setId(r.get(i).getId());
-					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setInboundMasterId(Long.valueOf(0));
 					res.setTitle(r.get(i).getTitle());
 					res.setMasterBlNo(r.get(i).getMasterBlNo());
-					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
-					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setBlNo("");
+					res.setCompanyNm("");
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}else {
+					fim = fimList.get(0);
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fim.getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fim.getInboundMaster().getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
 					res.setGubun(r.get(i).getGubun());
 					res.setDepartDtStr(r.get(i).getDepartDtStr());
 					res.setIncomeDt(r.get(i).getIncomeDt());
@@ -1059,14 +1124,29 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
 				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
 				
-				for(int j=0; j<fimList.size();j++) {
+				fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				if(fimList.size()==0) {
 					FinalInboundRes res = new FinalInboundRes();
 					res.setId(r.get(i).getId());
-					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setInboundMasterId(Long.valueOf(0));
 					res.setTitle(r.get(i).getTitle());
 					res.setMasterBlNo(r.get(i).getMasterBlNo());
-					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
-					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setBlNo("");
+					res.setCompanyNm("");
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}else {
+					fim = fimList.get(0);
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fim.getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fim.getInboundMaster().getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
 					res.setGubun(r.get(i).getGubun());
 					res.setDepartDtStr(r.get(i).getDepartDtStr());
 					res.setIncomeDt(r.get(i).getIncomeDt());
@@ -1102,14 +1182,29 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 				List<FinalInboundInboundMaster> fimList = new ArrayList<>();
 				fimList = _finalInboundInboundMasterRepository.findByFinalInboundId(r.get(i).getId());
 				
-				for(int j=0; j<fimList.size();j++) {
+				fimList.sort(Comparator.comparing(FinalInboundInboundMaster::getId));
+				FinalInboundInboundMaster fim = new FinalInboundInboundMaster();
+				if(fimList.size()==0) {
 					FinalInboundRes res = new FinalInboundRes();
 					res.setId(r.get(i).getId());
-					res.setInboundMasterId(fimList.get(j).getInboundMaster().getId());
+					res.setInboundMasterId(Long.valueOf(0));
 					res.setTitle(r.get(i).getTitle());
 					res.setMasterBlNo(r.get(i).getMasterBlNo());
-					res.setBlNo(fimList.get(j).getInboundMaster().getBlNo());
-					res.setCompanyNm(fimList.get(j).getInboundMaster().getCompanyInfo()==null?"":fimList.get(j).getInboundMaster().getCompanyInfo().getCoNm());
+					res.setBlNo("");
+					res.setCompanyNm("");
+					res.setGubun(r.get(i).getGubun());
+					res.setDepartDtStr(r.get(i).getDepartDtStr());
+					res.setIncomeDt(r.get(i).getIncomeDt());
+					result.add(res);
+				}else {
+					fim = fimList.get(0);
+					FinalInboundRes res = new FinalInboundRes();
+					res.setId(r.get(i).getId());
+					res.setInboundMasterId(fim.getInboundMaster().getId());
+					res.setTitle(r.get(i).getTitle());
+					res.setMasterBlNo(r.get(i).getMasterBlNo());
+					res.setBlNo(fim.getInboundMaster().getBlNo());
+					res.setCompanyNm(fim.getInboundMaster().getCompanyInfo()==null?"":fim.getInboundMaster().getCompanyInfo().getCoNm());
 					res.setGubun(r.get(i).getGubun());
 					res.setDepartDtStr(r.get(i).getDepartDtStr());
 					res.setIncomeDt(r.get(i).getIncomeDt());
@@ -1163,7 +1258,7 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 	@Override
 	public boolean excelRead(MultipartFile file, InboundReq Req, String id, String loginId) throws IOException {
 
-		
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		
 		List<FinalInboundInboundMaster> deleteList=_finalInboundInboundMasterRepository.findByFinalInboundId(Long.valueOf(id));
 		for(int i=0; i<deleteList.size(); i++) {
@@ -1371,6 +1466,10 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 //						Double result =  Math.round(reportPrice*1000)/1000.0;
 						inbound.setReportPrice(reportPrice);
 						inbound.setTotalPrice(inbound.getItemCount()*inbound.getReportPrice());
+//						BigDecimal bigNumber1 = new BigDecimal(decimalFormat.format(inbound.getReportPrice()));
+//						BigDecimal bigNumber2 = new BigDecimal(decimalFormat.format(inbound.getItemCount()));
+//						BigDecimal totalPrice = bigNumber1.multiply(bigNumber2);
+//						inbound.setTotalPrice(totalPrice.doubleValue());
 					}
 					if(inbound.getCoId()==null) {
 						inbound.setCoId(Integer.valueOf(3));

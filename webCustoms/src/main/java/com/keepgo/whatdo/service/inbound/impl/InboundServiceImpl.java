@@ -1,6 +1,7 @@
 package com.keepgo.whatdo.service.inbound.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -371,10 +372,12 @@ public class InboundServiceImpl implements InboundService {
 					if(item.getWorkDateStr()!=null && !(item.getWorkDateStr().replaceAll(" ", "").equals(""))) {
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 						format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
+						SimpleDateFormat format2 =  new SimpleDateFormat("MM월 dd일");
+						format2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 						Date d=null;
 						try {
 							d=format.parse(item.getWorkDateStr());
-							String forViewWorkDateStr = DateFormatUtils.format(d, "MM월 dd일");
+							String forViewWorkDateStr = format2.format(d);
 							rt.setForViewWorkDateStr(forViewWorkDateStr);
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
@@ -553,11 +556,13 @@ public class InboundServiceImpl implements InboundService {
 						
 					if(item.getWorkDateStr()!=null && !(item.getWorkDateStr().replaceAll(" ", "").equals(""))) {
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-						format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
+						format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+						SimpleDateFormat format2 =  new SimpleDateFormat("MM월 dd일");
+						format2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 						Date d=null;
 						try {
 							d=format.parse(item.getWorkDateStr());
-							String forViewWorkDateStr = DateFormatUtils.format(d, "MM월 dd일");
+							String forViewWorkDateStr = format2.format(d);
 							rt.setForViewWorkDateStr(forViewWorkDateStr);
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
@@ -764,6 +769,7 @@ public class InboundServiceImpl implements InboundService {
 
 	@Override
 	public InboundRes inboundCommit(InboundReq inboundReq) {
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
 		int orderNo = 1;
 		List<Inbound> inboundList = _inboundRepository.findByInboundMasterId(inboundReq.getInboundMasterId());
 		for (int i = 0; i < inboundList.size(); i++) {
@@ -861,10 +867,17 @@ public class InboundServiceImpl implements InboundService {
 			
 			inbound.setMemo2(list.get(i).getMemo2());
 			inbound.setMemo3(list.get(i).getMemo3());
-			if(inbound.getReportPrice()==null) {
+			if(inbound.getReportPrice()==null||inbound.getItemCount()==null) {
 				inbound.setTotalPrice(null);
 			}else {
+//				BigDecimal bigNumber1 = new BigDecimal(decimalFormat.format(inbound.getReportPrice()));
+//				BigDecimal bigNumber2 = new BigDecimal(decimalFormat.format(inbound.getItemCount()));
+//				BigDecimal totalPrice = bigNumber1.multiply(bigNumber2);
+				
+				
+//				inbound.setTotalPrice(totalPrice.doubleValue());
 				inbound.setTotalPrice(inbound.getReportPrice() * inbound.getItemCount());
+//				System.out.println(inbound.getTotalPrice()+"<<<<<<<<<<<TotalPrice()");
 			}
 			
 			inbound.setEngNm(list.get(i).getEngNm());
@@ -879,37 +892,12 @@ public class InboundServiceImpl implements InboundService {
 		
 		Function<Inbound, Inbound> fn = (item)->{
 			
-			//박수 무게 계산 박스 수 * 무게상수
-//			Double d = new Double(0);
-//			if(item.getBoxCount() != null) {
-//				d = new Double(String.format("%.3f", new Double(item.getBoxCount() * item.getWeight())));	
+
+//			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
+//					
 //			}else {
-//				
+//				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
 //			}
-			
-			//cbm 문자 곱 * 박스 갯수
-//			if(item.getCbmStr() == null || item.getCbmStr().equals("")) {
-//				
-//			}else{
-//				String items[] = item.getCbmStr().split("\\*");
-//				List<Double> t= Stream.of(items)
-//						.map(t_item -> new Double("0."+t_item))
-//						.collect(Collectors.toList());
-////						;
-//				System.out.println(t);
-//				Double r = t.stream().reduce( (a,b)->a*b).get();
-//			
-//				item.setCbm(r * item.getBoxCount());
-//			}
-			
-			//total  = 수량 * 신고단가 
-			//소수 2째자리 
-//			item.setReportPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
-			if(item.getReportPrice() == null || item.getReportPrice().equals("")) {
-					
-			}else {
-				item.setTotalPrice(new Double(String.format("%.2f",item.getReportPrice() * item.getItemCount())));
-			}
 			
 			return item;
 			

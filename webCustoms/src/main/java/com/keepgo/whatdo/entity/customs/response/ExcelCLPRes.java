@@ -24,8 +24,8 @@ public class ExcelCLPRes {
 	String fileNm;
 	Integer no;
 	String incomeDt;
-	@Builder.Default
-	String container="백마창고";
+	
+	String container;
 	String chulhangPort;	
 	String containerNo;
 	String silNo;

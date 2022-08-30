@@ -170,7 +170,9 @@ public class ExcelServiceImpl implements ExcelService {
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			workbook.setSheetName(0, excelFTARes.getFileNm());
-
+			XSSFCellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setBorderLeft(BorderStyle.NONE);
+			cellStyle.setBorderRight(BorderStyle.NONE);
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			Collections.reverse(excelFTARes.getSubItem());
 			// item add
@@ -192,8 +194,56 @@ public class ExcelServiceImpl implements ExcelService {
 			// 셀병합
 			//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
 //			sheet.addMergedRegion(new CellRangeAddress(22,22,7,8));
-
+			sheet.getRow(23).getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("mmm, dd.yyyy"));
 			// item add
+			for(int i =22; i<(excelFTARes.getSubItem().size())*2+23; i++) {
+
+				if(i%2==1) {
+					sheet.getRow(i).getCell(0).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(0).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(1).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(1).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(2).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(2).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(3).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(3).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(4).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(4).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+//					sheet.getRow(i).getCell(5).getCellStyle().setBorderRight(BorderStyle.NONE);
+//					sheet.getRow(i).getCell(5).getCellStyle().setBorderLeft(BorderStyle.NONE);
+//					sheet.getRow(i).getCell(6).getCellStyle().setBorderRight(BorderStyle.NONE);
+//					sheet.getRow(i).getCell(6).getCellStyle().setBorderLeft(BorderStyle.NONE);
+					sheet.getRow(i).getCell(7).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(7).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(8).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(8).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(9).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(9).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+				}
+				
+			}
+			for(int i =22; i<(excelFTARes.getSubItem().size())*2+23; i++) {
+
+				if(i%2==1) {
+					
+					sheet.getRow(i).getCell(5).setCellStyle(cellStyle);
+					sheet.getRow(i).getCell(6).setCellStyle(cellStyle);
+					
+				}
+				
+			}
+			for(int i =22; i<(excelFTARes.getSubItem().size())*2+23; i++) {
+
+				if(i%2==1) {
+					for(int j=9; j<30; j++) {
+						sheet.getRow(i).getCell(j).setCellStyle(cellStyle);
+						sheet.getRow(i).getCell(j).setCellStyle(cellStyle);
+					}
+					
+					
+				}
+				
+			}
 			String fileName = excelFTARes.getFileNm() + "_FTA.xlsx";
 			response.setContentType("application/download;charset=utf-8");
 			response.setHeader("custom-header", fileName);
@@ -489,10 +539,11 @@ public class ExcelServiceImpl implements ExcelService {
 		worksheet.shiftRows(destinationRowNum, worksheet.getLastRowNum(), 1);
 		newRow = worksheet.createRow(destinationRowNum);
 		// Loop through source columns to add to new row
+		XSSFCellStyle newCellStyle = workbook.createCellStyle();
 		for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
 			// Grab a copy of the old/new cell
 //        	XSSFCelle
-
+			
 			XSSFCell oldCell = sourceRow.getCell(i);
 			XSSFCell newCell = newRow.createCell(i);
 
@@ -503,7 +554,7 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 
 			// Copy style from old cell and apply to new cell
-			XSSFCellStyle newCellStyle = workbook.createCellStyle();
+
 			newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
 			;
 			newCell.setCellStyle(newCellStyle);
@@ -1913,7 +1964,7 @@ public class ExcelServiceImpl implements ExcelService {
 							if (sheet.getMergedRegion(i).getFirstRow() == startRow-1) {
 								sheet.removeMergedRegion(i);
 								sheet.removeMergedRegion(i);
-								sheet.removeMergedRegion(i);
+//								sheet.removeMergedRegion(i);
 							}
 							
 						}
@@ -4982,7 +5033,7 @@ public class ExcelServiceImpl implements ExcelService {
 				r.setMasterCompanySpan(result2.get(l).getMasterCompanySpan());
 				r.setMarkingSpan(result2.get(l).getMarkingSpan());	
 				r.setOrderNoStrSpan(result2.get(l).getOrderNoStrSpan());
-				r.setContainer(f.getFinalInbound().getCargoName()==null||f.getFinalInbound().getCargoName().equals("")?"백마창고":f.getFinalInbound().getCargoName());
+				r.setContainer(f.getFinalInbound().getCargoName()==null||f.getFinalInbound().getCargoName().equals("")?"":f.getFinalInbound().getCargoName());
 				result.add(r);
 				}
 	
@@ -9392,7 +9443,9 @@ public String getDoubleResult(Double param) {
 			OPCPackage opcPackage = OPCPackage.open(targetStream);
 			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 			workbook.setSheetName(0, excelListFTARes.get(0).getFileNm());
-			
+			XSSFCellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setBorderLeft(BorderStyle.NONE);
+			cellStyle.setBorderRight(BorderStyle.NONE);
 			//시작 인덱스 : template excel sheet가 0,1두개 이므로 마지막 index를 설정
 			int cloenStartIndex = 0;
 			for(int i=0; i<excelListFTARes.size()-1; i++) {
@@ -9441,8 +9494,58 @@ public String getDoubleResult(Double param) {
 			// 셀병합
 			//행시작, 행종료, 열시작, 열종료 (자바배열과 같이 0부터 시작)
 //			sheet.addMergedRegion(new CellRangeAddress(22,22,7,8));
-
+			sheet.getRow(23).getCell(7).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("mmm, dd.yyyy"));
 			// item add
+			for(int i =22; i<(excelFTARes.getSubItem().size())*2+23; i++) {
+
+				if(i%2==1) {
+					sheet.getRow(i).getCell(0).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(0).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(1).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(1).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(2).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(2).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(3).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(3).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(4).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(4).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+//					sheet.getRow(i).getCell(5).getCellStyle().setBorderRight(BorderStyle.NONE);
+//					sheet.getRow(i).getCell(5).getCellStyle().setBorderLeft(BorderStyle.NONE);
+//					sheet.getRow(i).getCell(6).getCellStyle().setBorderRight(BorderStyle.NONE);
+//					sheet.getRow(i).getCell(6).getCellStyle().setBorderLeft(BorderStyle.NONE);
+					sheet.getRow(i).getCell(7).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(7).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(8).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(8).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(9).getCellStyle().setBorderRight(BorderStyle.HAIR);
+					sheet.getRow(i).getCell(9).getCellStyle().setBorderLeft(BorderStyle.HAIR);
+				}
+				
+			}
+			for(int i =22; i<(excelFTARes.getSubItem().size())*2+23; i++) {
+
+				if(i%2==1) {
+					
+					sheet.getRow(i).getCell(5).setCellStyle(cellStyle);
+					sheet.getRow(i).getCell(5).setCellStyle(cellStyle);
+					sheet.getRow(i).getCell(6).setCellStyle(cellStyle);
+					sheet.getRow(i).getCell(6).setCellStyle(cellStyle);
+					
+				}
+				
+			}
+			for(int i =22; i<(excelFTARes.getSubItem().size())*2+23; i++) {
+
+				if(i%2==1) {
+					for(int j=9; j<30; j++) {
+						sheet.getRow(i).getCell(j).setCellStyle(cellStyle);
+						sheet.getRow(i).getCell(j).setCellStyle(cellStyle);
+					}
+					
+					
+				}
+				
+			}
 			}
 			if(uploadRoot.equals("c:/kmjtlogis")) {
 				System.out.println(LocalDateTime.now().toString()+ "######### FTA exceldownload 처리완료 #########");

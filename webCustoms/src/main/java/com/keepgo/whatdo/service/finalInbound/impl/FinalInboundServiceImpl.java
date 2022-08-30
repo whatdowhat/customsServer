@@ -483,16 +483,18 @@ public class FinalInboundServiceImpl implements FinalInboundService {
 		FinalInbound r = _finalInboundRepository.findById(id).get();
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		format1.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
+		SimpleDateFormat format2 =  new SimpleDateFormat("MM월 dd일");
+		format2.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		Date d=null;
 		Date d2=null;
 		String forViewDepartDateStr="";
 		String workDepartDt="";
 		try {
 			d=format1.parse(r.getDepartDtStr());
-			forViewDepartDateStr = DateFormatUtils.format(d, "MM월 dd일");
+			forViewDepartDateStr = format2.format(d);
 			if(r.getWorkDepartDt()!=null) {
 				d2=format1.parse(r.getWorkDepartDt());
-				workDepartDt=DateFormatUtils.format(d2, "MM월 dd일");
+				workDepartDt=format2.format(d2);
 			}
 			
 			

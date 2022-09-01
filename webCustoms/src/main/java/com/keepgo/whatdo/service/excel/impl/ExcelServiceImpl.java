@@ -54,6 +54,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -3475,7 +3476,7 @@ public class ExcelServiceImpl implements ExcelService {
 			XSSFCellStyle engNmCellStyle = workbook.createCellStyle();
 			XSSFCellStyle coCellStyle = workbook.createCellStyle();
 			XSSFCellStyle coCellStyle2 = workbook.createCellStyle();
-			Font allFont = workbook.createFont();
+			XSSFFont allFont = workbook.createFont();
 			allFont.setFontName("굴림체");
 			Font otherFont = workbook.createFont();
 			otherFont.setFontName("굴림체");
@@ -3499,7 +3500,16 @@ public class ExcelServiceImpl implements ExcelService {
 			}else if(resource.get(i).getColorId()==2){
 				allFont.setColor(IndexedColors.RED.getIndex());
 			}else if(resource.get(i).getColorId()==3){
-				allFont.setColor(IndexedColors.GREEN.getIndex());
+//				allFont.setColor(IndexedColors.GREEN.getIndex());
+//				HSSFPalette palette = hwb.getCustomPalette();
+//				// get the color which most closely matches the color you want to use
+//				HSSFColor myColor = palette.findSimilarColor(0, 176, 80);
+//				// get the palette index of that color 
+//				short palIndex = myColor.getIndex();
+//				allFont.setColor(palIndex);
+				XSSFColor fontColor = new XSSFColor(new java.awt.Color(0, 176, 80));
+				allFont.setColor(fontColor);
+				
 			}else if(resource.get(i).getColorId()==4){
 				allFont.setColor(IndexedColors.PINK.getIndex());
 			}else if(resource.get(i).getColorId()==5){
@@ -3519,7 +3529,10 @@ public class ExcelServiceImpl implements ExcelService {
 				HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
 				// get the palette index of that color 
 				short palIndex = myColor.getIndex();
-				allFont.setColor(palIndex);
+//				allFont.setColor(palIndex);
+				
+				XSSFColor fontColor = new XSSFColor(new java.awt.Color(34, 116, 28));
+				allFont.setColor(fontColor);
 			}else if(resource.get(i).getColorId()==9){
 				HSSFPalette palette = hwb.getCustomPalette();
 				// get the color which most closely matches the color you want to use
@@ -6377,7 +6390,7 @@ public String getDoubleResult(Double param) {
 			XSSFCellStyle coCellStyle = workbook.createCellStyle();
 			XSSFCellStyle coCellStyle2 = workbook.createCellStyle();
 			
-			Font allFont = workbook.createFont();
+			XSSFFont allFont = workbook.createFont();
 			allFont.setFontName("굴림체");
 			Font otherFont = workbook.createFont();
 			otherFont.setFontName("굴림체");
@@ -6398,7 +6411,9 @@ public String getDoubleResult(Double param) {
 			}else if(resource.get(i).getColorId()==2){
 				allFont.setColor(IndexedColors.RED.getIndex());
 			}else if(resource.get(i).getColorId()==3){
-				allFont.setColor(IndexedColors.GREEN.getIndex());
+//				allFont.setColor(IndexedColors.GREEN.getIndex());
+				XSSFColor fontColor = new XSSFColor(new java.awt.Color(0, 176, 80));
+				allFont.setColor(fontColor);
 			}else if(resource.get(i).getColorId()==4){
 				allFont.setColor(IndexedColors.PINK.getIndex());
 			}else if(resource.get(i).getColorId()==5){
@@ -6413,12 +6428,14 @@ public String getDoubleResult(Double param) {
 				short palIndex = myColor.getIndex();
 				allFont.setColor(palIndex);
 			}else if(resource.get(i).getColorId()==8){
-				HSSFPalette palette = hwb.getCustomPalette();
-				// get the color which most closely matches the color you want to use
-				HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
-				// get the palette index of that color 
-				short palIndex = myColor.getIndex();
-				allFont.setColor(palIndex);
+//				HSSFPalette palette = hwb.getCustomPalette();
+//				// get the color which most closely matches the color you want to use
+//				HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
+//				// get the palette index of that color 
+//				short palIndex = myColor.getIndex();
+//				allFont.setColor(palIndex);
+				XSSFColor fontColor = new XSSFColor(new java.awt.Color(34, 116, 28));
+				allFont.setColor(fontColor);
 			}else if(resource.get(i).getColorId()==9){
 				HSSFPalette palette = hwb.getCustomPalette();
 				// get the color which most closely matches the color you want to use
@@ -7907,7 +7924,7 @@ public String getDoubleResult(Double param) {
 				XSSFCellStyle officeNameCellStyle = workbook.createCellStyle();
 				XSSFCellStyle hacksodanCostCellStyle = workbook.createCellStyle();
 				XSSFCellStyle coCostCellStyle = workbook.createCellStyle();
-				Font allFont = workbook.createFont();
+				XSSFFont allFont = workbook.createFont();
 				allFont.setFontName("굴림체");
 				if(resource.get(i).getUnbiYn().equals("Y")){
 					unbiCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -8049,7 +8066,9 @@ public String getDoubleResult(Double param) {
 					}else if(resource.get(i).getColorId()==2){
 						allFont.setColor(IndexedColors.RED.getIndex());
 					}else if(resource.get(i).getColorId()==3){
-						allFont.setColor(IndexedColors.GREEN.getIndex());
+//						allFont.setColor(IndexedColors.GREEN.getIndex());
+						XSSFColor fontColor = new XSSFColor(new java.awt.Color(0, 176, 80));
+						allFont.setColor(fontColor);
 					}else if(resource.get(i).getColorId()==4){
 						allFont.setColor(IndexedColors.PINK.getIndex());
 					}else if(resource.get(i).getColorId()==5){
@@ -8064,12 +8083,14 @@ public String getDoubleResult(Double param) {
 						short palIndex = myColor.getIndex();
 						allFont.setColor(palIndex);
 					}else if(resource.get(i).getColorId()==8){
-						HSSFPalette palette = hwb.getCustomPalette();
-						// get the color which most closely matches the color you want to use
-						HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
-						// get the palette index of that color 
-						short palIndex = myColor.getIndex();
-						allFont.setColor(palIndex);
+//						HSSFPalette palette = hwb.getCustomPalette();
+//						// get the color which most closely matches the color you want to use
+//						HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
+//						// get the palette index of that color 
+//						short palIndex = myColor.getIndex();
+//						allFont.setColor(palIndex);
+						XSSFColor fontColor = new XSSFColor(new java.awt.Color(34, 116, 28));
+						allFont.setColor(fontColor);
 					}else if(resource.get(i).getColorId()==9){
 						HSSFPalette palette = hwb.getCustomPalette();
 						// get the color which most closely matches the color you want to use
@@ -8260,7 +8281,9 @@ public String getDoubleResult(Double param) {
 					}else if(resource.get(i).getColorId()==2){
 						allFont.setColor(IndexedColors.RED.getIndex());
 					}else if(resource.get(i).getColorId()==3){
-						allFont.setColor(IndexedColors.GREEN.getIndex());
+//						allFont.setColor(IndexedColors.GREEN.getIndex());
+						XSSFColor fontColor = new XSSFColor(new java.awt.Color(0, 176, 80));
+						allFont.setColor(fontColor);
 					}else if(resource.get(i).getColorId()==4){
 						allFont.setColor(IndexedColors.PINK.getIndex());
 					}else if(resource.get(i).getColorId()==5){
@@ -8275,12 +8298,14 @@ public String getDoubleResult(Double param) {
 						short palIndex = myColor.getIndex();
 						allFont.setColor(palIndex);
 					}else if(resource.get(i).getColorId()==8){
-						HSSFPalette palette = hwb.getCustomPalette();
-						// get the color which most closely matches the color you want to use
-						HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
-						// get the palette index of that color 
-						short palIndex = myColor.getIndex();
-						allFont.setColor(palIndex);
+//						HSSFPalette palette = hwb.getCustomPalette();
+//						// get the color which most closely matches the color you want to use
+//						HSSFColor myColor = palette.findSimilarColor(34, 116, 28);
+//						// get the palette index of that color 
+//						short palIndex = myColor.getIndex();
+//						allFont.setColor(palIndex);
+						XSSFColor fontColor = new XSSFColor(new java.awt.Color(34, 116, 28));
+						allFont.setColor(fontColor);
 					}else if(resource.get(i).getColorId()==9){
 						HSSFPalette palette = hwb.getCustomPalette();
 						// get the color which most closely matches the color you want to use

@@ -257,11 +257,25 @@ public class CommonServiceImpl implements CommonService {
 		common.setUser(new Long(1));
 		Boolean isUsing = Boolean.valueOf(commonReq.getIsUsing());
 		common.setIsUsing(isUsing);
-		
-		 _commonRepository.save(common);
+		Common check = _commonRepository.findByValue3(commonReq.getValue3());
+		if(check==null) {
+			 _commonRepository.save(common);
+			 CommonRes result = new CommonRes();
+			 result.setId(_commonRepository.findByValue3(commonReq.getValue3()).getId());
+			 result.setCommonMasterId(commonReq.getCommonMasterId());
+			 result.setIsUsing(true);
+			 return result;
+		}else {
+			CommonRes result = new CommonRes();
+			result.setId(new Long(0));
+			result.setCommonMasterId(commonReq.getCommonMasterId());
+			result.setIsUsing(false);
+			return result;
+			
+		}
 		
 
-		 return CommonRes.builder().commonMasterId(commonReq.getCommonMasterId()).build();
+		
 	}
 	
 	@Override

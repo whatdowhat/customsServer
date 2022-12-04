@@ -257,7 +257,12 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 				.orElse(CompanyInfo.builder().build());
 
 		companyInfo.setId(companyInfoReq.getId());
-		companyInfo.setCoAddress(companyInfoReq.getCoAddress());
+		if(companyInfoReq.getCoAddress().contains("\\r\\n")) {
+			companyInfo.setCoAddress(companyInfoReq.getCoAddress().replaceAll("\\\\r\\\\n", "\n"));	
+		}else {
+			companyInfo.setCoAddress(companyInfoReq.getCoAddress());	
+		}
+		
 		companyInfo.setCoInvoice(companyInfoReq.getCoInvoice());
 		companyInfo.setCoNm(companyInfoReq.getCoNm());
 		companyInfo.setCoNum(companyInfoReq.getCoNum());

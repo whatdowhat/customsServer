@@ -37,6 +37,9 @@ public class ExcelCLPRes {
 	String engNm;
 	String memo1;
 	Integer corpId;
+	String masterBlNo;
+	Double weight;
+	
 	@Builder.Default
 	private int blNoSpan= 1;
 	@Builder.Default

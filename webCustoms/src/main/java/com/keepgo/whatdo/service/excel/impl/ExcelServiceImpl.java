@@ -2908,7 +2908,7 @@ public class ExcelServiceImpl implements ExcelService {
 			r.setHshadd(""+f.getInboundMaster().getComExport().getValue2());
 			r.setHcncod(""+f.getInboundMaster().getCompanyInfo().getConsignee());
 			r.setHcnnam(""+f.getInboundMaster().getCompanyInfo().getCoNmEn()+"("+sb.toString()+")");
-			r.setHcnadd(""+f.getInboundMaster().getCompanyInfo().getCoAddress());
+			r.setHcnadd(""+f.getInboundMaster().getCompanyInfo().getCoAddress()); //20221204 길이가 긴경우 줄바꿈 처리.
 			r.setHnfnam("SAME AS CONSIGNEE");
 //			r.setHfwnam(""+f.getInboundMaster().getCompanyInfo().getCoNm());
 //			r.setHfwadd(""+f.getInboundMaster().getCompanyInfo().getCoNmEn());
@@ -5047,6 +5047,8 @@ public class ExcelServiceImpl implements ExcelService {
 				r.setMarkingSpan(result2.get(l).getMarkingSpan());	
 				r.setOrderNoStrSpan(result2.get(l).getOrderNoStrSpan());
 				r.setContainer(f.getFinalInbound().getCargoName()==null||f.getFinalInbound().getCargoName().equals("")?"":f.getFinalInbound().getCargoName());
+				r.setMasterBlNo(f.getFinalInbound().getFinalMasterBl());
+				r.setWeight(result2.get(l).getWeight());	
 				result.add(r);
 				}
 	
@@ -5138,6 +5140,8 @@ public class ExcelServiceImpl implements ExcelService {
 					sheet.getRow(rowNum.get(i)+6).getCell(6).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
 					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
 					sheet.getRow(rowNum.get(i)+6).getCell(7).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
+					sheet.getRow(rowNum.get(i)+6).getCell(8).getCellStyle().setBorderBottom(BorderStyle.MEDIUM);
+					sheet.getRow(rowNum.get(i)+6).getCell(8).getCellStyle().setBottomBorderColor(IndexedColors.RED.getIndex());	
 					
 				}
 
@@ -5160,7 +5164,7 @@ public class ExcelServiceImpl implements ExcelService {
 				XSSFRow row = sheet.getRow(sheet.getLastRowNum());
 				row.getCell(4).setCellFormula("SUM"+"("+"E"+"7"+":"+"E"+lastRowS+")");
 				row.getCell(5).setCellFormula("SUM"+"("+"F"+"7"+":"+"F"+lastRowS+")");
-				
+				row.getCell(6).setCellFormula("SUM"+"("+"G"+"7"+":"+"G"+lastRowS+")");
 				
 				for(int i=6; i<sheet.getLastRowNum(); i++) {
 					sheet.getRow(i).setHeightInPoints(new Float("25"));
@@ -5279,6 +5283,8 @@ public class ExcelServiceImpl implements ExcelService {
 				} else if (i == 4) {
 					newCell.setCellValue((item.getBoxCount() == null ? 0d : item.getBoxCount()));
 				}else if (i == 5) {
+					newCell.setCellValue((item.getWeight() == null ? 0d : item.getWeight()));
+				}else if (i == 6) {
 					newCell.setCellValue((item.getCbm() == null ? 0d : item.getCbm()));
 				} else {
 					newCell.setCellValue(oldCell.getNumericCellValue());
@@ -5294,7 +5300,7 @@ public class ExcelServiceImpl implements ExcelService {
 					}else if (i == 3) {
 						newCell.setCellValue(item.getMarking());
 						newCell.getCellStyle().setWrapText(true);
-					}else if (i == 6) {
+					}else if (i == 7) {
 						XSSFRichTextString richString = new XSSFRichTextString( item.getEngNm());
 						
 						newCell.setCellValue(richString);
@@ -5395,6 +5401,8 @@ public class ExcelServiceImpl implements ExcelService {
 			return excelCLPRes.getContainerNo();
 		} else if (target.contains("${silNo}")) {
 			return excelCLPRes.getSilNo();
+		} else if (target.contains("${masterBlNo}")) {
+			return excelCLPRes.getMasterBlNo();
 		} 
 		
 

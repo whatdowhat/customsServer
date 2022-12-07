@@ -285,7 +285,11 @@ public class CommonServiceImpl implements CommonService {
 		
 		common.setId(commonReq.getId());		
 		common.setValue(commonReq.getValue());
-		common.setValue2(commonReq.getValue2());
+		if(commonReq.getValue2().contains("\\r\\n")) {
+			common.setValue2(commonReq.getValue2().replaceAll("\\\\r\\\\n", "\n"));	
+		}else {
+			common.setValue2(commonReq.getValue2());	
+		}
 		common.setValue3(commonReq.getValue3());
 		common.setCreateDt(new Date());
 		common.setUpdateDt(new Date());

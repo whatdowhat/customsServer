@@ -78,6 +78,7 @@ public class CompanyInfoController {
 	
 	
 	
+	
 	@RequestMapping(value = "/test/companyInfo", method = {RequestMethod.POST })
 	public List<?> companyInfo(HttpServletRequest httpServletRequest,CompanyInfoReq companyInfoReq) throws Exception {
 

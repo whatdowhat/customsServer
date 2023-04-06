@@ -84,6 +84,7 @@ import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelBlRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCOSubRes;
@@ -10520,5 +10521,285 @@ public String getDoubleResult(Double param) {
 			return target;
 		}
 
+	}
+	
+	@Override
+	public List<ExcelBlRes> blData(FinalInboundReq req) throws Exception {
+		SimpleDateFormat afterFormat = new SimpleDateFormat("yyyyMMdd");
+		afterFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
+		SimpleDateFormat beforeFormat = new SimpleDateFormat("yyyy-MM-dd");
+		beforeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));;
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.000");
+		DecimalFormat decimalFormat2 = new DecimalFormat("#,###");
+		DecimalFormat decimalFormat3 = new DecimalFormat("#,##0.00");
+		int no=1;
+		User user = _userRepository.findByLoginId(req.getLoginId());
+		List<ExcelBlRes> result = new ArrayList<>();
+		List<InboundMasterReq> list = req.getInboundMasterData();
+		for (int k = 0; k < list.size(); k++) {
+			FinalInboundInboundMaster f=_FinalInboundInboundMasterRepository.findByFinalInboundIdAndInboundMasterId(req.getId(), list.get(k).getId());
+			
+			List<InboundRes> inboundList = _InboundService.getInboundByMasterId(f.getInboundMaster().getId());
+			List<InboundRes> result2 = _utilService.changeExcelFormatNew(inboundList);
+			InboundViewRes i = _InboundService.changeInbound(result2);
+			StringBuffer sb = new StringBuffer();
+			String companyNum=f.getInboundMaster().getCompanyInfo().getCoNum();
+			sb.append(companyNum);
+			sb.insert(3, "-");
+			sb.insert(6, "-");
+//			ExcelContainerRes r  = new ExcelContainerRes();
+			ExcelBlRes r  = ExcelBlRes.builder().build();
+			Date incomeDt = beforeFormat.parse(f.getFinalInbound().getIncomeDt());
+			Date departDt = beforeFormat.parse(f.getFinalInbound().getDepartDtStr());
+			r.setFileNm(f.getInboundMaster().getBlNo());
+			r.setPackingType((f.getInboundMaster().getPackingType() == null ? "CTN" : ""+f.getInboundMaster().getPackingType()));
+			if(r.getPackingType().equals("CTN")) {
+				r.setPackingType2("CARTON");
+			}else if(r.getPackingType().equals("PL")) {
+				r.setPackingType2("PALLET");
+			}else if(r.getPackingType().equals("GT")) {
+				r.setPackingType2("OTHER");
+			}
+			r.setConsignor(""+f.getInboundMaster().getComExport().getValue());
+			r.setShipper(""+f.getInboundMaster().getComExport().getValue2());
+			r.setConsignee(""+f.getInboundMaster().getCompanyInfo().getCoNmEn()+"("+sb.toString()+")");
+			r.setConsigneeAdd(""+f.getInboundMaster().getCompanyInfo().getCoAddress());
+			r.setNotifyParty("SAME AS CONSIGNEE");		
+			r.setVessel(""+f.getFinalInbound().getHangName());
+			r.setVoyageNum(""+f.getFinalInbound().getHangCha());
+			r.setPortLoading((f.getFinalInbound().getDepartPort() == null ? "" : ""+ _commonRepository.findById(f.getFinalInbound().getDepartPort()).get().getValue2()));
+			r.setPortDischarge((f.getFinalInbound().getIncomePort() == null ? "" : ""+ _commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue2()));
+			r.setPortDelivery((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue2()));
+			r.setFinalDestination((f.getFinalInbound().getIncomePort() == null ? "" : ""+_commonRepository.findById(f.getFinalInbound().getIncomePort()).get().getValue2()));		
+			r.setBlNo(""+f.getInboundMaster().getBlNo());
+			for(int l=0; l<CorpType.getList().size();l++) {
+				if(CorpType.getList().get(l).getId()==f.getFinalInbound().getCorpId()) {
+					r.setDelivery(""+CorpType.getList().get(l).getFullName());
+					r.setDeliveryAdd(""+CorpType.getList().get(l).getAddress());					
+				}else {
+
+				}
+			}
+			r.setMarking(inboundList.get(0).getMarking());
+			if(i.getBoxCountSumD().longValue()==0||i.getBoxCountSumD().longValue()==1) {
+				r.setCtns(""+decimalFormat2.format(i.getBoxCountSumD()));
+				r.setCtnsUnit(""+r.getPackingType());
+			}else {
+				r.setCtns(""+decimalFormat2.format(i.getBoxCountSumD()));
+				r.setCtnsUnit(""+r.getPackingType()+"S");
+			}
+			
+			
+			List <String> nameList = new ArrayList<>();
+			for(int j=0; j<inboundList.size(); j++) {
+				nameList.add(inboundList.get(j).getEngNm());
+			}
+			String goods = nameList.stream().distinct().collect(Collectors.joining("\n"));
+			r.setGoods(goods);		
+			r.setWeight(""+decimalFormat3.format(i.getWeightSumD())+" "+"KGS");			
+			r.setCbm(""+decimalFormat.format(i.getCbmSumD())+" "+"CBM");		
+			String conNo = f.getFinalInbound().getContainerNo()==null||f.getFinalInbound().getContainerNo()=="" ? "":f.getFinalInbound().getContainerNo();
+			String silNo = f.getFinalInbound().getSilNo()==null||f.getFinalInbound().getSilNo()=="" ? "":f.getFinalInbound().getSilNo();
+			r.setConNo(conNo);
+			r.setSilNo(silNo);		
+			if(f.getFinalInbound().getGubun()==1) {
+				r.setConSize(f.getFinalInbound().getContainerSizeStr());
+				r.setType("CY/CY");
+			}else {
+				r.setConSize("");
+				r.setType("CFS/CFS");
+			}
+			if(f.getFinalInbound().getGubun()==2) {
+				r.setGubunType("LCL");
+			}else {
+				r.setGubunType("");
+			}
+//			r.setDepartDt(""+afterFormat.format(departDt));
+			r.setDepartDt(""+f.getFinalInbound().getDepartDtStr());
+			
+			if(f.getInboundMaster().getFreight()==1) {
+				r.setFreight("FREIGHT COLLECT");
+			}else {
+				r.setFreight("FREIGHT PREPAID");
+			}
+			if(f.getFinalInbound().getGubun()==1) {
+				r.setTotalNo(""+EnglishNumberToWords.convert(1)+" "+"("+"1"+")"+" "+"CONTAINER"+" "+"ONLY.");
+//				r.setTotalNo(""+"SAY"+" "+":"+EnglishNumberToWords.convert(1)+" "+"("+"1"+")"+" "+"CONTAINER"+" "+"ONLY.");
+			}else {
+				if(i.getBoxCountSumD().longValue()==0||i.getBoxCountSumD().longValue()==1) {
+					r.setTotalNo(""+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getPackingType2()+" "+"ONLY.");
+//					r.setTotalNo(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getPackingType2()+" "+"ONLY.");
+				}else {
+					r.setTotalNo(""+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getPackingType2()+"S"+" "+"ONLY.");
+//					r.setTotalNo(""+"SAY"+" "+":"+EnglishNumberToWords.convert(i.getBoxCountSumD().longValue())+" "+"("+String.valueOf(i.getBoxCountSumD().intValue())+")"+" "+r.getPackingType2()+"S"+" "+"ONLY.");
+				}
+			}
+			
+			
+			if(req.getGubun()==1) {
+				r.setOriginalBl("ZERO(0)");
+			}else {
+				r.setOriginalBl("THREE(3)");
+			}
+			
+			
+			
+			
+			result.add(r);
+			no=no+1;
+		}
+		
+		
+		
+		return result;
+	}
+	@Override
+	public boolean bl(List<ExcelBlRes> list, HttpServletResponse response, int imageType, int paperYn) throws Exception {
+		
+		String path = "";
+		if(imageType==1) {
+			path = DocumentType.getList().stream().filter(t -> t.getId() == 14).findFirst().get().getName();
+		}else if(imageType==2) {
+			path = DocumentType.getList().stream().filter(t -> t.getId() == 15).findFirst().get().getName();
+		}else {
+			path = DocumentType.getList().stream().filter(t -> t.getId() == 16).findFirst().get().getName();
+		}
+		
+
+		try {
+
+			Resource resource = resourceLoader.getResource(path);
+
+			File file = new File(resource.getURI());
+			
+			InputStream targetStream = new FileInputStream(file);
+			OPCPackage opcPackage = OPCPackage.open(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+			copySheetAndSetName(workbook, list, paperYn);
+			setData(workbook, list, paperYn);
+			
+
+			String fileName =  "BL.xlsx";
+			response.setContentType("application/download;charset=utf-8");
+			response.setHeader("custom-header", fileName);
+			workbook.write(response.getOutputStream());
+			workbook.close();
+
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+//			System.err.println(e.getMessage());
+		}
+		return true;
+	}
+	 private void copySheetAndSetName(XSSFWorkbook workbook, List<ExcelBlRes> list,  int paperYn) {
+		if(paperYn==1) {
+			for(int i=0; i<list.size(); i++) {
+				workbook.cloneSheet(0, list.get(i).getBlNo());				
+			}
+		}else {
+			for(int i=0; i<list.size(); i++) {
+				workbook.cloneSheet(1, list.get(i).getBlNo());				
+			}
+		}
+		 
+
+		 workbook.removeSheetAt(0);
+		 workbook.removeSheetAt(0);
+	}
+	 private void setData(XSSFWorkbook workbook, List<ExcelBlRes> list, int paperYn) throws ParseException {
+		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		 //용지사용 안할때
+		 if(paperYn==1) {
+			 for(int i=0; i<list.size(); i++) {
+				 XSSFSheet sheetN = workbook.getSheetAt(i);
+				//상단 좌측 데이터 세팅
+				 sheetN.getRow(1).getCell(1).setCellValue(list.get(i).getConsignor());
+				 sheetN.getRow(2).getCell(1).setCellValue(list.get(i).getShipper());
+				 sheetN.getRow(6).getCell(1).setCellValue(list.get(i).getConsignee());
+				 sheetN.getRow(7).getCell(1).setCellValue(list.get(i).getConsigneeAdd());
+				 sheetN.getRow(10).getCell(1).setCellValue(list.get(i).getNotifyParty());
+				 sheetN.getRow(16).getCell(1).setCellValue(list.get(i).getVessel()+" "+list.get(i).getVoyageNum());
+				 sheetN.getRow(18).getCell(1).setCellValue(list.get(i).getPortLoading());
+				 sheetN.getRow(18).getCell(4).setCellValue(list.get(i).getPortDischarge());
+				//상단 우측 데이터 세팅
+				 sheetN.getRow(2).getCell(8).setCellValue(list.get(i).getBlNo());
+				 sheetN.getRow(12).getCell(7).setCellValue(list.get(i).getDelivery());
+				 sheetN.getRow(13).getCell(7).setCellValue(list.get(i).getDeliveryAdd());
+				 sheetN.getRow(18).getCell(7).setCellValue(list.get(i).getPortDelivery());
+				 sheetN.getRow(18).getCell(9).setCellValue(list.get(i).getFinalDestination());
+				//중단 메인데이터 세팅
+				 sheetN.getRow(22).getCell(1).setCellValue(list.get(i).getMarking());
+				 sheetN.getRow(22).getCell(3).setCellValue(list.get(i).getGubunType());
+				 sheetN.getRow(22).getCell(8).setCellValue(list.get(i).getWeight());
+				 sheetN.getRow(22).getCell(10).setCellValue(list.get(i).getCbm());
+				 sheetN.getRow(23).getCell(2).setCellValue(list.get(i).getCtns());
+				 sheetN.getRow(23).getCell(4).setCellValue(list.get(i).getCtnsUnit());
+				 
+				 sheetN.getRow(24).getCell(2).setCellValue(list.get(i).getConSize());		
+				 if(list.get(i).getType().equals("CY/CY")){
+					 sheetN.getRow(24).getCell(4).setCellValue("X1");
+				 }
+				 sheetN.getRow(24).getCell(5).setCellValue(list.get(i).getGoods());
+				 sheetN.getRow(25).getCell(1).setCellValue(list.get(i).getConNo()+"/"+list.get(i).getSilNo());				 
+				 sheetN.getRow(35).getCell(7).setCellValue(dateFormat.parse(list.get(i).getDepartDt()));		 
+				 sheetN.getRow(37).getCell(1).setCellValue(list.get(i).getType());
+				 sheetN.getRow(37).getCell(6).setCellValue("\""+list.get(i).getFreight()+"\"");
+				 sheetN.getRow(39).getCell(5).setCellValue(list.get(i).getTotalNo());
+				 sheetN.getRow(41).getCell(1).setCellValue(list.get(i).getFreight()+" "+"AS ARRANGED");
+				 sheetN.getRow(47).getCell(3).setCellValue(dateFormat.parse(list.get(i).getDepartDt()));
+				 sheetN.getRow(47).getCell(5).setCellValue(list.get(i).getOriginalBl());
+				 sheetN.getRow(48).getCell(2).setCellValue(list.get(i).getBlNo());
+			 }
+		 //인쇄용지 사용시
+		 }else {
+			 for(int i=0; i<list.size(); i++) {
+				 XSSFSheet sheetN = workbook.getSheetAt(i);
+				//상단 좌측 데이터 세팅
+				 sheetN.getRow(1).getCell(1).setCellValue(list.get(i).getConsignor());
+				 sheetN.getRow(2).getCell(1).setCellValue(list.get(i).getShipper());
+				 sheetN.getRow(6).getCell(1).setCellValue(list.get(i).getConsignee());
+				 sheetN.getRow(7).getCell(1).setCellValue(list.get(i).getConsigneeAdd());
+				 sheetN.getRow(10).getCell(1).setCellValue(list.get(i).getNotifyParty());
+				 sheetN.getRow(16).getCell(1).setCellValue(list.get(i).getVessel()+" "+list.get(i).getVoyageNum());
+				 sheetN.getRow(18).getCell(1).setCellValue(list.get(i).getPortLoading());
+				 sheetN.getRow(18).getCell(4).setCellValue(list.get(i).getPortDischarge());
+				//상단 우측 데이터 세팅
+				 sheetN.getRow(2).getCell(8).setCellValue(list.get(i).getBlNo());
+				 sheetN.getRow(12).getCell(7).setCellValue(list.get(i).getDelivery());
+				 sheetN.getRow(13).getCell(7).setCellValue(list.get(i).getDeliveryAdd());
+				 sheetN.getRow(18).getCell(7).setCellValue(list.get(i).getPortDelivery());
+				 sheetN.getRow(18).getCell(9).setCellValue(list.get(i).getFinalDestination());
+				//중단 메인데이터 세팅
+				 sheetN.getRow(22).getCell(1).setCellValue(list.get(i).getMarking());
+				 sheetN.getRow(22).getCell(3).setCellValue(list.get(i).getGubunType());
+				 sheetN.getRow(22).getCell(8).setCellValue(list.get(i).getWeight());
+				 sheetN.getRow(22).getCell(10).setCellValue(list.get(i).getCbm());
+				 sheetN.getRow(23).getCell(2).setCellValue(list.get(i).getCtns());
+				 sheetN.getRow(23).getCell(4).setCellValue(list.get(i).getCtnsUnit());
+				 
+				 sheetN.getRow(24).getCell(2).setCellValue(list.get(i).getConSize());		
+				 if(list.get(i).getType().equals("CY/CY")){
+					 sheetN.getRow(24).getCell(4).setCellValue("X1");
+				 }
+				 sheetN.getRow(24).getCell(5).setCellValue(list.get(i).getGoods());
+				 sheetN.getRow(25).getCell(1).setCellValue(list.get(i).getConNo()+"/"+list.get(i).getSilNo());				 
+				 sheetN.getRow(36).getCell(7).setCellValue(dateFormat.parse(list.get(i).getDepartDt()));		 
+				 sheetN.getRow(37).getCell(1).setCellValue(list.get(i).getType());
+				 sheetN.getRow(38).getCell(6).setCellValue("\""+list.get(i).getFreight()+"\"");
+				 sheetN.getRow(39).getCell(5).setCellValue(list.get(i).getTotalNo());
+				 sheetN.getRow(41).getCell(1).setCellValue(list.get(i).getFreight()+" "+"AS ARRANGED");
+				 sheetN.getRow(47).getCell(3).setCellValue(dateFormat.parse(list.get(i).getDepartDt()));
+				 sheetN.getRow(47).getCell(5).setCellValue(list.get(i).getOriginalBl());
+				 sheetN.getRow(48).getCell(2).setCellValue(list.get(i).getBlNo());
+		 }
+			
+					
+			
+				
+		
+
+		 }
 	}
 }

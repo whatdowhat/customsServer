@@ -21,6 +21,8 @@ public class CorpTypeRes {
 	private String code;
 	private String name;
 	private String showName;
+	private String fullName;
+	private String address;
 	private int order;
 	
 }

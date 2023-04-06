@@ -46,20 +46,22 @@ public class DatasourceJPA {
 //		  hikariConfig.setPassword("vlcldldkfvl!");
 		  hikariConfig.setLeakDetectionThreshold(60 * 5000);
 		  hikariConfig.setConnectionTimeout(120 * 1000);
+		 
 		  hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
 		  hikariConfig.setJdbcUrl("jdbc:mysql://kmjtlogis.cafe24.com/kmjtlogis?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul");
 		  hikariConfig.setUsername("kmjtlogis");
 		  hikariConfig.setPassword("kmj1636~!@");
+
 //		  hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
 //		  hikariConfig.setJdbcUrl("jdbc:mysql://keepgo.cafe24app.com:3306/keepgoing01?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul");
 //		  hikariConfig.setUsername("keepgoing01");
 //		  hikariConfig.setPassword("alsrh132@");
 		  
 //		  hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//		  hikariConfig .setJdbcUrl("jdbc:mysql://localhost/adminweb?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"); 
-//		  hikariConfig.setUsername("admin");
+//		  hikariConfig .setJdbcUrl("jdbc:mysql://localhost:3306/world?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"); 
+//		  hikariConfig.setUsername("root");
 //		  hikariConfig.setPassword("root");
-		  
+//		  
 		  
 		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 		

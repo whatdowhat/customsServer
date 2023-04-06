@@ -13,6 +13,7 @@ import com.keepgo.whatdo.entity.customs.FinalInboundInboundMaster;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelBlRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
@@ -117,4 +118,9 @@ public interface ExcelService {
 	FinalInboundViewRes containerInfoData(FinalInboundReq req) throws Exception;
 	@Transactional
 	boolean containerInfo(FinalInboundViewRes list, HttpServletResponse response) throws Exception;
+	
+	@Transactional
+	List<ExcelBlRes> blData(FinalInboundReq req) throws Exception;
+	@Transactional
+	boolean bl(List<ExcelBlRes> list,HttpServletResponse response, int imageType, int paperYn) throws Exception;
 }

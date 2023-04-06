@@ -28,6 +28,7 @@ import com.keepgo.whatdo.entity.customs.request.FinalInboundInboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.FinalInboundReq;
 import com.keepgo.whatdo.entity.customs.request.InboundMasterReq;
 import com.keepgo.whatdo.entity.customs.request.InboundReq;
+import com.keepgo.whatdo.entity.customs.response.ExcelBlRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCLPRes;
 import com.keepgo.whatdo.entity.customs.response.ExcelCORes;
 import com.keepgo.whatdo.entity.customs.response.ExcelContainerRes;
@@ -345,5 +346,23 @@ public class ExcelController {
 		
 		
 		_excelService.containerInfo(s, response);
+	}
+	
+	@RequestMapping(value = "/excel/document/blData", method = { RequestMethod.POST })
+	public List<ExcelBlRes> excelBlRes(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+
+		return _excelService.blData(req);
+	}
+	@RequestMapping(value = "/excel/document/bl", method = { RequestMethod.POST })
+	public void bl(HttpServletRequest httpServletRequest, @RequestBody FinalInboundReq req,
+			HttpServletResponse response) throws Exception {
+
+		List<ExcelBlRes> s =_excelService.blData(req);
+		int imageType = req.getGubun();
+		int paperYn = req.getPaperYn();
+		
+		_excelService.bl(s, response, imageType, paperYn);
 	}
 }

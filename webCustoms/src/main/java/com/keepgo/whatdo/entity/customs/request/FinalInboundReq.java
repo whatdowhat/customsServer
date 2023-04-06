@@ -36,6 +36,7 @@ public class FinalInboundReq {
 
 	private Long id;
 	private int gubun;
+	private int paperYn;
 	private String title;
 	private String incomeYearMonth;
 	private String incomeDt;
